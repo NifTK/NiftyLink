@@ -166,7 +166,7 @@ MARK_AS_ADVANCED(NIFTYLINK_ADDITIONAL_CXX_FLAGS)
 # Qt and VTK are mandatory, so in effect VTK is always built with Qt.
 ######################################################################
 
-FIND_PACKAGE(Qt4 COMPONENTS QtCore QtGui QtXml QtNetwork REQUIRED)
+FIND_PACKAGE(Qt4 COMPONENTS QtCore QtXml QtNetwork REQUIRED)
 
 SET(QT_USE_QTXML 1)
 SET(QT_USE_QTXMLPATTERNS 1)
