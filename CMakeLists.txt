@@ -103,7 +103,11 @@ ENDIF(BUILD_SUPERBUILD)
 # build. So, look in CMake/Superbuild.cmake to see where they are
 # passed to the main build of NiftyLink when doing the Superbuild.
 ######################################################################
-OPTION(BUILD_SHARED_LIBS "Build NiftyLink with shared libraries." OFF)
+OPTION(BUILD_SHARED_LIBS "Build NiftyLink with shared libraries." ON)
+IF (NOT BUILD_SHARED_LIBS) 
+  MESSAGE(FATAL_ERROR "Static Build is not supported.")
+ENDIF()
+
 OPTION(BUILD_TESTING "Build Unit tests in NiftyLink/Testing/Code" ON)
 OPTION(NIFTYLINK_CHECK_COVERAGE "Enable/Disable code coverage checking." OFF)
 
@@ -140,6 +144,7 @@ MARK_AS_ADVANCED(NIFTYLINK_USER_CONTACT)
 MARK_AS_ADVANCED(NIFTYLINK_DEVELOPER_CONTACT)
 MARK_AS_ADVANCED(NIFTYLINK_VERSION_STRING)
 MARK_AS_ADVANCED(NIFTYLINK_DEPLOY_NAME)
+MARK_AS_ADVANCED(NIFTYLINK_CHECK_COVERAGE)
 
 ######################################################################
 # Setup the path to load CMake macros, and extra CMake files.

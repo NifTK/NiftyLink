@@ -43,6 +43,7 @@ IF(NOT DEFINED OpenIGTLink_DIR)
     GIT_REPOSITORY git://github.com/zomboir/OpenIGTLink.git
     GIT_TAG ${revision_tag}
     BINARY_DIR ${proj}-build
+    INSTALL_COMMAND ""
     CMAKE_GENERATOR ${GEN}
     CMAKE_ARGS
         ${EP_COMMON_ARGS}
@@ -51,7 +52,7 @@ IF(NOT DEFINED OpenIGTLink_DIR)
     DEPENDS ${proj_DEPENDENCIES}
     )
 
-  SET(OpenIGTLink_DIR ${EP_BASE}/Install/${proj}/lib/igtl)
+  SET(OpenIGTLink_DIR ${CMAKE_CURRENT_BINARY_DIR}/${proj}-build)
   SET(OpenIGTLink_SOURCE_DIR ${CMAKE_CURRENT_BINARY_DIR}/CMakeExternals/Source/OPENIGTLINK)
   
   MESSAGE("SuperBuild loading OpenIGTLink from ${OpenIGTLink_DIR}")
