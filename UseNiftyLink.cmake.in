@@ -1,0 +1,46 @@
+#/*================================================================================
+#
+#  NiftyLink:  A software library to facilitate communication over OpenIGTLink. 
+#  
+#              http://cmic.cs.ucl.ac.uk/
+#              http://www.ucl.ac.uk/
+#
+#  Copyright (c) UCL : See LICENSE.txt in the top level directory for details. 
+#
+#  Last Changed      : $LastChangedDate: 2011-12-01 15:19:31 +0000 (Thu, 01 Dec 2011) $ 
+#  Revision          : $Revision: 7901 $
+#  Last modified by  : $Author: gerge $
+#
+#  Original author   : m.clarkson@ucl.ac.uk
+#
+#  This software is distributed WITHOUT ANY WARRANTY; without even
+#  the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR
+#  PURPOSE.  See the above copyright notices for more information.
+#
+#=================================================================================*/
+
+#
+# This file sets up include directories, link directories, and
+# compiler settings for a project to use NiftyLink.  It should not be
+# included directly, but rather through the NiftyLink_USE_FILE setting
+# obtained from NiftyLinkConfig.cmake.
+#
+
+IF(NiftyLink_BUILD_SETTINGS_FILE AND NOT SKIP_NiftyLink_BUILD_SETTINGS_FILE)
+  INCLUDE(${CMAKE_ROOT}/Modules/CMakeImportBuildSettings.cmake)
+  CMAKE_IMPORT_BUILD_SETTINGS(${NiftyLink_BUILD_SETTINGS_FILE})
+ENDIF(NiftyLink_BUILD_SETTINGS_FILE AND NOT SKIP_NiftyLink_BUILD_SETTINGS_FILE)
+
+# Add compiler flags needed to use NiftyLink.
+SET(CMAKE_C_FLAGS "${CMAKE_C_FLAGS} ${NiftyLink_REQUIRED_C_FLAGS}")
+SET(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} ${NiftyLink_REQUIRED_CXX_FLAGS}")
+SET(CMAKE_EXE_LINKER_FLAGS "${CMAKE_EXE_LINKER_FLAGS} ${NiftyLink_REQUIRED_LINK_FLAGS}")
+SET(CMAKE_SHARED_LINKER_FLAGS "${CMAKE_SHARED_LINKER_FLAGS} ${NiftyLink_REQUIRED_LINK_FLAGS}")
+SET(CMAKE_MODULE_LINKER_FLAGS "${CMAKE_MODULE_LINKER_FLAGS} ${NiftyLink_REQUIRED_LINK_FLAGS}")
+
+# Add include directories needed to use NiftyLink.
+INCLUDE_DIRECTORIES(BEFORE ${NiftyLink_INCLUDE_DIRS})
+
+# Add link directories needed to use NiftyLink.
+LINK_DIRECTORIES(${NiftyLink_LIBRARY_DIRS})
+

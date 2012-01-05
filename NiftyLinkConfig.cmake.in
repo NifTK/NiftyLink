@@ -1,0 +1,48 @@
+#/*================================================================================
+#
+#  NiftyLink:  A software library to facilitate communication over OpenIGTLink. 
+#  
+#              http://cmic.cs.ucl.ac.uk/
+#              http://www.ucl.ac.uk/
+#
+#  Copyright (c) UCL : See LICENSE.txt in the top level directory for details. 
+#
+#  Last Changed      : $LastChangedDate: 2011-12-01 15:19:31 +0000 (Thu, 01 Dec 2011) $ 
+#  Revision          : $Revision: 7901 $
+#  Last modified by  : $Author: gerge $
+#
+#  Original author   : m.clarkson@ucl.ac.uk
+#
+#  This software is distributed WITHOUT ANY WARRANTY; without even
+#  the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR
+#  PURPOSE.  See the above copyright notices for more information.
+#
+#=================================================================================*/
+
+#-----------------------------------------------------------------------------
+#
+# NiftyLinkConfig.cmake - NiftyLink CMake configuration file for external projects.
+#
+# This file is configured by NiftyLink and used by the UseNiftyLink.cmake module
+# to load NiftyLink settings for an external project.
+#-----------------------------------------------------------------------------
+
+# The NiftyLink include file directories.
+SET(NiftyLink_INCLUDE_DIRS "@NIFTYLINK_INCLUDE_DIRS_BUILD_TREE@")
+
+# The NiftyLink library directories.
+SET(NiftyLink_LIBRARY_DIRS "@CMAKE_BINARY_DIR@/bin")
+
+# The NiftyLink Library version number
+SET(NiftyLink_VERSION_MAJOR "@NIFTYLINK_VERSION_MAJOR@")
+SET(NiftyLink_VERSION_MINOR "@NIFTYLINK_VERSION_MINOR@")
+SET(NiftyLink_VERSION_PATCH "@NIFTYLINK_VERSION_PATCH@")
+
+# The location of the UseNiftyLink.cmake file.
+SET(NiftyLink_USE_FILE "@CMAKE_BINARY_DIR@/UseNiftyLink.cmake")
+
+# Whether OpenIGTLink was built with shared libraries.
+SET(NiftyLink_BUILD_SHARED "@BUILD_SHARED_LIBS@")
+
+# A list of all libraries for NiftyLink.  
+SET(NiftyLink_LIBRARIES niftylinkcommon)

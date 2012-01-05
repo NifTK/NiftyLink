@@ -1,0 +1,33 @@
+/**
+
+\mainpage The @NIFTYLINK_NAME@ Documentation
+
+\image html NiftyLinkLogo.png
+
+@NIFTYLINK_COPYRIGHT@
+
+\subpage @NIFTYLINK_NAME@License
+
+\section MainPageIntroduction Introduction
+
+Introduce the application here.
+
+\section MainPageManuals Further Information
+
+There are two manuals
+
+\li \subpage UserManual "The User Manual"
+\li \subpage TechnicalManual "The Technical Manual"
+
+and two mailing lists for discussion
+
+\li <a href="@NIFTYLINK_USER_CONTACT@">for end users</a>
+\li <a href="@NIFTYLINK_DEVELOPER_CONTACT@">for developers</a>
+
+For code developers it is important to read:
+
+\li <a href="https://cmicdev.cs.ucl.ac.uk/trac/wiki/MidasPlatform">The wiki.</a>
+\li <a href="https://cmicdev.cs.ucl.ac.uk/cdash/index.php?project=NiftyLink">The dashboard.</a>
+\li <a href="https://cmicdev.cs.ucl.ac.uk/trac/query?group=status&milestone=NiftyLink-@NIFTYLINK_VERSION_MAJOR@.@NIFTYLINK_VERSION_MINOR@.@NIFTYLINK_VERSION_PATCH@">The current tasks.</a>
+\li <a href="https://cmicdev.cs.ucl.ac.uk/trac/wiki/RoadMap">The roadmap.</a>
+*/

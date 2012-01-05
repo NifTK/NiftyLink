@@ -1,0 +1,108 @@
+/*=============================================================================
+
+ NiftyLink:  A software library to facilitate communication over OpenIGTLink.
+
+             http://cmic.cs.ucl.ac.uk/
+             http://www.ucl.ac.uk/
+
+ Copyright (c) UCL : See LICENSE.txt in the top level directory for details.
+
+ Last Changed      : $Date: 2010-05-25 17:02:50 +0100 (Tue, 25 May 2010) $
+ Revision          : $Revision: 3300 $
+ Last modified by  : $Author: mjc $
+
+ Original author   : m.clarkson@ucl.ac.uk
+
+ This software is distributed WITHOUT ANY WARRANTY; without even
+ the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR
+ PURPOSE.  See the above copyright notices for more information.
+
+ ============================================================================*/
+
+/* 
+ * here is where system computed values get stored these values should only
+ * change when the target compile platform changes 
+ */
+
+/* what byte order */
+/* All compilers that support Mac OS X define either __BIG_ENDIAN__ or
+   __LITTLE_ENDIAN__ to match the endianness of the architecture being
+   compiled for. This is not necessarily the same as the architecture of
+   the machine doing the building. In order to support Universal Binaries on
+   Mac OS X, we prefer those defines to decide the endianness.
+   On other platform, we use the result of the TRY_RUN. */
+#if !defined(__APPLE__)
+  #cmakedefine CMAKE_WORDS_BIGENDIAN 
+  #ifdef CMAKE_WORDS_BIGENDIAN
+    #define NIFTYLINK_WORDS_BIGENDIAN 
+  #endif
+#elif defined(__BIG_ENDIAN__)
+  #define CMAKE_WORDS_BIGENDIAN
+  #define NIFTYLINK_WORDS_BIGENDIAN
+#endif
+
+
+#if defined(__CYGWIN__)
+#ifndef WIN32
+#define WIN32 1
+#endif
+#ifndef _WIN32
+#define _WIN32 1
+#endif
+#endif
+
+/* what threading system are we using */
+#cmakedefine CMAKE_USE_PTHREADS
+#ifdef CMAKE_USE_PTHREADS
+#define NIFTYLINK_USE_PTHREADS
+#endif
+
+#cmakedefine CMAKE_USE_SPROC
+#ifdef CMAKE_USE_SPROC
+#define NIFTYLINK_USE_SPROC
+#endif
+
+#cmakedefine CMAKE_HP_PTHREADS
+#ifdef CMAKE_HP_PTHREADS
+#define NIFTYLINK_HP_PTHREADS
+#endif
+
+#cmakedefine CMAKE_USE_WIN32_THREADS
+#ifdef CMAKE_USE_WIN32_THREADS
+#define NIFTYLINK_USE_WIN32_THREADS
+#endif
+
+#cmakedefine NIFTYLINK_BUILD_SHARED_LIBS
+#ifdef NIFTYLINK_BUILD_SHARED_LIBS
+#define NIFTYLINKDLL
+#else
+#define NIFTYLINKSTATIC
+#endif
+
+#cmakedefine CMAKE_NO_STD_NAMESPACE
+#cmakedefine CMAKE_NO_ANSI_STREAM_HEADERS
+#cmakedefine CMAKE_NO_ANSI_STRING_STREAM
+#cmakedefine CMAKE_NO_ANSI_FOR_SCOPE
+
+#define NIFTYLINK_VERSION_MAJOR @NIFTYLINK_VERSION_MAJOR@
+#define NIFTYLINK_VERSION_MINOR @NIFTYLINK_VERSION_MINOR@
+#define NIFTYLINK_VERSION_PATCH @NIFTYLINK_VERSION_PATCH@
+#define NIFTYLINK_NAME "@NIFTYLINK_NAME@"
+#define NIFTYLINK_COPYRIGHT "@NIFTYLINK_COPYRIGHT@"
+#define NIFTYLINK_ORIGIN_URL "@NIFTYLINK_ORIGIN_URL@"
+#define NIFTYLINK_ORIGIN_SHORT_TEXT "@NIFTYLINK_ORIGIN_SHORT_TEXT@"
+#define NIFTYLINK_ORIGIN_LONG_TEXT "@NIFTYLINK_ORIGIN_LONG_TEXT@"
+#define NIFTYLINK_WIKI_URL "@NIFTYLINK_WIKI_URL@"
+#define NIFTYLINK_WIKI_TEXT "@NIFTYLINK_WIKI_TEXT@"
+#define NIFTYLINK_DASHBOARD_URL "@NIFTYLINK_DASHBOARD_URL@"
+#define NIFTYLINK_DASHBOARD_TEXT "@NIFTYLINK_DASHBOARD_TEXT@"
+#define NIFTYLINK_USER_CONTACT "@NIFTYLINK_USER_CONTACT@"
+#define NIFTYLINK_DEVELOPER_CONTACT "@NIFTYLINK_DEVELOPER_CONTACT@"
+#define NIFTYLINK_VERSION_STRING "@NIFTYLINK_VERSION_STRING@"
+#define NIFTYLINK_DEPLOY_NAME "@NIFTYLINK_DEPLOY_NAME@"
+
+/* Important software version information */
+#define NIFTYLINK_QT_VERSION "@QT_VERSION_MAJOR@.@QT_VERSION_MINOR@.@QT_VERSION_PATCH@"
+#define NIFTYLINK_OPENIGTLINK_REVISION_ID "@NIFTYLINK_OPENIGTLINK_REVISION_ID@"
+#define NIFTYLINK_SVN_REVISION_ID "@NIFTYLINK_SVN_REVISION_ID@"
+

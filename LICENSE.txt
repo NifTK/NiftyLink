@@ -1,0 +1,8 @@
+/**
+\page @NIFTYLINK_NAME@License The @NIFTYLINK_NAME@ License
+
+@NIFTYLINK_NAME@
+
+Not finalised yet, so NOT for distribution outside of CMIC.
+
+*/
