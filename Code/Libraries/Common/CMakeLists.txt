@@ -19,9 +19,8 @@
 #
 #=================================================================================*/
 
-
 SET(niftylinkcommon_SRCS
-Utils.cpp
+NiftyLinkUtils.cpp
 )
 
 ADD_LIBRARY(niftylinkcommon ${niftylinkcommon_SRCS})

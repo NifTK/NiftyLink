@@ -19,10 +19,10 @@
 
  ============================================================================*/
 
-#include "UtilsTests.h"
+#include "NiftyLinkUtilsTests.h"
 #include "stdlib.h"
 #include <QDebug>
-#include "Utils.h"
+#include "NiftyLinkUtils.h"
 
 void UtilsTests::initTestCase()
 {
@@ -46,7 +46,7 @@ void UtilsTests::mySecondTest()
 
 void UtilsTests::myThirdTest()
 {
-  int result = DummyFunction1();
+  int result = NiftyLinkDummyFunction1();
   QVERIFY(result == 0);
 }
 

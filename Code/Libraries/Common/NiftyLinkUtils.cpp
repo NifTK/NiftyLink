@@ -19,9 +19,9 @@
 
  ============================================================================*/
 
-#include "Utils.h"
+#include "NiftyLinkUtils.h"
 
-int DummyFunction1()
+int NiftyLinkDummyFunction1()
 {
   return 0;
 }

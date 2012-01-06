@@ -25,6 +25,6 @@
 #include "NiftyLinkConfig.h"
 #include "NiftyLinkCommonWin32ExportHeader.h"
 
-extern "C" NIFTYLINKCOMMON_WINEXPORT int DummyFunction1();
+extern "C" NIFTYLINKCOMMON_WINEXPORT int NiftyLinkDummyFunction1();
 
 #endif
