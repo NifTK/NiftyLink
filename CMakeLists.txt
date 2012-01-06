@@ -156,6 +156,12 @@ SET(CMAKE_MODULE_PATH
     ${CMAKE_MODULE_PATH}
    )
 
+######################################################################
+# Add in any functions/macros. 
+######################################################################
+INCLUDE(mitkFunctionGetVersion)
+INCLUDE(mitkMacroEmptyExternalProject)
+
 ###########################################################################
 # Set these compiler flags early, so it can be applied to all dependencies.
 ###########################################################################
@@ -222,12 +228,6 @@ IF(OpenIGTLink_FOUND)
   MESSAGE("Found OpenIGTLink")    
   INCLUDE(${OpenIGTLink_USE_FILE})  
 ENDIF(OpenIGTLink_FOUND)
-
-######################################################################
-# Add in any functions/macros. 
-######################################################################
-INCLUDE(mitkFunctionGetVersion)
-INCLUDE(mitkMacroEmptyExternalProject)
 
 ######################################################################
 # Retrieve version info.
