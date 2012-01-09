@@ -19,17 +19,57 @@
 #
 #=================================================================================*/
 
+# --------------------------------------------------------------------------
+# Project Setup
+
+PROJECT(NiftyLink)
+
+# Find QT4
+FIND_PACKAGE(Qt4 REQUIRED)
+INCLUDE(${QT_USE_FILE})
+
+# --------------------------------------------------------------------------
+# Sources
+
 SET(niftylinkcommon_SRCS
 NiftyLinkUtils.cpp
 )
 
-ADD_LIBRARY(niftylinkcommon ${niftylinkcommon_SRCS})
+SET(niftylinkcommon_HDRS
+NiftyLinkUtils.h
+NiftyLinkCommonWin32ExportHeader.h
+)
+
+# --------------------------------------------------------------------------
+# Qt Specific Commands
+
+QT4_WRAP_CPP(NIFTYLINK_QT_MOC_FILES ${SOURCES_H} )			  
+
+SOURCE_GROUP("Generated Files" FILES ${NIFTYLINK_QT_MOC_FILES})
+
+include_directories(${CMAKE_CURRENT_BINARY_DIR})
+include_directories(${CMAKE_CURRENT_SOURCE_DIR})
+
+
+# --------------------------------------------------------------------------
+# Build the library
+SET (NIFTYLINK_LIBS
+  ${QT_LIBRARIES}
+  igtlutil
+  OpenIGTLink
+  )
+
+ADD_LIBRARY(niftylinkcommon 
+  ${niftylinkcommon_SRCS}
+  ${niftylinkcommon_HDRS}
+  ${NIFTYLINK_QT_MOC_FILES}
+  )
+
 IF(BUILD_SHARED_LIBS)
   IF(WIN32)
     ADD_DEFINITIONS(-DNIFTYLINKCOMMON_WINDOWS_EXPORT)
   ENDIF(WIN32)
 ENDIF(BUILD_SHARED_LIBS)
 
-TARGET_LINK_LIBRARIES(niftylinkcommon  
-) 
+TARGET_LINK_LIBRARIES(niftylinkcommon ${NIFTYLINK_LIBS} ) 
 
