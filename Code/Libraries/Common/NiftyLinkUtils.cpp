@@ -64,25 +64,3 @@ int NiftyLinkDummyFunction1()
 {
   return 0;
 }
-
-bool validateIp(const QString &inputIP)
-{
-	if (inputIP == QString("localhost"))
-		return true;
-
-	QStringList nums = inputIP.split(".");
-
-	if (nums.count() !=4)
-		return false;
-
-	for (int i = 0; i < 4; i++)
-	{
-		bool ok = false;
-		int frag = nums.at(i).toInt(&ok, 10);
-		
-		if (!ok) return false;
-		else if (frag < 0 || frag > 255) return false;
-	}
-	
-	return true;
-}
