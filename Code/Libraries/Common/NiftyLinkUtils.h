@@ -22,9 +22,21 @@
 #ifndef NIFTYLINKCOMMONUTILS_H
 #define NIFTYLINKCOMMONUTILS_H
 
+#include <QString>
+#include <QUrl>
+#include <QHostInfo>
+#include <QHostAddress>
+#include <QStringList>
+
+
 #include "NiftyLinkConfig.h"
 #include "NiftyLinkCommonWin32ExportHeader.h"
 
+
 extern "C" NIFTYLINKCOMMON_WINEXPORT int NiftyLinkDummyFunction1();
+
+static bool validateIp(const QString &inputIP);
+static QString getLocalHostAddress(void);
+
 
 #endif

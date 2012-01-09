@@ -33,11 +33,17 @@ INCLUDE(${QT_USE_FILE})
 
 SET(niftylinkcommon_SRCS
 NiftyLinkUtils.cpp
+QsDebugOutput.cpp
+QsLog.cpp
+QsLogDest.cpp
 )
 
 SET(niftylinkcommon_HDRS
 NiftyLinkUtils.h
 NiftyLinkCommonWin32ExportHeader.h
+QsDebugOutput.h
+QsLog.h
+QsLogDest.h
 )
 
 # --------------------------------------------------------------------------
