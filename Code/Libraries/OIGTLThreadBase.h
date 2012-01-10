@@ -5,43 +5,47 @@
 #include <QObject>
 #include <QDebug>
 #include <QMutex>
-#include <QMutexLocker>
-
-
-#include "igtlOSUtil.h"
-#include "igtlMessageHeader.h"
-#include "igtlTransformMessage.h"
-#include "igtlPositionMessage.h"
-#include "igtlImageMessage.h"
-#include "igtlServerSocket.h"
-#include "igtlStatusMessage.h"
-#include "igtlPointMessage.h"
-#include "igtlStringMessage.h"
-#include "igtlBindMessage.h"
 
 #include "OIGTLMessage.h"
+#include "QsLog.h"
+#include "QsLogDest.h"
+#include "igtlSocket.h"
+#include "igtlServerSocket.h"
 
 class OIGTLThreadBase : public QThread
 {
 	Q_OBJECT
 
-friend class OIGTLConnectorBase;
-
 public:
-	OIGTLThreadBase(QObject *parent = 0) {}
-	~OIGTLThreadBase(void) {}
-
-signals:
-	void requestListenerSetup();
-	void socketDisconnected();
-	void finishedSending();
-	void abcd();
+	OIGTLThreadBase(QObject *parent = 0);
+	~OIGTLThreadBase(void);
 
 protected:
-	void run(void) {}
+	virtual void run(void) {}
 	
-	QMutex * getMutex() {}
-	void setMutex(QMutex * mutex) {}
+	virtual bool initialize(igtl::Socket::Pointer socket = 0) { return false; }
+	virtual bool activate(void) { return false; }
+
+	virtual void sendMsg(OIGTLMessage &msg) {}
+	virtual igtl::Socket::Pointer getSocketPointer(void) { return m_extSocket; }
+
+	inline  bool isActive() {return m_running; }
+	inline  bool isInitialized() {return m_initialized; }
+	inline  int  getPort(void) {return m_port; }
+	inline  void setMutex(QMutex * mutex) { m_mutex = mutex; }
+	
+protected slots:
+	virtual void startThread() {}
+	virtual void stopThread() {}
+	//virtual void quitThread() {}
+
+protected:
+	int      m_port;
+	bool     m_running;
+	bool     m_initialized;
+    QMutex * m_mutex;
+	
+	igtl::Socket::Pointer m_extSocket;
 };
 
 #endif

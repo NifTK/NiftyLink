@@ -51,12 +51,19 @@ Common/QsLogDest.h
 
 SET(niftylink_SRCS
 OIGTLMessage.cpp
+OIGTLThreadBase.cpp
+OIGTLSenderThread.cpp
+OIGTLListenerThread.cpp
+OIGTLSocketObject.cpp
 )
 
 SET(niftylink_HDRS
 OIGTLConnectorBase.h
 OIGTLMessage.h
 OIGTLThreadBase.h
+OIGTLSenderThread.h
+OIGTLListenerThread.h
+OIGTLSocketObject.h
 )
 
 
@@ -81,13 +88,10 @@ SET (NIFTYLINK_LIBS
   OpenIGTLink
   )
 
-ADD_LIBRARY(niftylinkcommon 
+ADD_LIBRARY(niftylink 
   ${niftylinkcommon_SRCS}
   ${niftylinkcommon_HDRS}
   ${NIFTYLINKCOMMON_QT_MOC_FILES}
-  )
-
-ADD_LIBRARY(niftylink 
   ${niftylink_SRCS}
   ${niftylink_HDRS}
   ${NIFTYLINK_QT_MOC_FILES}
@@ -100,4 +104,3 @@ IF(BUILD_SHARED_LIBS)
 ENDIF(BUILD_SHARED_LIBS)
 
 TARGET_LINK_LIBRARIES(niftylink ${NIFTYLINK_LIBS} ) 
-TARGET_LINK_LIBRARIES(niftylinkcommon ${NIFTYLINK_LIBS} ) 

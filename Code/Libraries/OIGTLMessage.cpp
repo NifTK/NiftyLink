@@ -10,17 +10,15 @@ OIGTLMessage::OIGTLMessage(QObject *parent)
 
 OIGTLMessage::~OIGTLMessage(void)
 {
-	if (m_message.IsNotNull())
-		m_message->Delete();
-
-	//if (m_socket.IsNotNull())
+	//if (m_message.IsNotNull())
 	//	m_message->Delete();
+
 }
 
 
 void OIGTLMessage::setMessagePointer(igtl::MessageBase::Pointer mp)
 {
-	m_message = mp;
+	m_message.operator =(mp);
 }
 
 igtl::MessageBase::Pointer OIGTLMessage::getMessagePointer(void)
@@ -28,24 +26,21 @@ igtl::MessageBase::Pointer OIGTLMessage::getMessagePointer(void)
 	return m_message;
 }
 
-void OIGTLMessage::setTimeStamp(QTime stamp)
+void OIGTLMessage::setTimeRecieved(igtl::TimeStamp::Pointer ts)
 {
-	m_receiveStamp = stamp;
+	m_timeRecieved.operator=(ts);
 }
 
-QTime OIGTLMessage::getTimeStamp(void)
+igtl::TimeStamp::Pointer OIGTLMessage::getTimeRecieved(void)
 {
-	return m_receiveStamp;
+	return m_timeRecieved;
 }
 
-void OIGTLMessage::setSocketPointer(igtl::Socket::Pointer sp)
+igtl::TimeStamp::Pointer OIGTLMessage::getTimeStamp(void)
 {
-	m_socket = sp;
-}
-	
-igtl::Socket::Pointer OIGTLMessage::getSocketPointer(void)
-{
-	return m_socket;
+	igtl::TimeStamp::Pointer ts = igtl::TimeStamp::New();
+	m_message->GetTimeStamp(ts);
+	return ts;
 }
 
 void OIGTLMessage::setHostName(QString hname)

@@ -19,11 +19,8 @@
 // #include "igstkSerialCommunication.h"
 
 #include "OIGTLThreadBase.h"
-// #include "OIGTLSenderBase.h"
-// #include "OIGTLMessage.h"
 
-
-class OIGTLConnector : public QObject
+class OIGTLConnectorBase : public QObject
 {
 	Q_OBJECT
 
@@ -31,8 +28,8 @@ class OIGTLConnector : public QObject
 //friend class OIGTLSender;
 
 public:
-	OIGTLConnector(QObject *parent = 0);
-	~OIGTLConnector(void);
+	OIGTLConnectorBase(QObject *parent = 0) {}
+	~OIGTLConnectorBase(void) {}
 
 signals:
 
@@ -52,12 +49,6 @@ public slots:
 	virtual void exitConnector(void) {}
 	
 protected:
-	int initializeListener(int port);
-	int initializeListener(igtl::Socket::Pointer socket);
-	
-	int initializeSender(QUrl url);
-	int initializeSender(igtl::Socket::Pointer socket);
-
 	virtual void processMsg(OIGTLMessage * msg) {}
 	virtual	void terminateThreads(void) {}
 	

@@ -7,14 +7,23 @@
 #include <QMutex>
 #include <QMutexLocker>
 
+#include "igtlBindMessage.h"
+//#include "igtlColorTableMessage.h"
+#include "igtlImageMessage.h"
+//#include "igtlImageMetaMessage.h"
+//#include "igtlLabelMetaMessage.h"
+#include "igtlPointMessage.h"
+#include "igtlPositionMessage.h"
+//#include "igtlQuaternionTrackingDataMessage.h"
+//#include "igtlSensorMessage.h"
+#include "igtlStatusMessage.h"
+#include "igtlStringMessage.h"
+//#include "igtlTrackingDataMessage.h"
+//#include "igtlTrajectoryMessage.h"
+#include "igtlTransformMessage.h"
 
 #include "igtlOSUtil.h"
-#include "igtlMessageHeader.h"
-#include "igtlTransformMessage.h"
-#include "igtlPositionMessage.h"
-#include "igtlImageMessage.h"
-#include "igtlServerSocket.h"
-#include "igtlStatusMessage.h"
+#include "igtlTimeStamp.h"
 
 class OIGTLMessage : public QObject
 {
@@ -27,20 +36,18 @@ public:
 	void setMessagePointer(igtl::MessageBase::Pointer mp);
 	igtl::MessageBase::Pointer getMessagePointer(void);
 
-	void setSocketPointer(igtl::Socket::Pointer sp);
-	igtl::Socket::Pointer getSocketPointer(void);
-	
-	void setTimeStamp(QTime stamp);
-	QTime getTimeStamp(void);
-
 	void setHostName(QString hname);
 	QString getHostName(void);
+
+	void setMessageType(QString type);
+	QString getMessageType(void);
 
 	void setPort(int port);
 	int getPort(void);
 
-	void setMessageType(QString type);
-	QString getMessageType(void);
+	void setTimeRecieved(igtl::TimeStamp::Pointer ts);
+	igtl::TimeStamp::Pointer getTimeRecieved(void);
+	igtl::TimeStamp::Pointer getTimeStamp(void);
 
 public slots:
 
@@ -50,7 +57,8 @@ protected:
 
 private:
 	igtl::MessageBase::Pointer  m_message;
-	igtl::Socket::Pointer       m_socket;
+	igtl::TimeStamp::Pointer	m_timeRecieved;
+
 	QString						m_sender;
 	QTime						m_receiveStamp;
 	QString						m_senderHostName;
