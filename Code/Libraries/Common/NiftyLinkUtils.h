@@ -28,15 +28,46 @@
 #include <QHostAddress>
 #include <QStringList>
 
+#include <cmath>
+#include "igtlMath.h"
 
 #include "NiftyLinkConfig.h"
 #include "NiftyLinkCommonWin32ExportHeader.h"
 
+#include "OIGTLMessage.h"
+
 
 extern "C" NIFTYLINKCOMMON_WINEXPORT int NiftyLinkDummyFunction1();
 
-static bool validateIp(const QString &inputIP);
-static QString getLocalHostAddress(void);
+extern NIFTYLINKCOMMON_WINEXPORT bool validateIp(const QString &inputIP);
+extern NIFTYLINKCOMMON_WINEXPORT QString getLocalHostAddress(void);
+extern NIFTYLINKCOMMON_WINEXPORT QString resolveHostName(QString &input);
+extern NIFTYLINKCOMMON_WINEXPORT void GetRandomTestMatrix(igtl::Matrix4x4& matrix);
+
+
+class NIFTYLINKCOMMON_WINEXPORT MessageCatcher : public QObject
+{
+	Q_OBJECT
+
+public:
+	MessageCatcher() { m_messageValid = false; }
+	~MessageCatcher() {}
+
+	OIGTLMessage* getMessage() { return m_msg; }
+	bool isMessageValid() { return m_messageValid; }
+
+public slots:
+	void catchMessage(OIGTLMessage * msg) 
+	{ 
+		m_msg = msg; 
+		m_messageValid = true; 
+	}
+
+private:
+	OIGTLMessage * m_msg;
+	bool m_messageValid;
+
+};
 
 
 #endif

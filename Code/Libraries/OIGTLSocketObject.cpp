@@ -3,6 +3,8 @@
 OIGTLSocketObject::OIGTLSocketObject(QObject *parent)
 : QObject(parent)
 {
+	//qRegisterMetaType<OIGTLMessage *>();
+
 	m_port = -1;
 	m_listening = false;
 	m_connectedToRemote = false;
@@ -10,42 +12,33 @@ OIGTLSocketObject::OIGTLSocketObject(QObject *parent)
 	m_clientConnected = false;
 	m_ableToSend = false;
 
-	m_mutex = new QMutex();
-	m_sender = new OIGTLSenderThread(this);
-	m_listener = new OIGTLListenerThread(this);
+	m_initialized = false;
 
-	connect(m_sender, SIGNAL(connectedToRemote()), this, SLOT(connectedToRemote()) );
-	connect(m_sender, SIGNAL(disconnectedFromRemote()), this, SLOT(disconnectedFromRemote()) );
-	connect(m_sender, SIGNAL(sendingFinished()), this, SIGNAL(sendingFinished()) );
-
-	connect(m_listener, SIGNAL(clientConnected()), this, SLOT(clientConnected()) );
-	connect(m_listener, SIGNAL(clientDisconnected()), this, SLOT(clientDisconnected()) );
-	connect(m_listener, SIGNAL(messageRecieved(OIGTLMessage *)), this, SIGNAL(messageRecieved(OIGTLMessage *)) );
-
-	m_sender->setMutex(m_mutex);
-	m_listener->setMutex(m_mutex);
+	m_sender = NULL;
+	m_listener = NULL;
+	m_mutex = NULL;
 }
 
 OIGTLSocketObject::~OIGTLSocketObject(void)
 {
 	this->closeSocket();
 
-	disconnect(m_sender, SIGNAL(connectedToRemote()), this, SLOT(connectedToRemote()) );
-	disconnect(m_sender, SIGNAL(disconnectedFromRemote()), this, SLOT(disconnectedFromRemote()) );
-	disconnect(m_sender, SIGNAL(sendingFinished()), this, SIGNAL(sendingFinished()) );
-
-	disconnect(m_listener, SIGNAL(clientConnected()), this, SLOT(clientConnected()) );
-	disconnect(m_listener, SIGNAL(clientDisconnected()), this, SLOT(clientDisconnected()) );
-	disconnect(m_listener, SIGNAL(messageRecieved(OIGTLMessage *)), this, SIGNAL(messageRecieved(OIGTLMessage *)) );
-
 	if (m_sender != NULL)
 	{
+		disconnect(m_sender, SIGNAL(connectedToRemote()), this, SLOT(connectedToRemote()) );
+		disconnect(m_sender, SIGNAL(disconnectedFromRemote()), this, SLOT(disconnectedFromRemote()) );
+		disconnect(m_sender, SIGNAL(sendingFinished()), this, SIGNAL(sendingFinished()) );
+
 		delete m_sender;
 		m_sender = NULL;
 	}
 
 	if (m_listener != NULL)
 	{
+		disconnect(m_listener, SIGNAL(clientConnected()), this, SLOT(clientConnected()) );
+		disconnect(m_listener, SIGNAL(clientDisconnected()), this, SLOT(clientDisconnected()) );
+		disconnect(m_listener, SIGNAL(messageRecieved(OIGTLMessage *)), this, SIGNAL(messageRecieved(OIGTLMessage *)) );
+
 		delete m_listener;
 		m_listener = NULL;
 	}
@@ -57,9 +50,52 @@ OIGTLSocketObject::~OIGTLSocketObject(void)
 	}
 }
 
+void OIGTLSocketObject::initThreads()
+{
+	qRegisterMetaType<OIGTLMessage *>();
+
+	m_mutex = new QMutex();
+	m_sender = new OIGTLSenderThread(this);
+	m_listener = new OIGTLListenerThread(this);
+
+	m_sender->setMutex(m_mutex);
+	m_listener->setMutex(m_mutex);
+
+	bool ok;
+
+	ok =  connect(m_sender, SIGNAL(connectedToRemote()), this, SLOT(connectedToRemote()) );
+	ok &= connect(m_sender, SIGNAL(disconnectedFromRemote()), this, SLOT(disconnectedFromRemote()) );
+	ok &= connect(m_sender, SIGNAL(sendingFinished()), this, SIGNAL(sendingFinished()) );
+
+	ok &= connect(m_listener, SIGNAL(clientConnected()), this, SLOT(clientConnected()) );
+	ok &= connect(m_listener, SIGNAL(clientDisconnected()), this, SLOT(clientDisconnected()) );
+	//connect(m_listener, SIGNAL(messageReceived(OIGTLMessage *)), this, SIGNAL(messageReceived(OIGTLMessage *)) );
+
+	// TEST STUFF
+	
+	ok &= connect(m_listener, SIGNAL(messageReceived(OIGTLMessage *)), this, SLOT(catchMsgSignal(OIGTLMessage *)), Qt::BlockingQueuedConnection);
+
+	ok &= connect(m_listener, SIGNAL(testSignal()), this, SLOT(catchTestSignal( )), Qt::BlockingQueuedConnection);
+	
+	
+	ok &= connect(this, SIGNAL(testSignal()), this, SLOT(catchTestSignal( )));
+
+	m_spy = new QSignalSpy(m_listener, SIGNAL(messageReceived(OIGTLMessage *)));
+
+	ok &= m_spy->isValid();
+
+	if (m_mutex != NULL && m_sender != NULL && m_listener != NULL && ok)
+		m_initialized = true;
+
+	//m_spy = new QSignalSpy(m_listener, SIGNAL(testSignal( )));
+}
+
 bool OIGTLSocketObject::listenOnPort(int port)
 {
-	if (m_listener != NULL)
+	if (!m_initialized)
+		initThreads();
+
+	if (m_listener != NULL && m_initialized)
 	{
 		bool ok = m_listener->initialize(port);
 
@@ -67,6 +103,10 @@ bool OIGTLSocketObject::listenOnPort(int port)
 		{
 			m_port = port;
 			m_listening = true;
+			m_listener->startThread();
+
+			//emit testSignal();
+			
 			return true;
 		}
 		else return false;
@@ -76,12 +116,30 @@ bool OIGTLSocketObject::listenOnPort(int port)
 
 bool OIGTLSocketObject::connectToRemote(QUrl url)
 {
-	if (m_sender != NULL)
+	if (!m_initialized)
+		initThreads();
+
+	if (m_sender != NULL  && m_initialized)
 	{
-		char * hostname = const_cast<char *>(url.host().toStdString().c_str());
+		char * address = NULL;
+		
+		if (validateIp(url.host()) == true)
+		{
+			address = const_cast<char *>(url.host().toStdString().c_str());
+		}
+		else
+		{
+			QString ip = resolveHostName(url.host());
+			
+			if (validateIp(ip))
+				address = const_cast<char *>(ip.toStdString().c_str());
+			else
+				return false;
+		}
+
 		int port = url.port();
 		
-		bool ok = m_sender->initialize(hostname, port);
+		bool ok = m_sender->initialize(address, port);
 		
 		if (ok)
 		{
@@ -160,4 +218,18 @@ void OIGTLSocketObject::clientDisconnected(void)
 		m_sender->stopThread();
 		m_ableToSend = false;
 	}
+}
+
+void OIGTLSocketObject::catchMsgSignal(OIGTLMessage * msg)
+{
+	qDebug() <<"OIGTLSocketObject::catchMsgSignal : Message signal received...." <<endl;
+	if (msg!=NULL)
+	{
+		emit messageReceived(msg);
+	}
+}
+
+void OIGTLSocketObject::catchTestSignal()
+{
+	qDebug() <<"OIGTLSocketObject::catchTestSignal : Test signal received...." <<endl;
 }

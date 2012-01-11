@@ -34,22 +34,11 @@ INCLUDE(${QT_USE_FILE})
 # --------------------------------------------------------------------------
 # Sources
 
-SET(niftylinkcommon_SRCS
+SET(niftylink_SRCS
 Common/NiftyLinkUtils.cpp
 Common/QsDebugOutput.cpp
 Common/QsLog.cpp
 Common/QsLogDest.cpp
-)
-
-SET(niftylinkcommon_HDRS
-Common/NiftyLinkUtils.h
-Common/NiftyLinkCommonWin32ExportHeader.h
-Common/QsDebugOutput.h
-Common/QsLog.h
-Common/QsLogDest.h
-)
-
-SET(niftylink_SRCS
 OIGTLMessage.cpp
 OIGTLThreadBase.cpp
 OIGTLSenderThread.cpp
@@ -58,6 +47,11 @@ OIGTLSocketObject.cpp
 )
 
 SET(niftylink_HDRS
+Common/NiftyLinkUtils.h
+Common/NiftyLinkCommonWin32ExportHeader.h
+Common/QsDebugOutput.h
+Common/QsLog.h
+Common/QsLogDest.h
 OIGTLConnectorBase.h
 OIGTLMessage.h
 OIGTLThreadBase.h
@@ -69,9 +63,6 @@ OIGTLSocketObject.h
 
 # --------------------------------------------------------------------------
 # Qt Specific Commands
-
-QT4_WRAP_CPP(NIFTYLINKCOMMON_QT_MOC_FILES ${niftylinkcommon_HDRS} )			  
-SOURCE_GROUP("Generated Files" FILES ${NIFTYLINKCOMMON_QT_MOC_FILES})
 
 QT4_WRAP_CPP(NIFTYLINK_QT_MOC_FILES ${niftylink_HDRS} )			  
 SOURCE_GROUP("Generated Files" FILES ${NIFTYLINK_QT_MOC_FILES})
@@ -89,9 +80,6 @@ SET (NIFTYLINK_LIBS
   )
 
 ADD_LIBRARY(niftylink 
-  ${niftylinkcommon_SRCS}
-  ${niftylinkcommon_HDRS}
-  ${NIFTYLINKCOMMON_QT_MOC_FILES}
   ${niftylink_SRCS}
   ${niftylink_HDRS}
   ${NIFTYLINK_QT_MOC_FILES}

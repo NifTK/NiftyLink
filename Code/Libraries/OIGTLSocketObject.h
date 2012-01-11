@@ -4,14 +4,18 @@
 #include "OIGTLSenderThread.h"
 #include "OIGTLListenerThread.h"
 
-class OIGTLSocketObject : public QObject
+#include "NiftyLinkCommonWin32ExportHeader.h"
+
+class NIFTYLINKCOMMON_WINEXPORT OIGTLSocketObject : public QObject
 {
 	Q_OBJECT
 
 signals:
-	void messageRecieved(OIGTLMessage *msg);
+	void messageReceived(OIGTLMessage *msg);
 	void sendingFinished();
 	void lostConnectionToRemote(void);
+
+	void testSignal(void);
 
 public:
 	OIGTLSocketObject(QObject *parent = 0);
@@ -28,8 +32,15 @@ public:
 	inline bool isClientConnecting() { return m_clientConnected; }
 	inline bool isAbleToSend() { return m_ableToSend; }
 
+	inline int getTestSignalCalls() {return m_spy->count(); }
+
 public slots:
 	void sendMessage(OIGTLMessage * msg);
+	void catchMsgSignal(OIGTLMessage * msg);
+	void catchTestSignal();
+
+private:
+	void initThreads(void);
 
 private slots:
 	
@@ -39,6 +50,8 @@ private slots:
 	void clientConnected(void);
 	void clientDisconnected(void);
 
+
+
 private:
 	int      m_port;
 	QMutex * m_mutex;
@@ -46,11 +59,15 @@ private:
 	OIGTLSenderThread   * m_sender;
 	OIGTLListenerThread * m_listener;
 
+    bool m_initialized;
+
 	bool m_listening;
 	bool m_connectedToRemote;
 	
 	bool m_clientConnected;
 	bool m_ableToSend;
+
+	QSignalSpy * m_spy;
 
 };
 

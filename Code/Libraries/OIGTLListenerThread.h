@@ -17,6 +17,8 @@ signals:
 	void clientDisconnected(void);
 	void messageReceived(OIGTLMessage * msg);
 
+	void testSignal(void);
+
 protected:
 	OIGTLListenerThread(QObject *parent = 0);
 	~OIGTLListenerThread(void);

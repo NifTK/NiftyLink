@@ -16,8 +16,6 @@
 #include "igtlServerSocket.h"
 #include "igtlStatusMessage.h"
 
-// #include "igstkSerialCommunication.h"
-
 #include "OIGTLThreadBase.h"
 
 class OIGTLConnectorBase : public QObject

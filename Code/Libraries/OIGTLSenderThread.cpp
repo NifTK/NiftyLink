@@ -147,18 +147,22 @@ void OIGTLSenderThread::run(void)
 		}
 
 		OIGTLMessage * msg = m_sendQue.takeFirst();
-		igtl::MessageBase::Pointer igtMsg;
-		igtMsg.operator =(msg->getMessagePointer());
+		if (msg != NULL)
+		{
+			igtl::MessageBase::Pointer igtMsg;
+			igtMsg.operator =(msg->getMessagePointer());
 
-		m_mutex->lock();
-		m_extSocket->Send(igtMsg->GetPackPointer(), igtMsg->GetPackSize());
-		m_mutex->unlock();
+			if (igtMsg.IsNotNull())
+			m_mutex->lock();
+			m_extSocket->Send(igtMsg->GetPackPointer(), igtMsg->GetPackSize());
+			m_mutex->unlock();
 
-		//*******************************
-		// CHANGE THIS
+			//*******************************
+			// CHANGE THIS
 
-		delete msg;
-		//*******************************
+			//delete msg;
+			//*******************************
+		}
 
 		igtl::Sleep(100); // wait 
 	}

@@ -5,12 +5,15 @@
 #include <QObject>
 #include <QDebug>
 #include <QMutex>
+#include <QSignalSpy>
 
 #include "OIGTLMessage.h"
-#include "QsLog.h"
-#include "QsLogDest.h"
 #include "igtlSocket.h"
 #include "igtlServerSocket.h"
+
+#include "NiftyLinkUtils.h"
+#include "QsLog.h"
+#include "QsLogDest.h"
 
 class OIGTLThreadBase : public QThread
 {

@@ -25,7 +25,9 @@
 #include "igtlOSUtil.h"
 #include "igtlTimeStamp.h"
 
-class OIGTLMessage : public QObject
+#include "NiftyLinkCommonWin32ExportHeader.h"
+
+class NIFTYLINKCOMMON_WINEXPORT OIGTLMessage : public QObject
 {
 	Q_OBJECT
 
@@ -66,5 +68,7 @@ private:
 	QString						m_messageType;
 
 };
+
+Q_DECLARE_METATYPE(OIGTLMessage * );
 
 #endif
