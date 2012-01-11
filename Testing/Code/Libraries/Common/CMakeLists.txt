@@ -18,13 +18,3 @@
 #  PURPOSE.  See the above copyright notices for more information.
 #
 #=================================================================================*/
-
-SET (UtilsTests_MOC_HDRS NiftyLinkUtilsTests.h )
-QT4_WRAP_CPP( UtilsTests_MOC_SRCS ${UtilsTests_MOC_HDRS} )
-
-SET( UtilsTests_SRCS NiftyLinkUtilsTests.cpp )
-SET( TEST_LIBRARIES niftylinkcommon ${QT_QTTEST_LIBRARY} ${QT_LIBRARIES} )
-
-ADD_EXECUTABLE( niftkCommonUtilsTests ${UtilsTests_MOC_SRCS} ${UtilsTests_SRCS})
-TARGET_LINK_LIBRARIES( niftkCommonUtilsTests ${TEST_LIBRARIES} )
-ADD_TEST(UtilsTests-1 ${EXECUTABLE_OUTPUT_PATH}/niftkCommonUtilsTests )
