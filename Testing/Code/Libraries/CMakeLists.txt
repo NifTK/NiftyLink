@@ -33,27 +33,27 @@ INCLUDE(${QT_USE_FILE})
 # --------------------------------------------------------------------------
 # Sources
 
-SET(UtilsTest_SRCS
+SET(NlTest_Utils_SRCS
 Common/NiftyLinkUtilsTests.cpp
 )
 
-SET(UtilsTest_HDRS
+SET(NlTest_Utils_HDRS
 Common/NiftyLinkUtilsTests.h
 )
 
-QT4_WRAP_CPP(UTILSTEST_QT_MOC_FILES ${UtilsTest_HDRS})
+QT4_WRAP_CPP(UTILSTEST_QT_MOC_FILES ${NlTest_Utils_HDRS})
 SOURCE_GROUP("Generated Files" FILES ${UTILSTEST_QT_MOC_FILES})
 
 
-SET(NiftyLinkBasicTest_SRCS
+SET(NlTest_Basic_SRCS
 NiftyLinkTests.cpp
 )
 
-SET(NiftyLinkBasicTest_HDRS
+SET(NlTest_Basic_HDRS
 #Common/NiftyLinkUtilsTests.h
 )
 
-QT4_WRAP_CPP(BASICTEST_QT_MOC_FILES ${NiftyLinkBasicTest_HDRS})
+QT4_WRAP_CPP(BASICTEST_QT_MOC_FILES ${NlTest_Basic_HDRS})
 SOURCE_GROUP("Generated Files" FILES ${BASICTEST_QT_MOC_FILES})
 
 include_directories(${CMAKE_CURRENT_BINARY_DIR})
@@ -62,12 +62,12 @@ include_directories(${CMAKE_CURRENT_SOURCE_DIR})
 SET(TEST_LIBRARIES niftylink ${QT_QTTEST_LIBRARY} ${QT_LIBRARIES} )
 
 
-ADD_EXECUTABLE( NiftyLinkUtilsTest ${UtilsTest_SRCS} ${UtilsTest_HDRS} ${UTILSTEST_QT_MOC_FILES})
-TARGET_LINK_LIBRARIES( NiftyLinkUtilsTest ${TEST_LIBRARIES} )
-ADD_TEST(NiftyLinkUtilsTest ${EXECUTABLE_OUTPUT_PATH}/NiftyLinkUtilsTest )
+ADD_EXECUTABLE(NlTest_Utils ${NlTest_Utils_SRCS} ${NlTest_Utils_HDRS} ${UTILSTEST_QT_MOC_FILES})
+TARGET_LINK_LIBRARIES(NlTest_Utils ${TEST_LIBRARIES} )
+ADD_TEST(NlTest_Utils ${EXECUTABLE_OUTPUT_PATH}/NlTest_Utils )
 
-ADD_EXECUTABLE( NiftyLinkBasicTest ${NiftyLinkBasicTest_SRCS} ${NiftyLinkBasicTest_HDRS} ${BASICTEST_QT_MOC_FILES})
-TARGET_LINK_LIBRARIES( NiftyLinkBasicTest ${TEST_LIBRARIES} )
-ADD_TEST(NiftyLinkBasicTest ${EXECUTABLE_OUTPUT_PATH}/NiftyLinkBasicTest )
+ADD_EXECUTABLE(NlTest_Basic ${NlTest_Basic_SRCS} ${NlTest_Basic_HDRS} ${BASICTEST_QT_MOC_FILES})
+TARGET_LINK_LIBRARIES(NlTest_Basic ${TEST_LIBRARIES} )
+ADD_TEST(NlTest_Basic ${EXECUTABLE_OUTPUT_PATH}/NlTest_Basic )
 
 
