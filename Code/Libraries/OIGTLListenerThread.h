@@ -28,6 +28,7 @@ protected:
 	virtual bool initialize(igtl::Socket::Pointer socket = 0);
 	bool initialize(int port);
 
+	//void testSignals() { emit testSignal(); }
 	//virtual igtl::Socket::Pointer getSocketPointer(void) { return m_extSocket; }
 	
 protected slots:

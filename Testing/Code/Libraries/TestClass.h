@@ -23,6 +23,10 @@
 #include "igtlTransformMessage.h"
 #include "igtlMath.h"
 
+
+#include "QsLog.h"
+#include "QsLogDest.h"
+
 #include "OIGTLSocketObject.h"
 
 // Taken from: http://doc.qt.nokia.com/latest/qtestlib-manual.html
@@ -35,7 +39,19 @@ signals:
 	void done();
 
 public slots:
+	void setupTest();
 	void performTest();
-	
+	void quitTest();
+
+	void catchMessage(OIGTLMessage * msg);
+
+private:
+	igtl::Matrix4x4 m_localMatrix;
+
+	OIGTLSocketObject * m_socket1;
+	OIGTLSocketObject * m_socket2;
+
+	int m_numOfMsg;
+	int m_received;
 };
 

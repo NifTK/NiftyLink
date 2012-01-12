@@ -29,6 +29,8 @@
 #include <QDebug>
 #include <QString>
 
+#include "NiftyLinkCommonWin32ExportHeader.h"
+
 namespace QsLogging
 {
 class Destination;
@@ -42,8 +44,9 @@ enum Level
    FatalLevel
 };
 
-class LoggerImpl; // d pointer
-class Logger
+class NIFTYLINKCOMMON_WINEXPORT LoggerImpl; // d pointer
+
+class NIFTYLINKCOMMON_WINEXPORT Logger
 {
 public:
    static Logger& instance()
@@ -61,7 +64,7 @@ public:
 
    //! The helper forwards the streaming to QDebug and builds the final
    //! log message.
-   class Helper
+   class NIFTYLINKCOMMON_WINEXPORT  Helper
    {
    public:
       explicit Helper(Level logLevel) :

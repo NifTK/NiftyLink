@@ -14,13 +14,13 @@ bool OIGTLSenderThread::initialize(igtl::Socket::Pointer socket)
 {
 	if (socket.IsNull())
 	{
-		QLOG_ERROR() << "Cannot create a sender socket, invalid external socket specified" << endl;
+		QLOG_ERROR() <<objectName() <<": " << "Cannot create a sender socket, invalid external socket specified" << endl;
 		return false;
 	}
 
 	if (m_initialized == true)
 	{
-		QLOG_ERROR() << "Sender already in use!" << endl;
+		QLOG_ERROR() <<objectName() <<": " << "Sender already in use!" << endl;
 		return false;
 	}
 
@@ -38,13 +38,13 @@ bool OIGTLSenderThread::initialize(char* hostname, int port)
 {
 	if (port <= 0 || hostname == NULL)
 	{
-		QLOG_ERROR() << "Cannot create a sender socket, invalid hostname or port specified" << endl;
+		QLOG_ERROR() <<objectName() <<": " << "Cannot create a sender socket, invalid hostname or port specified" << endl;
 		return false;
     }
 
 	if (m_initialized == true)
 	{
-		QLOG_ERROR() << "Sender already in use!" << endl;
+		QLOG_ERROR() <<objectName() <<": " << "Sender already in use!" << endl;
 		return false;
 	}
 
@@ -54,7 +54,7 @@ bool OIGTLSenderThread::initialize(char* hostname, int port)
 
 	if (r != 0)
     {
-		QLOG_ERROR() << "Cannot create a sender socket, could not connect to server: " <<hostname << endl;
+		QLOG_ERROR() <<objectName() <<": " << "Cannot create a sender socket, could not connect to server: " <<hostname << endl;
 		m_port = -1;
 		return false;
     }
@@ -79,13 +79,16 @@ void OIGTLSenderThread::startThread(void)
 	m_running = true;
 	this->start();
 
-	QLOG_INFO() <<"Started listening at: " <<m_port <<"\n";
+	if (!m_sendingOnSocket)
+		QLOG_INFO() <<objectName() <<": " <<"Started sender at: " <<m_port <<"\n";
+	else
+		QLOG_INFO() <<objectName() <<": " <<"Started sender on socket" <<"\n";
 }
 
 void OIGTLSenderThread::stopThread(void)
 {
 	// Quitting thread	
-	QLOG_INFO() << "Quitting sender thread \n";
+	QLOG_INFO() <<objectName() <<": " << "Quitting sender thread \n";
 
 	m_running = false;
 	
@@ -112,25 +115,25 @@ bool OIGTLSenderThread::activate(void)
 {
 	if (m_mutex == NULL)
 	{
-		QLOG_INFO() <<"Cannot activate sender, mutex not set" <<endl;
+		QLOG_INFO() <<objectName() <<": " <<"Cannot activate sender, mutex not set" <<endl;
 		return false;
 	}
 
-	if (m_port <= 0)
+	if (!m_sendingOnSocket && m_port <= 0)
 	{
-		QLOG_INFO() <<"Cannot activate sender, port is invalid" <<endl;
+		QLOG_INFO() <<objectName() <<": " <<"Cannot activate sender, port is invalid" <<endl;
 		return false;
 	}
 		
 	if (m_extSocket.IsNull())
 	{
-		QLOG_INFO() <<"Cannot activate listener, socket is invalid" <<endl;
+		QLOG_INFO() <<objectName() <<": " <<"Cannot activate listener, socket is invalid" <<endl;
 		return false;
 	}
 
 	m_initialized = true;
 	
-	QLOG_INFO() <<"Sender successfully activated" <<endl;
+	QLOG_INFO() <<objectName() <<": " <<"Sender successfully activated" <<endl;
 
 	return true;
 }
@@ -141,12 +144,16 @@ void OIGTLSenderThread::run(void)
 	{
 		if (m_extSocket.IsNull())
 		{
-			QLOG_ERROR() <<"Cannot send message: Disconnected from remote host" <<"\n";
+			QLOG_ERROR() <<objectName() <<": " <<"Cannot send message: Disconnected from remote host" <<"\n";
 			emit disconnectedFromRemote();
 			break;
 		}
 
+		m_queueMutex.lock();
+		QLOG_INFO() <<objectName() <<": Messages in sendque: " << m_sendQue.count();
 		OIGTLMessage * msg = m_sendQue.takeFirst();
+		m_queueMutex.unlock();
+
 		if (msg != NULL)
 		{
 			igtl::MessageBase::Pointer igtMsg;
@@ -157,6 +164,8 @@ void OIGTLSenderThread::run(void)
 			m_extSocket->Send(igtMsg->GetPackPointer(), igtMsg->GetPackSize());
 			m_mutex->unlock();
 
+			QLOG_INFO() <<objectName() <<": " <<"Message Sent" <<endl;
+
 			//*******************************
 			// CHANGE THIS
 
@@ -164,16 +173,26 @@ void OIGTLSenderThread::run(void)
 			//*******************************
 		}
 
-		igtl::Sleep(100); // wait 
+		//igtl::Sleep(200); // wait 
 	}
 	
 	if (m_sendQue.isEmpty())
 		emit sendingFinished();
 
+	m_running = false;
+	exit();
+
 }
 
 void OIGTLSenderThread::sendMsg(OIGTLMessage * msg)
 {
+	QLOG_INFO() <<objectName() <<": " <<"Message received, putting it to send queue" <<endl;
+
+	m_queueMutex.lock();
 	m_sendQue.append(msg);
+	m_queueMutex.unlock();
+	
+	igtl::Sleep(50);
+
 	this->startThread();
 }

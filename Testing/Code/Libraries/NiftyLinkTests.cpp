@@ -49,24 +49,25 @@
 int main(int argc, char **argv)
 {
 	QCoreApplication app(argc,argv);
+	
+	// init the logging mechanism
+	QsLogging::Logger& logger = QsLogging::Logger::instance();
+	logger.setLoggingLevel(QsLogging::TraceLevel);
+	const QString sLogPath(QDir(app.applicationDirPath()).filePath("niftylink_log.txt"));
+	QsLogging::DestinationPtr fileDestination(QsLogging::DestinationFactory::MakeFileDestination(sLogPath) );
+	QsLogging::DestinationPtr debugDestination(QsLogging::DestinationFactory::MakeDebugOutputDestination() );
+	logger.addDestination(debugDestination.get());
+	logger.addDestination(fileDestination.get());
+
 	TestClass test;
 	QObject::connect(&test, SIGNAL(done()), &app, SLOT(quit()),Qt::QueuedConnection);
-	QTimer::singleShot(0, &test, SLOT(performTest()));
-
-	//qRegisterMetaType<OIGTLMessage *>();
-	//// init the logging mechanism
-	//QsLogging::Logger& logger = QsLogging::Logger::instance();
-	//logger.setLoggingLevel(QsLogging::TraceLevel);
-	//const QString sLogPath(QDir(app.applicationDirPath()).filePath("niftylink_log.txt"));
-	//QsLogging::DestinationPtr fileDestination(QsLogging::DestinationFactory::MakeFileDestination(sLogPath) );
-	//QsLogging::DestinationPtr debugDestination(QsLogging::DestinationFactory::MakeDebugOutputDestination() );
-	//logger.addDestination(debugDestination.get());
-	//logger.addDestination(fileDestination.get());
-
-	//QLOG_INFO() << "Program started";
+	
+	QTimer::singleShot(220, &test, SLOT(performTest()));
 
 
 
 	int ret = app.exec();
+	
+
 	return ret;
 }

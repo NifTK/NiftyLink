@@ -40,6 +40,7 @@ private:
 	//OIGTLMessage * m_messageToSend();
 
 	QList<OIGTLMessage *> m_sendQue;
+	QMutex m_queueMutex;
 };
 
 #endif

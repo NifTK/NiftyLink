@@ -14,13 +14,13 @@ bool OIGTLListenerThread::initialize(igtl::Socket::Pointer socket)
 {
 	if (socket.IsNull())
 	{
-		QLOG_ERROR() << "Cannot create a listener socket, invalid external socket specified" << endl;
+		QLOG_ERROR() <<objectName() <<": " << "Cannot create a listener socket, invalid external socket specified" << endl;
 		return false;
 	}
 
 	if (m_initialized == true)
 	{
-		QLOG_ERROR() << "Listener already in use!" << endl;
+		QLOG_ERROR() <<objectName() <<": " << "Listener already in use!" << endl;
 		return false;
 	}
 
@@ -39,13 +39,13 @@ bool OIGTLListenerThread::initialize(int port)
 
 	if (port <= 0)
 	{
-		QLOG_ERROR() << "Cannot create a listener socket, invalid socket or port specified" << endl;
+		QLOG_ERROR() <<objectName() <<": " << "Cannot create a listener socket, invalid socket or port specified" << endl;
 		return false;
 	}
 
 	if (m_initialized == true)
 	{
-		QLOG_ERROR() << "Listener already in use!" << endl;
+		QLOG_ERROR() <<objectName() <<": " << "Listener already in use!" << endl;
 		return false;
 	}
 	
@@ -54,7 +54,7 @@ bool OIGTLListenerThread::initialize(int port)
 
 	if (err < 0)
 	{
-		QLOG_ERROR() << "Error creating listener socket." << endl;
+		QLOG_ERROR() <<objectName() <<": " << "Error creating listener socket." << endl;
 		m_port = -1;
 		return false;
 	}
@@ -77,13 +77,16 @@ void OIGTLListenerThread::startThread()
 	m_running = true;
 	this->start();
 
-	QLOG_INFO() <<"Started listening at: " <<m_port <<"\n";
+	if (m_listeningOnPort)
+	QLOG_INFO() <<objectName() <<": " <<"Started listening at: " <<m_port <<"\n";
+	else
+		QLOG_INFO() <<objectName() <<": " <<"Started listening on socket" <<"\n";
 }
 
 void OIGTLListenerThread::stopThread()
 {
 	// Quitting thread	
-	QLOG_INFO() << "Quitting listener thread \n";
+	QLOG_INFO() <<objectName() <<": " << "Quitting listener thread \n";
 
 	m_running = false;
 	
@@ -111,45 +114,45 @@ bool OIGTLListenerThread::activate(void)
 {
 	if (m_mutex == NULL)
 	{
-		QLOG_INFO() <<"Cannot activate listener, mutex not set" <<endl;
+		QLOG_INFO() <<objectName() <<": " <<"Cannot activate listener, mutex not set" <<endl;
 		return false;
 	}
 
-	if (m_port <= 0)
+	if (m_listeningOnPort && m_port <= 0)
 	{
-		QLOG_INFO() <<"Cannot activate listener, port is invalid" <<endl;
+		QLOG_INFO() <<objectName() <<": " <<"Cannot activate listener, port is invalid" <<endl;
 		return false;
 	}
 		
 	if (m_listeningOnPort && m_serverSocket.IsNull())
 	{
-		QLOG_INFO() <<"Cannot activate listener, server socket is invalid" <<endl;
+		QLOG_INFO() <<objectName() <<": " <<"Cannot activate listener, server socket is invalid" <<endl;
 		return false;
 	}
 
 	if (!m_listeningOnPort && m_extSocket.IsNull())
 	{
-		QLOG_INFO() <<"Cannot activate listener, external socket is invalid" <<endl;
+		QLOG_INFO() <<objectName() <<": " <<"Cannot activate listener, external socket is invalid" <<endl;
 		return false;
 	}
 
 	m_initialized = true;
 	
-	QLOG_INFO() <<"Listener successfully activated" <<endl;
+	QLOG_INFO() <<objectName() <<": " <<"Listener successfully activated" <<endl;
 
 	return true;
 }
 
 void OIGTLListenerThread::run()
 {
-	QLOG_INFO() <<"Listener Thread started" <<endl;
+	QLOG_INFO() <<objectName() <<": " <<"Listener Thread started" <<endl;
 
 	if (!m_listeningOnPort && m_initialized)
 		listenOnSocket();
 	else if (m_listeningOnPort && m_initialized)
 		listenOnPort();
 
-	this->exec(); 
+	//this->exec(); 
 
 }
 void OIGTLListenerThread::listenOnSocket(void)
@@ -158,12 +161,14 @@ void OIGTLListenerThread::listenOnSocket(void)
 	{
 		if (m_extSocket.IsNull())
 		{
-			QLOG_ERROR() <<"Socket terminated, disconnecting" <<"\n";
+			QLOG_ERROR() <<objectName() <<": " <<"Socket terminated, disconnecting" <<"\n";
 			emit clientDisconnected();
 			break;
 		}
 
 		receiveMessage();
+
+		igtl::Sleep(200);
 	}
 }
 
@@ -183,7 +188,7 @@ void OIGTLListenerThread::listenOnPort(void)
 
 			if (socket.IsNull())
 			{
-				QLOG_INFO() << "No client connecting\n";
+				QLOG_INFO() <<objectName() <<": " << "No client connecting\n";
 				continue;
 			}
 			else
@@ -197,12 +202,14 @@ void OIGTLListenerThread::listenOnPort(void)
 			{
 				if (socket.IsNull())
 				{
-					QLOG_ERROR() <<"Socket terminated, disconnecting" <<"\n";
+					QLOG_ERROR() <<objectName() <<": " <<"Socket terminated, disconnecting" <<"\n";
 					emit clientDisconnected();
 					break;
 				}
 
 				receiveMessage();
+
+				igtl::Sleep(200);
 			}
 		}
 	}
@@ -301,7 +308,7 @@ void OIGTLListenerThread::receiveMessage()
 	else
 	{
 		// if the data type is unknown, skip reading.
-		QLOG_INFO() << "Unknown message recieved: " << msgHeader->GetDeviceType() << endl;
+		QLOG_INFO() <<objectName() <<": " << "Unknown message recieved: " << msgHeader->GetDeviceType() << endl;
 
 		m_mutex->lock();
 		m_extSocket->Skip(msgHeader->GetBodySizeToRead(), 0);
@@ -329,6 +336,8 @@ void OIGTLListenerThread::receiveMessage()
 	msg->setMessagePointer(message);
 	msg->setPort(m_port);
 
+	QLOG_INFO() <<objectName() <<": " << "Message successfully recieved"; 
+
 	emit messageReceived(msg);
-	emit testSignal();
+	//emit testSignal();
 }

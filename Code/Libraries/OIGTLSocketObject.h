@@ -32,6 +32,9 @@ public:
 	inline bool isClientConnecting() { return m_clientConnected; }
 	inline bool isAbleToSend() { return m_ableToSend; }
 
+	void testSignals() {
+		emit testSignal(); }
+
 public slots:
 	void sendMessage(OIGTLMessage * msg);
 	void catchMsgSignal(OIGTLMessage * msg);

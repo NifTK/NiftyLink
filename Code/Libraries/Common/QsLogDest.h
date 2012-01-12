@@ -27,22 +27,25 @@
 #define QSLOGDEST_H
 
 #include <memory>
+#include "NiftyLinkCommonWin32ExportHeader.h"
+
 class QString;
 
 namespace QsLogging
 {
 
-class Destination
+class NIFTYLINKCOMMON_WINEXPORT Destination
 {
 public:
    virtual ~Destination(){}
    virtual void write(const QString& message) = 0;
 };
+
 typedef std::auto_ptr<Destination> DestinationPtr;
 
 //! Creates logging destinations/sinks. The caller will have ownership of 
 //! the newly created destinations.
-class DestinationFactory
+class NIFTYLINKCOMMON_WINEXPORT DestinationFactory
 {
 public:
    static DestinationPtr MakeFileDestination(const QString& filePath);
