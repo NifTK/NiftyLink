@@ -32,8 +32,6 @@ public:
 	inline bool isClientConnecting() { return m_clientConnected; }
 	inline bool isAbleToSend() { return m_ableToSend; }
 
-	inline int getTestSignalCalls() {return m_spy->count(); }
-
 public slots:
 	void sendMessage(OIGTLMessage * msg);
 	void catchMsgSignal(OIGTLMessage * msg);
@@ -66,8 +64,6 @@ private:
 	
 	bool m_clientConnected;
 	bool m_ableToSend;
-
-	QSignalSpy * m_spy;
 
 };
 

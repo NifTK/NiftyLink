@@ -63,6 +63,11 @@ public slots:
 		m_messageValid = true; 
 	}
 
+	void catchMessage() 
+	{ 
+		m_messageValid = true; 
+	}
+
 private:
 	OIGTLMessage * m_msg;
 	bool m_messageValid;

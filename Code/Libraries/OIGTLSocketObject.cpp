@@ -3,8 +3,6 @@
 OIGTLSocketObject::OIGTLSocketObject(QObject *parent)
 : QObject(parent)
 {
-	//qRegisterMetaType<OIGTLMessage *>();
-
 	m_port = -1;
 	m_listening = false;
 	m_connectedToRemote = false;
@@ -63,31 +61,19 @@ void OIGTLSocketObject::initThreads()
 
 	bool ok;
 
-	ok =  connect(m_sender, SIGNAL(connectedToRemote()), this, SLOT(connectedToRemote()) );
-	ok &= connect(m_sender, SIGNAL(disconnectedFromRemote()), this, SLOT(disconnectedFromRemote()) );
-	ok &= connect(m_sender, SIGNAL(sendingFinished()), this, SIGNAL(sendingFinished()) );
+	ok =  connect(m_sender, SIGNAL(connectedToRemote()), this, SLOT(connectedToRemote()), Qt::QueuedConnection);
+	ok &= connect(m_sender, SIGNAL(disconnectedFromRemote()), this, SLOT(disconnectedFromRemote()), Qt::QueuedConnection);
+	ok &= connect(m_sender, SIGNAL(sendingFinished()), this, SIGNAL(sendingFinished()), Qt::QueuedConnection);
 
-	ok &= connect(m_listener, SIGNAL(clientConnected()), this, SLOT(clientConnected()) );
-	ok &= connect(m_listener, SIGNAL(clientDisconnected()), this, SLOT(clientDisconnected()) );
-	//connect(m_listener, SIGNAL(messageReceived(OIGTLMessage *)), this, SIGNAL(messageReceived(OIGTLMessage *)) );
+	ok &= connect(m_listener, SIGNAL(clientConnected()), this, SLOT(clientConnected()), Qt::QueuedConnection);
+	ok &= connect(m_listener, SIGNAL(clientDisconnected()), this, SLOT(clientDisconnected()), Qt::QueuedConnection);
+	ok &= connect(m_listener, SIGNAL(messageReceived(OIGTLMessage *)), this, SIGNAL(messageReceived(OIGTLMessage *)), Qt::QueuedConnection);
 
-	// TEST STUFF
-	
-	ok &= connect(m_listener, SIGNAL(messageReceived(OIGTLMessage *)), this, SLOT(catchMsgSignal(OIGTLMessage *)), Qt::BlockingQueuedConnection);
-
-	ok &= connect(m_listener, SIGNAL(testSignal()), this, SLOT(catchTestSignal( )), Qt::BlockingQueuedConnection);
-	
-	
-	ok &= connect(this, SIGNAL(testSignal()), this, SLOT(catchTestSignal( )));
-
-	m_spy = new QSignalSpy(m_listener, SIGNAL(messageReceived(OIGTLMessage *)));
-
-	ok &= m_spy->isValid();
+	ok &= connect(m_listener, SIGNAL(messageReceived(OIGTLMessage *)), this, SLOT(catchMsgSignal(OIGTLMessage * )), Qt::QueuedConnection);
+	ok &= m_listener->connect(m_listener, SIGNAL(testSignal( )), this, SLOT(catchTestSignal()), Qt::QueuedConnection);
 
 	if (m_mutex != NULL && m_sender != NULL && m_listener != NULL && ok)
 		m_initialized = true;
-
-	//m_spy = new QSignalSpy(m_listener, SIGNAL(testSignal( )));
 }
 
 bool OIGTLSocketObject::listenOnPort(int port)
@@ -105,8 +91,6 @@ bool OIGTLSocketObject::listenOnPort(int port)
 			m_listening = true;
 			m_listener->startThread();
 
-			//emit testSignal();
-			
 			return true;
 		}
 		else return false;
@@ -231,5 +215,6 @@ void OIGTLSocketObject::catchMsgSignal(OIGTLMessage * msg)
 
 void OIGTLSocketObject::catchTestSignal()
 {
+	emit testSignal();
 	qDebug() <<"OIGTLSocketObject::catchTestSignal : Test signal received...." <<endl;
 }

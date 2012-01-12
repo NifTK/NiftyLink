@@ -47,13 +47,14 @@ SOURCE_GROUP("Generated Files" FILES ${UTILSTEST_QT_MOC_FILES})
 
 SET(TestNL_Basic_SRCS
 NiftyLinkTests.cpp
+TestClass.cpp
 )
 
 SET(TestNL_Basic_HDRS
-#Common/NiftyLinkUtilsTests.h
+TestClass.h
 )
 
-QT4_WRAP_CPP(BASICTEST_QT_MOC_FILES ${TestNL_Basic_HDRS})
+QT4_WRAP_CPP(BASICTEST_QT_MOC_FILES ${TestNL_Basic_SRCS} ${TestNL_Basic_HDRS})
 SOURCE_GROUP("Generated Files" FILES ${BASICTEST_QT_MOC_FILES})
 
 include_directories(${CMAKE_CURRENT_BINARY_DIR})

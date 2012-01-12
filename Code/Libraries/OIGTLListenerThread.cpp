@@ -1,4 +1,4 @@
-#include "OIGTLListenerThread.h"
+#include "OIGTLSocketObject.h"
 
 OIGTLListenerThread::OIGTLListenerThread(QObject *parent)
 : OIGTLThreadBase(parent)
@@ -109,8 +109,6 @@ void OIGTLListenerThread::stopThread()
 
 bool OIGTLListenerThread::activate(void)
 {
-	//emit testSignal();
-
 	if (m_mutex == NULL)
 	{
 		QLOG_INFO() <<"Cannot activate listener, mutex not set" <<endl;
@@ -150,6 +148,8 @@ void OIGTLListenerThread::run()
 		listenOnSocket();
 	else if (m_listeningOnPort && m_initialized)
 		listenOnPort();
+
+	this->exec(); 
 
 }
 void OIGTLListenerThread::listenOnSocket(void)
@@ -328,10 +328,6 @@ void OIGTLListenerThread::receiveMessage()
 	msg->setTimeRecieved(ts);
 	msg->setMessagePointer(message);
 	msg->setPort(m_port);
-
-	QEvent::
-
-	QCoreApplication::postEvent(this->parent(), anEvent);
 
 	emit messageReceived(msg);
 	emit testSignal();
