@@ -60,6 +60,8 @@ int main(int argc, char **argv)
 	logger.addDestination(fileDestination.get());
 
 	TestClass test;
+	test.setupTest();
+
 	QObject::connect(&test, SIGNAL(done()), &app, SLOT(quit()),Qt::QueuedConnection);
 	
 	QTimer::singleShot(220, &test, SLOT(performTest()));

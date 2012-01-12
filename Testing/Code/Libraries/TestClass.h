@@ -53,5 +53,6 @@ private:
 
 	int m_numOfMsg;
 	int m_received;
+	int m_successCounter;
 };
 

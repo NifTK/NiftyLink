@@ -25,27 +25,6 @@
 
 void TestClass::setupTest()
 {
-	OIGTLSocketObject * socket1 = new OIGTLSocketObject();
-	OIGTLSocketObject * socket2 = new OIGTLSocketObject();
-	MessageCatcher * catcher = new MessageCatcher();
-
-	connect(socket1, SIGNAL(testSignal()), catcher, SLOT(catchMessage( )), Qt::DirectConnection);
-
-	//connect(socket1, SIGNAL(messageReceived(OIGTLMessage * )), catcher, SLOT(catchMessage(OIGTLMessage * )) );
-	//QSignalSpy * spy = new QSignalSpy(socket1, SIGNAL(messageReceived(OIGTLMessage * )));
-	//QSignalSpy * spy = new QSignalSpy(socket1, SIGNAL(testSignal()));
-	
-	QUrl url;
-	url.setHost(QString("localhost"));
-	url.setPort(3200);
-
-	//Start sender / listener
-	socket1->listenOnPort(3200);
-	socket2->connectToRemote(url);
-}
-
-void TestClass::performTest()
-{
 	m_socket1 = new OIGTLSocketObject();
 	m_socket1->setObjectName("Socket1");
 	m_socket2 = new OIGTLSocketObject();
@@ -61,6 +40,13 @@ void TestClass::performTest()
 	m_socket1->listenOnPort(3200);
 	m_socket2->connectToRemote(url);
 
+	m_successCounter = 0;
+	m_numOfMsg = 10;
+	m_received = 0;
+}
+
+void TestClass::performTest()
+{
 	//Create a message and send it
 	OIGTLMessage * msgToSend = new OIGTLMessage();
 	msgToSend->setHostName(QString("MURBELLA_O"));
@@ -80,10 +66,8 @@ void TestClass::performTest()
 
 	msgToSend->setMessagePointer((igtl::MessageBase::Pointer) transMsg);
 
-	m_numOfMsg = 10;
-	m_received = 0;
-	
-	for (int i = 0; i< m_numOfMsg; i++)
+	//for (int i = 0; i< m_numOfMsg; i++)
+	for (int i = 0; i< 10; i++)
 	{
 		m_socket2->sendMessage(msgToSend);
 	}

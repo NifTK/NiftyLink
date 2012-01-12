@@ -25,6 +25,7 @@ bool OIGTLListenerThread::initialize(igtl::Socket::Pointer socket)
 	}
 
 	m_extSocket.operator =(socket);
+	m_extSocket->SetTimeout(20);
 	m_listeningOnPort = false;
 
 	if (!activate())
@@ -167,8 +168,7 @@ void OIGTLListenerThread::listenOnSocket(void)
 		}
 
 		receiveMessage();
-
-		igtl::Sleep(200);
+		//igtl::Sleep(200);
 	}
 }
 
@@ -194,7 +194,8 @@ void OIGTLListenerThread::listenOnPort(void)
 			else
 			{
 				//m_currentClientSocket.operator =(socket);	
-				m_extSocket.operator =(socket);	
+				m_extSocket.operator =(socket);
+				m_extSocket->SetTimeout(20);
 				emit clientConnected();
 			}
 
@@ -208,8 +209,6 @@ void OIGTLListenerThread::listenOnPort(void)
 				}
 
 				receiveMessage();
-
-				igtl::Sleep(200);
 			}
 		}
 	}
@@ -227,7 +226,7 @@ void OIGTLListenerThread::receiveMessage()
 	msgHeader->InitPack();
 
 	// Receive generic header from the socket
-	m_mutex->lock();
+	m_mutex->tryLock();
 	int r = m_extSocket->Receive(msgHeader->GetPackPointer(), msgHeader->GetPackSize());
 	m_mutex->unlock();
 

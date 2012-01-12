@@ -160,11 +160,14 @@ void OIGTLSenderThread::run(void)
 			igtMsg.operator =(msg->getMessagePointer());
 
 			if (igtMsg.IsNotNull())
-			m_mutex->lock();
-			m_extSocket->Send(igtMsg->GetPackPointer(), igtMsg->GetPackSize());
-			m_mutex->unlock();
+			{
+				//m_mutex->tryLock();
+				m_mutex->lock();
+				m_extSocket->Send(igtMsg->GetPackPointer(), igtMsg->GetPackSize());
+				m_mutex->unlock();
 
-			QLOG_INFO() <<objectName() <<": " <<"Message Sent" <<endl;
+				QLOG_INFO() <<objectName() <<": " <<"Message Sent" <<endl;
+			}
 
 			//*******************************
 			// CHANGE THIS
