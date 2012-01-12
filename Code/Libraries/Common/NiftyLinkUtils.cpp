@@ -43,7 +43,7 @@ bool validateIp(const QString &inputIP)
 	return true;
 }
 
-QString resolveHostName(QString &input)
+QString resolveHostName(const QString &input)
 {
 	QHostInfo info = QHostInfo::fromName(input);
 	return info.addresses().first().toString();

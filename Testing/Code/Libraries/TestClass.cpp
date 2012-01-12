@@ -108,21 +108,23 @@ void TestClass::catchMessage(OIGTLMessage * msg)
 		QLOG_INFO() <<m_received <<". message received: " <<msg->getHostName() <<":" <<msg->getPort() <<" " <<msg->getMessageType();
 
 		igtl::MessageBase::Pointer message = msg->getMessagePointer();
-
 		QLOG_INFO() <<message->GetNameOfClass();
-
-		igtl::TransformMessage::Pointer poi = static_cast<igtl::TransformMessage *>(message.GetPointer());
-		poi->Unpack();
-
-		igtl::Matrix4x4 receivedMatrix;
-
-		poi->GetMatrix(receivedMatrix);
 		
-		int r = memcmp((const void*)&receivedMatrix, (const void*)m_localMatrix, sizeof(igtl::Matrix4x4));
-		igtl::PrintMatrix(receivedMatrix);
+		if (strcmp(message->GetNameOfClass(), "igtl::TransformMessage") == 0)
+		{
+			igtl::TransformMessage::Pointer poi = static_cast<igtl::TransformMessage *>(message.GetPointer());
+			poi->Unpack();
 
-		if (r != 0)
-			QLOG_ERROR() <<"Shit happens";
+			igtl::Matrix4x4 receivedMatrix;
+
+			poi->GetMatrix(receivedMatrix);
+			
+			int r = memcmp((const void*)&receivedMatrix, (const void*)m_localMatrix, sizeof(igtl::Matrix4x4));
+			igtl::PrintMatrix(receivedMatrix);
+
+			if (r != 0)
+				QLOG_ERROR() <<"Shit happens";
+		}
 	}
 
 
