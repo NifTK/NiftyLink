@@ -19,17 +19,6 @@
 #
 #=================================================================================*/
 
-ADD_SUBDIRECTORY(Common)
-
-# --------------------------------------------------------------------------
-# Project Setup
-
-PROJECT(NiftyLinkTests)
-
-# Find QT4
-FIND_PACKAGE(Qt4 REQUIRED)
-INCLUDE(${QT_USE_FILE})
-
 # --------------------------------------------------------------------------
 # Sources
 
@@ -54,11 +43,8 @@ SET(TestNL_Basic_HDRS
 TestClass.h
 )
 
-QT4_WRAP_CPP(BASICTEST_QT_MOC_FILES ${TestNL_Basic_SRCS} ${TestNL_Basic_HDRS})
+QT4_WRAP_CPP(BASICTEST_QT_MOC_FILES ${TestNL_Basic_HDRS})
 SOURCE_GROUP("Generated Files" FILES ${BASICTEST_QT_MOC_FILES})
-
-include_directories(${CMAKE_CURRENT_BINARY_DIR})
-include_directories(${CMAKE_CURRENT_SOURCE_DIR})
 
 SET(TEST_LIBRARIES niftylink ${QT_QTTEST_LIBRARY} ${QT_LIBRARIES} )
 
