@@ -43,7 +43,7 @@ public slots:
 	void performTest();
 	void quitTest();
 
-	void catchMessage(OIGTLMessage * msg);
+	void catchMessage(OIGTLMessage::Pointer);
 
 private:
 	igtl::Matrix4x4 m_localMatrix;

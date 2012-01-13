@@ -66,10 +66,6 @@ int main(int argc, char **argv)
 	
 	QTimer::singleShot(220, &test, SLOT(performTest()));
 
-
-
 	int ret = app.exec();
-	
-
 	return ret;
 }

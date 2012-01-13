@@ -226,7 +226,7 @@ void OIGTLListenerThread::receiveMessage()
 	msgHeader->InitPack();
 
 	// Receive generic header from the socket
-	m_mutex->tryLock();
+	m_mutex->lock();
 	int r = m_extSocket->Receive(msgHeader->GetPackPointer(), msgHeader->GetPackSize());
 	m_mutex->unlock();
 
@@ -325,7 +325,7 @@ void OIGTLListenerThread::receiveMessage()
 	m_mutex->unlock();
 
 	
-	OIGTLMessage * msg = new OIGTLMessage();
+	OIGTLMessage::Pointer msg(new OIGTLMessage());
 	msg->setMessageType(QString(message->GetDeviceType()));
 	msg->setHostName(QString(message->GetDeviceName()));
 	

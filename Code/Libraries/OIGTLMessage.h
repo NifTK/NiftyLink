@@ -3,9 +3,8 @@
 
 #include <QtCore>
 #include <QObject>
-#include <QDebug>
-#include <QMutex>
-#include <QMutexLocker>
+#include <QSharedData>
+#include <QExplicitlySharedDataPointer>
 
 #include "igtlBindMessage.h"
 //#include "igtlColorTableMessage.h"
@@ -27,13 +26,19 @@
 
 #include "NiftyLinkCommonWin32ExportHeader.h"
 
-class NIFTYLINKCOMMON_WINEXPORT OIGTLMessage : public QObject
+class NIFTYLINKCOMMON_WINEXPORT OIGTLMessage : public QSharedData
 {
-	Q_OBJECT
+//	Q_OBJECT
 
 public:
-	OIGTLMessage(QObject *parent = 0);
+	OIGTLMessage(void);
 	~OIGTLMessage(void);
+
+	typedef OIGTLMessage				              Self;
+	typedef QExplicitlySharedDataPointer<Self>        Pointer;
+	typedef QExplicitlySharedDataPointer<const Self>  ConstPointer;
+
+	OIGTLMessage(const OIGTLMessage &other); 
 
 	void setMessagePointer(igtl::MessageBase::Pointer mp);
 	igtl::MessageBase::Pointer getMessagePointer(void);
@@ -49,26 +54,25 @@ public:
 
 	void setTimeRecieved(igtl::TimeStamp::Pointer ts);
 	igtl::TimeStamp::Pointer getTimeRecieved(void);
-	igtl::TimeStamp::Pointer getTimeStamp(void);
+	igtl::TimeStamp::Pointer getTimeCreated(void);
+	igtl::TimeStamp::Pointer getIGTTimeStamp(void);
 
-public slots:
-
-signals:
+	igtlUint64 getId(void);
 
 protected:
 
 private:
 	igtl::MessageBase::Pointer  m_message;
 	igtl::TimeStamp::Pointer	m_timeRecieved;
+	igtl::TimeStamp::Pointer	m_timeCreated;
 
-	QString						m_sender;
-	QTime						m_receiveStamp;
 	QString						m_senderHostName;
-	int							m_senderPort;
 	QString						m_messageType;
+	int							m_senderPort;
 
+	igtlUint64					m_id;
 };
 
-Q_DECLARE_METATYPE(OIGTLMessage * );
+Q_DECLARE_METATYPE(OIGTLMessage::Pointer);
 
 #endif

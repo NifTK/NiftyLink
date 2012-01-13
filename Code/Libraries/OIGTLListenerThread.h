@@ -15,7 +15,7 @@ friend class OIGTLSocketObject;
 signals:
 	void clientConnected(void);
 	void clientDisconnected(void);
-	void messageReceived(OIGTLMessage * msg);
+	void messageReceived(OIGTLMessage::Pointer msg);
 
 	void testSignal(void);
 

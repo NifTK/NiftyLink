@@ -22,9 +22,6 @@ class OIGTLConnectorBase : public QObject
 {
 	Q_OBJECT
 
-//friend class OIGTLListener;
-//friend class OIGTLSender;
-
 public:
 	OIGTLConnectorBase(QObject *parent = 0) {}
 	~OIGTLConnectorBase(void) {}

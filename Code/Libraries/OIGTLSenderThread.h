@@ -26,7 +26,7 @@ protected:
 	//virtual igtl::Socket::Pointer getSocketPointer(void) { return m_extSocket; }
 
 protected slots:
-	virtual void sendMsg(OIGTLMessage * msg);
+	virtual void sendMsg(OIGTLMessage::Pointer);
 
 	virtual void startThread(void);
 	virtual void stopThread(void);
@@ -37,9 +37,8 @@ private:
 private:
 	//igtl::ClientSocket::Pointer m_clientSocket;
 	bool m_sendingOnSocket;
-	//OIGTLMessage * m_messageToSend();
 
-	QList<OIGTLMessage *> m_sendQue;
+	QList<OIGTLMessage::Pointer> m_sendQue;
 	QMutex m_queueMutex;
 };
 

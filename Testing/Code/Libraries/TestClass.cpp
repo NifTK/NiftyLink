@@ -22,6 +22,8 @@
 #include "stdlib.h"
 #include <QDebug>
 #include "TestClass.h"
+//#include <iostream>
+//#include <math.h>
 
 void TestClass::setupTest()
 {
@@ -30,7 +32,8 @@ void TestClass::setupTest()
 	m_socket2 = new OIGTLSocketObject();
 	m_socket2->setObjectName("Socket2");
 
-	connect(m_socket1, SIGNAL(messageReceived(OIGTLMessage * )), this, SLOT(catchMessage(OIGTLMessage * )) );
+	connect(m_socket1, SIGNAL(messageReceived(OIGTLMessage::Pointer)), this, SLOT(catchMessage(OIGTLMessage::Pointer )) );
+	connect(m_socket2, SIGNAL(messageReceived(OIGTLMessage::Pointer)), this, SLOT(catchMessage(OIGTLMessage::Pointer )) );
 	
 	QUrl url;
 	url.setHost(QString("localhost"));
@@ -48,7 +51,8 @@ void TestClass::setupTest()
 void TestClass::performTest()
 {
 	//Create a message and send it
-	OIGTLMessage * msgToSend = new OIGTLMessage();
+	//OIGTLMessage * msgToSend = new OIGTLMessage();
+	OIGTLMessage::Pointer msgToSend (new OIGTLMessage());
 	msgToSend->setHostName(QString("MURBELLA_O"));
 	msgToSend->setMessageType(QString("TRANSFORM"));
 
@@ -59,17 +63,23 @@ void TestClass::performTest()
 	
 	GetRandomTestMatrix(m_localMatrix);
 
+	std::cout <<"Original matrix: " <<std::endl <<std::endl;
 	igtl::PrintMatrix(m_localMatrix);
+	std::cout <<std::endl;
 
 	transMsg->SetMatrix(m_localMatrix);
 	transMsg->Pack();
 
 	msgToSend->setMessagePointer((igtl::MessageBase::Pointer) transMsg);
 
-	//for (int i = 0; i< m_numOfMsg; i++)
-	for (int i = 0; i< 10; i++)
+	for (int i = 0; i< m_numOfMsg; i++)
 	{
 		m_socket2->sendMessage(msgToSend);
+	}
+
+	for (int i = 0; i< m_numOfMsg; i++)
+	{
+		m_socket1->sendMessage(msgToSend);
 	}
 }
 
@@ -83,13 +93,15 @@ void TestClass::quitTest()
 	emit done();
 }
 
-void TestClass::catchMessage(OIGTLMessage * msg)
+void TestClass::catchMessage(OIGTLMessage::Pointer msg)
 {
 	m_received++;
+
+	QString sender = QObject::sender()->objectName();
 	
-	if (msg != NULL)
+	if (msg.operator!=(NULL))
 	{
-		QLOG_INFO() <<m_received <<". message received: " <<msg->getHostName() <<":" <<msg->getPort() <<" " <<msg->getMessageType();
+		QLOG_INFO() <<m_received <<"of" <<m_numOfMsg <<"message received: " <<msg->getHostName() <<":" <<msg->getPort() <<" " <<msg->getMessageType();
 
 		igtl::MessageBase::Pointer message = msg->getMessagePointer();
 		QLOG_INFO() <<message->GetNameOfClass();
@@ -102,9 +114,17 @@ void TestClass::catchMessage(OIGTLMessage * msg)
 			igtl::Matrix4x4 receivedMatrix;
 
 			poi->GetMatrix(receivedMatrix);
-			
+
 			int r = memcmp((const void*)&receivedMatrix, (const void*)m_localMatrix, sizeof(igtl::Matrix4x4));
+			
+			if (r == 0)
+				std::cout <<sender.toStdString().c_str() <<" received matrix " <<m_received <<" of " <<m_numOfMsg*2 <<": OK" <<std::endl;
+			else
+				std::cout <<sender.toStdString().c_str() <<" received matrix " <<m_received <<" of " <<m_numOfMsg*2 <<": NOT-OK" <<std::endl;
+
 			igtl::PrintMatrix(receivedMatrix);
+
+			std::cout <<std::endl;
 
 			if (r != 0)
 				QLOG_ERROR() <<"Shit happens";
@@ -113,7 +133,7 @@ void TestClass::catchMessage(OIGTLMessage * msg)
 
 
 	
-	if (m_received >= m_numOfMsg)
+	if (m_received >= 2*m_numOfMsg)
 		quitTest();
 
 }

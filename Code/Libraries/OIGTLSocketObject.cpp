@@ -37,7 +37,7 @@ OIGTLSocketObject::~OIGTLSocketObject(void)
 	{
 		disconnect(m_listener, SIGNAL(clientConnected()), this, SLOT(clientConnected()) );
 		disconnect(m_listener, SIGNAL(clientDisconnected()), this, SLOT(clientDisconnected()) );
-		disconnect(m_listener, SIGNAL(messageReceived(OIGTLMessage *)), this, SIGNAL(messageReceived(OIGTLMessage *)) );
+		disconnect(m_listener, SIGNAL(messageReceived(OIGTLMessage::Pointer)), this, SIGNAL(messageReceived(OIGTLMessage::Pointer)) );
 
 		delete m_listener;
 		m_listener = NULL;
@@ -52,7 +52,7 @@ OIGTLSocketObject::~OIGTLSocketObject(void)
 
 void OIGTLSocketObject::initThreads()
 {
-	qRegisterMetaType<OIGTLMessage *>();
+	qRegisterMetaType<OIGTLMessage::Pointer>();
 
 	m_mutex = new QMutex();
 	m_sender = new OIGTLSenderThread(this);
@@ -69,9 +69,9 @@ void OIGTLSocketObject::initThreads()
 
 	ok &= connect(m_listener, SIGNAL(clientConnected()), this, SLOT(clientConnected()), Qt::QueuedConnection);
 	ok &= connect(m_listener, SIGNAL(clientDisconnected()), this, SLOT(clientDisconnected()), Qt::QueuedConnection);
-	ok &= connect(m_listener, SIGNAL(messageReceived(OIGTLMessage *)), this, SIGNAL(messageReceived(OIGTLMessage *)), Qt::QueuedConnection);
+	ok &= connect(m_listener, SIGNAL(messageReceived(OIGTLMessage::Pointer)), this, SIGNAL(messageReceived(OIGTLMessage::Pointer)), Qt::QueuedConnection);
 
-	//ok &= connect(m_listener, SIGNAL(messageReceived(OIGTLMessage *)), this, SLOT(catchMsgSignal(OIGTLMessage * )), Qt::QueuedConnection);
+	//ok &= connect(m_listener, SIGNAL(messageReceived(OIGTLMessage::Pointer)), this, SLOT(catchMsgSignal(OIGTLMessage::Pointer )), Qt::QueuedConnection);
 	//ok &= connect(m_listener, SIGNAL(testSignal( )), this, SLOT(catchTestSignal()), Qt::QueuedConnection);
 
 	if (m_mutex != NULL && m_sender != NULL && m_listener != NULL && ok)
@@ -172,7 +172,7 @@ void OIGTLSocketObject::closeSocket(void)
 	QLOG_INFO() <<objectName() <<": " <<"Closing socket, threads terminated.";
 }
 
-void OIGTLSocketObject::sendMessage(OIGTLMessage * msg)
+void OIGTLSocketObject::sendMessage(OIGTLMessage::Pointer msg)
 {
 	if (m_sender != NULL && m_sender->isInitialized())
 		m_sender->sendMsg(msg);
@@ -231,11 +231,11 @@ void OIGTLSocketObject::clientDisconnected(void)
 	}
 }
 
-void OIGTLSocketObject::catchMsgSignal(OIGTLMessage * msg)
+void OIGTLSocketObject::catchMsgSignal(OIGTLMessage::Pointer msg)
 {
 	QLOG_INFO() <<objectName() <<": " <<"Message signal received";
 	//qDebug() <<"OIGTLSocketObject::catchMsgSignal : Message signal received...." <<endl;
-	if (msg!=NULL)
+	if (msg.operator !=(NULL))
 	{
 		emit messageReceived(msg);
 	}

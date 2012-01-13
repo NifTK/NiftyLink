@@ -25,6 +25,7 @@ bool OIGTLSenderThread::initialize(igtl::Socket::Pointer socket)
 	}
 
 	m_extSocket.operator =(socket);
+	m_extSocket->SetTimeout(20);
 	m_sendingOnSocket = true;
 
 	if (!activate())
@@ -62,6 +63,7 @@ bool OIGTLSenderThread::initialize(char* hostname, int port)
 	m_port = port;
 	
 	m_extSocket.operator =((igtl::Socket::Pointer) cs);
+	m_extSocket->SetTimeout(20);
 	m_sendingOnSocket = false;
 
 	if (!activate())
@@ -151,10 +153,10 @@ void OIGTLSenderThread::run(void)
 
 		m_queueMutex.lock();
 		QLOG_INFO() <<objectName() <<": Messages in sendque: " << m_sendQue.count();
-		OIGTLMessage * msg = m_sendQue.takeFirst();
+		OIGTLMessage::Pointer msg = m_sendQue.takeFirst();
 		m_queueMutex.unlock();
 
-		if (msg != NULL)
+		if (msg.operator!=(NULL))
 		{
 			igtl::MessageBase::Pointer igtMsg;
 			igtMsg.operator =(msg->getMessagePointer());
@@ -187,7 +189,7 @@ void OIGTLSenderThread::run(void)
 
 }
 
-void OIGTLSenderThread::sendMsg(OIGTLMessage * msg)
+void OIGTLSenderThread::sendMsg(OIGTLMessage::Pointer msg)
 {
 	QLOG_INFO() <<objectName() <<": " <<"Message received, putting it to send queue" <<endl;
 
