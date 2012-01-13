@@ -52,9 +52,9 @@ void TestClass::performTest()
 {
 	//Create a message and send it
 	//OIGTLMessage * msgToSend = new OIGTLMessage();
-	OIGTLMessage::Pointer msgToSend (new OIGTLMessage());
-	msgToSend->setHostName(QString("MURBELLA_O"));
-	msgToSend->setMessageType(QString("TRANSFORM"));
+	m_msgToSend.operator =(OIGTLMessage::Pointer(new OIGTLMessage()));
+	m_msgToSend->setHostName(QString("MURBELLA_O"));
+	m_msgToSend->setMessageType(QString("TRANSFORM"));
 
 	igtl::TransformMessage::Pointer transMsg;
 	transMsg = igtl::TransformMessage::New();
@@ -70,17 +70,22 @@ void TestClass::performTest()
 	transMsg->SetMatrix(m_localMatrix);
 	transMsg->Pack();
 
-	msgToSend->setMessagePointer((igtl::MessageBase::Pointer) transMsg);
+	m_msgToSend->setMessagePointer((igtl::MessageBase::Pointer) transMsg);
 
 	for (int i = 0; i< m_numOfMsg; i++)
 	{
-		m_socket2->sendMessage(msgToSend);
+		m_socket2->sendMessage(m_msgToSend);
 	}
 
-	for (int i = 0; i< m_numOfMsg; i++)
-	{
-		m_socket1->sendMessage(msgToSend);
-	}
+	OIGTLMessage::Pointer reqMsg(new OIGTLMessage());
+	igtl::GetTransformMessage::Pointer getTrMsg;
+	getTrMsg = igtl::GetTransformMessage::New();
+	getTrMsg->SetDeviceName("MURBELLA_O");
+	getTrMsg->Pack();
+
+	reqMsg->setMessagePointer((igtl::MessageBase::Pointer) getTrMsg);
+
+	m_socket2->sendMessage(reqMsg);
 }
 
 void TestClass::quitTest()
@@ -95,8 +100,6 @@ void TestClass::quitTest()
 
 void TestClass::catchMessage(OIGTLMessage::Pointer msg)
 {
-	m_received++;
-
 	QString sender = QObject::sender()->objectName();
 	
 	if (msg.operator!=(NULL))
@@ -128,6 +131,13 @@ void TestClass::catchMessage(OIGTLMessage::Pointer msg)
 
 			if (r != 0)
 				QLOG_ERROR() <<"Shit happens";
+
+			m_received++;
+		}
+		else if (strcmp(message->GetNameOfClass(), "igtl::GetTransformMessage") == 0)
+		{
+			std::cout <<sender.toStdString().c_str() <<" received message request, sending response" <<std::endl;
+			sendResponse();
 		}
 	}
 
@@ -136,4 +146,12 @@ void TestClass::catchMessage(OIGTLMessage::Pointer msg)
 	if (m_received >= 2*m_numOfMsg)
 		quitTest();
 
+}
+
+void TestClass::sendResponse()
+{
+	for (int i = 0; i< m_numOfMsg; i++)
+	{
+		m_socket1->sendMessage(m_msgToSend);
+	}
 }

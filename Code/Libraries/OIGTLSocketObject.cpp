@@ -83,8 +83,6 @@ bool OIGTLSocketObject::listenOnPort(int port)
 	if (!m_initialized)
 		return false;
 
-	QLOG_INFO() <<objectName() <<": " <<"Threads successfully initialized";
-
 	if (m_listener != NULL && m_initialized)
 	{
 		m_listener->setObjectName(this->objectName().append("_L"));
@@ -95,6 +93,8 @@ bool OIGTLSocketObject::listenOnPort(int port)
 			m_port = port;
 			m_listening = true;
 			m_listener->startThread();
+
+			QLOG_INFO() <<objectName() <<": " <<"Threads successfully initialized";
 
 			return true;
 		}
@@ -108,35 +108,39 @@ bool OIGTLSocketObject::connectToRemote(QUrl url)
 	if (!m_initialized)
 		return false;
 
-	QLOG_INFO() <<objectName() <<": " <<"Threads successfully initialized";
-
 	if (m_sender != NULL  && m_initialized)
 	{
-		char * address = NULL;
+		m_sender->setObjectName(this->objectName().append("_S"));
+
+		std::string address_str;
+		address_str.clear();
 		
 		if (validateIp(url.host()) == true)
 		{
-			address = const_cast<char *>(url.host().toStdString().c_str());
+			address_str = url.host().toStdString();
 		}
 		else
 		{
 			QString ip = resolveHostName(url.host());
 			
 			if (validateIp(ip))
-				address = const_cast<char *>(ip.toStdString().c_str());
+				address_str = url.host().toStdString();
 			else
 				return false;
 		}
 
 		int port = url.port();
-		
-		m_sender->setObjectName(this->objectName().append("_S"));
-		bool ok = m_sender->initialize(address, port);
+		bool ok = m_sender->initialize(address_str, port);
 		
 		if (ok)
 		{
 			m_port = port;
 			//m_connectedToRemote = true;
+
+			QLOG_INFO() <<objectName() <<": " <<"Threads successfully initialized";
+			
+			QLOG_INFO() <<objectName() <<": " <<"Connecting to: " <<address_str.c_str() <<" : " <<port <<endl;
+			
 			return true;
 		}
 		else return false;

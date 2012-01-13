@@ -44,9 +44,12 @@ public slots:
 	void quitTest();
 
 	void catchMessage(OIGTLMessage::Pointer);
+	void sendResponse();
 
 private:
 	igtl::Matrix4x4 m_localMatrix;
+
+	OIGTLMessage::Pointer m_msgToSend;
 
 	OIGTLSocketObject * m_socket1;
 	OIGTLSocketObject * m_socket2;

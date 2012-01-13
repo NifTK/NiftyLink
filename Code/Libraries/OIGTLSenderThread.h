@@ -21,7 +21,7 @@ protected:
 	virtual void run(void);
 
 	virtual bool initialize(igtl::Socket::Pointer socket = 0);
-	bool initialize(char* hostname, int port = 0);
+	bool initialize(std::string &hostname, int port = 0);
 
 	//virtual igtl::Socket::Pointer getSocketPointer(void) { return m_extSocket; }
 

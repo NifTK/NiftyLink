@@ -35,13 +35,18 @@ bool OIGTLSenderThread::initialize(igtl::Socket::Pointer socket)
 }
 
 
-bool OIGTLSenderThread::initialize(char* hostname, int port)
+bool OIGTLSenderThread::initialize(std::string &hostname, int port)
 {
-	if (port <= 0 || hostname == NULL)
+	if (port <= 0 || hostname.empty())
 	{
 		QLOG_ERROR() <<objectName() <<": " << "Cannot create a sender socket, invalid hostname or port specified" << endl;
+		QLOG_ERROR() <<objectName() <<": " << "Hostname: " <<hostname.c_str() << endl;
+		QLOG_ERROR() <<objectName() <<": " << "Port: " <<port << endl;
 		return false;
     }
+
+	//QLOG_ERROR() <<objectName() <<": " << "Hostname: " <<hostname << endl;
+	//QLOG_ERROR() <<objectName() <<": " << "Port: " <<port << endl;
 
 	if (m_initialized == true)
 	{
@@ -51,11 +56,11 @@ bool OIGTLSenderThread::initialize(char* hostname, int port)
 
 	igtl::ClientSocket::Pointer cs = igtl::ClientSocket::New(); 
 
-	int r = cs->ConnectToServer(hostname, port);
+	int r = cs->ConnectToServer(hostname.c_str(), port);
 
 	if (r != 0)
     {
-		QLOG_ERROR() <<objectName() <<": " << "Cannot create a sender socket, could not connect to server: " <<hostname << endl;
+		QLOG_ERROR() <<objectName() <<": " << "Cannot create a sender socket, could not connect to server: " <<hostname.c_str() << endl;
 		m_port = -1;
 		return false;
     }

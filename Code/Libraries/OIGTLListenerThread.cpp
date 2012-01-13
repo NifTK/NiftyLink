@@ -263,11 +263,11 @@ void OIGTLListenerThread::receiveMessage()
 	else if (strcmp(msgHeader->GetDeviceType(), "GET_TRANS") == 0)
 		message = igtl::GetTransformMessage::New();
 	else if (strcmp(msgHeader->GetDeviceType(), "STT_TRANS") == 0)
-	{}
+		message = igtl::StartTransformMessage::New();
 	else if (strcmp(msgHeader->GetDeviceType(), "STP_TRANS") == 0)
-	{}
+		message = igtl::StopTransformMessage::New();
 	else if (strcmp(msgHeader->GetDeviceType(), "RTS_TRANS") == 0)
-	{}
+		message = igtl::RTSTransformMessage::New();
 	else if (strcmp(msgHeader->GetDeviceType(), "POSITION") == 0)
 		message = igtl::PositionMessage::New();
 	else if (strcmp(msgHeader->GetDeviceType(), "GET_POSITION") == 0)
