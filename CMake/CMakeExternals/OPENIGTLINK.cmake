@@ -34,7 +34,7 @@ SET(OPENIGTLINK_DEPENDS ${proj})
  
 IF(NOT DEFINED OpenIGTLink_DIR)
 
-    SET(revision_tag d79e0d85b0)
+    SET(revision_tag 63a697e7bd)
     IF(${proj}_REVISION_TAG)
         SET(revision_tag ${${proj}_REVISION_TAG})
     ENDIF()
