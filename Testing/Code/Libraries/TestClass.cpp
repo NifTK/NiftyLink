@@ -25,133 +25,207 @@
 //#include <iostream>
 //#include <math.h>
 
+
 void TestClass::setupTest()
 {
-	m_socket1 = new OIGTLSocketObject();
-	m_socket1->setObjectName("Socket1");
-	m_socket2 = new OIGTLSocketObject();
-	m_socket2->setObjectName("Socket2");
+    m_socket1 = new OIGTLSocketObject();
+    m_socket1->setObjectName("Socket1");
+    m_socket2 = new OIGTLSocketObject();
+    m_socket2->setObjectName("Socket2");
 
-	connect(m_socket1, SIGNAL(messageReceived(OIGTLMessage::Pointer)), this, SLOT(catchMessage(OIGTLMessage::Pointer )) );
-	connect(m_socket2, SIGNAL(messageReceived(OIGTLMessage::Pointer)), this, SLOT(catchMessage(OIGTLMessage::Pointer )) );
-	
-	QUrl url;
-	url.setHost(QString("localhost"));
-	url.setPort(3200);
+    connect(m_socket1, SIGNAL(messageReceived(OIGTLMessage::Pointer)), this, SLOT(catchMessage(OIGTLMessage::Pointer )) );
+    connect(m_socket2, SIGNAL(messageReceived(OIGTLMessage::Pointer)), this, SLOT(catchMessage(OIGTLMessage::Pointer )) );
 
-	//Start sender / listener
-	m_socket1->listenOnPort(3200);
-	m_socket2->connectToRemote(url);
+    QUrl url;
+    url.setHost(QString("128.16.4.235"));
+    url.setPort(3200);
 
-	m_successCounter = 0;
-	m_numOfMsg = 10;
-	m_received = 0;
+    //Start sender / listener
+    m_socket1->listenOnPort(3200);
+    m_socket2->connectToRemote(url);
+
+    m_successCounter = 0;
+    m_numOfMsg = 10;
+    m_received = 0;
+
+    m_doStream = false;
+
+    GetRandomTransformMatrix(m_localMatrix);
+    GetTestTransformMsgWithMatrix(m_msgToSend, m_localMatrix);
+}
+
+void TestClass::setupTest2()
+{
+    m_socket1 = new OIGTLSocketObject();
+    m_socket1->setObjectName("Socket1");
+
+    connect(m_socket1, SIGNAL(messageReceived(OIGTLMessage::Pointer)), this, SLOT(catchMessage(OIGTLMessage::Pointer )) );
+
+    //Start sender / listener
+    m_socket1->listenOnPort(3200);
+    //m_socket2->connectToRemote(url);
+
+    m_successCounter = 0;
+    m_numOfMsg = 10;
+    m_received = 0;
+
+    m_doStream = false;
+
+    GetRandomTransformMatrix(m_localMatrix);
+    GetTestTransformMsgWithMatrix(m_msgToSend, m_localMatrix);
+
+    //createMessage();
 }
 
 void TestClass::performTest()
 {
-	//Create a message and send it
-	//OIGTLMessage * msgToSend = new OIGTLMessage();
-	m_msgToSend.operator =(OIGTLMessage::Pointer(new OIGTLMessage()));
-	m_msgToSend->setHostName(QString("MURBELLA_O"));
-	m_msgToSend->setMessageType(QString("TRANSFORM"));
 
-	igtl::TransformMessage::Pointer transMsg;
-	transMsg = igtl::TransformMessage::New();
-	transMsg->SetDeviceName("MURBELLA_O"); 
+    for (int i = 0; i< m_numOfMsg; i++)
+    {
+        m_socket2->sendMessage(m_msgToSend);
+    }
 
-	
-	GetRandomTestMatrix(m_localMatrix);
+    OIGTLMessage::Pointer reqMsg(new OIGTLMessage());
+    igtl::GetTransformMessage::Pointer getTrMsg;
+    getTrMsg = igtl::GetTransformMessage::New();
+    getTrMsg->SetDeviceName("MURBELLA_O");
+    getTrMsg->Pack();
 
-	std::cout <<"Original matrix: " <<std::endl <<std::endl;
-	igtl::PrintMatrix(m_localMatrix);
-	std::cout <<std::endl;
+    reqMsg->setMessagePointer((igtl::MessageBase::Pointer) getTrMsg);
 
-	transMsg->SetMatrix(m_localMatrix);
-	transMsg->Pack();
+    m_socket2->sendMessage(reqMsg);
+}
 
-	m_msgToSend->setMessagePointer((igtl::MessageBase::Pointer) transMsg);
+void TestClass::listen()
+{
+    //    while (1)
+    //    {
+    //        igtl::Sleep(1000);
+    //        std::cout <<"Still listening" <<std::endl;
+    //    }
 
-	for (int i = 0; i< m_numOfMsg; i++)
-	{
-		m_socket2->sendMessage(m_msgToSend);
-	}
-
-	OIGTLMessage::Pointer reqMsg(new OIGTLMessage());
-	igtl::GetTransformMessage::Pointer getTrMsg;
-	getTrMsg = igtl::GetTransformMessage::New();
-	getTrMsg->SetDeviceName("MURBELLA_O");
-	getTrMsg->Pack();
-
-	reqMsg->setMessagePointer((igtl::MessageBase::Pointer) getTrMsg);
-
-	m_socket2->sendMessage(reqMsg);
 }
 
 void TestClass::quitTest()
 {
-	m_socket1->closeSocket();
-	m_socket2->closeSocket();
+    if (m_socket1 != NULL)
+        m_socket1->closeSocket();
 
-	delete m_socket1;
-	delete m_socket2;
-	emit done();
+    if (m_socket2 != NULL)
+        m_socket2->closeSocket();
+
+    if (m_socket1 != NULL)
+        delete m_socket1;
+
+    if (m_socket2 != NULL)
+        delete m_socket2;
+    emit done();
 }
 
 void TestClass::catchMessage(OIGTLMessage::Pointer msg)
 {
-	QString sender = QObject::sender()->objectName();
-	
-	if (msg.operator!=(NULL))
-	{
-		QLOG_INFO() <<m_received <<"of" <<m_numOfMsg <<"message received: " <<msg->getHostName() <<":" <<msg->getPort() <<" " <<msg->getMessageType();
+    QString sender = QObject::sender()->objectName();
 
-		igtl::MessageBase::Pointer message = msg->getMessagePointer();
-		QLOG_INFO() <<message->GetNameOfClass();
-		
-		if (strcmp(message->GetNameOfClass(), "igtl::TransformMessage") == 0)
-		{
-			igtl::TransformMessage::Pointer poi = static_cast<igtl::TransformMessage *>(message.GetPointer());
-			poi->Unpack();
+    if (msg.operator!=(NULL))
+    {
+        QLOG_INFO() <<m_received <<"of" <<m_numOfMsg <<"message received: " <<msg->getHostName() <<":" <<msg->getPort() <<" " <<msg->getMessageType();
 
-			igtl::Matrix4x4 receivedMatrix;
+        igtl::MessageBase::Pointer message = msg->getMessagePointer();
+        QLOG_INFO() <<message->GetNameOfClass();
 
-			poi->GetMatrix(receivedMatrix);
+        if (strcmp(message->GetNameOfClass(), "igtl::TransformMessage") == 0)
+        {
+            igtl::TransformMessage::Pointer poi = static_cast<igtl::TransformMessage *>(message.GetPointer());
+            poi->Unpack();
 
-			int r = memcmp((const void*)&receivedMatrix, (const void*)m_localMatrix, sizeof(igtl::Matrix4x4));
-			
-			if (r == 0)
-				std::cout <<sender.toStdString().c_str() <<" received matrix " <<m_received <<" of " <<m_numOfMsg*2 <<": OK" <<std::endl;
-			else
-				std::cout <<sender.toStdString().c_str() <<" received matrix " <<m_received <<" of " <<m_numOfMsg*2 <<": NOT-OK" <<std::endl;
+            igtl::Matrix4x4 receivedMatrix;
 
-			igtl::PrintMatrix(receivedMatrix);
+            poi->GetMatrix(receivedMatrix);
 
-			std::cout <<std::endl;
+            int r = memcmp((const void*)&receivedMatrix, (const void*)m_localMatrix, sizeof(igtl::Matrix4x4));
 
-			if (r != 0)
-				QLOG_ERROR() <<"Shit happens";
+            if (r == 0)
+                std::cout <<sender.toStdString().c_str() <<" received matrix " <<m_received <<" of " <<m_numOfMsg*2 <<": OK" <<std::endl;
+            else
+                std::cout <<sender.toStdString().c_str() <<" received matrix " <<m_received <<" of " <<m_numOfMsg*2 <<": NOT-OK" <<std::endl;
 
-			m_received++;
-		}
-		else if (strcmp(message->GetNameOfClass(), "igtl::GetTransformMessage") == 0)
-		{
-			std::cout <<sender.toStdString().c_str() <<" received message request, sending response" <<std::endl;
-			sendResponse();
-		}
-	}
+            igtl::PrintMatrix(receivedMatrix);
+
+            std::cout <<std::endl;
+
+            if (r != 0)
+                QLOG_ERROR() <<"Shit happens";
+
+            m_received++;
+        }
+        else if (strcmp(message->GetNameOfClass(), "igtl::GetTransformMessage") == 0)
+        {
+            std::cout <<sender.toStdString().c_str() <<" received message request, sending response" <<std::endl;
+            sendResponse();
+        }
+        else if (strcmp(message->GetNameOfClass(), "igtl::StartTransformMessage") == 0)
+        {
+            std::cout <<sender.toStdString().c_str() <<" received message request, sending response" <<std::endl;
+            m_doStream = true;
+            streamResponse();
+        }
+        else if (strcmp(message->GetNameOfClass(), "igtl::StopTransformMessage") == 0)
+        {
+            std::cout <<sender.toStdString().c_str() <<" received message request, stopping data stream" <<std::endl;
+            m_doStream = false;
+        }
+    }
 
 
-	
-	if (m_received >= 2*m_numOfMsg)
-		quitTest();
+    if (m_received >= 20)
+        //if (m_received >= 2*m_numOfMsg)
+        quitTest();
 
 }
 
 void TestClass::sendResponse()
 {
-	for (int i = 0; i< m_numOfMsg; i++)
-	{
-		m_socket1->sendMessage(m_msgToSend);
-	}
+    QLOG_INFO() <<"Preparing to send response messages..." <<endl;
+
+    for (int i = 0; i< m_numOfMsg; i++)
+    {
+        m_socket1->sendMessage(m_msgToSend);
+    }
+}
+
+void TestClass::streamResponse()
+{
+    QLOG_INFO() <<"Preparing to send response stream..." <<endl;
+
+    for (int i = 0; i< 5; i++)
+    //while (m_doStream)
+    {
+        m_socket1->sendMessage(m_msgToSend);
+        //igtl::Sleep(500);
+
+    }
+}
+
+void TestClass::createMessage()
+{
+
+    m_msgToSend.operator =(OIGTLMessage::Pointer(new OIGTLMessage()));
+    m_msgToSend->setHostName(QString("MURBELLA_O"));
+    m_msgToSend->setMessageType(QString("TRANSFORM"));
+
+    igtl::TransformMessage::Pointer transMsg;
+    transMsg = igtl::TransformMessage::New();
+    transMsg->SetDeviceName("MURBELLA_O");
+
+
+    GetRandomTransformMatrix(m_localMatrix);
+
+    std::cout <<"Original matrix: " <<std::endl <<std::endl;
+    igtl::PrintMatrix(m_localMatrix);
+    std::cout <<std::endl;
+
+    transMsg->SetMatrix(m_localMatrix);
+    transMsg->Pack();
+
+    m_msgToSend->setMessagePointer((igtl::MessageBase::Pointer) transMsg);
 }

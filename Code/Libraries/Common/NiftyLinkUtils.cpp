@@ -71,7 +71,7 @@ int NiftyLinkDummyFunction1()
   return 0;
 }
 
-void GetRandomTestMatrix(igtl::Matrix4x4& matrix)
+void GetRandomTransformMatrix(igtl::Matrix4x4& matrix)
 {
   float position[3];
   float orientation[4];
@@ -100,3 +100,53 @@ void GetRandomTestMatrix(igtl::Matrix4x4& matrix)
   
   //igtl::PrintMatrix(matrix);
 }
+
+
+void GetTestTransformMsg(OIGTLMessage::Pointer &msgToSend)
+{
+    //OIGTLMessage::Pointer msgToSend;
+    msgToSend.operator =(OIGTLMessage::Pointer(new OIGTLMessage()));
+    msgToSend->setHostName(QString("RND_TRANS"));
+    msgToSend->setMessageType(QString("TRANSFORM"));
+
+    igtl::TransformMessage::Pointer transMsg;
+    transMsg = igtl::TransformMessage::New();
+    transMsg->SetDeviceName("RND_TRANS");
+
+    igtl::Matrix4x4 localMatrix;
+
+    GetRandomTransformMatrix(localMatrix);
+    transMsg->SetMatrix(localMatrix);
+    transMsg->Pack();
+
+    msgToSend->setMessagePointer((igtl::MessageBase::Pointer) transMsg);
+}
+
+void GetTestTransformMsgWithMatrix(OIGTLMessage::Pointer &msgToSend, igtl::Matrix4x4 &matrix)
+{
+    //OIGTLMessage::Pointer msgToSend;
+    msgToSend.operator =(OIGTLMessage::Pointer(new OIGTLMessage()));
+    msgToSend->setHostName(QString("RND_TRANS"));
+    msgToSend->setMessageType(QString("TRANSFORM"));
+
+    igtl::TransformMessage::Pointer transMsg;
+    transMsg = igtl::TransformMessage::New();
+    transMsg->SetDeviceName("RND_TRANS");
+
+    transMsg->SetMatrix(matrix);
+    transMsg->Pack();
+
+    msgToSend->setMessagePointer((igtl::MessageBase::Pointer) transMsg);
+}
+
+
+void GetTestImageMsg(OIGTLMessage::Pointer &msg)
+{}
+void GetTestPositionMsg(OIGTLMessage::Pointer &msg)
+{}
+void GetTestPointMsg(OIGTLMessage::Pointer &msg)
+{}
+void GetTestStatusMsg(OIGTLMessage::Pointer &msg)
+{}
+void GetTestStringMsg(OIGTLMessage::Pointer &msg)
+{}

@@ -42,8 +42,15 @@ extern "C" NIFTYLINKCOMMON_WINEXPORT int NiftyLinkDummyFunction1();
 extern NIFTYLINKCOMMON_WINEXPORT bool validateIp(const QString &inputIP);
 extern NIFTYLINKCOMMON_WINEXPORT QString getLocalHostAddress(void);
 extern NIFTYLINKCOMMON_WINEXPORT QString resolveHostName(const QString &input);
-extern NIFTYLINKCOMMON_WINEXPORT void GetRandomTestMatrix(igtl::Matrix4x4& matrix);
+extern NIFTYLINKCOMMON_WINEXPORT void GetRandomTransformMatrix(igtl::Matrix4x4& matrix);
+extern NIFTYLINKCOMMON_WINEXPORT void GetTestTransformMsg(OIGTLMessage::Pointer &msg);
+extern NIFTYLINKCOMMON_WINEXPORT void GetTestTransformMsgWithMatrix(OIGTLMessage::Pointer &msg, igtl::Matrix4x4 &matrix);
 
+extern NIFTYLINKCOMMON_WINEXPORT void GetTestImageMsg(OIGTLMessage::Pointer &msg);
+extern NIFTYLINKCOMMON_WINEXPORT void GetTestPositionMsg(OIGTLMessage::Pointer &msg);
+extern NIFTYLINKCOMMON_WINEXPORT void GetTestPointMsg(OIGTLMessage::Pointer &msg);
+extern NIFTYLINKCOMMON_WINEXPORT void GetTestStatusMsg(OIGTLMessage::Pointer &msg);
+extern NIFTYLINKCOMMON_WINEXPORT void GetTestStringMsg(OIGTLMessage::Pointer &msg);
 
 class NIFTYLINKCOMMON_WINEXPORT MessageCatcher : public QObject
 {

@@ -40,11 +40,16 @@ signals:
 
 public slots:
 	void setupTest();
+    void setupTest2();
 	void performTest();
+    void listen();
 	void quitTest();
+
+    void createMessage();
 
 	void catchMessage(OIGTLMessage::Pointer);
 	void sendResponse();
+    void streamResponse();
 
 private:
 	igtl::Matrix4x4 m_localMatrix;
@@ -57,5 +62,7 @@ private:
 	int m_numOfMsg;
 	int m_received;
 	int m_successCounter;
+
+    bool m_doStream;
 };
 
