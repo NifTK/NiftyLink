@@ -25,7 +25,7 @@ bool OIGTLSenderThread::initialize(igtl::Socket::Pointer socket)
 	}
 
 	m_extSocket.operator =(socket);
-	m_extSocket->SetTimeout(20);
+    m_extSocket->SetTimeout(10);
 	m_sendingOnSocket = true;
 
 	if (!activate())
@@ -68,7 +68,7 @@ bool OIGTLSenderThread::initialize(std::string &hostname, int port)
 	m_port = port;
 	
 	m_extSocket.operator =((igtl::Socket::Pointer) cs);
-	m_extSocket->SetTimeout(20);
+    m_extSocket->SetTimeout(10);
 	m_sendingOnSocket = false;
 
 	if (!activate())
@@ -80,8 +80,8 @@ bool OIGTLSenderThread::initialize(std::string &hostname, int port)
 
 void OIGTLSenderThread::startThread(void)
 {
-	if (m_initialized == false || m_running == true)
-		return;
+    if (m_initialized == false) // || m_running == true)
+        return;
 
 	m_running = true;
 	this->start();
@@ -156,10 +156,13 @@ void OIGTLSenderThread::run(void)
 			break;
 		}
 
-		m_queueMutex.lock();
-		QLOG_INFO() <<objectName() <<": Messages in sendque: " << m_sendQue.count();
-		OIGTLMessage::Pointer msg = m_sendQue.takeFirst();
-		m_queueMutex.unlock();
+        QLOG_INFO() <<objectName() <<": Messages in sendque: " << m_sendQue.count();
+
+        m_queueMutex.lock();
+        OIGTLMessage::Pointer msg;
+        msg.operator =(m_sendQue.takeFirst());
+
+        m_queueMutex.unlock();
 
 		if (msg.operator!=(NULL))
 		{
@@ -175,6 +178,8 @@ void OIGTLSenderThread::run(void)
 
 				QLOG_INFO() <<objectName() <<": " <<"Message Sent" <<endl;
 			}
+            else
+                QLOG_ERROR() <<objectName() <<": " <<"Cannot send message: igtMsg is NULL" <<"\n";
 
 			//*******************************
 			// CHANGE THIS
@@ -182,8 +187,10 @@ void OIGTLSenderThread::run(void)
 			//delete msg;
 			//*******************************
 		}
+        else
+            QLOG_ERROR() <<objectName() <<": " <<"Cannot send message: invalid message" <<"\n";
 
-		//igtl::Sleep(200); // wait 
+        //igtl::Sleep(50); // wait
 	}
 	
 	if (m_sendQue.isEmpty())
@@ -196,13 +203,21 @@ void OIGTLSenderThread::run(void)
 
 void OIGTLSenderThread::sendMsg(OIGTLMessage::Pointer msg)
 {
-	QLOG_INFO() <<objectName() <<": " <<"Message received, putting it to send queue" <<endl;
+    QLOG_INFO() <<objectName() <<": " <<"Got new message to send, putting it to send queue.";
 
-	m_queueMutex.lock();
+    if (msg.operator !=(NULL))
+        QLOG_INFO() <<"MSG_ID: " <<msg->getId() <<endl;
+    else
+    {
+        QLOG_ERROR() <<objectName() <<": " <<"Invalid message arrived to send" <<"\n";
+        return;
+    }
+
+    m_queueMutex.lock();
 	m_sendQue.append(msg);
-	m_queueMutex.unlock();
+    m_queueMutex.unlock();
 	
-	igtl::Sleep(50);
+    //igtl::Sleep(100);
 
 	this->startThread();
 }

@@ -12,6 +12,7 @@ class NIFTYLINKCOMMON_WINEXPORT OIGTLSocketObject : public QObject
 
 signals:
 	void messageReceived(OIGTLMessage::Pointer);
+    void messageToSend(OIGTLMessage::Pointer);
 	void sendingFinished();
 	void lostConnectionToRemote(void);
 

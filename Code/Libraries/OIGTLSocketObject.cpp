@@ -66,10 +66,11 @@ void OIGTLSocketObject::initThreads()
 	ok =  connect(m_sender, SIGNAL(connectedToRemote()), this, SLOT(connectedToRemote()), Qt::QueuedConnection);
 	ok &= connect(m_sender, SIGNAL(disconnectedFromRemote()), this, SLOT(disconnectedFromRemote()), Qt::QueuedConnection);
 	ok &= connect(m_sender, SIGNAL(sendingFinished()), this, SIGNAL(sendingFinished()), Qt::QueuedConnection);
+    ok &= connect(this, SIGNAL(messageToSend(OIGTLMessage::Pointer)), m_sender, SLOT(sendMsg(OIGTLMessage::Pointer)));
 
 	ok &= connect(m_listener, SIGNAL(clientConnected()), this, SLOT(clientConnected()), Qt::QueuedConnection);
 	ok &= connect(m_listener, SIGNAL(clientDisconnected()), this, SLOT(clientDisconnected()), Qt::QueuedConnection);
-	ok &= connect(m_listener, SIGNAL(messageReceived(OIGTLMessage::Pointer)), this, SIGNAL(messageReceived(OIGTLMessage::Pointer)), Qt::QueuedConnection);
+    ok &= connect(m_listener, SIGNAL(messageReceived(OIGTLMessage::Pointer)), this, SIGNAL(messageReceived(OIGTLMessage::Pointer)), Qt::QueuedConnection);
 
 	//ok &= connect(m_listener, SIGNAL(messageReceived(OIGTLMessage::Pointer)), this, SLOT(catchMsgSignal(OIGTLMessage::Pointer )), Qt::QueuedConnection);
 	//ok &= connect(m_listener, SIGNAL(testSignal( )), this, SLOT(catchTestSignal()), Qt::QueuedConnection);
@@ -179,7 +180,10 @@ void OIGTLSocketObject::closeSocket(void)
 void OIGTLSocketObject::sendMessage(OIGTLMessage::Pointer msg)
 {
 	if (m_sender != NULL && m_sender->isInitialized())
-		m_sender->sendMsg(msg);
+        emit messageToSend(msg);
+
+    QLOG_INFO() <<"Emitting.........";
+        //m_sender->sendMsg(msg);
 }
 
 
