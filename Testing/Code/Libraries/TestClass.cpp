@@ -37,7 +37,8 @@ void TestClass::setupTest()
     connect(m_socket2, SIGNAL(messageReceived(OIGTLMessage::Pointer)), this, SLOT(catchMessage(OIGTLMessage::Pointer )) );
 
     QUrl url;
-    url.setHost(QString("128.16.4.235"));
+    //url.setHost(QString("128.16.4.235"));
+	url.setHost(QString("localhost"));
     url.setPort(3200);
 
     //Start sender / listener
