@@ -26,6 +26,7 @@
 //#include <math.h>
 
 
+
 void TestClass::setupTest()
 {
     m_socket1 = new OIGTLSocketObject();

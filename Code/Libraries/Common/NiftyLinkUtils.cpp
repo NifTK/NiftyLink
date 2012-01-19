@@ -186,20 +186,6 @@ void CreateGetTransformMsg(OIGTLMessage::Pointer &msgToSend)
 {
 	msgToSend.operator =(OIGTLMessage::Pointer(new OIGTLMessage()));
 
-	igtl::StartTransformMessage::New();
-	igtl::TransformMessage::New();
-
-	igtl::GetBindMessage::New();
-	igtl::GetImageMessage::New();
-
-
-	igtl::GetTransformMessage::New();
-
-	
-
-	
-
-
     igtl::GetTransformMessage::Pointer getTrMsg;
 	getTrMsg.operator =(igtl::GetTransformMessage::New());
 

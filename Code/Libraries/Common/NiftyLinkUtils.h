@@ -28,6 +28,11 @@
 #include <QHostAddress>
 #include <QStringList>
 
+#include "igtlPolyDataMessage.h"
+#include "igtlTrajectoryMessage.h"
+#include "igtlLightObject.h"
+#include "igtlObjectFactory.h"
+
 #include <cmath>
 #include "igtlMath.h"
 

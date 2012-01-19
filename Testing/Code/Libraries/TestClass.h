@@ -23,6 +23,16 @@
 #include "igtlTransformMessage.h"
 #include "igtlMath.h"
 
+#include "igtlBindMessage.h"
+#include "igtlColorTableMessage.h"
+#include "igtlImageMessage.h"
+#include "igtlImageMessage2.h"
+#include "igtlImageMetaMessage.h"
+#include "igtlLabelMetaMessage.h"
+#include "igtlPointMessage.h"
+#include "igtlPolyDataMessage.h"
+#include "igtlTrajectoryMessage.h"
+
 
 #include "QsLog.h"
 #include "QsLogDest.h"
