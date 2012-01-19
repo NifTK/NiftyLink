@@ -326,12 +326,11 @@ void OIGTLListenerThread::receiveMessage()
 
 	
 	OIGTLMessage::Pointer msg(new OIGTLMessage());
-	msg->setMessageType(QString(message->GetDeviceType()));
-	msg->setHostName(QString(message->GetDeviceName()));
 	
 	igtl::TimeStamp::Pointer ts = igtl::TimeStamp::New();
 	ts->GetTime();
-	msg->setTimeRecieved(ts);
+
+	msg->setTimeReceived(ts);
 	msg->setMessagePointer(message);
 	msg->setPort(m_port);
 

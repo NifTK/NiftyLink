@@ -51,8 +51,8 @@ void TestClass::setupTest()
 
     m_doStream = false;
 
-    GetRandomTransformMatrix(m_localMatrix);
-    GetTestTransformMsgWithMatrix(m_msgToSend, m_localMatrix);
+    //GetRandomTransformMatrix(m_localMatrix);
+    CreateTestTransformMsg(m_msgToSend);
 }
 
 void TestClass::setupTest2()
@@ -72,8 +72,8 @@ void TestClass::setupTest2()
 
     m_doStream = false;
 
-    GetRandomTransformMatrix(m_localMatrix);
-    GetTestTransformMsgWithMatrix(m_msgToSend, m_localMatrix);
+    //GetRandomTransformMatrix(m_localMatrix);
+	CreateTestTransformMsg(m_msgToSend);
 
     //createMessage();
 }
@@ -86,14 +86,8 @@ void TestClass::performTest()
         m_socket2->sendMessage(m_msgToSend);
     }
 
-    OIGTLMessage::Pointer reqMsg(new OIGTLMessage());
-    igtl::GetTransformMessage::Pointer getTrMsg;
-    getTrMsg = igtl::GetTransformMessage::New();
-    getTrMsg->SetDeviceName("MURBELLA_O");
-    getTrMsg->Pack();
-
-    reqMsg->setMessagePointer((igtl::MessageBase::Pointer) getTrMsg);
-
+	OIGTLMessage::Pointer reqMsg;
+	CreateGetTransformMsg(reqMsg);
     m_socket2->sendMessage(reqMsg);
 }
 
@@ -143,7 +137,7 @@ void TestClass::catchMessage(OIGTLMessage::Pointer msg)
 
             poi->GetMatrix(receivedMatrix);
 
-            int r = memcmp((const void*)&receivedMatrix, (const void*)m_localMatrix, sizeof(igtl::Matrix4x4));
+            int r = memcmp((const void*)&receivedMatrix, (const void*)dummyTransformMatrix, sizeof(igtl::Matrix4x4));
 
             if (r == 0)
                 std::cout <<sender.toStdString().c_str() <<" received matrix " <<m_received <<" of " <<m_numOfMsg*2 <<": OK" <<std::endl;
@@ -211,15 +205,15 @@ void TestClass::createMessage()
 {
 
     m_msgToSend.operator =(OIGTLMessage::Pointer(new OIGTLMessage()));
-    m_msgToSend->setHostName(QString("MURBELLA_O"));
-    m_msgToSend->setMessageType(QString("TRANSFORM"));
+    //m_msgToSend->setHostName(QString("MURBELLA_O"));
+    //m_msgToSend->setMessageType(QString("TRANSFORM"));
 
     igtl::TransformMessage::Pointer transMsg;
     transMsg = igtl::TransformMessage::New();
     transMsg->SetDeviceName("MURBELLA_O");
 
 
-    GetRandomTransformMatrix(m_localMatrix);
+    CreateRandomTransformMatrix(m_localMatrix);
 
     std::cout <<"Original matrix: " <<std::endl <<std::endl;
     igtl::PrintMatrix(m_localMatrix);

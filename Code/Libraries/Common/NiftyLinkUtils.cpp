@@ -51,19 +51,22 @@ QString resolveHostName(const QString &input)
 
 QString getLocalHostAddress(void)
 {
-	QHostInfo info;
+	QHostInfo info = QHostInfo::fromName(QHostInfo::localHostName());
+	//qDebug() <<"LocalHost: " <<info.localHostName();
+	QList<QHostAddress> addresses = info.addresses();
+
+	//qDebug() <<"Has addresses: " <<addresses.count();
+
+	for (int i=0; i< addresses.count(); i++)
+	{
+		if( validateIp(addresses.at(i).toString()) == true )
+		{
+			qDebug() <<addresses.at(i).toString();
+			return addresses.at(i).toString();
+		}
+	}
 	
-	if (!info.addresses().isEmpty()) 
-	{
-		// use the first IP address
-		return info.addresses().first().toString();
-	}
-	else
-	{
-		QString empty;
-		empty.clear();
-		return empty;
-	}
+	return QString("UNKNOWN");
 }
 
 int NiftyLinkDummyFunction1()
@@ -71,7 +74,7 @@ int NiftyLinkDummyFunction1()
   return 0;
 }
 
-void GetRandomTransformMatrix(igtl::Matrix4x4& matrix)
+void CreateRandomTransformMatrix(igtl::Matrix4x4& matrix)
 {
   float position[3];
   float orientation[4];
@@ -101,44 +104,122 @@ void GetRandomTransformMatrix(igtl::Matrix4x4& matrix)
   //igtl::PrintMatrix(matrix);
 }
 
-
-void GetTestTransformMsg(OIGTLMessage::Pointer &msgToSend)
+void CreateRandomTransformMsg(OIGTLMessage::Pointer &msgToSend)
 {
-    //OIGTLMessage::Pointer msgToSend;
-    msgToSend.operator =(OIGTLMessage::Pointer(new OIGTLMessage()));
-    msgToSend->setHostName(QString("RND_TRANS"));
-    msgToSend->setMessageType(QString("TRANSFORM"));
+	msgToSend.operator =(OIGTLMessage::Pointer(new OIGTLMessage()));
 
     igtl::TransformMessage::Pointer transMsg;
     transMsg = igtl::TransformMessage::New();
-    transMsg->SetDeviceName("RND_TRANS");
+		
+	igtl::TimeStamp::Pointer ts;
+	ts = igtl::TimeStamp::New();
+	ts->GetTime();
 
-    igtl::Matrix4x4 localMatrix;
+	igtl::Matrix4x4 localMatrix;
+    CreateRandomTransformMatrix(localMatrix);
 
-    GetRandomTransformMatrix(localMatrix);
+	QString lhn = getLocalHostAddress();
+
+	transMsg->SetTimeStamp(ts);
+	transMsg->SetDeviceName(lhn.toStdString().c_str());
     transMsg->SetMatrix(localMatrix);
-    transMsg->Pack();
 
+	//Pack message data
+	transMsg->Pack();
+
+	//Embed igtl message data into OIGTLMessage
     msgToSend->setMessagePointer((igtl::MessageBase::Pointer) transMsg);
+	//msgToSend->setHostName(getLocalHostAddress());
 }
 
-void GetTestTransformMsgWithMatrix(OIGTLMessage::Pointer &msgToSend, igtl::Matrix4x4 &matrix)
+void CreateTestTransformMsg(OIGTLMessage::Pointer &msgToSend)
 {
-    //OIGTLMessage::Pointer msgToSend;
-    msgToSend.operator =(OIGTLMessage::Pointer(new OIGTLMessage()));
-    msgToSend->setHostName(QString("RND_TRANS"));
-    msgToSend->setMessageType(QString("TRANSFORM"));
+	msgToSend.operator =(OIGTLMessage::Pointer(new OIGTLMessage()));
 
     igtl::TransformMessage::Pointer transMsg;
     transMsg = igtl::TransformMessage::New();
-    transMsg->SetDeviceName("RND_TRANS");
+		
+	igtl::TimeStamp::Pointer ts;
+	ts = igtl::TimeStamp::New();
+	ts->GetTime();
 
-    transMsg->SetMatrix(matrix);
-    transMsg->Pack();
+	QString lhn = getLocalHostAddress();
 
+	transMsg->SetTimeStamp(ts);
+	transMsg->SetDeviceName(lhn.toStdString().c_str());
+    transMsg->SetMatrix(dummyTransformMatrix);
+
+	//Pack message data
+	transMsg->Pack();
+
+	//Embed igtl message data into OIGTLMessage
     msgToSend->setMessagePointer((igtl::MessageBase::Pointer) transMsg);
+	//msgToSend->setHostName(getLocalHostAddress());
 }
 
+void CreateTransformMsg(OIGTLMessage::Pointer &msgToSend, igtl::Matrix4x4 &matrix)
+{
+    msgToSend.operator =(OIGTLMessage::Pointer(new OIGTLMessage()));
+
+    igtl::TransformMessage::Pointer transMsg;
+    transMsg = igtl::TransformMessage::New();
+		
+	igtl::TimeStamp::Pointer ts;
+	ts = igtl::TimeStamp::New();
+	ts->GetTime();
+
+	QString lhn = getLocalHostAddress();
+
+	transMsg->SetTimeStamp(ts);
+	transMsg->SetDeviceName(lhn.toStdString().c_str());
+    transMsg->SetMatrix(matrix);
+
+	//Pack message data
+	transMsg->Pack();
+
+	//Embed igtl message data into OIGTLMessage
+    msgToSend->setMessagePointer((igtl::MessageBase::Pointer) transMsg);
+	//msgToSend->setHostName(getLocalHostAddress());
+}
+
+void CreateGetTransformMsg(OIGTLMessage::Pointer &msgToSend)
+{
+	msgToSend.operator =(OIGTLMessage::Pointer(new OIGTLMessage()));
+
+	igtl::StartTransformMessage::New();
+	igtl::TransformMessage::New();
+
+	igtl::GetBindMessage::New();
+	igtl::GetImageMessage::New();
+
+
+	igtl::GetTransformMessage::New();
+
+	
+
+	
+
+
+    igtl::GetTransformMessage::Pointer getTrMsg;
+	getTrMsg.operator =(igtl::GetTransformMessage::New());
+
+	igtl::GetTransformMessage::New();
+    
+	igtl::TimeStamp::Pointer ts;
+	ts = igtl::TimeStamp::New();
+	ts->GetTime();
+
+	QString lhn = getLocalHostAddress();
+
+	//Set parameters
+	getTrMsg->SetTimeStamp(ts);
+	getTrMsg->SetDeviceName(lhn.toStdString().c_str());
+   
+	//Pack message data
+	getTrMsg->Pack();
+
+    msgToSend->setMessagePointer((igtl::MessageBase::Pointer) getTrMsg);
+}
 
 void GetTestImageMsg(OIGTLMessage::Pointer &msg)
 {}
@@ -150,3 +231,95 @@ void GetTestStatusMsg(OIGTLMessage::Pointer &msg)
 {}
 void GetTestStringMsg(OIGTLMessage::Pointer &msg)
 {}
+
+
+bool CompareMsgData(OIGTLMessage::Pointer &msg1, OIGTLMessage::Pointer &msg2)
+{
+	igtl::MessageBase::Pointer basePointer1 = msg1->getMessagePointer();
+	igtl::MessageBase::Pointer basePointer2 = msg2->getMessagePointer();
+
+	if (strcmp(basePointer1->GetNameOfClass(), basePointer2->GetNameOfClass()) != 0)
+	{
+		QLOG_ERROR() <<"CompareMsgData: Incompatible message types, cannot comapre them" <<endl;
+		return false;
+	}
+
+    if (strcmp(basePointer1->GetNameOfClass(), "igtl::TransformMessage") == 0)
+    {
+        igtl::TransformMessage::Pointer msgPointer1 = static_cast<igtl::TransformMessage *>(basePointer1.GetPointer());
+        msgPointer1->Unpack();
+
+        igtl::TransformMessage::Pointer msgPointer2 = static_cast<igtl::TransformMessage *>(basePointer2.GetPointer());
+        msgPointer2->Unpack();
+		
+		igtl::Matrix4x4 matrix1;
+		igtl::Matrix4x4 matrix2;
+
+        msgPointer1->GetMatrix(matrix1);
+		msgPointer2->GetMatrix(matrix2);
+
+        int r = memcmp((const void*)&matrix1, (const void*)matrix2, sizeof(igtl::Matrix4x4));
+
+        if (r != 0)
+		{
+			std::cout <<"Data do not match!" <<std::endl;
+			std::cout <<"Matrix1: " <<std::endl;
+	        igtl::PrintMatrix(matrix1);
+	        std::cout <<std::endl;
+
+			std::cout <<"Matrix2: " <<std::endl;
+			igtl::PrintMatrix(matrix2);
+	        std::cout <<std::endl;
+
+			QLOG_ERROR() <<"CompareMsgData: Data fields are not equal!" <<endl;
+			return false;
+		}
+		else
+		{
+			QLOG_INFO() <<"CompareMsgData: Data fields are equal";
+			return true;
+		}
+    }
+	else if (strcmp(basePointer1->GetNameOfClass(), "igtl::StatusMessage") == 0)
+	{
+		igtl::StatusMessage::Pointer msgPointer1 = static_cast<igtl::StatusMessage *>(basePointer1.GetPointer());
+        msgPointer1->Unpack();
+
+        igtl::StatusMessage::Pointer msgPointer2 = static_cast<igtl::StatusMessage *>(basePointer2.GetPointer());
+        msgPointer2->Unpack();
+		
+		if ( msgPointer1->GetCode() != msgPointer2->GetCode() ||
+			msgPointer1->GetSubCode() != msgPointer2->GetSubCode() ||
+			strcmp(msgPointer1->GetStatusString(), msgPointer2->GetStatusString()) != 0 ||
+			strcmp(msgPointer1->GetErrorName(), msgPointer2->GetErrorName()) != 0 )
+		{
+			std::cout <<"Data do not match!" <<std::endl;
+			std::cout <<"ErrorCode 1: " <<msgPointer1->GetCode() <<std::endl;
+			std::cout <<"ErrorSubCode 1: " <<msgPointer1->GetSubCode() <<std::endl;
+			std::cout <<"ErrorString 1: " <<msgPointer1->GetErrorName() <<std::endl;
+			std::cout <<"StatusString 1: " <<msgPointer1->GetStatusString() <<std::endl;
+			
+			std::cout <<"ErrorCode 2: " <<msgPointer2->GetCode() <<std::endl;
+			std::cout <<"ErrorSubCode 2: " <<msgPointer2->GetSubCode() <<std::endl;
+			std::cout <<"ErrorString 2: " <<msgPointer2->GetErrorName() <<std::endl;
+			std::cout <<"StatusString 2: " <<msgPointer2->GetStatusString() <<std::endl;
+	        std::cout <<std::endl;
+
+			QLOG_ERROR() <<"CompareMsgData: Data fields are not equal!" <<endl;
+			return false;
+		}
+		else
+		{
+			QLOG_INFO() <<"CompareMsgData: Data fields are equal";
+			return true;
+		}
+	}
+	else
+	{
+		QLOG_ERROR() <<"CompareMsgData: Unknown message type, cannot compare" <<endl;
+		return false;
+	}
+	
+	//should never get here, really
+	return false;
+}

@@ -43,19 +43,19 @@ public:
 	void setMessagePointer(igtl::MessageBase::Pointer mp);
 	igtl::MessageBase::Pointer getMessagePointer(void);
 
-	void setHostName(QString hname);
+	void changeHostName(QString hname);
 	QString getHostName(void);
 
-	void setMessageType(QString type);
+	void changeMessageType(QString type);
 	QString getMessageType(void);
 
 	void setPort(int port);
 	int getPort(void);
 
-	void setTimeRecieved(igtl::TimeStamp::Pointer ts);
-	igtl::TimeStamp::Pointer getTimeRecieved(void);
+	void setTimeReceived(igtl::TimeStamp::Pointer ts);
+	igtl::TimeStamp::Pointer getTimeReceived(void);
 	igtl::TimeStamp::Pointer getTimeCreated(void);
-	igtl::TimeStamp::Pointer getIGTTimeStamp(void);
+	//igtl::TimeStamp::Pointer getIGTTimeStamp(void);
 
 	igtlUint64 getId(void);
 
@@ -63,7 +63,7 @@ protected:
 
 private:
 	igtl::MessageBase::Pointer  m_message;
-	igtl::TimeStamp::Pointer	m_timeRecieved;
+	igtl::TimeStamp::Pointer	m_timeReceived;
 	igtl::TimeStamp::Pointer	m_timeCreated;
 
 	QString						m_senderHostName;

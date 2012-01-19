@@ -36,21 +36,37 @@
 
 #include "OIGTLMessage.h"
 
+#include "QsLog.h"
+#include "QsLogDest.h"
+
+static igtl::Matrix4x4 dummyTransformMatrix = 
+{{ -1, 0, 0, 50},
+{  0, 0.15, 0.98, 0},
+{ 0, 0.98, -0.15, 50},
+{ 0, 0, 0, 1} };
+ 
 
 extern "C" NIFTYLINKCOMMON_WINEXPORT int NiftyLinkDummyFunction1();
 
 extern NIFTYLINKCOMMON_WINEXPORT bool validateIp(const QString &inputIP);
 extern NIFTYLINKCOMMON_WINEXPORT QString getLocalHostAddress(void);
 extern NIFTYLINKCOMMON_WINEXPORT QString resolveHostName(const QString &input);
-extern NIFTYLINKCOMMON_WINEXPORT void GetRandomTransformMatrix(igtl::Matrix4x4& matrix);
-extern NIFTYLINKCOMMON_WINEXPORT void GetTestTransformMsg(OIGTLMessage::Pointer &msg);
-extern NIFTYLINKCOMMON_WINEXPORT void GetTestTransformMsgWithMatrix(OIGTLMessage::Pointer &msg, igtl::Matrix4x4 &matrix);
+
+extern NIFTYLINKCOMMON_WINEXPORT void CreateRandomTransformMatrix(igtl::Matrix4x4& matrix);
+extern NIFTYLINKCOMMON_WINEXPORT void CreateRandomTransformMsg(OIGTLMessage::Pointer &msg);
+extern NIFTYLINKCOMMON_WINEXPORT void CreateTestTransformMsg(OIGTLMessage::Pointer &msg);
+extern NIFTYLINKCOMMON_WINEXPORT void CreateTransformMsg(OIGTLMessage::Pointer &msgToSend, igtl::Matrix4x4 &matrix, std::string name);
+
+extern NIFTYLINKCOMMON_WINEXPORT void CreateGetTransformMsg(OIGTLMessage::Pointer &msgToSend);
+
 
 extern NIFTYLINKCOMMON_WINEXPORT void GetTestImageMsg(OIGTLMessage::Pointer &msg);
 extern NIFTYLINKCOMMON_WINEXPORT void GetTestPositionMsg(OIGTLMessage::Pointer &msg);
 extern NIFTYLINKCOMMON_WINEXPORT void GetTestPointMsg(OIGTLMessage::Pointer &msg);
 extern NIFTYLINKCOMMON_WINEXPORT void GetTestStatusMsg(OIGTLMessage::Pointer &msg);
 extern NIFTYLINKCOMMON_WINEXPORT void GetTestStringMsg(OIGTLMessage::Pointer &msg);
+
+extern NIFTYLINKCOMMON_WINEXPORT bool CompareMsgData(OIGTLMessage::Pointer &msg1, OIGTLMessage::Pointer &msg2);
 
 class NIFTYLINKCOMMON_WINEXPORT MessageCatcher : public QObject
 {
@@ -80,6 +96,5 @@ private:
 	bool m_messageValid;
 
 };
-
 
 #endif

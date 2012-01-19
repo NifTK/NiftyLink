@@ -20,7 +20,7 @@ OIGTLMessage::OIGTLMessage(const OIGTLMessage &other)
 {
 
 	m_message.operator=(other.m_message);
-	m_timeRecieved.operator=(other.m_timeRecieved);
+	m_timeReceived.operator=(other.m_timeReceived);
 
 	m_senderHostName = other.m_senderHostName;
 	m_messageType = other.m_messageType;
@@ -32,6 +32,9 @@ OIGTLMessage::OIGTLMessage(const OIGTLMessage &other)
 void OIGTLMessage::setMessagePointer(igtl::MessageBase::Pointer mp)
 {
 	m_message.operator =(mp);
+	m_messageType = QString(m_message->GetDeviceType());
+	m_message->GetTimeStamp(m_timeCreated);
+	m_senderHostName = QString(m_message->GetDeviceName());
 }
 
 igtl::MessageBase::Pointer OIGTLMessage::getMessagePointer(void)
@@ -39,14 +42,14 @@ igtl::MessageBase::Pointer OIGTLMessage::getMessagePointer(void)
 	return m_message;
 }
 
-void OIGTLMessage::setTimeRecieved(igtl::TimeStamp::Pointer ts)
+void OIGTLMessage::setTimeReceived(igtl::TimeStamp::Pointer ts)
 {
-	m_timeRecieved.operator=(ts);
+	m_timeReceived.operator=(ts);
 }
 
-igtl::TimeStamp::Pointer OIGTLMessage::getTimeRecieved(void)
+igtl::TimeStamp::Pointer OIGTLMessage::getTimeReceived(void)
 {
-	return m_timeRecieved;
+	return m_timeReceived;
 }
 
 igtl::TimeStamp::Pointer OIGTLMessage::getTimeCreated(void)
@@ -54,19 +57,19 @@ igtl::TimeStamp::Pointer OIGTLMessage::getTimeCreated(void)
 	return m_timeCreated;
 }
 
-igtl::TimeStamp::Pointer OIGTLMessage::getIGTTimeStamp(void)
-{
-	igtl::TimeStamp::Pointer ts = igtl::TimeStamp::New();
-	m_message->GetTimeStamp(ts);
-	return ts;
-}
+//igtl::TimeStamp::Pointer OIGTLMessage::getIGTTimeStamp(void)
+//{
+//	igtl::TimeStamp::Pointer ts = igtl::TimeStamp::New();
+//	m_message->GetTimeStamp(ts);
+//	return ts;
+//}
 
 igtlUint64 OIGTLMessage::getId(void)
 {
 	return m_id;
 }
 
-void OIGTLMessage::setHostName(QString hname)
+void OIGTLMessage::changeHostName(QString hname)
 {
 	m_senderHostName = hname;
 }
@@ -86,7 +89,7 @@ int OIGTLMessage::getPort(void)
 	return m_senderPort;
 }
 
-void OIGTLMessage::setMessageType(QString type)
+void OIGTLMessage::changeMessageType(QString type)
 {
 	m_messageType = type;
 }
