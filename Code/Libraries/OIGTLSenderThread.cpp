@@ -167,7 +167,7 @@ void OIGTLSenderThread::run(void)
 		if (msg.operator!=(NULL))
 		{
 			igtl::MessageBase::Pointer igtMsg;
-			igtMsg.operator =(msg->getMessagePointer());
+			msg->getMessagePointer(igtMsg);
 
 			if (igtMsg.IsNotNull())
 			{

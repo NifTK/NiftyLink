@@ -22,10 +22,6 @@
 #include "stdlib.h"
 #include <QDebug>
 #include "TestClass.h"
-//#include <iostream>
-//#include <math.h>
-
-
 
 void TestClass::setupTest()
 {
@@ -52,8 +48,11 @@ void TestClass::setupTest()
 
     m_doStream = false;
 
-    //GetRandomTransformMatrix(m_localMatrix);
-    CreateTestTransformMsg(m_msgToSend);
+	m_msgToSend.operator =(OIGTLTransformMessage::Pointer(new OIGTLTransformMessage()));
+	//m_msgToSend->initializeWithTestData();
+
+	static_cast<OIGTLTransformMessage::Pointer>(m_msgToSend)->setMatrix(dummyTransformMatrix);
+
 }
 
 void TestClass::setupTest2()
@@ -73,10 +72,9 @@ void TestClass::setupTest2()
 
     m_doStream = false;
 
-    //GetRandomTransformMatrix(m_localMatrix);
-	CreateTestTransformMsg(m_msgToSend);
-
-    //createMessage();
+    m_msgToSend.operator =(OIGTLTransformMessage::Pointer(new OIGTLTransformMessage()));
+	
+	m_msgToSend->initializeWithTestData();
 }
 
 void TestClass::performTest()
@@ -88,18 +86,8 @@ void TestClass::performTest()
     }
 
 	OIGTLMessage::Pointer reqMsg;
-	CreateGetTransformMsg(reqMsg);
+	Create_GET_TransformMsg(reqMsg);
     m_socket2->sendMessage(reqMsg);
-}
-
-void TestClass::listen()
-{
-    //    while (1)
-    //    {
-    //        igtl::Sleep(1000);
-    //        std::cout <<"Still listening" <<std::endl;
-    //    }
-
 }
 
 void TestClass::quitTest()
@@ -124,9 +112,10 @@ void TestClass::catchMessage(OIGTLMessage::Pointer msg)
 
     if (msg.operator!=(NULL))
     {
-        QLOG_INFO() <<m_received <<"of" <<m_numOfMsg <<"message received: " <<msg->getHostName() <<":" <<msg->getPort() <<" " <<msg->getMessageType();
+        QLOG_INFO() <<m_received+1 <<"of" <<m_numOfMsg <<"message received: " <<msg->getHostName() <<":" <<msg->getPort() <<" " <<msg->getMessageType();
 
-        igtl::MessageBase::Pointer message = msg->getMessagePointer();
+        igtl::MessageBase::Pointer message;
+		msg->getMessagePointer(message);
         QLOG_INFO() <<message->GetNameOfClass();
 
         if (strcmp(message->GetNameOfClass(), "igtl::TransformMessage") == 0)
@@ -141,9 +130,9 @@ void TestClass::catchMessage(OIGTLMessage::Pointer msg)
             int r = memcmp((const void*)&receivedMatrix, (const void*)dummyTransformMatrix, sizeof(igtl::Matrix4x4));
 
             if (r == 0)
-                std::cout <<sender.toStdString().c_str() <<" received matrix " <<m_received <<" of " <<m_numOfMsg*2 <<": OK" <<std::endl;
+                std::cout <<sender.toStdString().c_str() <<" received matrix " <<m_received+1 <<" of " <<m_numOfMsg*2 <<": OK" <<std::endl;
             else
-                std::cout <<sender.toStdString().c_str() <<" received matrix " <<m_received <<" of " <<m_numOfMsg*2 <<": NOT-OK" <<std::endl;
+                std::cout <<sender.toStdString().c_str() <<" received matrix " <<m_received+1 <<" of " <<m_numOfMsg*2 <<": NOT-OK" <<std::endl;
 
             igtl::PrintMatrix(receivedMatrix);
 

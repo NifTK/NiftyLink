@@ -52,16 +52,12 @@ QString resolveHostName(const QString &input)
 QString getLocalHostAddress(void)
 {
 	QHostInfo info = QHostInfo::fromName(QHostInfo::localHostName());
-	//qDebug() <<"LocalHost: " <<info.localHostName();
 	QList<QHostAddress> addresses = info.addresses();
-
-	//qDebug() <<"Has addresses: " <<addresses.count();
 
 	for (int i=0; i< addresses.count(); i++)
 	{
 		if( validateIp(addresses.at(i).toString()) == true )
 		{
-			qDebug() <<addresses.at(i).toString();
 			return addresses.at(i).toString();
 		}
 	}
@@ -104,92 +100,12 @@ void CreateRandomTransformMatrix(igtl::Matrix4x4& matrix)
   //igtl::PrintMatrix(matrix);
 }
 
-void CreateRandomTransformMsg(OIGTLMessage::Pointer &msgToSend)
+void Create_GET_TransformMsg(OIGTLMessage::Pointer &msgToSend)
 {
 	msgToSend.operator =(OIGTLMessage::Pointer(new OIGTLMessage()));
 
-    igtl::TransformMessage::Pointer transMsg;
-    transMsg = igtl::TransformMessage::New();
-		
-	igtl::TimeStamp::Pointer ts;
-	ts = igtl::TimeStamp::New();
-	ts->GetTime();
-
-	igtl::Matrix4x4 localMatrix;
-    CreateRandomTransformMatrix(localMatrix);
-
-	QString lhn = getLocalHostAddress();
-
-	transMsg->SetTimeStamp(ts);
-	transMsg->SetDeviceName(lhn.toStdString().c_str());
-    transMsg->SetMatrix(localMatrix);
-
-	//Pack message data
-	transMsg->Pack();
-
-	//Embed igtl message data into OIGTLMessage
-    msgToSend->setMessagePointer((igtl::MessageBase::Pointer) transMsg);
-	//msgToSend->setHostName(getLocalHostAddress());
-}
-
-void CreateTestTransformMsg(OIGTLMessage::Pointer &msgToSend)
-{
-	msgToSend.operator =(OIGTLMessage::Pointer(new OIGTLMessage()));
-
-    igtl::TransformMessage::Pointer transMsg;
-    transMsg = igtl::TransformMessage::New();
-		
-	igtl::TimeStamp::Pointer ts;
-	ts = igtl::TimeStamp::New();
-	ts->GetTime();
-
-	QString lhn = getLocalHostAddress();
-
-	transMsg->SetTimeStamp(ts);
-	transMsg->SetDeviceName(lhn.toStdString().c_str());
-    transMsg->SetMatrix(dummyTransformMatrix);
-
-	//Pack message data
-	transMsg->Pack();
-
-	//Embed igtl message data into OIGTLMessage
-    msgToSend->setMessagePointer((igtl::MessageBase::Pointer) transMsg);
-	//msgToSend->setHostName(getLocalHostAddress());
-}
-
-void CreateTransformMsg(OIGTLMessage::Pointer &msgToSend, igtl::Matrix4x4 &matrix)
-{
-    msgToSend.operator =(OIGTLMessage::Pointer(new OIGTLMessage()));
-
-    igtl::TransformMessage::Pointer transMsg;
-    transMsg = igtl::TransformMessage::New();
-		
-	igtl::TimeStamp::Pointer ts;
-	ts = igtl::TimeStamp::New();
-	ts->GetTime();
-
-	QString lhn = getLocalHostAddress();
-
-	transMsg->SetTimeStamp(ts);
-	transMsg->SetDeviceName(lhn.toStdString().c_str());
-    transMsg->SetMatrix(matrix);
-
-	//Pack message data
-	transMsg->Pack();
-
-	//Embed igtl message data into OIGTLMessage
-    msgToSend->setMessagePointer((igtl::MessageBase::Pointer) transMsg);
-	//msgToSend->setHostName(getLocalHostAddress());
-}
-
-void CreateGetTransformMsg(OIGTLMessage::Pointer &msgToSend)
-{
-	msgToSend.operator =(OIGTLMessage::Pointer(new OIGTLMessage()));
-
-    igtl::GetTransformMessage::Pointer getTrMsg;
-	getTrMsg.operator =(igtl::GetTransformMessage::New());
-
-	igtl::GetTransformMessage::New();
+    igtl::GetTransformMessage::Pointer cmdMsg;
+	cmdMsg.operator =(igtl::GetTransformMessage::New());
     
 	igtl::TimeStamp::Pointer ts;
 	ts = igtl::TimeStamp::New();
@@ -198,31 +114,90 @@ void CreateGetTransformMsg(OIGTLMessage::Pointer &msgToSend)
 	QString lhn = getLocalHostAddress();
 
 	//Set parameters
-	getTrMsg->SetTimeStamp(ts);
-	getTrMsg->SetDeviceName(lhn.toStdString().c_str());
+	cmdMsg->SetTimeStamp(ts);
+	cmdMsg->SetDeviceName(lhn.toStdString().c_str());
    
 	//Pack message data
-	getTrMsg->Pack();
+	cmdMsg->Pack();
 
-    msgToSend->setMessagePointer((igtl::MessageBase::Pointer) getTrMsg);
+    msgToSend->setMessagePointer((igtl::MessageBase::Pointer) cmdMsg);
 }
 
-void GetTestImageMsg(OIGTLMessage::Pointer &msg)
-{}
-void GetTestPositionMsg(OIGTLMessage::Pointer &msg)
-{}
-void GetTestPointMsg(OIGTLMessage::Pointer &msg)
-{}
-void GetTestStatusMsg(OIGTLMessage::Pointer &msg)
-{}
-void GetTestStringMsg(OIGTLMessage::Pointer &msg)
-{}
+void Create_STT_TransformMsg(OIGTLMessage::Pointer &msgToSend)
+{
+	msgToSend.operator =(OIGTLMessage::Pointer(new OIGTLMessage()));
 
+    igtl::StartTransformMessage::Pointer cmdMsg;
+	cmdMsg.operator =(igtl::StartTransformMessage::New());
+    
+	igtl::TimeStamp::Pointer ts;
+	ts = igtl::TimeStamp::New();
+	ts->GetTime();
+
+	QString lhn = getLocalHostAddress();
+
+	//Set parameters
+	cmdMsg->SetTimeStamp(ts);
+	cmdMsg->SetDeviceName(lhn.toStdString().c_str());
+   
+	//Pack message data
+	cmdMsg->Pack();
+
+    msgToSend->setMessagePointer((igtl::MessageBase::Pointer) cmdMsg);
+}
+
+void Create_STP_TransformMsg(OIGTLMessage::Pointer &msgToSend)
+{
+	msgToSend.operator =(OIGTLMessage::Pointer(new OIGTLMessage()));
+
+    igtl::StopTransformMessage::Pointer cmdMsg;
+	cmdMsg.operator =(igtl::StopTransformMessage::New());
+    
+	igtl::TimeStamp::Pointer ts;
+	ts = igtl::TimeStamp::New();
+	ts->GetTime();
+
+	QString lhn = getLocalHostAddress();
+
+	//Set parameters
+	cmdMsg->SetTimeStamp(ts);
+	cmdMsg->SetDeviceName(lhn.toStdString().c_str());
+   
+	//Pack message data
+	cmdMsg->Pack();
+
+    msgToSend->setMessagePointer((igtl::MessageBase::Pointer) cmdMsg);
+}
+
+void Create_RTS_TransformMsg(OIGTLMessage::Pointer &msgToSend)
+{
+	msgToSend.operator =(OIGTLMessage::Pointer(new OIGTLMessage()));
+
+    igtl::RTSTransformMessage::Pointer cmdMsg;
+	cmdMsg.operator =(igtl::RTSTransformMessage::New());
+    
+	igtl::TimeStamp::Pointer ts;
+	ts = igtl::TimeStamp::New();
+	ts->GetTime();
+
+	QString lhn = getLocalHostAddress();
+
+	//Set parameters
+	cmdMsg->SetTimeStamp(ts);
+	cmdMsg->SetDeviceName(lhn.toStdString().c_str());
+   
+	//Pack message data
+	cmdMsg->Pack();
+
+    msgToSend->setMessagePointer((igtl::MessageBase::Pointer) cmdMsg);
+}
 
 bool CompareMsgData(OIGTLMessage::Pointer &msg1, OIGTLMessage::Pointer &msg2)
 {
-	igtl::MessageBase::Pointer basePointer1 = msg1->getMessagePointer();
-	igtl::MessageBase::Pointer basePointer2 = msg2->getMessagePointer();
+	igtl::MessageBase::Pointer basePointer1;
+	msg1->getMessagePointer(basePointer1);
+	igtl::MessageBase::Pointer basePointer2;
+	msg2->getMessagePointer(basePointer2);
 
 	if (strcmp(basePointer1->GetNameOfClass(), basePointer2->GetNameOfClass()) != 0)
 	{

@@ -38,6 +38,7 @@
 #include "QsLogDest.h"
 
 #include "OIGTLSocketObject.h"
+#include "OIGTLTransformMessage.h"
 
 // Taken from: http://doc.qt.nokia.com/latest/qtestlib-manual.html
 
@@ -52,7 +53,6 @@ public slots:
 	void setupTest();
     void setupTest2();
 	void performTest();
-    void listen();
 	void quitTest();
 
     void createMessage();
