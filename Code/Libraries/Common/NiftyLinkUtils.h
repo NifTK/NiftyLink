@@ -27,6 +27,9 @@
 #include <QHostInfo>
 #include <QHostAddress>
 #include <QStringList>
+#include <QNetworkConfigurationManager>
+#include <QNetworkInterface>
+#include <QNetworkSession>
 
 #include "igtlPolyDataMessage.h"
 #include "igtlTrajectoryMessage.h"
@@ -55,6 +58,7 @@ extern "C" NIFTYLINKCOMMON_WINEXPORT int NiftyLinkDummyFunction1();
 
 extern NIFTYLINKCOMMON_WINEXPORT bool validateIp(const QString &inputIP);
 extern NIFTYLINKCOMMON_WINEXPORT QString getLocalHostAddress(void);
+extern NIFTYLINKCOMMON_WINEXPORT QString getLocalHostAddress2(void);
 extern NIFTYLINKCOMMON_WINEXPORT QString resolveHostName(const QString &input);
 
 extern NIFTYLINKCOMMON_WINEXPORT void CreateRandomTransformMatrix(igtl::Matrix4x4& matrix);

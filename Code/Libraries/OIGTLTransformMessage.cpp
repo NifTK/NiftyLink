@@ -213,3 +213,95 @@ void OIGTLTransformMessage::initializeWithRandomData(void)
 	//Pack message data
 	msgPointer->Pack();
 }
+
+void OIGTLTransformMessage::Create_GET(OIGTLMessage::Pointer &msgToCreate)
+{
+    msgToCreate.operator =(OIGTLMessage::Pointer(new OIGTLMessage()));
+
+    igtl::GetTransformMessage::Pointer cmdMsg;
+    cmdMsg.operator =(igtl::GetTransformMessage::New());
+
+    igtl::TimeStamp::Pointer ts;
+    ts = igtl::TimeStamp::New();
+    ts->GetTime();
+
+    QString lhn = getLocalHostAddress2();
+
+    //Set parameters
+    cmdMsg->SetTimeStamp(ts);
+    cmdMsg->SetDeviceName(lhn.toStdString().c_str());
+
+    //Pack message data
+    cmdMsg->Pack();
+
+    msgToCreate->setMessagePointer((igtl::MessageBase::Pointer) cmdMsg);
+}
+
+void OIGTLTransformMessage::Create_STT(OIGTLMessage::Pointer &msgToCreate)
+{
+    msgToCreate.operator =(OIGTLMessage::Pointer(new OIGTLMessage()));
+
+    igtl::StartTransformMessage::Pointer cmdMsg;
+    cmdMsg.operator =(igtl::StartTransformMessage::New());
+
+    igtl::TimeStamp::Pointer ts;
+    ts = igtl::TimeStamp::New();
+    ts->GetTime();
+
+    QString lhn = getLocalHostAddress2();
+
+    //Set parameters
+    cmdMsg->SetTimeStamp(ts);
+    cmdMsg->SetDeviceName(lhn.toStdString().c_str());
+
+    //Pack message data
+    cmdMsg->Pack();
+
+    msgToCreate->setMessagePointer((igtl::MessageBase::Pointer) cmdMsg);
+}
+
+void OIGTLTransformMessage::Create_STP(OIGTLMessage::Pointer &msgToCreate)
+{
+    msgToCreate.operator =(OIGTLMessage::Pointer(new OIGTLMessage()));
+
+    igtl::StopTransformMessage::Pointer cmdMsg;
+    cmdMsg.operator =(igtl::StopTransformMessage::New());
+
+    igtl::TimeStamp::Pointer ts;
+    ts = igtl::TimeStamp::New();
+    ts->GetTime();
+
+    QString lhn = getLocalHostAddress2();
+
+    //Set parameters
+    cmdMsg->SetTimeStamp(ts);
+    cmdMsg->SetDeviceName(lhn.toStdString().c_str());
+
+    //Pack message data
+    cmdMsg->Pack();
+
+    msgToCreate->setMessagePointer((igtl::MessageBase::Pointer) cmdMsg);
+}
+
+void OIGTLTransformMessage::Create_RTS(OIGTLMessage::Pointer &msgToCreate)
+{
+    msgToCreate.operator =(OIGTLMessage::Pointer(new OIGTLMessage()));
+
+    igtl::RTSTransformMessage::Pointer cmdMsg;
+    cmdMsg.operator =(igtl::RTSTransformMessage::New());
+
+    igtl::TimeStamp::Pointer ts;
+    ts = igtl::TimeStamp::New();
+    ts->GetTime();
+
+    QString lhn = getLocalHostAddress2();
+
+    //Set parameters
+    cmdMsg->SetTimeStamp(ts);
+    cmdMsg->SetDeviceName(lhn.toStdString().c_str());
+
+    //Pack message data
+    cmdMsg->Pack();
+
+    msgToCreate->setMessagePointer((igtl::MessageBase::Pointer) cmdMsg);
+}

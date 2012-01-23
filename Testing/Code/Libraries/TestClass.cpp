@@ -43,7 +43,7 @@ void TestClass::setupTest()
     m_socket2->connectToRemote(url);
 
     m_successCounter = 0;
-    m_numOfMsg = 10;
+    m_numOfMsg = 1;
     m_received = 0;
 
     m_doStream = false;
@@ -85,8 +85,10 @@ void TestClass::performTest()
         m_socket2->sendMessage(m_msgToSend);
     }
 
-	OIGTLMessage::Pointer reqMsg;
-	Create_GET_TransformMsg(reqMsg);
+    OIGTLMessage::Pointer reqMsg;
+
+    OIGTLTransformMessage::Create_GET(reqMsg);
+    //Create_GET_TransformMsg(reqMsg);
     m_socket2->sendMessage(reqMsg);
 }
 
@@ -162,7 +164,7 @@ void TestClass::catchMessage(OIGTLMessage::Pointer msg)
     }
 
 
-    if (m_received >= 20)
+    if (m_received >= 2*m_numOfMsg)
         //if (m_received >= 2*m_numOfMsg)
         quitTest();
 

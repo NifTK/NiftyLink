@@ -10,14 +10,19 @@ class NIFTYLINKCOMMON_WINEXPORT OIGTLTransformMessage : public OIGTLMessage
 //	Q_OBJECT
 
 public:
+
+        typedef OIGTLTransformMessage		          Self;
+        typedef QExplicitlySharedDataPointer<Self>        Pointer;
+        typedef QExplicitlySharedDataPointer<const Self>  ConstPointer;
+
 	OIGTLTransformMessage(void);
 	~OIGTLTransformMessage(void);
-
-	typedef OIGTLTransformMessage		              Self;
-	typedef QExplicitlySharedDataPointer<Self>        Pointer;
-	typedef QExplicitlySharedDataPointer<const Self>  ConstPointer;
-
 	OIGTLTransformMessage(const OIGTLTransformMessage &other); 
+
+        static void Create_GET(OIGTLMessage::Pointer &msgToCreate);
+        static void Create_STT(OIGTLMessage::Pointer &msgToCreate);
+        static void Create_STP(OIGTLMessage::Pointer &msgToCreate);
+        static void Create_RTS(OIGTLMessage::Pointer &msgToCreate);
 
 	void setMatrix(igtl::Matrix4x4 &matrix);
 	void getMatrix(igtl::Matrix4x4 &matrix);

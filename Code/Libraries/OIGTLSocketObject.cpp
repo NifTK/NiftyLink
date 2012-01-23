@@ -28,6 +28,7 @@ OIGTLSocketObject::~OIGTLSocketObject(void)
 		disconnect(m_sender, SIGNAL(connectedToRemote()), this, SLOT(connectedToRemote()) );
 		disconnect(m_sender, SIGNAL(disconnectedFromRemote()), this, SLOT(disconnectedFromRemote()) );
 		disconnect(m_sender, SIGNAL(sendingFinished()), this, SIGNAL(sendingFinished()) );
+                disconnect(this, SIGNAL(messageToSend(OIGTLMessage::Pointer)), m_sender, SLOT(sendMsg(OIGTLMessage::Pointer)));
 
 		delete m_sender;
 		m_sender = NULL;
@@ -66,11 +67,11 @@ void OIGTLSocketObject::initThreads()
 	ok =  connect(m_sender, SIGNAL(connectedToRemote()), this, SLOT(connectedToRemote()), Qt::QueuedConnection);
 	ok &= connect(m_sender, SIGNAL(disconnectedFromRemote()), this, SLOT(disconnectedFromRemote()), Qt::QueuedConnection);
 	ok &= connect(m_sender, SIGNAL(sendingFinished()), this, SIGNAL(sendingFinished()), Qt::QueuedConnection);
-    ok &= connect(this, SIGNAL(messageToSend(OIGTLMessage::Pointer)), m_sender, SLOT(sendMsg(OIGTLMessage::Pointer)));
+        ok &= connect(this, SIGNAL(messageToSend(OIGTLMessage::Pointer)), m_sender, SLOT(sendMsg(OIGTLMessage::Pointer)));
 
 	ok &= connect(m_listener, SIGNAL(clientConnected()), this, SLOT(clientConnected()), Qt::QueuedConnection);
 	ok &= connect(m_listener, SIGNAL(clientDisconnected()), this, SLOT(clientDisconnected()), Qt::QueuedConnection);
-    ok &= connect(m_listener, SIGNAL(messageReceived(OIGTLMessage::Pointer)), this, SIGNAL(messageReceived(OIGTLMessage::Pointer)), Qt::QueuedConnection);
+        ok &= connect(m_listener, SIGNAL(messageReceived(OIGTLMessage::Pointer)), this, SIGNAL(messageReceived(OIGTLMessage::Pointer)), Qt::QueuedConnection);
 
 	//ok &= connect(m_listener, SIGNAL(messageReceived(OIGTLMessage::Pointer)), this, SLOT(catchMsgSignal(OIGTLMessage::Pointer )), Qt::QueuedConnection);
 	//ok &= connect(m_listener, SIGNAL(testSignal( )), this, SLOT(catchTestSignal()), Qt::QueuedConnection);
@@ -200,7 +201,7 @@ void OIGTLSocketObject::connectedToRemote(void)
 		m_ableToSend = true;
 
 		m_listener->setObjectName(this->objectName().append("_L"));
-		if (m_listener->initialize(m_sender->getSocketPointer()) == true)
+                if (m_listener->initialize(m_sender->getSocketPointer(), m_port) == true)
 			m_listener->startThread();
 	}
 }
@@ -224,7 +225,7 @@ void OIGTLSocketObject::clientConnected(void)
 	if (m_listener != NULL && m_listener->isInitialized())
 	{
 		m_sender->setObjectName(this->objectName().append("_S"));
-		if (m_sender->initialize(m_listener->getSocketPointer()) == true)
+                if (m_sender->initialize(m_listener->getSocketPointer(), m_port) == true)
 			m_ableToSend = true;
 			//m_sender->startThread();
 	}

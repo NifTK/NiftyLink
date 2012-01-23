@@ -10,7 +10,7 @@ OIGTLSenderThread::~OIGTLSenderThread(void)
 {
 }
 
-bool OIGTLSenderThread::initialize(igtl::Socket::Pointer socket)
+bool OIGTLSenderThread::initialize(igtl::Socket::Pointer socket, int port)
 {
 	if (socket.IsNull())
 	{
@@ -25,8 +25,9 @@ bool OIGTLSenderThread::initialize(igtl::Socket::Pointer socket)
 	}
 
 	m_extSocket.operator =(socket);
-    m_extSocket->SetTimeout(10);
+        m_extSocket->SetTimeout(10);
 	m_sendingOnSocket = true;
+        m_port = port;
 
 	if (!activate())
 		return false;
@@ -101,12 +102,18 @@ void OIGTLSenderThread::stopThread(void)
 	
 	if (!m_sendingOnSocket && m_extSocket.IsNotNull())
 	{
-		m_mutex->lock();
-		
-		if (m_extSocket.IsNotNull())
-			m_extSocket->CloseSocket();
+        int err = 0;
+        QLOG_INFO() <<objectName() <<": " << "Closing socket... \n";
 
+        m_mutex->lock();
+        if (m_extSocket.IsNotNull())
+            err = m_extSocket->CloseSocket();
 		m_mutex->unlock();
+
+        if (err != 0)
+            QLOG_ERROR() <<objectName() <<"CloseSocket returned with error: " <<err;
+        else
+            QLOG_INFO() <<objectName() <<"CloseSocket returned with error: " <<err;
 	}
 
 	m_sendingOnSocket = false;

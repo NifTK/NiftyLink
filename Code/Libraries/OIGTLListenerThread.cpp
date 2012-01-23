@@ -10,7 +10,7 @@ OIGTLListenerThread::~OIGTLListenerThread(void)
 {
 }
 
-bool OIGTLListenerThread::initialize(igtl::Socket::Pointer socket)
+bool OIGTLListenerThread::initialize(igtl::Socket::Pointer socket, int port)
 {
 	if (socket.IsNull())
 	{
@@ -27,6 +27,7 @@ bool OIGTLListenerThread::initialize(igtl::Socket::Pointer socket)
 	m_extSocket.operator =(socket);
 	m_extSocket->SetTimeout(20);
 	m_listeningOnPort = false;
+    m_port = port;
 
 	if (!activate())
 		return false;
@@ -90,19 +91,32 @@ void OIGTLListenerThread::stopThread()
 	QLOG_INFO() <<objectName() <<": " << "Quitting listener thread \n";
 
 	m_running = false;
-	
-	if (m_serverSocket.IsNotNull())
-	{
-		m_mutex->lock();
-		
-		if (m_listeningOnPort && m_extSocket.IsNotNull())
-			m_extSocket->CloseSocket();
-		
-		if (m_serverSocket.IsNotNull())
-			m_serverSocket->CloseSocket();
+    int err_p = 0;
+    int err_s = 0;
 
-		m_mutex->unlock();
-	}
+    QLOG_INFO() <<objectName() <<": " << "Closing socket... \n";
+
+    m_mutex->lock();
+    if (m_listeningOnPort && m_extSocket.IsNotNull())
+        err_p = m_extSocket->CloseSocket();
+    m_mutex->unlock();
+
+    if (err_p != 0)
+        QLOG_ERROR() <<objectName() <<"CloseSocket returned with error: " <<err_p;
+    else
+        QLOG_INFO() <<objectName() <<"CloseSocket succeded: " <<err_p;
+
+    QLOG_INFO() <<objectName() <<": " << "Closing socket... \n";
+
+    m_mutex->lock();
+    if (m_serverSocket.IsNotNull())
+        err_s = m_serverSocket->CloseSocket();
+    m_mutex->unlock();
+
+    if (err_s != 0)
+        QLOG_ERROR() <<objectName() <<"CloseServerSocket returned with error: " <<err_s;
+    else
+        QLOG_INFO() <<objectName() <<"CloseServerSocket succeeded: " <<err_s;
 
 	m_listeningOnPort = false;
     m_port = -1;
@@ -222,6 +236,9 @@ void OIGTLListenerThread::receiveMessage()
 	igtl::MessageHeader::Pointer msgHeader;
 	msgHeader = igtl::MessageHeader::New();
 
+    //Create message wrapper
+    OIGTLMessage::Pointer msg;
+
 	// Initialize receive buffer
 	msgHeader->InitPack();
 
@@ -259,15 +276,30 @@ void OIGTLListenerThread::receiveMessage()
 	else if (strcmp(msgHeader->GetDeviceType(), "RTS_IMAGE") == 0)
 	{}
 	else if (strcmp(msgHeader->GetDeviceType(), "TRANSFORM") == 0)
+    {
 		message = igtl::TransformMessage::New(); 
+        msg.operator =(OIGTLTransformMessage::Pointer(new OIGTLTransformMessage()));
+    }
 	else if (strcmp(msgHeader->GetDeviceType(), "GET_TRANS") == 0)
+    {
 		message = igtl::GetTransformMessage::New();
+        OIGTLTransformMessage::Create_GET(msg);
+    }
 	else if (strcmp(msgHeader->GetDeviceType(), "STT_TRANS") == 0)
+    {
 		message = igtl::StartTransformMessage::New();
+        OIGTLTransformMessage::Create_STT(msg);
+    }
 	else if (strcmp(msgHeader->GetDeviceType(), "STP_TRANS") == 0)
+    {
 		message = igtl::StopTransformMessage::New();
+        OIGTLTransformMessage::Create_STP(msg);
+    }
 	else if (strcmp(msgHeader->GetDeviceType(), "RTS_TRANS") == 0)
+    {
 		message = igtl::RTSTransformMessage::New();
+        OIGTLTransformMessage::Create_RTS(msg);
+    }
 	else if (strcmp(msgHeader->GetDeviceType(), "POSITION") == 0)
 		message = igtl::PositionMessage::New();
 	else if (strcmp(msgHeader->GetDeviceType(), "GET_POSITION") == 0)
@@ -316,6 +348,12 @@ void OIGTLListenerThread::receiveMessage()
 		return;
 	}
 
+    if (msg.operator ==(NULL))
+    {
+        QLOG_ERROR() <<objectName() <<": " <<"Cannot to create OIGTLMessage, receiveMessage() failed" <<endl;
+        return;
+    }
+
 	message->SetMessageHeader(msgHeader);
 	message->AllocatePack(); 
 
@@ -325,7 +363,7 @@ void OIGTLListenerThread::receiveMessage()
 	m_mutex->unlock();
 
 	
-	OIGTLMessage::Pointer msg(new OIGTLMessage());
+    //OIGTLMessage::Pointer msg(new OIGTLMessage());
 	
 	igtl::TimeStamp::Pointer ts = igtl::TimeStamp::New();
 	ts->GetTime();

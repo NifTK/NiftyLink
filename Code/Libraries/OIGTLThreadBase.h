@@ -8,6 +8,7 @@
 #include <QSignalSpy>
 
 #include "OIGTLMessage.h"
+#include "OIGTLTransformMessage.h"
 #include "igtlSocket.h"
 #include "igtlServerSocket.h"
 
@@ -26,7 +27,7 @@ public:
 protected:
 	virtual void run(void) {}
 	
-	virtual bool initialize(igtl::Socket::Pointer socket = 0) { return false; }
+        virtual bool initialize(igtl::Socket::Pointer socket = 0, int port = -1) { return false; }
 	virtual bool activate(void) { return false; }
 
 	virtual void sendMsg(OIGTLMessage &msg) {}
