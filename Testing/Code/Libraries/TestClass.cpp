@@ -38,7 +38,7 @@ void TestClass::setupTest()
 	url.setHost(QString("localhost"));
     url.setPort(3200);
 
-    //Start sender / listener
+	//Start sender / listener
     m_socket1->listenOnPort(3200);
     m_socket2->connectToRemote(url);
 

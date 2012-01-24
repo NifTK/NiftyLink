@@ -14,7 +14,11 @@ signals:
 	void messageReceived(OIGTLMessage::Pointer);
     void messageToSend(OIGTLMessage::Pointer);
 	void sendingFinished();
-	void lostConnectionToRemote(void);
+	
+	void connectedToRemoteSignal(void);
+	void lostConnectionToRemoteSignal(void);
+	void clientConnectedSignal(void);
+	void clientDisconnectedSignal(void);
 
 	void testSignal(void);
 

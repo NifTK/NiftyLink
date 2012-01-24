@@ -44,6 +44,7 @@ OIGTLSenderThread.cpp
 OIGTLListenerThread.cpp
 OIGTLSocketObject.cpp
 OIGTLTransformMessage.cpp
+OIGTLImageMessage.cpp
 )
 
 SET(niftylink_HDRS
@@ -59,6 +60,7 @@ OIGTLSenderThread.h
 OIGTLListenerThread.h
 OIGTLSocketObject.h
 OIGTLTransformMessage.h
+OIGTLImageMessage.h
 )
 
 

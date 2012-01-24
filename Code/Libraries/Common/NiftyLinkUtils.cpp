@@ -23,9 +23,6 @@
 
 bool validateIp(const QString &inputIP)
 {
-	if (inputIP == QString("localhost"))
-		return true;
-
 	QStringList nums = inputIP.split(".");
 
 	if (nums.count() !=4)
@@ -45,13 +42,10 @@ bool validateIp(const QString &inputIP)
 
 QString resolveHostName(const QString &input)
 {
-	QHostInfo info = QHostInfo::fromName(input);
-	return info.addresses().first().toString();
-}
+	if (validateIp(input))
+		return input;
 
-QString getLocalHostAddress(void)
-{
-	QHostInfo info = QHostInfo::fromName(QHostInfo::localHostName());
+	QHostInfo info = QHostInfo::fromName(input);
 	QList<QHostAddress> addresses = info.addresses();
 
 	for (int i=0; i< addresses.count(); i++)
@@ -63,6 +57,12 @@ QString getLocalHostAddress(void)
 	}
 	
 	return QString("UNKNOWN");
+
+}
+
+QString getLocalHostAddress(void)
+{
+	return resolveHostName(QHostInfo::localHostName());
 }
 
 QString getLocalHostAddress2(void)
@@ -128,98 +128,6 @@ void CreateRandomTransformMatrix(igtl::Matrix4x4& matrix)
   matrix[2][3] = position[2];
   
   //igtl::PrintMatrix(matrix);
-}
-
-void Create_GET_TransformMsg(OIGTLMessage::Pointer &msgToSend)
-{
-	msgToSend.operator =(OIGTLMessage::Pointer(new OIGTLMessage()));
-
-    igtl::GetTransformMessage::Pointer cmdMsg;
-	cmdMsg.operator =(igtl::GetTransformMessage::New());
-    
-	igtl::TimeStamp::Pointer ts;
-	ts = igtl::TimeStamp::New();
-	ts->GetTime();
-
-	QString lhn = getLocalHostAddress();
-
-	//Set parameters
-	cmdMsg->SetTimeStamp(ts);
-	cmdMsg->SetDeviceName(lhn.toStdString().c_str());
-   
-	//Pack message data
-	cmdMsg->Pack();
-
-    msgToSend->setMessagePointer((igtl::MessageBase::Pointer) cmdMsg);
-}
-
-void Create_STT_TransformMsg(OIGTLMessage::Pointer &msgToSend)
-{
-	msgToSend.operator =(OIGTLMessage::Pointer(new OIGTLMessage()));
-
-    igtl::StartTransformMessage::Pointer cmdMsg;
-	cmdMsg.operator =(igtl::StartTransformMessage::New());
-    
-	igtl::TimeStamp::Pointer ts;
-	ts = igtl::TimeStamp::New();
-	ts->GetTime();
-
-	QString lhn = getLocalHostAddress();
-
-	//Set parameters
-	cmdMsg->SetTimeStamp(ts);
-	cmdMsg->SetDeviceName(lhn.toStdString().c_str());
-   
-	//Pack message data
-	cmdMsg->Pack();
-
-    msgToSend->setMessagePointer((igtl::MessageBase::Pointer) cmdMsg);
-}
-
-void Create_STP_TransformMsg(OIGTLMessage::Pointer &msgToSend)
-{
-	msgToSend.operator =(OIGTLMessage::Pointer(new OIGTLMessage()));
-
-    igtl::StopTransformMessage::Pointer cmdMsg;
-	cmdMsg.operator =(igtl::StopTransformMessage::New());
-    
-	igtl::TimeStamp::Pointer ts;
-	ts = igtl::TimeStamp::New();
-	ts->GetTime();
-
-	QString lhn = getLocalHostAddress();
-
-	//Set parameters
-	cmdMsg->SetTimeStamp(ts);
-	cmdMsg->SetDeviceName(lhn.toStdString().c_str());
-   
-	//Pack message data
-	cmdMsg->Pack();
-
-    msgToSend->setMessagePointer((igtl::MessageBase::Pointer) cmdMsg);
-}
-
-void Create_RTS_TransformMsg(OIGTLMessage::Pointer &msgToSend)
-{
-	msgToSend.operator =(OIGTLMessage::Pointer(new OIGTLMessage()));
-
-    igtl::RTSTransformMessage::Pointer cmdMsg;
-	cmdMsg.operator =(igtl::RTSTransformMessage::New());
-    
-	igtl::TimeStamp::Pointer ts;
-	ts = igtl::TimeStamp::New();
-	ts->GetTime();
-
-	QString lhn = getLocalHostAddress();
-
-	//Set parameters
-	cmdMsg->SetTimeStamp(ts);
-	cmdMsg->SetDeviceName(lhn.toStdString().c_str());
-   
-	//Pack message data
-	cmdMsg->Pack();
-
-    msgToSend->setMessagePointer((igtl::MessageBase::Pointer) cmdMsg);
 }
 
 bool CompareMsgData(OIGTLMessage::Pointer &msg1, OIGTLMessage::Pointer &msg2)
