@@ -33,8 +33,8 @@ SET(proj_DEPENDENCIES )
 SET(OPENIGTLINK_DEPENDS ${proj})
  
 IF(NOT DEFINED OpenIGTLink_DIR)
-
-    SET(revision_tag 85f359f008)
+#1273 - OpenIGTLink version update due to bugfixes.
+    SET(revision_tag 6cf82567a9)
     IF(${proj}_REVISION_TAG)
         SET(revision_tag ${${proj}_REVISION_TAG})
     ENDIF()
