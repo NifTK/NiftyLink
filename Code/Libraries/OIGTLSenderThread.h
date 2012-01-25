@@ -5,41 +5,42 @@
 
 class OIGTLSenderThread : public OIGTLThreadBase
 {
-	Q_OBJECT
+  Q_OBJECT
 
-friend class OIGTLSocketObject;
+    friend class OIGTLSocketObject;
 
 signals:
-	void connectedToRemote(void);
-	void disconnectedFromRemote(void);
-	void sendingFinished(void);
+  void connectedToRemote(void);
+  void disconnectedFromRemote(void);
+  void sendingFinished(void);
 
 protected:
-	OIGTLSenderThread(QObject *parent = 0);
-	~OIGTLSenderThread(void);
-	
-	virtual void run(void);
+  OIGTLSenderThread(QObject *parent = 0);
+  ~OIGTLSenderThread(void);
 
-        virtual bool initialize(igtl::Socket::Pointer socket = 0, int port = -1);
-	bool initialize(std::string &hostname, int port = 0);
+  virtual void run(void);
+  virtual bool initialize(igtl::Socket::Pointer socket = 0, int port = -1);
+  bool initialize(std::string &hostname, int port = 0);
 
-	//virtual igtl::Socket::Pointer getSocketPointer(void) { return m_extSocket; }
+  virtual void setConnectTimeOut(int sec);
+  virtual  int getConnectTimeOut(void);
 
 protected slots:
-	virtual void sendMsg(OIGTLMessage::Pointer);
+  virtual void sendMsg(OIGTLMessage::Pointer);
 
-	virtual void startThread(void);
-	virtual void stopThread(void);
-
-private:
-	virtual bool activate(void);
+  virtual void startThread(void);
+  virtual void stopThread(void);
 
 private:
-	//igtl::ClientSocket::Pointer m_clientSocket;
-	bool m_sendingOnSocket;
+  virtual bool activate(void);
 
-	QList<OIGTLMessage::Pointer> m_sendQue;
-	QMutex m_queueMutex;
+private:
+  //igtl::ClientSocket::Pointer m_clientSocket;
+  bool m_sendingOnSocket;
+  int  m_connectTimeout;
+
+  QList<OIGTLMessage::Pointer> m_sendQue;
+  QMutex m_queueMutex;
 };
 
 #endif

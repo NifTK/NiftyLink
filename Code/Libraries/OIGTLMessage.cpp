@@ -10,8 +10,6 @@ OIGTLMessage::OIGTLMessage(void)
 	m_timeCreated->GetTime();
 
 	m_id = m_timeCreated->GetTimeStampUint64();
-
-	m_id = 0;
 	m_resolution = 0;
 }
 
