@@ -47,32 +47,41 @@ OIGTLTransformMessage.cpp
 OIGTLImageMessage.cpp
 )
 
-SET(niftylink_HDRS
+#########################
+# Does need moc.
+#########################
+SET(niftylink_MOC_HDRS
 Common/NiftyLinkUtils.h
-Common/NiftyLinkCommonWin32ExportHeader.h
-Common/QsDebugOutput.h
-Common/QsLog.h
-Common/QsLogDest.h
 OIGTLConnectorBase.h
-OIGTLMessage.h
 OIGTLThreadBase.h
 OIGTLSenderThread.h
 OIGTLListenerThread.h
 OIGTLSocketObject.h
+)
+
+#########################
+# Does not need moc.
+#########################
+SET(niftylink_HDRS
+Common/NiftyLinkCommonWin32ExportHeader.h
+Common/QsDebugOutput.h
+Common/QsLog.h
+Common/QsLogDest.h
+OIGTLMessage.h
 OIGTLTransformMessage.h
 OIGTLImageMessage.h
 )
 
-
 # --------------------------------------------------------------------------
 # Qt Specific Commands
 
-QT4_WRAP_CPP(NIFTYLINK_QT_MOC_FILES ${niftylink_HDRS} )			  
+QT4_WRAP_CPP(NIFTYLINK_QT_MOC_FILES ${niftylink_MOC_HDRS} )		
+#QT4_GENERATE_MOC(NIFTYLINK_QT_MOC_FILES ${niftylink_MOC_HDRS})	  
+
 SOURCE_GROUP("Generated Files" FILES ${NIFTYLINK_QT_MOC_FILES})
 
 include_directories(${CMAKE_CURRENT_BINARY_DIR})
 include_directories(${CMAKE_CURRENT_SOURCE_DIR})
-
 
 # --------------------------------------------------------------------------
 # Build the library
