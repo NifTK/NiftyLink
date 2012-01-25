@@ -53,7 +53,8 @@ bool OIGTLListenerThread::initialize(int port)
 	
 	igtl::ServerSocket::Pointer ssock = igtl::ServerSocket::New();
 	int	err = ssock->CreateServer(port);
-
+	ssock->SetTimeout(20);
+	
 	if (err < 0)
 	{
 		QLOG_ERROR() <<objectName() <<": " << "Error creating listener socket." << endl;
@@ -63,6 +64,7 @@ bool OIGTLListenerThread::initialize(int port)
 	
 	m_port = port;
 	m_serverSocket.operator =(ssock);
+	m_serverSocket->SetTimeout(20);
 	m_listeningOnPort = true;
 
 	if (!activate())
@@ -98,7 +100,10 @@ void OIGTLListenerThread::stopThread()
 
     m_mutex->lock();
     if (m_listeningOnPort && m_extSocket.IsNotNull())
+	{
         err_p = m_extSocket->CloseSocket();
+		m_extSocket.operator =(NULL);
+	}
     m_mutex->unlock();
 
     if (err_p != 0)
@@ -110,7 +115,10 @@ void OIGTLListenerThread::stopThread()
 
     m_mutex->lock();
     if (m_serverSocket.IsNotNull())
+	{
         err_s = m_serverSocket->CloseSocket();
+		m_serverSocket.operator =(NULL);
+	}
     m_mutex->unlock();
 
     if (err_s != 0)
