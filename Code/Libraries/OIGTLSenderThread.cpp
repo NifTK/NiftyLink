@@ -25,7 +25,7 @@ bool OIGTLSenderThread::initialize(igtl::Socket::Pointer socket, int port)
 	}
 
 	m_extSocket.operator =(socket);
-        m_extSocket->SetTimeout(10);
+    m_extSocket->SetTimeout(10);
 	m_sendingOnSocket = true;
         m_port = port;
 
@@ -56,7 +56,7 @@ bool OIGTLSenderThread::initialize(std::string &hostname, int port)
 	}
 
 	igtl::ClientSocket::Pointer cs = igtl::ClientSocket::New(); 
-
+    cs->SetTimeout(10);
 	int r = cs->ConnectToServer(hostname.c_str(), port);
 
 	if (r != 0)
