@@ -28,10 +28,10 @@
 #-----------------------------------------------------------------------------
 
 # The NiftyLink include file directories.
-SET(NiftyLink_INCLUDE_DIRS "@NIFTYLINK_INCLUDE_DIRS_BUILD_TREE@")
+SET(NiftyLink_INCLUDE_DIRS "@NIFTYLINK_INCLUDE_DIRS_BUILD_TREE@;@OpenIGTLink_INCLUDE_DIRS@")
 
 # The NiftyLink library directories.
-SET(NiftyLink_LIBRARY_DIRS "@CMAKE_BINARY_DIR@/bin")
+SET(NiftyLink_LIBRARY_DIRS "@CMAKE_BINARY_DIR@/bin;@OpenIGTLink_LIBRARY_DIRS@")
 
 # The NiftyLink Library version number
 SET(NiftyLink_VERSION_MAJOR "@NIFTYLINK_VERSION_MAJOR@")
@@ -45,4 +45,4 @@ SET(NiftyLink_USE_FILE "@CMAKE_BINARY_DIR@/UseNiftyLink.cmake")
 SET(NiftyLink_BUILD_SHARED "@BUILD_SHARED_LIBS@")
 
 # A list of all libraries for NiftyLink.  
-SET(NiftyLink_LIBRARIES niftylinkcommon)
+SET(NiftyLink_LIBRARIES "niftylinkcommon igtlutil @OpenIGTLink_LIBRARIES@ ")

@@ -75,9 +75,7 @@ OIGTLImageMessage.h
 # --------------------------------------------------------------------------
 # Qt Specific Commands
 
-QT4_WRAP_CPP(NIFTYLINK_QT_MOC_FILES ${niftylink_MOC_HDRS} )		
-#QT4_GENERATE_MOC(NIFTYLINK_QT_MOC_FILES ${niftylink_MOC_HDRS})	  
-
+QT4_WRAP_CPP(NIFTYLINK_QT_MOC_FILES ${niftylink_MOC_HDRS} )			  
 SOURCE_GROUP("Generated Files" FILES ${NIFTYLINK_QT_MOC_FILES})
 
 include_directories(${CMAKE_CURRENT_BINARY_DIR})
