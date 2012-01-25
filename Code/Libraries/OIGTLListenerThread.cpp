@@ -8,6 +8,8 @@ OIGTLListenerThread::OIGTLListenerThread(QObject *parent)
 
 OIGTLListenerThread::~OIGTLListenerThread(void)
 {
+	m_serverSocket.operator =(NULL);
+	m_extSocket.operator =(NULL);
 }
 
 bool OIGTLListenerThread::initialize(igtl::Socket::Pointer socket, int port)

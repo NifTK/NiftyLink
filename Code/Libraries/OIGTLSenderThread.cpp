@@ -8,6 +8,7 @@ OIGTLSenderThread::OIGTLSenderThread(QObject *parent)
 
 OIGTLSenderThread::~OIGTLSenderThread(void)
 {
+	m_extSocket.operator =(NULL);
 }
 
 bool OIGTLSenderThread::initialize(igtl::Socket::Pointer socket, int port)
@@ -107,7 +108,10 @@ void OIGTLSenderThread::stopThread(void)
 
         m_mutex->lock();
         if (m_extSocket.IsNotNull())
+		{
             err = m_extSocket->CloseSocket();
+			m_extSocket.operator =(NULL);
+		}
 		m_mutex->unlock();
 
         if (err != 0)
