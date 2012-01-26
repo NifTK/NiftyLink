@@ -26,13 +26,10 @@
 
 function run_command()
 {
-  echo "Running $1, with cautious flag=$2"
+  echo "Running \"$1\""
   eval $1
   if [ $? -ne 0 ]; then
-    if [ "$2" = "OFF" ]; then
-      echo "Emergency exit due to exit code:$?"
-      exit $?
-    fi
+    echo "ERROR: command \"$1\" returned with error code $?"
   fi
 }
 
@@ -82,5 +79,5 @@ run_command "cd ${FOLDER}"
 run_command "cmake ../NiftyLink  ${COVERAGE_ARG} -DCMAKE_BUILD_TYPE=${TYPE} -DBUILD_TESTING=ON"
 run_command "make -j ${THREADS}"
 run_command "cd NiftyLink-build"
-run_command "${BUILD_COMMAND} OFF"  # The submit task fails due to http timeout, so we want to carry on regardles.
+run_command "${BUILD_COMMAND}"  # Note that the submit task fails with http timeout, but we want to carry on regardless to get to the package bit.
 
