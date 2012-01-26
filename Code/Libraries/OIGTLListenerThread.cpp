@@ -192,7 +192,7 @@ void OIGTLListenerThread::listenOnSocket(void)
     if (m_extSocket.IsNull() || !m_extSocket->IsValid())
     {
       QLOG_ERROR() <<objectName() <<": " <<"Socket terminated, disconnecting" <<"\n";
-      emit clientDisconnected();
+      emit clientDisconnected(false);
       break;
     }
 
@@ -232,7 +232,7 @@ void OIGTLListenerThread::listenOnPort(void)
         if (socket.IsNull()  || !socket->IsValid())
         {
           QLOG_ERROR() <<objectName() <<": " <<"Socket terminated, disconnecting" <<"\n";
-          emit clientDisconnected();
+          emit clientDisconnected(true);
           break;
         }
 

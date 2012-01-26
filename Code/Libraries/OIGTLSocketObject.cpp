@@ -26,6 +26,7 @@ OIGTLSocketObject::~OIGTLSocketObject(void)
   if (m_sender != NULL)
   {
     disconnect(m_sender, SIGNAL(connectedToRemote()), this, SLOT(connectedToRemote()) );
+    disconnect(m_sender, SIGNAL(cannotConnectToRemote()), this, SLOT(cannotConnectToRemote()) );
     disconnect(m_sender, SIGNAL(disconnectedFromRemote()), this, SLOT(disconnectedFromRemote()) );
     disconnect(m_sender, SIGNAL(sendingFinished()), this, SIGNAL(sendingFinished()) );
     disconnect(this, SIGNAL(messageToSend(OIGTLMessage::Pointer)), m_sender, SLOT(sendMsg(OIGTLMessage::Pointer)));
@@ -37,7 +38,7 @@ OIGTLSocketObject::~OIGTLSocketObject(void)
   if (m_listener != NULL)
   {
     disconnect(m_listener, SIGNAL(clientConnected()), this, SLOT(clientConnected()) );
-    disconnect(m_listener, SIGNAL(clientDisconnected()), this, SLOT(clientDisconnected()) );
+    disconnect(m_listener, SIGNAL(clientDisconnected(bool )), this, SLOT(clientDisconnected(bool )) );
     disconnect(m_listener, SIGNAL(messageReceived(OIGTLMessage::Pointer)), this, SIGNAL(messageReceived(OIGTLMessage::Pointer)) );
 
     delete m_listener;
@@ -219,7 +220,7 @@ void OIGTLSocketObject::cannotConnectToRemote(void)
   emit cannotConnectToRemoteSignal();
 }
 
-void OIGTLSocketObject::disconnectedFromRemote(void)
+void OIGTLSocketObject::disconnectedFromRemote(bool onPort)
 {
   if (m_sender != NULL)
     m_sender->stopThread();
@@ -230,7 +231,8 @@ void OIGTLSocketObject::disconnectedFromRemote(void)
   m_connectedToRemote = false;
   m_ableToSend = false;
 
-  emit lostConnectionToRemoteSignal();
+  if (onPort)
+    emit lostConnectionToRemoteSignal();
 }
 
 void OIGTLSocketObject::clientConnected(void)
@@ -246,14 +248,15 @@ void OIGTLSocketObject::clientConnected(void)
   }
 }
 
-void OIGTLSocketObject::clientDisconnected(void)
+void OIGTLSocketObject::clientDisconnected(bool onPort)
 {
   if (m_sender != NULL)
   {
     m_sender->stopThread();
     m_ableToSend = false;
 
-    emit clientDisconnectedSignal();
+    if (onPort)
+      emit clientDisconnectedSignal();
   }
 }
 

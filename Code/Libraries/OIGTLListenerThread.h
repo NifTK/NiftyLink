@@ -14,7 +14,7 @@ class OIGTLListenerThread : public OIGTLThreadBase
 
 signals:
   void clientConnected(void);
-  void clientDisconnected(void);
+  void clientDisconnected(bool onPort);
   void messageReceived(OIGTLMessage::Pointer msg);
 
   void testSignal(void);

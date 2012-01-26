@@ -61,10 +61,10 @@ private slots:
 
   void connectedToRemote(void);
   void cannotConnectToRemote(void);
-  void disconnectedFromRemote(void);
+  void disconnectedFromRemote(bool onPort);
 
   void clientConnected(void);
-  void clientDisconnected(void);
+  void clientDisconnected(bool onPort);
 
 
 

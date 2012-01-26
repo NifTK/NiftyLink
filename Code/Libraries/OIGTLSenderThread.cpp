@@ -207,7 +207,12 @@ void OIGTLSenderThread::run(void)
     if (m_extSocket.IsNull() || !m_extSocket->IsValid())
     {
       QLOG_ERROR() <<objectName() <<": " <<"Cannot send message: Disconnected from remote host" <<"\n";
-      emit disconnectedFromRemote();
+      
+      if (m_sendingOnSocket)
+        emit disconnectedFromRemote(false);
+      else
+        emit disconnectedFromRemote(true);
+      
       break;
     }
 

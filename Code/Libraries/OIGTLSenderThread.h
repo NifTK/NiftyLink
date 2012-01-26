@@ -12,7 +12,7 @@ class OIGTLSenderThread : public OIGTLThreadBase
 signals:
   void connectedToRemote(void);
   void cannotConnectToRemote();
-  void disconnectedFromRemote(void);
+  void disconnectedFromRemote(bool onPort);
   void sendingFinished(void);
 
 protected:
