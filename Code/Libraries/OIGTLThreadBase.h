@@ -5,7 +5,6 @@
 #include <QObject>
 #include <QDebug>
 #include <QMutex>
-#include <QSignalSpy>
 
 #include "OIGTLMessage.h"
 #include "OIGTLTransformMessage.h"
