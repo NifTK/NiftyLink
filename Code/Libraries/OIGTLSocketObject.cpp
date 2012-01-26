@@ -27,7 +27,7 @@ OIGTLSocketObject::~OIGTLSocketObject(void)
   {
     disconnect(m_sender, SIGNAL(connectedToRemote()), this, SLOT(connectedToRemote()) );
     disconnect(m_sender, SIGNAL(cannotConnectToRemote()), this, SLOT(cannotConnectToRemote()) );
-    disconnect(m_sender, SIGNAL(disconnectedFromRemote()), this, SLOT(disconnectedFromRemote()) );
+    disconnect(m_sender, SIGNAL(disconnectedFromRemote(bool )), this, SLOT(disconnectedFromRemote(bool )) );
     disconnect(m_sender, SIGNAL(sendingFinished()), this, SIGNAL(sendingFinished()) );
     disconnect(this, SIGNAL(messageToSend(OIGTLMessage::Pointer)), m_sender, SLOT(sendMsg(OIGTLMessage::Pointer)));
 
@@ -67,12 +67,12 @@ void OIGTLSocketObject::initThreads()
 
   ok =  connect(m_sender, SIGNAL(connectedToRemote()), this, SLOT(connectedToRemote()), Qt::QueuedConnection);
   ok &= connect(m_sender, SIGNAL(cannotConnectToRemote()), this, SLOT(cannotConnectToRemote()), Qt::QueuedConnection);
-  ok &= connect(m_sender, SIGNAL(disconnectedFromRemote()), this, SLOT(disconnectedFromRemote()), Qt::QueuedConnection);
+  ok &= connect(m_sender, SIGNAL(disconnectedFromRemote(bool )), this, SLOT(disconnectedFromRemote(bool )), Qt::QueuedConnection);
   ok &= connect(m_sender, SIGNAL(sendingFinished()), this, SIGNAL(sendingFinished()), Qt::QueuedConnection);
   ok &= connect(this, SIGNAL(messageToSend(OIGTLMessage::Pointer)), m_sender, SLOT(sendMsg(OIGTLMessage::Pointer)));
 
   ok &= connect(m_listener, SIGNAL(clientConnected()), this, SLOT(clientConnected()), Qt::QueuedConnection);
-  ok &= connect(m_listener, SIGNAL(clientDisconnected()), this, SLOT(clientDisconnected()), Qt::QueuedConnection);
+  ok &= connect(m_listener, SIGNAL(clientDisconnected(bool )), this, SLOT(clientDisconnected(bool )), Qt::QueuedConnection);
   ok &= connect(m_listener, SIGNAL(messageReceived(OIGTLMessage::Pointer)), this, SIGNAL(messageReceived(OIGTLMessage::Pointer)), Qt::QueuedConnection);
 
   //ok &= connect(m_listener, SIGNAL(messageReceived(OIGTLMessage::Pointer)), this, SLOT(catchMsgSignal(OIGTLMessage::Pointer )), Qt::QueuedConnection);
