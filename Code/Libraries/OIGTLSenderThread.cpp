@@ -5,16 +5,18 @@ OIGTLSenderThread::OIGTLSenderThread(QObject *parent)
 {
   m_sendingOnSocket = false;
   m_connectTimeout = 5;
+  m_hostname.clear();
 }
 
 OIGTLSenderThread::~OIGTLSenderThread(void)
 {
   m_extSocket.operator =(NULL);
+  m_clientSocket.operator =(NULL);
 }
 
 bool OIGTLSenderThread::initialize(igtl::Socket::Pointer socket, int port)
 {
-  if (socket.IsNull())
+  if (socket.IsNull() || !socket->IsValid())
   {
     QLOG_ERROR() <<objectName() <<": " << "Cannot create a sender socket, invalid external socket specified" << endl;
     return false;
@@ -57,28 +59,27 @@ bool OIGTLSenderThread::initialize(std::string &hostname, int port)
     return false;
   }
 
-  igtl::ClientSocket::Pointer cs = igtl::ClientSocket::New(); 
-  cs->SetTimeout(m_socketTimeout);
-  cs->SetConnectionTimeout(m_connectTimeout);
-  int r = cs->ConnectToServer(hostname.c_str(), port);
-
-  if (r != 0)
+  m_clientSocket = igtl::ClientSocket::New();
+  if (m_clientSocket.IsNotNull())// && m_clientSocket->IsValid())
   {
-    QLOG_ERROR() <<objectName() <<": " << "Cannot create a sender socket, could not connect to server: " <<hostname.c_str() << endl;
+    m_clientSocket->SetTimeout(m_socketTimeout);
+    m_clientSocket->SetConnectionTimeout(m_connectTimeout);
+    m_sendingOnSocket = false;
+    m_port = port;
+    m_hostname.operator =(hostname);
+  }
+  else
+  {
+    QLOG_ERROR() <<objectName() <<": " << "Failed to create socket" << endl;
+    m_clientSocket.operator =(NULL);
     m_port = -1;
+    m_hostname.clear();
     return false;
   }
-
-  m_port = port;
-
-  m_extSocket.operator =((igtl::Socket::Pointer) cs);
-  m_extSocket->SetTimeout(m_socketTimeout);
-  m_sendingOnSocket = false;
 
   if (!activate())
     return false;
 
-  emit connectedToRemote();
   return true;
 }
 
@@ -103,7 +104,7 @@ void OIGTLSenderThread::stopThread(void)
 
   m_running = false;
 
-  if (!m_sendingOnSocket && m_extSocket.IsNotNull())
+  if (!m_sendingOnSocket)
   {
     int err = 0;
     QLOG_INFO() <<objectName() <<": " << "Closing socket... \n";
@@ -111,8 +112,20 @@ void OIGTLSenderThread::stopThread(void)
     m_mutex->lock();
     if (m_extSocket.IsNotNull())
     {
-      err = m_extSocket->CloseSocket();
+      if (m_extSocket->IsValid())
+        err |= m_extSocket->CloseSocket();
+      
       m_extSocket.operator =(NULL);
+    }
+    m_mutex->unlock();
+
+    m_mutex->lock();
+    if (m_clientSocket.IsNotNull())
+    {
+      if (m_clientSocket->IsValid())
+        err |= m_clientSocket->CloseSocket();
+
+      m_clientSocket.operator =(NULL);
     }
     m_mutex->unlock();
 
@@ -126,6 +139,7 @@ void OIGTLSenderThread::stopThread(void)
   m_sendQue.clear();
 
   m_port = -1;
+  m_hostname.clear();
   m_initialized = false;
 
   exit(0);
@@ -139,13 +153,19 @@ bool OIGTLSenderThread::activate(void)
     return false;
   }
 
-  if (!m_sendingOnSocket && m_port <= 0)
+  if ( (!m_sendingOnSocket && m_port <= 0) || (!m_sendingOnSocket && m_hostname.empty()) )
   {
-    QLOG_INFO() <<objectName() <<": " <<"Cannot activate sender, port is invalid" <<endl;
+    QLOG_INFO() <<objectName() <<": " <<"Cannot activate sender, hostname or port is invalid" <<endl;
     return false;
   }
 
-  if (m_extSocket.IsNull())
+  if ( (!m_sendingOnSocket && m_clientSocket.IsNull()) )// || (!m_sendingOnSocket && !m_clientSocket->IsValid()) )
+  {
+    QLOG_INFO() <<objectName() <<": " <<"Cannot activate sender, client socket is invalid" <<endl;
+    return false;
+  }
+
+  if ( (m_sendingOnSocket && m_extSocket.IsNull()) || (m_sendingOnSocket && !m_extSocket->IsValid()) )
   {
     QLOG_INFO() <<objectName() <<": " <<"Cannot activate listener, socket is invalid" <<endl;
     return false;
@@ -160,9 +180,31 @@ bool OIGTLSenderThread::activate(void)
 
 void OIGTLSenderThread::run(void)
 {
+  if (!m_sendingOnSocket && m_extSocket.IsNull())
+  {
+    int r = m_clientSocket->ConnectToServer(m_hostname.c_str(), m_port);
+
+    if (r != 0)
+    {
+      QLOG_ERROR() <<objectName() <<": " << "Cannot create a sender socket, could not connect to server: " <<m_hostname.c_str() << endl;
+
+      emit cannotConnectToRemote();
+
+      stopThread();
+    }
+    else
+    {
+      m_extSocket.operator =((igtl::Socket::Pointer) m_clientSocket);
+      m_extSocket->SetTimeout(m_socketTimeout);
+      m_sendingOnSocket = false;
+
+      emit connectedToRemote();
+    }
+  }
+
   while (m_running == true && !m_sendQue.isEmpty())
   {
-    if (m_extSocket.IsNull())
+    if (m_extSocket.IsNull() || !m_extSocket->IsValid())
     {
       QLOG_ERROR() <<objectName() <<": " <<"Cannot send message: Disconnected from remote host" <<"\n";
       emit disconnectedFromRemote();

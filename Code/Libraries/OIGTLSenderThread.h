@@ -11,6 +11,7 @@ class OIGTLSenderThread : public OIGTLThreadBase
 
 signals:
   void connectedToRemote(void);
+  void cannotConnectToRemote();
   void disconnectedFromRemote(void);
   void sendingFinished(void);
 
@@ -35,7 +36,8 @@ private:
   virtual bool activate(void);
 
 private:
-  //igtl::ClientSocket::Pointer m_clientSocket;
+  igtl::ClientSocket::Pointer m_clientSocket;
+  std::string m_hostname;
   bool m_sendingOnSocket;
   int  m_connectTimeout;
 

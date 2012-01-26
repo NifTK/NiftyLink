@@ -223,7 +223,7 @@ void OIGTLImageMessage::Create_GET(OIGTLMessage::Pointer &msgToCreate)
     ts = igtl::TimeStamp::New();
     ts->GetTime();
 
-    QString lhn = getLocalHostAddress2();
+    QString lhn = getLocalHostAddress();
 
     //Set parameters
     cmdMsg->SetTimeStamp(ts);
@@ -246,7 +246,7 @@ void OIGTLImageMessage::Create_STT(OIGTLMessage::Pointer &msgToCreate)
     ts = igtl::TimeStamp::New();
     ts->GetTime();
 
-    QString lhn = getLocalHostAddress2();
+    QString lhn = getLocalHostAddress();
 
     //Set parameters
     cmdMsg->SetTimeStamp(ts);
@@ -269,7 +269,7 @@ void OIGTLImageMessage::Create_STP(OIGTLMessage::Pointer &msgToCreate)
     ts = igtl::TimeStamp::New();
     ts->GetTime();
 
-    QString lhn = getLocalHostAddress2();
+    QString lhn = getLocalHostAddress();
 
     //Set parameters
     cmdMsg->SetTimeStamp(ts);
@@ -292,7 +292,7 @@ void OIGTLImageMessage::Create_RTS(OIGTLMessage::Pointer &msgToCreate)
     ts = igtl::TimeStamp::New();
     ts->GetTime();
 
-    QString lhn = getLocalHostAddress2();
+    QString lhn = getLocalHostAddress();
 
     //Set parameters
     cmdMsg->SetTimeStamp(ts);

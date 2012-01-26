@@ -65,6 +65,7 @@ void OIGTLSocketObject::initThreads()
   bool ok;
 
   ok =  connect(m_sender, SIGNAL(connectedToRemote()), this, SLOT(connectedToRemote()), Qt::QueuedConnection);
+  ok &= connect(m_sender, SIGNAL(cannotConnectToRemote()), this, SLOT(cannotConnectToRemote()), Qt::QueuedConnection);
   ok &= connect(m_sender, SIGNAL(disconnectedFromRemote()), this, SLOT(disconnectedFromRemote()), Qt::QueuedConnection);
   ok &= connect(m_sender, SIGNAL(sendingFinished()), this, SIGNAL(sendingFinished()), Qt::QueuedConnection);
   ok &= connect(this, SIGNAL(messageToSend(OIGTLMessage::Pointer)), m_sender, SLOT(sendMsg(OIGTLMessage::Pointer)));
@@ -126,7 +127,7 @@ bool OIGTLSocketObject::connectToRemote(QUrl url)
       QString ip = resolveHostName(url.host());
 
       if (validateIp(ip))
-        address_str = url.host().toStdString();
+        address_str = ip.toStdString();
       else
         return false;
     }
@@ -138,6 +139,8 @@ bool OIGTLSocketObject::connectToRemote(QUrl url)
     {
       m_port = port;
       //m_connectedToRemote = true;
+
+      m_sender->startThread();
 
       QLOG_INFO() <<objectName() <<": " <<"Threads successfully initialized";
 
@@ -204,6 +207,16 @@ void OIGTLSocketObject::connectedToRemote(void)
 
     emit connectedToRemoteSignal();
   }
+}
+
+void OIGTLSocketObject::cannotConnectToRemote(void)
+{
+  //Could not establish connection to remote host
+  m_connectedToRemote = false;
+  m_ableToSend = false;
+  m_port = -1;
+
+  emit cannotConnectToRemoteSignal();
 }
 
 void OIGTLSocketObject::disconnectedFromRemote(void)

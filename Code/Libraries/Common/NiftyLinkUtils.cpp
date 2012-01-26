@@ -62,28 +62,15 @@ QString resolveHostName(const QString &input)
 
 QString getLocalHostAddress(void)
 {
-	return resolveHostName(QHostInfo::localHostName());
-}
-
-QString getLocalHostAddress2(void)
-{
     QNetworkConfigurationManager mgr;
     QNetworkConfiguration nconfig = mgr.defaultConfiguration();
     QNetworkSession session ( nconfig );
     QNetworkInterface ninter = session.interface();
 
-    // the next statement gives you a funny name on windows
-    //qDebug() << ninter.name() << endl;
-
-    // this gives ip addresses in different sequence, but is is a static method anyhow
-    // (did not see in first place)
-    //qDebug() << ninter.allAddresses() << endl;
-
     // this provides two ip addresses (1 ipv4 and 1 ipv6) at least on my machine
     QList<QNetworkAddressEntry> laddr = ninter.addressEntries();
     for ( QList<QNetworkAddressEntry> ::const_iterator it = laddr.begin(); it != laddr.end(); ++it )
     {
-        //qDebug() << it->ip() << endl;
         QString ipstr = it->ip().toString();
         if (validateIp(ipstr))
         {

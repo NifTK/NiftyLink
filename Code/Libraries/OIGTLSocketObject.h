@@ -16,6 +16,7 @@ signals:
   void sendingFinished();
 
   void connectedToRemoteSignal(void);
+  void cannotConnectToRemoteSignal(void);
   void lostConnectionToRemoteSignal(void);
   void clientConnectedSignal(void);
   void clientDisconnectedSignal(void);
@@ -59,6 +60,7 @@ private:
 private slots:
 
   void connectedToRemote(void);
+  void cannotConnectToRemote(void);
   void disconnectedFromRemote(void);
 
   void clientConnected(void);

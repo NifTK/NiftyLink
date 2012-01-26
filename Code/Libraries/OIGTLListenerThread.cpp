@@ -15,7 +15,7 @@ OIGTLListenerThread::~OIGTLListenerThread(void)
 
 bool OIGTLListenerThread::initialize(igtl::Socket::Pointer socket, int port)
 {
-  if (socket.IsNull())
+  if (socket.IsNull() || !socket->IsValid())
   {
     QLOG_ERROR() <<objectName() <<": " << "Cannot create a listener socket, invalid external socket specified" << endl;
     return false;
@@ -104,7 +104,9 @@ void OIGTLListenerThread::stopThread()
   m_mutex->lock();
   if (m_listeningOnPort && m_extSocket.IsNotNull())
   {
-    err_p = m_extSocket->CloseSocket();
+    if (m_extSocket->IsValid())
+      err_p |= m_extSocket->CloseSocket();
+
     m_extSocket.operator =(NULL);
   }
   m_mutex->unlock();
@@ -119,7 +121,9 @@ void OIGTLListenerThread::stopThread()
   m_mutex->lock();
   if (m_serverSocket.IsNotNull())
   {
-    err_s = m_serverSocket->CloseSocket();
+    if (m_serverSocket->IsValid())
+      err_s |= m_serverSocket->CloseSocket();
+
     m_serverSocket.operator =(NULL);
   }
   m_mutex->unlock();
@@ -150,13 +154,13 @@ bool OIGTLListenerThread::activate(void)
     return false;
   }
 
-  if (m_listeningOnPort && m_serverSocket.IsNull())
+  if ( (m_listeningOnPort && m_serverSocket.IsNull())  || (m_listeningOnPort && !m_serverSocket->IsValid()) )
   {
     QLOG_INFO() <<objectName() <<": " <<"Cannot activate listener, server socket is invalid" <<endl;
     return false;
   }
 
-  if (!m_listeningOnPort && m_extSocket.IsNull())
+  if ( (!m_listeningOnPort && m_extSocket.IsNull()) || (!m_listeningOnPort && !m_extSocket->IsValid()) )
   {
     QLOG_INFO() <<objectName() <<": " <<"Cannot activate listener, external socket is invalid" <<endl;
     return false;
@@ -185,7 +189,7 @@ void OIGTLListenerThread::listenOnSocket(void)
 {
   while (m_running == true)
   {
-    if (m_extSocket.IsNull())
+    if (m_extSocket.IsNull() || !m_extSocket->IsValid())
     {
       QLOG_ERROR() <<objectName() <<": " <<"Socket terminated, disconnecting" <<"\n";
       emit clientDisconnected();
@@ -211,7 +215,7 @@ void OIGTLListenerThread::listenOnPort(void)
       socket = m_serverSocket->WaitForConnection(1000);
       m_mutex->unlock();
 
-      if (socket.IsNull())
+      if (socket.IsNull() || !socket->IsValid())
       {
         QLOG_INFO() <<objectName() <<": " << "No client connecting\n";
         continue;
@@ -225,7 +229,7 @@ void OIGTLListenerThread::listenOnPort(void)
 
       while (m_running == true) // if client connected
       {
-        if (socket.IsNull())
+        if (socket.IsNull()  || !socket->IsValid())
         {
           QLOG_ERROR() <<objectName() <<": " <<"Socket terminated, disconnecting" <<"\n";
           emit clientDisconnected();

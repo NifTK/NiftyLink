@@ -230,7 +230,7 @@ void OIGTLMessage::update()
 	ts = igtl::TimeStamp::New();
 	ts->GetTime();
 
-	QString lhn = getLocalHostAddress2();
+	QString lhn = getLocalHostAddress();
 
 	m_message->SetTimeStamp(ts);
 	m_message->SetDeviceName(lhn.toStdString().c_str());
