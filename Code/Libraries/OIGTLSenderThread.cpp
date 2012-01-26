@@ -202,7 +202,7 @@ void OIGTLSenderThread::run(void)
     }
   }
 
-  while (m_running == true && !m_sendQue.isEmpty())
+  while (m_running == true)
   {
     if (m_extSocket.IsNull() || !m_extSocket->IsValid())
     {
@@ -215,6 +215,9 @@ void OIGTLSenderThread::run(void)
       
       break;
     }
+
+    if (m_sendQue.isEmpty())
+      continue;
 
     QLOG_INFO() <<objectName() <<": Messages in sendque: " << m_sendQue.count();
 

@@ -215,7 +215,7 @@ void OIGTLListenerThread::listenOnPort(void)
       socket = m_serverSocket->WaitForConnection(1000);
       m_mutex->unlock();
 
-      if (socket.IsNull() || !socket->IsValid())
+      if (socket.IsNull())// || !socket->IsValid())
       {
         QLOG_INFO() <<objectName() <<": " << "No client connecting\n";
         continue;
