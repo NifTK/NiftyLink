@@ -86,8 +86,8 @@ set(CTEST_CUSTOM_WARNING_EXCEPTION
   # Suppress warning caused when QT 'foreach' loops are combined
   ".*warning: declaration of '_container_' shadows a previous local"
   
-  # Trac #1278 Suppress Qt warnings on Lion
-  "*qglobal.h*warning*This version of Mac OS X is unsupported*"
+  # For NifTK in Trac #1278 and subsequently Trac #1287 for NiftyLink. Suppress Qt warnings on Lion
+  ".*[Qq][Gg]lobal.h.*warning.*This version of Mac OS X is unsupported.*"
   
   # PythonQt suppressions
   "PythonQt.*src.*PythonQt.*(cpp|h)"
