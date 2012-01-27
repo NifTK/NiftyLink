@@ -35,11 +35,11 @@ public:
 	~OIGTLMessage(void);
 
 	//Functions that are common in all message types
-	typedef OIGTLMessage				              Self;
+	typedef OIGTLMessage				                      Self;
 	typedef QExplicitlySharedDataPointer<Self>        Pointer;
 	typedef QExplicitlySharedDataPointer<const Self>  ConstPointer;
 
-	OIGTLMessage(const OIGTLMessage &other); 
+  OIGTLMessage(const OIGTLMessage &other); 
 
 	void setMessagePointer(igtl::MessageBase::Pointer mp);
 	void getMessagePointer(igtl::MessageBase::Pointer &mp);

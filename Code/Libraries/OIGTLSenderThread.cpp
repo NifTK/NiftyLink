@@ -16,7 +16,7 @@ OIGTLSenderThread::~OIGTLSenderThread(void)
 
 bool OIGTLSenderThread::initialize(igtl::Socket::Pointer socket, int port)
 {
-  if (socket.IsNull() || !socket->IsValid())
+  if (socket.IsNull() || (socket.IsNotNull() && !socket->IsValid()) )
   {
     QLOG_ERROR() <<objectName() <<": " << "Cannot create a sender socket, invalid external socket specified" << endl;
     return false;
@@ -112,7 +112,7 @@ void OIGTLSenderThread::stopThread(void)
     m_mutex->lock();
     if (m_extSocket.IsNotNull())
     {
-      if (m_extSocket->IsValid())
+      //if (m_extSocket->IsValid())
         err |= m_extSocket->CloseSocket();
       
       m_extSocket.operator =(NULL);
@@ -122,7 +122,7 @@ void OIGTLSenderThread::stopThread(void)
     m_mutex->lock();
     if (m_clientSocket.IsNotNull())
     {
-      if (m_clientSocket->IsValid())
+      //if (m_clientSocket->IsValid())
         err |= m_clientSocket->CloseSocket();
 
       m_clientSocket.operator =(NULL);
@@ -165,7 +165,7 @@ bool OIGTLSenderThread::activate(void)
     return false;
   }
 
-  if ( (m_sendingOnSocket && m_extSocket.IsNull()) || (m_sendingOnSocket && !m_extSocket->IsValid()) )
+  if ( (m_sendingOnSocket && m_extSocket.IsNull()) || (m_sendingOnSocket && m_extSocket.IsNotNull() && !m_extSocket->IsValid()) )
   {
     QLOG_INFO() <<objectName() <<": " <<"Cannot activate listener, socket is invalid" <<endl;
     return false;
@@ -204,7 +204,7 @@ void OIGTLSenderThread::run(void)
 
   while (m_running == true)
   {
-    if (m_extSocket.IsNull() || !m_extSocket->IsValid())
+    if (m_extSocket.IsNull() || (m_extSocket.IsNotNull() && !m_extSocket->IsAlive()) )
     {
       QLOG_ERROR() <<objectName() <<": " <<"Cannot send message: Disconnected from remote host" <<"\n";
       
@@ -217,7 +217,10 @@ void OIGTLSenderThread::run(void)
     }
 
     if (m_sendQue.isEmpty())
+    {
+      igtl::Sleep(500);
       continue;
+    }
 
     QLOG_INFO() <<objectName() <<": Messages in sendque: " << m_sendQue.count();
 
