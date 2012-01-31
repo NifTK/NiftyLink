@@ -67,13 +67,14 @@ QString getLocalHostAddress(void)
     QNetworkSession session ( nconfig );
     QNetworkInterface ninter = session.interface();
 
-    // this provides two ip addresses (1 ipv4 and 1 ipv6) at least on my machine
+    // this provides more than one ip addresses
     QList<QNetworkAddressEntry> laddr = ninter.addressEntries();
     for ( QList<QNetworkAddressEntry> ::const_iterator it = laddr.begin(); it != laddr.end(); ++it )
     {
         QString ipstr = it->ip().toString();
         if (validateIp(ipstr))
         {
+            // Need to return the one which is valid and not 'localhost'
             if (ipstr != QString("127.0.0.1"))
                 return ipstr;
         }

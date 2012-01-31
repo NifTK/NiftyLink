@@ -52,7 +52,6 @@ OIGTLImageMessage.cpp
 #########################
 SET(niftylink_MOC_HDRS
 Common/NiftyLinkUtils.h
-OIGTLConnectorBase.h
 OIGTLThreadBase.h
 OIGTLSenderThread.h
 OIGTLListenerThread.h

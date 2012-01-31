@@ -1,3 +1,24 @@
+/*=============================================================================
+
+ NiftyLink:  A software library to facilitate communication over OpenIGTLink.
+
+             http://cmic.cs.ucl.ac.uk/
+             http://www.ucl.ac.uk/
+
+ Copyright (c) UCL : See LICENSE.txt in the top level directory for details.
+
+ Last Changed      : $Date: 2010-05-25 17:02:50 +0100 (Tue, 25 May 2010) $
+ Revision          : $Revision: 3300 $
+ Last modified by  : $Author: mjc $
+
+ Original author   : m.clarkson@ucl.ac.uk
+
+ This software is distributed WITHOUT ANY WARRANTY; without even
+ the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR
+ PURPOSE.  See the above copyright notices for more information.
+
+ ============================================================================*/
+
 #include "OIGTLSocketObject.h"
 
 OIGTLListenerThread::OIGTLListenerThread(QObject *parent)
@@ -104,8 +125,7 @@ void OIGTLListenerThread::stopThread()
   m_mutex->lock();
   if (m_listeningOnPort && m_extSocket.IsNotNull())
   {
-    //if (m_extSocket->IsValid())
-      err_p |= m_extSocket->CloseSocket();
+    err_p |= m_extSocket->CloseSocket();
     
     igtl::Sleep(100);
 
@@ -123,8 +143,7 @@ void OIGTLListenerThread::stopThread()
   m_mutex->lock();
   if (m_serverSocket.IsNotNull())
   {
-    //if (m_serverSocket->IsValid())
-      err_s |= m_serverSocket->CloseSocket();
+    err_s |= m_serverSocket->CloseSocket();
 
     igtl::Sleep(100);
 
@@ -185,10 +204,8 @@ void OIGTLListenerThread::run()
     listenOnSocket();
   else if (m_listeningOnPort && m_initialized)
     listenOnPort();
-
-  //this->exec(); 
-
 }
+
 void OIGTLListenerThread::listenOnSocket(void)
 {
   while (m_running == true)
@@ -200,8 +217,11 @@ void OIGTLListenerThread::listenOnSocket(void)
       break;
     }
 
-    receiveMessage();
-    //igtl::Sleep(200);
+    bool rec = receiveMessage();
+
+    // If there was no activity on the socket sleep for a bit
+    if (rec == false)
+          igtl::Sleep(200);
   }
 }
 
@@ -216,7 +236,7 @@ void OIGTLListenerThread::listenOnPort(void)
     if (m_serverSocket.IsNotNull() && m_running == true)
     {
       m_mutex->lock();
-      socket = m_serverSocket->WaitForConnection(1000);
+      socket = m_serverSocket->WaitForConnection(m_listenInterval);
       m_mutex->unlock();
 
       if (socket.IsNull() || (socket.IsNotNull() && !socket->IsValid()) )
@@ -226,6 +246,7 @@ void OIGTLListenerThread::listenOnPort(void)
       }
       else
       {
+        // Client connected, need to set socket parameters
         m_extSocket.operator =(socket);
         m_extSocket->SetTimeout(m_socketTimeout);
         emit clientConnected();
@@ -240,13 +261,17 @@ void OIGTLListenerThread::listenOnPort(void)
           break;
         }
 
-        receiveMessage();
+        bool rec = receiveMessage();
+
+        // If there was no activity on the socket sleep for a bit
+        if (rec == false)
+          igtl::Sleep(200);
       }
     }
   }
 }
 
-void OIGTLListenerThread::receiveMessage()
+bool OIGTLListenerThread::receiveMessage()
 {
   igtl::MessageBase::Pointer message;
 
@@ -265,14 +290,16 @@ void OIGTLListenerThread::receiveMessage()
   int r = m_extSocket->Receive(msgHeader->GetPackPointer(), msgHeader->GetPackSize());
   m_mutex->unlock();
 
+  // Junk or socket testing (IsAlive())
   if (r <= 2 || r != msgHeader->GetPackSize())
   {
-    return;
+    return false;
   }
 
   // Deserialize the header
   msgHeader->Unpack();
 
+  // Interpret message and instanciate the appropriate OIGTL message wrapper type
   if (strcmp(msgHeader->GetDeviceType(), "BIND") == 0)
     message = igtl::BindMessage::New(); 
   else if (strcmp(msgHeader->GetDeviceType(), "GET_BIND") == 0)
@@ -363,13 +390,13 @@ void OIGTLListenerThread::receiveMessage()
     m_extSocket->Skip(msgHeader->GetBodySizeToRead(), 0);
     m_mutex->unlock();
 
-    return;
+    return true;
   }
 
   if (msg.operator ==(NULL))
   {
     QLOG_ERROR() <<objectName() <<": " <<"Cannot to create OIGTLMessage, receiveMessage() failed" <<endl;
-    return;
+    return false;
   }
 
   message->SetMessageHeader(msgHeader);
@@ -380,12 +407,11 @@ void OIGTLListenerThread::receiveMessage()
   r = m_extSocket->Receive(message->GetPackBodyPointer(), message->GetPackBodySize());
   m_mutex->unlock();
 
+  // Junk or socket testing (IsAlive())
   if (r <= 2 || r != msgHeader->GetPackSize())
   {
-    return;
+    return false;
   }
-
-  //OIGTLMessage::Pointer msg(new OIGTLMessage());
 
   igtl::TimeStamp::Pointer ts = igtl::TimeStamp::New();
   ts->GetTime();
@@ -397,7 +423,8 @@ void OIGTLListenerThread::receiveMessage()
   QLOG_INFO() <<objectName() <<": " << "Message successfully recieved"; 
 
   emit messageReceived(msg);
-  //emit testSignal();
+  
+  return true;
 }
 
 void OIGTLListenerThread::setListenInterval(int msec) 

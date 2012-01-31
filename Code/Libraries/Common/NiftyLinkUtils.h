@@ -53,34 +53,49 @@ static igtl::Matrix4x4 dummyTransformMatrix =
 { 0, 0.98, -0.15, 50},
 { 0, 0, 0, 1} };
  
-
+/// \brief dummy function to test if the building and linking works correctly
 extern "C" NIFTYLINKCOMMON_WINEXPORT int NiftyLinkDummyFunction1();
 
-extern NIFTYLINKCOMMON_WINEXPORT bool validateIp(const QString &inputIP);
-extern NIFTYLINKCOMMON_WINEXPORT QString getLocalHostAddress(void);
+/// \brief Simple function which validates if an IP address is valid or not
+extern "C++" NIFTYLINKCOMMON_WINEXPORT bool validateIp(const QString &inputIP);
+/// \brief This function which returns the local IP address
+extern "C++" NIFTYLINKCOMMON_WINEXPORT QString getLocalHostAddress(void);
+/// \brief This function resolves a given hostname to IP
 extern "C++" NIFTYLINKCOMMON_WINEXPORT QString resolveHostName(const QString &input);
 
-extern NIFTYLINKCOMMON_WINEXPORT void CreateRandomTransformMatrix(igtl::Matrix4x4& matrix);
-extern NIFTYLINKCOMMON_WINEXPORT bool CompareMsgData(OIGTLMessage::Pointer &msg1, OIGTLMessage::Pointer &msg2);
+/// \brief This function creates a random 4x4 test matrix 
+extern "C++" NIFTYLINKCOMMON_WINEXPORT void CreateRandomTransformMatrix(igtl::Matrix4x4& matrix);
+/// \brief This function compares two image messages if they are of the same kind
+extern "C++" NIFTYLINKCOMMON_WINEXPORT bool CompareMsgData(OIGTLMessage::Pointer &msg1, OIGTLMessage::Pointer &msg2);
 
+/**
+ * \class MessageCatcher
+ * \brief A simple class to catch OIGTLMessage and check validity.
+ */
 class NIFTYLINKCOMMON_WINEXPORT MessageCatcher : public QObject
 {
 	Q_OBJECT
 
 public:
+  /// \brief Basic constructor
 	MessageCatcher() { m_messageValid = false; }
+  /// \brief Basic destructor
 	~MessageCatcher() {}
 
+  /// \brief Return the last message caught
 	OIGTLMessage* getMessage() { return m_msg; }
+  /// \brief Returns true if the message is valid
 	bool isMessageValid() { return m_messageValid; }
 
 public slots:
+  /// \brief Slot to catch OIGTLMessage
 	void catchMessage(OIGTLMessage * msg) 
 	{ 
 		m_msg = msg; 
 		m_messageValid = true; 
 	}
 
+  /// \brief Basic slot to trigger a catch event
 	void catchMessage() 
 	{ 
 		m_messageValid = true; 

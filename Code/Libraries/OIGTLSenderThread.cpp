@@ -1,3 +1,24 @@
+/*=============================================================================
+
+ NiftyLink:  A software library to facilitate communication over OpenIGTLink.
+
+             http://cmic.cs.ucl.ac.uk/
+             http://www.ucl.ac.uk/
+
+ Copyright (c) UCL : See LICENSE.txt in the top level directory for details.
+
+ Last Changed      : $Date: 2010-05-25 17:02:50 +0100 (Tue, 25 May 2010) $
+ Revision          : $Revision: 3300 $
+ Last modified by  : $Author: mjc $
+
+ Original author   : m.clarkson@ucl.ac.uk
+
+ This software is distributed WITHOUT ANY WARRANTY; without even
+ the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR
+ PURPOSE.  See the above copyright notices for more information.
+
+ ============================================================================*/
+
 #include "OIGTLSenderThread.h"
 
 OIGTLSenderThread::OIGTLSenderThread(QObject *parent)
@@ -50,15 +71,13 @@ bool OIGTLSenderThread::initialize(std::string &hostname, int port)
     return false;
   }
 
-  //QLOG_ERROR() <<objectName() <<": " << "Hostname: " <<hostname << endl;
-  //QLOG_ERROR() <<objectName() <<": " << "Port: " <<port << endl;
-
   if (m_initialized == true)
   {
     QLOG_ERROR() <<objectName() <<": " << "Sender already in use!" << endl;
     return false;
   }
-
+  
+  // Try to create a new client socket and if it is successful, set its parameters.
   m_clientSocket = igtl::ClientSocket::New();
   if (m_clientSocket.IsNotNull())// && m_clientSocket->IsValid())
   {
@@ -112,8 +131,7 @@ void OIGTLSenderThread::stopThread(void)
     m_mutex->lock();
     if (m_extSocket.IsNotNull())
     {
-      //if (m_extSocket->IsValid())
-        err |= m_extSocket->CloseSocket();
+      err |= m_extSocket->CloseSocket();
       
       m_extSocket.operator =(NULL);
     }
@@ -122,8 +140,7 @@ void OIGTLSenderThread::stopThread(void)
     m_mutex->lock();
     if (m_clientSocket.IsNotNull())
     {
-      //if (m_clientSocket->IsValid())
-        err |= m_clientSocket->CloseSocket();
+      err |= m_clientSocket->CloseSocket();
 
       m_clientSocket.operator =(NULL);
     }
@@ -180,6 +197,7 @@ bool OIGTLSenderThread::activate(void)
 
 void OIGTLSenderThread::run(void)
 {
+  //Try to connect to remote
   if (!m_sendingOnSocket && m_extSocket.IsNull())
   {
     int r = m_clientSocket->ConnectToServer(m_hostname.c_str(), m_port);
@@ -194,6 +212,7 @@ void OIGTLSenderThread::run(void)
     }
     else
     {
+      // Perform a non-blocking connect with timeout
       m_extSocket.operator =((igtl::Socket::Pointer) m_clientSocket);
       m_extSocket->SetTimeout(m_socketTimeout);
       m_sendingOnSocket = false;
@@ -202,8 +221,10 @@ void OIGTLSenderThread::run(void)
     }
   }
 
+  // Start processing the message queue
   while (m_running == true)
   {
+    // Validity check to detect if the remote host has terminated the connection
     if (m_extSocket.IsNull() || (m_extSocket.IsNotNull() && !m_extSocket->IsAlive()) )
     {
       QLOG_ERROR() <<objectName() <<": " <<"Cannot send message: Disconnected from remote host" <<"\n";
@@ -218,12 +239,14 @@ void OIGTLSenderThread::run(void)
 
     if (m_sendQue.isEmpty())
     {
-      igtl::Sleep(500);
+      // Nothing to do, idle
+      igtl::Sleep(200);
       continue;
     }
 
     QLOG_INFO() <<objectName() <<": Messages in sendque: " << m_sendQue.count();
 
+    // Take the oldest message in the queue and send it to the remote host
     m_queueMutex.lock();
     OIGTLMessage::Pointer msg;
     msg.operator =(m_sendQue.takeFirst());
@@ -237,7 +260,6 @@ void OIGTLSenderThread::run(void)
 
       if (igtMsg.IsNotNull())
       {
-        //m_mutex->tryLock();
         m_mutex->lock();
         m_extSocket->Send(igtMsg->GetPackPointer(), igtMsg->GetPackSize());
         m_mutex->unlock();
@@ -246,22 +268,16 @@ void OIGTLSenderThread::run(void)
       }
       else
         QLOG_ERROR() <<objectName() <<": " <<"Cannot send message: igtMsg is NULL" <<"\n";
-
-      //*******************************
-      // CHANGE THIS
-
-      //delete msg;
-      //*******************************
     }
     else
       QLOG_ERROR() <<objectName() <<": " <<"Cannot send message: invalid message" <<"\n";
-
-    //igtl::Sleep(50); // wait
   }
 
+  // All messages were sent
   if (m_sendQue.isEmpty())
     emit sendingFinished();
 
+  // Stopping the thread execution here, will restart when new messages arrive
   m_running = false;
   exit();
 
@@ -271,6 +287,7 @@ void OIGTLSenderThread::sendMsg(OIGTLMessage::Pointer msg)
 {
   QLOG_INFO() <<objectName() <<": " <<"Got new message to send, putting it to send queue.";
 
+  // Catch the signal and append message to the end of the queue
   if (msg.operator !=(NULL))
     QLOG_INFO() <<"MSG_ID: " <<msg->getId() <<endl;
   else
@@ -283,8 +300,7 @@ void OIGTLSenderThread::sendMsg(OIGTLMessage::Pointer msg)
   m_sendQue.append(msg);
   m_queueMutex.unlock();
 
-  //igtl::Sleep(100);
-
+  // Start the thread. If already started then this does nothing.
   this->startThread();
 }
 

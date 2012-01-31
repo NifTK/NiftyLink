@@ -1,3 +1,24 @@
+/*=============================================================================
+
+ NiftyLink:  A software library to facilitate communication over OpenIGTLink.
+
+             http://cmic.cs.ucl.ac.uk/
+             http://www.ucl.ac.uk/
+
+ Copyright (c) UCL : See LICENSE.txt in the top level directory for details.
+
+ Last Changed      : $Date: 2010-05-25 17:02:50 +0100 (Tue, 25 May 2010) $
+ Revision          : $Revision: 3300 $
+ Last modified by  : $Author: mjc $
+
+ Original author   : m.clarkson@ucl.ac.uk
+
+ This software is distributed WITHOUT ANY WARRANTY; without even
+ the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR
+ PURPOSE.  See the above copyright notices for more information.
+
+ ============================================================================*/
+
 #include "OIGTLMessage.h"
 
 #include "QsLog.h"
@@ -20,7 +41,7 @@ OIGTLMessage::~OIGTLMessage(void)
 OIGTLMessage::OIGTLMessage(const OIGTLMessage &other)
 	: QSharedData(other)
 {
-
+  // Copy constructor
 	m_message.operator=(other.m_message);
 	m_timeReceived.operator=(other.m_timeReceived);
 
@@ -34,6 +55,7 @@ OIGTLMessage::OIGTLMessage(const OIGTLMessage &other)
 
 void OIGTLMessage::setMessagePointer(igtl::MessageBase::Pointer mp)
 {
+  // Embeds the OpenIGTLink message pointer into the message
 	m_message.operator =(mp);
 	m_messageType = QString(m_message->GetDeviceType());
 	m_message->GetTimeStamp(m_timeCreated);
@@ -97,6 +119,7 @@ QString OIGTLMessage::getMessageType(void)
 
 void OIGTLMessage::setResolution(igtlUint64 res)
 {
+  // This is to set the streaming frequency
 	m_resolution = res;
 
 	if (m_message.IsNull())
@@ -223,7 +246,9 @@ void OIGTLMessage::getResolution(igtlUint64 &res)
 
 void OIGTLMessage::update()
 {
-	if (m_message.IsNull())
+  // Updates timestamp and hostname
+	
+  if (m_message.IsNull())
 		return;
 
 	igtl::TimeStamp::Pointer ts;

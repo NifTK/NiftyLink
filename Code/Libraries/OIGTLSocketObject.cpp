@@ -1,3 +1,24 @@
+/*=============================================================================
+
+ NiftyLink:  A software library to facilitate communication over OpenIGTLink.
+
+             http://cmic.cs.ucl.ac.uk/
+             http://www.ucl.ac.uk/
+
+ Copyright (c) UCL : See LICENSE.txt in the top level directory for details.
+
+ Last Changed      : $Date: 2010-05-25 17:02:50 +0100 (Tue, 25 May 2010) $
+ Revision          : $Revision: 3300 $
+ Last modified by  : $Author: mjc $
+
+ Original author   : m.clarkson@ucl.ac.uk
+
+ This software is distributed WITHOUT ANY WARRANTY; without even
+ the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR
+ PURPOSE.  See the above copyright notices for more information.
+
+ ============================================================================*/
+
 #include "OIGTLSocketObject.h"
 
 OIGTLSocketObject::OIGTLSocketObject(QObject *parent)
@@ -25,26 +46,31 @@ OIGTLSocketObject::~OIGTLSocketObject(void)
 
   if (m_sender != NULL)
   {
+    // Disconnect signals off sender
     disconnect(m_sender, SIGNAL(connectedToRemote()), this, SLOT(connectedToRemote()) );
     disconnect(m_sender, SIGNAL(cannotConnectToRemote()), this, SLOT(cannotConnectToRemote()) );
     disconnect(m_sender, SIGNAL(disconnectedFromRemote(bool )), this, SLOT(disconnectedFromRemote(bool )) );
     disconnect(m_sender, SIGNAL(sendingFinished()), this, SIGNAL(sendingFinished()) );
     disconnect(this, SIGNAL(messageToSend(OIGTLMessage::Pointer)), m_sender, SLOT(sendMsg(OIGTLMessage::Pointer)));
 
+    // Delete sender
     delete m_sender;
     m_sender = NULL;
   }
 
   if (m_listener != NULL)
   {
+    // Disconnect signals off listener
     disconnect(m_listener, SIGNAL(clientConnected()), this, SLOT(clientConnected()) );
     disconnect(m_listener, SIGNAL(clientDisconnected(bool )), this, SLOT(clientDisconnected(bool )) );
     disconnect(m_listener, SIGNAL(messageReceived(OIGTLMessage::Pointer)), this, SIGNAL(messageReceived(OIGTLMessage::Pointer)) );
 
+    // Delete listener
     delete m_listener;
     m_listener = NULL;
   }
 
+  // Delete the mutex too
   if (m_mutex != NULL)
   {
     delete m_mutex;
@@ -56,6 +82,7 @@ void OIGTLSocketObject::initThreads()
 {
   qRegisterMetaType<OIGTLMessage::Pointer>();
 
+  // Instanciate the mutex and the threads
   m_mutex = new QMutex();
   m_sender = new OIGTLSenderThread(this);
   m_listener = new OIGTLListenerThread(this);
@@ -65,6 +92,7 @@ void OIGTLSocketObject::initThreads()
 
   bool ok;
 
+  // Connect signals to slots
   ok =  connect(m_sender, SIGNAL(connectedToRemote()), this, SLOT(connectedToRemote()), Qt::QueuedConnection);
   ok &= connect(m_sender, SIGNAL(cannotConnectToRemote()), this, SLOT(cannotConnectToRemote()), Qt::QueuedConnection);
   ok &= connect(m_sender, SIGNAL(disconnectedFromRemote(bool )), this, SLOT(disconnectedFromRemote(bool )), Qt::QueuedConnection);
@@ -75,9 +103,7 @@ void OIGTLSocketObject::initThreads()
   ok &= connect(m_listener, SIGNAL(clientDisconnected(bool )), this, SLOT(clientDisconnected(bool )), Qt::QueuedConnection);
   ok &= connect(m_listener, SIGNAL(messageReceived(OIGTLMessage::Pointer)), this, SIGNAL(messageReceived(OIGTLMessage::Pointer)), Qt::QueuedConnection);
 
-  //ok &= connect(m_listener, SIGNAL(messageReceived(OIGTLMessage::Pointer)), this, SLOT(catchMsgSignal(OIGTLMessage::Pointer )), Qt::QueuedConnection);
-  //ok &= connect(m_listener, SIGNAL(testSignal( )), this, SLOT(catchTestSignal()), Qt::QueuedConnection);
-
+  // Set the flag
   if (m_mutex != NULL && m_sender != NULL && m_listener != NULL && ok)
     m_initialized = true;
 }
@@ -89,11 +115,14 @@ bool OIGTLSocketObject::listenOnPort(int port)
 
   if (m_listener != NULL && m_initialized)
   {
+    // Set parameters
     m_listener->setObjectName(this->objectName().append("_L"));
+    // Initialize the port
     bool ok = m_listener->initialize(port);
 
     if (ok)
     {
+      // Start the thread
       m_port = port;
       m_listening = true;
       m_listener->startThread();
@@ -114,6 +143,7 @@ bool OIGTLSocketObject::connectToRemote(QUrl url)
 
   if (m_sender != NULL  && m_initialized)
   {
+    // Set parameters
     m_sender->setObjectName(this->objectName().append("_S"));
 
     std::string address_str;
@@ -134,13 +164,15 @@ bool OIGTLSocketObject::connectToRemote(QUrl url)
     }
 
     int port = url.port();
+
+    // Initialize the sender
     bool ok = m_sender->initialize(address_str, port);
 
     if (ok)
     {
       m_port = port;
-      //m_connectedToRemote = true;
-
+      
+      // Start the thread
       m_sender->startThread();
 
       QLOG_INFO() <<objectName() <<": " <<"Threads successfully initialized";
@@ -157,6 +189,7 @@ bool OIGTLSocketObject::connectToRemote(QUrl url)
 
 void OIGTLSocketObject::closeSocket(void)
 {
+  // Shuts down the sender thread
   if (m_sender != NULL)
   {
     m_sender->stopThread();
@@ -164,6 +197,7 @@ void OIGTLSocketObject::closeSocket(void)
     while (m_sender->isRunning());
   }
 
+  // Shut down the listener thread
   if (m_listener != NULL)
   {
     m_listener->stopThread();
@@ -186,7 +220,6 @@ void OIGTLSocketObject::sendMessage(OIGTLMessage::Pointer msg)
     emit messageToSend(msg);
 
   QLOG_INFO() <<"Emitting.........";
-  //m_sender->sendMsg(msg);
 }
 
 
@@ -242,7 +275,6 @@ void OIGTLSocketObject::clientConnected(void)
     m_sender->setObjectName(this->objectName().append("_S"));
     if (m_sender->initialize(m_listener->getSocketPointer(), m_port) == true)
       m_ableToSend = true;
-    //m_sender->startThread();
 
     emit clientConnectedSignal();
   }
@@ -263,19 +295,16 @@ void OIGTLSocketObject::clientDisconnected(bool onPort)
 void OIGTLSocketObject::catchMsgSignal(OIGTLMessage::Pointer msg)
 {
   QLOG_INFO() <<objectName() <<": " <<"Message signal received";
-  //qDebug() <<"OIGTLSocketObject::catchMsgSignal : Message signal received...." <<endl;
   if (msg.operator !=(NULL))
   {
     emit messageReceived(msg);
   }
 }
 
-void OIGTLSocketObject::catchTestSignal()
-{
-  emit testSignal();
-  QLOG_INFO() <<objectName() <<": " <<"Test signal received";
-  //qDebug() <<"OIGTLSocketObject::catchTestSignal : Test signal received...." <<endl;
-}
+//*********************************************************
+//               GETTING / SETTING PARAMETERS
+//*********************************************************
+
 
 void OIGTLSocketObject::setConnectTimeOut(int sec)
 {
