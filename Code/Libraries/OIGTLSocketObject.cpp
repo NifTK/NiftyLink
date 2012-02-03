@@ -86,6 +86,7 @@ void OIGTLSocketObject::initThreads()
   m_mutex = new QMutex();
   m_sender = new OIGTLSenderThread(this);
   m_listener = new OIGTLListenerThread(this);
+  //m_listener->setSocketTimeOut(500);
 
   m_sender->setMutex(m_mutex);
   m_listener->setMutex(m_mutex);
@@ -219,7 +220,7 @@ void OIGTLSocketObject::sendMessage(OIGTLMessage::Pointer msg)
   if (m_sender != NULL && m_sender->isInitialized())
     emit messageToSend(msg);
 
-  QLOG_INFO() <<"Emitting.........";
+  //QLOG_INFO() <<"Emitting.........";
 }
 
 
@@ -255,17 +256,25 @@ void OIGTLSocketObject::cannotConnectToRemote(void)
 
 void OIGTLSocketObject::disconnectedFromRemote(bool onPort)
 {
-  if (m_sender != NULL)
-    m_sender->stopThread();
+  if (onPort)
+  {
+    if (m_sender != NULL)
+      m_sender->stopThread();
 
-  if (m_listener != NULL)
-    m_listener->stopThread();
+    if (m_listener != NULL)
+      m_listener->stopThread();
+
+    emit lostConnectionToRemoteSignal();
+  }
+  else
+  {
+    if (m_sender != NULL)
+      m_sender->stopThread();
+  }
 
   m_connectedToRemote = false;
   m_ableToSend = false;
 
-  if (onPort)
-    emit lostConnectionToRemoteSignal();
 }
 
 void OIGTLSocketObject::clientConnected(void)
@@ -274,7 +283,10 @@ void OIGTLSocketObject::clientConnected(void)
   {
     m_sender->setObjectName(this->objectName().append("_S"));
     if (m_sender->initialize(m_listener->getSocketPointer(), m_port) == true)
+    {
       m_ableToSend = true;
+      m_sender->startThread();
+    }
 
     emit clientConnectedSignal();
   }
@@ -282,19 +294,19 @@ void OIGTLSocketObject::clientConnected(void)
 
 void OIGTLSocketObject::clientDisconnected(bool onPort)
 {
-  if (m_sender != NULL)
+  if (onPort)
   {
-    m_sender->stopThread();
-    m_ableToSend = false;
+    if (m_sender != NULL)
+      m_sender->stopThread();
 
-    if (onPort)
-      emit clientDisconnectedSignal();
+    emit clientDisconnectedSignal();
   }
+  m_ableToSend = false;
 }
 
 void OIGTLSocketObject::catchMsgSignal(OIGTLMessage::Pointer msg)
 {
-  QLOG_INFO() <<objectName() <<": " <<"Message signal received";
+  //QLOG_INFO() <<objectName() <<": " <<"Message signal received";
   if (msg.operator !=(NULL))
   {
     emit messageReceived(msg);

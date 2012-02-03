@@ -94,18 +94,22 @@ private:
   /** \brief When listening on a port first a ServerSocket is created which waits for clients to connect, then on connection the receive loop starts
   * which attempts to read data from the socket repeatedly.
   */
-  void listenOnPort();
+  void listenOnPort(void);
   /// \brief Executes the listening loop on the given socket waiting for messages to arrive by repeatadly calling receiveMessage().
-  void listenOnSocket();
+  void listenOnSocket(void);
   
   /** \brief This function receives and interprets the data if any arrived, and wraps it into the appropriate OIGTLMessage format.
   * The function return true if a valid message was received, else return fals.
   */
-  bool receiveMessage();
+  bool receiveMessage(void);
+
+private slots:
+  void socketTimeout(void);
 
 private:
   igtl::ServerSocket::Pointer  m_serverSocket;
   bool m_listeningOnPort;
+  bool m_clientConnected;
   int m_listenInterval;
 };
 

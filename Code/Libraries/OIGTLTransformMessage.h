@@ -52,10 +52,13 @@ public:
 
   /// \brief Function which creates a GET_TRANSFORM message (igtl::GetTransformMessage)
   static void Create_GET(OIGTLMessage::Pointer &msgToCreate);
+
   /// \brief Function which creates a STT_TRANSFORM message (igtl::STTTransformMessage)
   static void Create_STT(OIGTLMessage::Pointer &msgToCreate);
+
   /// \brief Function which creates a STP_TRANSFORM message (igtl::STPTransformMessage)
   static void Create_STP(OIGTLMessage::Pointer &msgToCreate);
+
   /// \brief Function which creates a RTS_TRANSFORM message (igtl::RTSTransformMessage)
   static void Create_RTS(OIGTLMessage::Pointer &msgToCreate);
 
@@ -63,6 +66,9 @@ public:
   void setMatrix(igtl::Matrix4x4 &matrix);
   /// \brief Gets the transformation matrix
   void getMatrix(igtl::Matrix4x4 &matrix);
+
+  /// \brief Gets the transformation matrix as QString (for printing)
+  QString GetMatrixString(void);
 
   /// \brief Sets the position array
   void setPosition(float p[3]);

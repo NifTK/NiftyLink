@@ -87,6 +87,9 @@ private:
   /// \brief Attempt to activate the thread: do an overall sanity check to see if all required objects / parameters are correctly initialized.
   virtual bool activate(void);
 
+private slots:
+  //void keepaliveTimeout(void);
+
 private:
   igtl::ClientSocket::Pointer m_clientSocket;
   std::string m_hostname;

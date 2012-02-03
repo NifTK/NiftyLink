@@ -25,11 +25,16 @@ OIGTLThreadBase::OIGTLThreadBase(QObject *parent)
 : QThread(parent)
 {
 	m_port           = -1;
-  m_socketTimeout  = 100;
+    m_socketTimeout  = 50;
 	m_running        = false;
 	m_initialized    = false;
 	m_mutex          = NULL;
 	m_extSocket      = 0;
+
+  m_timeouter.setInterval(m_socketTimeout);
+  m_timeouter.setSingleShot(false);
+  connect(this, SIGNAL(restartTimer(int )), &m_timeouter, SLOT(start(int )), Qt::QueuedConnection); 
+  connect(this, SIGNAL(stopTimer()), &m_timeouter, SLOT(stop()), Qt::QueuedConnection); 
 }
 
 OIGTLThreadBase::~OIGTLThreadBase(void)

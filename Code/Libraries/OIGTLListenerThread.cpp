@@ -25,13 +25,22 @@ OIGTLListenerThread::OIGTLListenerThread(QObject *parent)
 : OIGTLThreadBase(parent)
 {
   m_listeningOnPort = false;
+  m_clientConnected = false;
   m_listenInterval = 1000;
+
+  connect(&m_timeouter, SIGNAL(timeout()), this, SLOT(socketTimeout()), Qt::QueuedConnection);
+  connect(this, SIGNAL(restartTimer(int )), &m_timeouter, SLOT(start(int )), Qt::QueuedConnection);
+  connect(this, SIGNAL(stopTimer( )), &m_timeouter, SLOT(stop( )), Qt::QueuedConnection);
 }
 
 OIGTLListenerThread::~OIGTLListenerThread(void)
 {
   m_serverSocket.operator =(NULL);
   m_extSocket.operator =(NULL);
+
+  disconnect(&m_timeouter, SIGNAL(timeout()), this, SLOT(socketTimeout()) ); 
+  disconnect(this, SIGNAL(restartTimer(int )), &m_timeouter, SLOT(start(int)));
+  disconnect(this, SIGNAL(stopTimer( )), &m_timeouter, SLOT(stop( )));
 }
 
 bool OIGTLListenerThread::initialize(igtl::Socket::Pointer socket, int port)
@@ -50,6 +59,7 @@ bool OIGTLListenerThread::initialize(igtl::Socket::Pointer socket, int port)
 
   m_extSocket.operator =(socket);
   m_extSocket->SetTimeout(m_socketTimeout);
+ 
   m_listeningOnPort = false;
   m_port = port;
 
@@ -122,13 +132,14 @@ void OIGTLListenerThread::stopThread()
 
   QLOG_INFO() <<objectName() <<": " << "Closing socket... \n";
 
+  emit stopTimer();
+
   m_mutex->lock();
   if (m_listeningOnPort && m_extSocket.IsNotNull())
   {
     err_p |= m_extSocket->CloseSocket();
     
-    igtl::Sleep(100);
-
+    this->msleep(100);
     m_extSocket.operator =(NULL);
   }
   m_mutex->unlock();
@@ -145,8 +156,7 @@ void OIGTLListenerThread::stopThread()
   {
     err_s |= m_serverSocket->CloseSocket();
 
-    igtl::Sleep(100);
-
+    this->msleep(100);
     m_serverSocket.operator =(NULL);
   }
   m_mutex->unlock();
@@ -201,27 +211,22 @@ void OIGTLListenerThread::run()
   QLOG_INFO() <<objectName() <<": " <<"Listener Thread started" <<endl;
 
   if (!m_listeningOnPort && m_initialized)
+  {
+    m_clientConnected = true;
+    emit restartTimer(1000);
+
     listenOnSocket();
+  }
   else if (m_listeningOnPort && m_initialized)
     listenOnPort();
 }
 
 void OIGTLListenerThread::listenOnSocket(void)
 {
-  while (m_running == true)
+  while (m_running == true && m_clientConnected == true)
   {
-    if (m_extSocket.IsNull() || (m_extSocket.IsNotNull() && !m_extSocket->IsAlive()) )
-    {
-      QLOG_ERROR() <<objectName() <<": " <<"Socket terminated, disconnecting" <<"\n";
-      emit clientDisconnected(false);
-      break;
-    }
-
-    bool rec = receiveMessage();
-
-    // If there was no activity on the socket sleep for a bit
-    if (rec == false)
-          igtl::Sleep(200);
+    if (receiveMessage() == false)
+      this->msleep(100);
   }
 }
 
@@ -239,7 +244,10 @@ void OIGTLListenerThread::listenOnPort(void)
       socket = m_serverSocket->WaitForConnection(m_listenInterval);
       m_mutex->unlock();
 
-      if (socket.IsNull() || (socket.IsNotNull() && !socket->IsValid()) )
+
+
+      //if (socket.IsNull() || (socket.IsNotNull() && !socket->IsValid()) )
+      if (!socket->IsValid())
       {
         QLOG_INFO() <<objectName() <<": " << "No client connecting\n";
         continue;
@@ -249,23 +257,15 @@ void OIGTLListenerThread::listenOnPort(void)
         // Client connected, need to set socket parameters
         m_extSocket.operator =(socket);
         m_extSocket->SetTimeout(m_socketTimeout);
+        emit restartTimer(1000);
         emit clientConnected();
+        m_clientConnected = true;
       }
 
-      while (m_running == true) // if client connected
+      while (m_running == true && m_clientConnected == true) // if client connected
       {
-        if (socket.IsNull()  || (socket.IsNotNull() && !socket->IsAlive()))
-        {
-          QLOG_ERROR() <<objectName() <<": " <<"Socket terminated, disconnecting" <<"\n";
-          emit clientDisconnected(true);
-          break;
-        }
-
-        bool rec = receiveMessage();
-
-        // If there was no activity on the socket sleep for a bit
-        if (rec == false)
-          igtl::Sleep(200);
+        if (receiveMessage() == false)
+          this->msleep(100);
       }
     }
   }
@@ -290,14 +290,28 @@ bool OIGTLListenerThread::receiveMessage()
   int r = m_extSocket->Receive(msgHeader->GetPackPointer(), msgHeader->GetPackSize());
   m_mutex->unlock();
 
-  // Junk or socket testing (IsAlive())
-  if (r <= 2 || r != msgHeader->GetPackSize())
+  //QLOG_INFO() <<objectName()  <<"Bytes received: " <<r;
+
+  if (r <= 0)
   {
+    msgHeader.operator =(NULL);
     return false;
   }
+  else if (r == 2 || r != msgHeader->GetPackSize())
+  {
+    // Corrupted package or keepalive, but still something
+    //QLOG_INFO() <<objectName()  <<"Keepalive received... ";
+    emit restartTimer(1000);
+    msgHeader.operator =(NULL);
+    return true;
+  }
+  //QLOG_INFO() <<objectName()  <<"RESETTING THE TIMER";
+  emit restartTimer(1000);
 
   // Deserialize the header
   msgHeader->Unpack();
+
+  //QLOG_INFO() <<objectName() <<": " << "NEW header recieved: " << msgHeader->GetDeviceType() << endl;
 
   // Interpret message and instanciate the appropriate OIGTL message wrapper type
   if (strcmp(msgHeader->GetDeviceType(), "BIND") == 0)
@@ -390,12 +404,14 @@ bool OIGTLListenerThread::receiveMessage()
     m_extSocket->Skip(msgHeader->GetBodySizeToRead(), 0);
     m_mutex->unlock();
 
+    msgHeader.operator =(NULL);
     return true;
   }
 
   if (msg.operator ==(NULL))
   {
     QLOG_ERROR() <<objectName() <<": " <<"Cannot to create OIGTLMessage, receiveMessage() failed" <<endl;
+    msgHeader.operator =(NULL);
     return false;
   }
 
@@ -407,11 +423,17 @@ bool OIGTLListenerThread::receiveMessage()
   r = m_extSocket->Receive(message->GetPackBodyPointer(), message->GetPackBodySize());
   m_mutex->unlock();
 
-  // Junk or socket testing (IsAlive())
-  if (r <= 2 || r != msgHeader->GetPackSize())
-  {
+  if (r <= 0)
     return false;
+  else if (r <= 2 || r != message->GetPackBodySize())
+  {
+    //QLOG_INFO() <<objectName()  <<"RESETTING THE TIMER";
+    emit restartTimer(1000);
+    return true;
   }
+
+  //QLOG_INFO() <<objectName()  <<"RESETTING THE TIMER";
+  emit restartTimer(1000);
 
   igtl::TimeStamp::Pointer ts = igtl::TimeStamp::New();
   ts->GetTime();
@@ -420,7 +442,7 @@ bool OIGTLListenerThread::receiveMessage()
   msg->setMessagePointer(message);
   msg->setPort(m_port);
 
-  QLOG_INFO() <<objectName() <<": " << "Message successfully recieved"; 
+  //QLOG_INFO() <<objectName() <<": " << "Message successfully recieved";
 
   emit messageReceived(msg);
   
@@ -435,4 +457,17 @@ void OIGTLListenerThread::setListenInterval(int msec)
 int OIGTLListenerThread::getListenInterval(void) 
 { 
   return m_listenInterval; 
+}
+
+void OIGTLListenerThread::socketTimeout(void)
+{
+  QLOG_INFO() <<objectName() <<": " <<"Client disconnected.. terminating socket." <<"\n";
+  
+  if (m_listeningOnPort)
+    emit clientDisconnected(true);
+  else
+    emit clientDisconnected(false);
+
+  emit stopTimer();
+  m_clientConnected = false;
 }

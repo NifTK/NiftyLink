@@ -20,6 +20,7 @@
  ============================================================================*/
 
 #include "OIGTLSenderThread.h"
+#include "igtlOSUtil.h"
 
 OIGTLSenderThread::OIGTLSenderThread(QObject *parent)
 : OIGTLThreadBase(parent)
@@ -27,6 +28,8 @@ OIGTLSenderThread::OIGTLSenderThread(QObject *parent)
   m_sendingOnSocket = false;
   m_connectTimeout = 5;
   m_hostname.clear();
+
+  //connect(&m_timeouter, SIGNAL(timeout()), this, SLOT(keepaliveTimeout()), Qt::QueuedConnection);
 }
 
 OIGTLSenderThread::~OIGTLSenderThread(void)
@@ -107,13 +110,13 @@ void OIGTLSenderThread::startThread(void)
   if (m_initialized == false) // || m_running == true)
     return;
 
+  if (!m_sendingOnSocket && !m_running)
+    QLOG_INFO() <<objectName() <<": " <<"Started sender at: " <<m_port <<"\n";
+  else if (!m_running)
+    QLOG_INFO() <<objectName() <<": " <<"Started sender on socket" <<"\n";
+
   m_running = true;
   this->start();
-
-  if (!m_sendingOnSocket)
-    QLOG_INFO() <<objectName() <<": " <<"Started sender at: " <<m_port <<"\n";
-  else
-    QLOG_INFO() <<objectName() <<": " <<"Started sender on socket" <<"\n";
 }
 
 void OIGTLSenderThread::stopThread(void)
@@ -122,6 +125,7 @@ void OIGTLSenderThread::stopThread(void)
   QLOG_INFO() <<objectName() <<": " << "Quitting sender thread \n";
 
   m_running = false;
+  this->msleep(100);
 
   if (!m_sendingOnSocket)
   {
@@ -216,7 +220,6 @@ void OIGTLSenderThread::run(void)
       m_extSocket.operator =((igtl::Socket::Pointer) m_clientSocket);
       m_extSocket->SetTimeout(m_socketTimeout);
       m_sendingOnSocket = false;
-
       emit connectedToRemote();
     }
   }
@@ -224,27 +227,31 @@ void OIGTLSenderThread::run(void)
   // Start processing the message queue
   while (m_running == true)
   {
-    // Validity check to detect if the remote host has terminated the connection
-    if (m_extSocket.IsNull() || (m_extSocket.IsNotNull() && !m_extSocket->IsAlive()) )
-    {
-      QLOG_ERROR() <<objectName() <<": " <<"Cannot send message: Disconnected from remote host" <<"\n";
-      
-      if (m_sendingOnSocket)
-        emit disconnectedFromRemote(false);
-      else
-        emit disconnectedFromRemote(true);
-      
-      break;
-    }
-
     if (m_sendQue.isEmpty())
-    {
-      // Nothing to do, idle
-      igtl::Sleep(200);
+    {    
+      this->msleep(250);
+
+      bool rval;
+      m_mutex->lock();
+      rval = m_extSocket->Writable();
+      m_mutex->unlock();
+
+      if (!rval && m_running == true)
+      {
+        QLOG_ERROR() <<objectName() <<": " <<"Cannot send message: Disconnected from remote host" <<"\n";
+
+        if (m_sendingOnSocket)
+          emit disconnectedFromRemote(false);
+        else
+          emit disconnectedFromRemote(true);
+
+        break;
+      }
+      this->msleep(250);
       continue;
     }
 
-    QLOG_INFO() <<objectName() <<": Messages in sendque: " << m_sendQue.count();
+    //QLOG_INFO() <<objectName() <<": Messages in sendque: " << m_sendQue.count();
 
     // Take the oldest message in the queue and send it to the remote host
     m_queueMutex.lock();
@@ -260,11 +267,24 @@ void OIGTLSenderThread::run(void)
 
       if (igtMsg.IsNotNull())
       {
+        int ret = 0;
+        
         m_mutex->lock();
-        m_extSocket->Send(igtMsg->GetPackPointer(), igtMsg->GetPackSize());
+        ret = m_extSocket->Send(igtMsg->GetPackPointer(), igtMsg->GetPackSize());
         m_mutex->unlock();
 
-        QLOG_INFO() <<objectName() <<": " <<"Message Sent" <<endl;
+        if (ret <=0)
+        {
+          if (m_sendingOnSocket)
+            emit disconnectedFromRemote(false);
+          else
+            emit disconnectedFromRemote(true);
+
+          QLOG_ERROR() <<objectName() <<": " <<"Cannot send message: Disconnected from remote host" <<"\n";
+          break;
+        }
+
+        //QLOG_INFO() <<objectName() <<": " <<"Message Sent" <<endl;
       }
       else
         QLOG_ERROR() <<objectName() <<": " <<"Cannot send message: igtMsg is NULL" <<"\n";
@@ -285,12 +305,12 @@ void OIGTLSenderThread::run(void)
 
 void OIGTLSenderThread::sendMsg(OIGTLMessage::Pointer msg)
 {
-  QLOG_INFO() <<objectName() <<": " <<"Got new message to send, putting it to send queue.";
+  //QLOG_INFO() <<objectName() <<": " <<"Got new message to send, putting it to send queue.";
 
   // Catch the signal and append message to the end of the queue
-  if (msg.operator !=(NULL))
-    QLOG_INFO() <<"MSG_ID: " <<msg->getId() <<endl;
-  else
+//  if (msg.operator !=(NULL))
+//    QLOG_INFO() <<"MSG_ID: " <<msg->getId() <<endl;
+  if (msg.operator ==(NULL))
   {
     QLOG_ERROR() <<objectName() <<": " <<"Invalid message arrived to send" <<"\n";
     return;

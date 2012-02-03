@@ -200,18 +200,70 @@ void OIGTLImageMessage::getNormals(float t[3], float s[3], float n[3])
 
 void OIGTLImageMessage::initializeWithTestData(void)
 {
-	if (m_message.IsNull())
-		return;
+  if (m_message.IsNull())
+    return;
 
-	igtl::ImageMessage::Pointer msgPointer;
-	msgPointer = static_cast<igtl::ImageMessage *>(m_message.GetPointer());
-	msgPointer->Unpack();
+  igtl::ImageMessage::Pointer msgPointer;
+  msgPointer = static_cast<igtl::ImageMessage *>(m_message.GetPointer());
+  msgPointer->Unpack();
 
-    msgPointer->SetMatrix(dummyTransformMatrix);
-	update();
+  //-------------------------------------------------------------
+  // Set parameters
 
-	//Pack message data
-	msgPointer->Pack();
+  int   size[]     = {256, 256, 1};       // image dimension
+  float spacing[]  = {1.0, 1.0, 5.0};     // spacing (mm/pixel)
+  int   svsize[]   = {256, 256, 1};       // sub-volume size
+  int   svoffset[] = {0, 0, 0};           // sub-volume offset
+  int   scalarType = igtl::ImageMessage::TYPE_UINT8;// scalar type
+
+  msgPointer->SetDimensions(size);
+  msgPointer->SetSpacing(spacing);
+  msgPointer->SetScalarType(scalarType);
+  //msgPointer->SetDeviceName(name);
+  msgPointer->SetSubVolume(svsize, svoffset);
+  msgPointer->AllocateScalars();
+
+
+  //------------------------------------------------------------
+  // Generate path to the raw image file
+  char filename[128];
+  sprintf(filename, "testimage.png");
+  std::cerr << "Reading " << filename << "...";
+
+  //------------------------------------------------------------
+  // Load raw data from the file
+  FILE *fp = fopen(filename, "rb");
+  if (fp == NULL)
+    {
+    std::cerr << "File opeining error: " << filename << std::endl;
+    return;
+    }
+  int fsize = msgPointer->GetImageSize();
+  //size_t b = fread(msg->GetScalarPointer(), 1, fsize, fp);
+  fread(msgPointer->GetScalarPointer(), 1, fsize, fp);
+
+  fclose(fp);
+
+  std::cerr << "done." << std::endl;
+
+  igtl::Matrix4x4 matrix;
+  igtl::IdentityMatrix(matrix);
+  msgPointer->SetMatrix(matrix);
+
+
+
+//	if (m_message.IsNull())
+//		return;
+
+//	igtl::ImageMessage::Pointer msgPointer;
+//	msgPointer = static_cast<igtl::ImageMessage *>(m_message.GetPointer());
+//	msgPointer->Unpack();
+
+//    msgPointer->SetMatrix(dummyTransformMatrix);
+//	update();
+
+//	//Pack message data
+//	msgPointer->Pack();
 }
 
 void OIGTLImageMessage::initializeWithRandomData(void)

@@ -69,11 +69,31 @@ void OIGTLTransformMessage::getMatrix(igtl::Matrix4x4 &matrix)
 	msgPointer = static_cast<igtl::TransformMessage *>(m_message.GetPointer());
 
 	msgPointer->Unpack();
-    msgPointer->GetMatrix(matrix);
+  msgPointer->GetMatrix(matrix);
 
 	//Pack message data
 	msgPointer->Pack();
 
+}
+
+QString OIGTLTransformMessage::GetMatrixString()
+{
+  if (m_message.IsNull())
+    return QString();
+
+  igtl::TransformMessage::Pointer msgPointer;
+  msgPointer = static_cast<igtl::TransformMessage *>(m_message.GetPointer());
+
+  msgPointer->Unpack();
+  std::string stdStr;
+  msgPointer->GetMatrixAsString(stdStr);
+
+  QString strMat = QString(stdStr.c_str());
+
+  //Pack message data
+  msgPointer->Pack();
+
+  return strMat;
 }
 
 void OIGTLTransformMessage::setPosition(float p[3])

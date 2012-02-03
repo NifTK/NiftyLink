@@ -113,7 +113,7 @@ public:
   /// \brief Function base for initilizing the message with test data (defined in NiftyLink Utils)
 	virtual void initializeWithTestData(void) {}
   /// \brief Function base for initilizing the message with random data (defined in NiftyLink Utils)
-	virtual void initializeRandomData(void) {}
+  virtual void initializeWithRandomData(void) {}
 
 protected:
   /// \brief Internal function to update the timestamp and host name after changes

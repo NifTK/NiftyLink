@@ -27,6 +27,7 @@
 #include <QObject>
 #include <QDebug>
 #include <QMutex>
+#include <QTimer>
 
 //OpenIGTLink includes
 #include "igtlSocket.h"
@@ -53,6 +54,10 @@
 class OIGTLThreadBase : public QThread
 {
   Q_OBJECT
+
+signals:
+  void restartTimer(int msec);
+  void stopTimer(void);
 
 public:
 
@@ -118,6 +123,7 @@ protected:
   bool     m_running;
   bool     m_initialized;
   QMutex * m_mutex;
+  QTimer   m_timeouter;
 
   igtl::Socket::Pointer m_extSocket;
 };
