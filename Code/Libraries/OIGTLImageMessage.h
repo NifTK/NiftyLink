@@ -22,6 +22,8 @@
 #ifndef OIGTLIMAGEMESSAGE_H
 #define OIGTLIMAGEMESSAGE_H
 
+#include <QtGui/QImage>
+
 #include "OIGTLMessage.h"
 #include "NiftyLinkUtils.h"
 #include "NiftyLinkCommonWin32ExportHeader.h"

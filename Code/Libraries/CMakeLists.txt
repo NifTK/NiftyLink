@@ -71,8 +71,16 @@ OIGTLTransformMessage.h
 OIGTLImageMessage.h
 )
 
+#########################
+# Resource file.
+#########################
+
+SET(niftylink_RES ../../Resources/NiftyLink.qrc)
+
 # --------------------------------------------------------------------------
 # Qt Specific Commands
+
+QT4_ADD_RESOURCES(niftylink_RCC ${niftylink_RES})
 
 QT4_WRAP_CPP(NIFTYLINK_QT_MOC_FILES ${niftylink_MOC_HDRS} )			  
 SOURCE_GROUP("Generated Files" FILES ${NIFTYLINK_QT_MOC_FILES})
@@ -91,6 +99,7 @@ SET (NIFTYLINK_LIBS
 ADD_LIBRARY(niftylink 
   ${niftylink_SRCS}
   ${niftylink_HDRS}
+  ${niftylink_RCC}
   ${NIFTYLINK_QT_MOC_FILES}
   )
 

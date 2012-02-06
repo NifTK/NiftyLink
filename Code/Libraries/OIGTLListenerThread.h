@@ -28,6 +28,7 @@
 #include "igtlBindMessage.h"
 #include "igtlPointMessage.h"
 #include "igtlStringMessage.h"
+#include "igtlImageMessage.h"
 
 
 /**
@@ -111,6 +112,7 @@ private:
   bool m_listeningOnPort;
   bool m_clientConnected;
   int m_listenInterval;
+  unsigned long m_messageCounter;
 };
 
 #endif

@@ -53,6 +53,12 @@ void TestClass::setupTest()
 
   static_cast<OIGTLTransformMessage::Pointer>(m_msgToSend)->setMatrix(dummyTransformMatrix);
 
+  //bool succ;
+  // 
+  //QImage image;
+  //succ = image.load(":/NiftyLink/UCL_LOGO.tif");
+  //if (succ)
+  //  image.save("loaded_image.png");
 }
 
 void TestClass::setupTest2()

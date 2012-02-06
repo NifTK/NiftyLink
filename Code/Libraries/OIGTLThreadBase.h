@@ -36,6 +36,7 @@
 //NiftyLink includes
 #include "OIGTLMessage.h"
 #include "OIGTLTransformMessage.h"
+#include "OIGTLImageMessage.h"
 #include "NiftyLinkUtils.h"
 
 //Logging

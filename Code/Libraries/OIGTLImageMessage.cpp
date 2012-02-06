@@ -210,41 +210,47 @@ void OIGTLImageMessage::initializeWithTestData(void)
   //-------------------------------------------------------------
   // Set parameters
 
-  int   size[]     = {256, 256, 1};       // image dimension
-  float spacing[]  = {1.0, 1.0, 5.0};     // spacing (mm/pixel)
-  int   svsize[]   = {256, 256, 1};       // sub-volume size
+  int   size[]     = {1004, 297, 1};      // image dimension
+  float spacing[]  = {1.0, 1.0, 1.0};     // spacing (mm/pixel)
+  int   svsize[]   = {1004, 297, 1};      // sub-volume size
   int   svoffset[] = {0, 0, 0};           // sub-volume offset
-  int   scalarType = igtl::ImageMessage::TYPE_UINT8;// scalar type
+  int   scalarType = igtl::ImageMessage::TYPE_UINT32;// scalar type
 
   msgPointer->SetDimensions(size);
   msgPointer->SetSpacing(spacing);
   msgPointer->SetScalarType(scalarType);
-  //msgPointer->SetDeviceName(name);
   msgPointer->SetSubVolume(svsize, svoffset);
   msgPointer->AllocateScalars();
 
 
-  //------------------------------------------------------------
-  // Generate path to the raw image file
-  char filename[128];
-  sprintf(filename, "testimage.png");
-  std::cerr << "Reading " << filename << "...";
+  ////------------------------------------------------------------
+  //// Generate path to the raw image file
+  //char filename[128];
+  //sprintf(filename, "testimage.png");
+  //std::cerr << "Reading " << filename << "...";
 
-  //------------------------------------------------------------
-  // Load raw data from the file
-  FILE *fp = fopen(filename, "rb");
-  if (fp == NULL)
-    {
-    std::cerr << "File opeining error: " << filename << std::endl;
-    return;
-    }
+  ////------------------------------------------------------------
+  //// Load raw data from the file
+  //FILE *fp = fopen(filename, "rb");
+  //if (fp == NULL)
+  //  {
+  //  std::cerr << "File opeining error: " << filename << std::endl;
+  //  return;
+  //  }
+  
+  QImage image;
+  image.load(":/NiftyLink/UCL_LOGO.tif");
+  image.bits();
+  
   int fsize = msgPointer->GetImageSize();
   //size_t b = fread(msg->GetScalarPointer(), 1, fsize, fp);
-  fread(msgPointer->GetScalarPointer(), 1, fsize, fp);
+  memcpy(msgPointer->GetScalarPointer(), image.bits(), fsize);
 
-  fclose(fp);
+  //fread(msgPointer->GetScalarPointer(), 1, fsize, fp);
 
-  std::cerr << "done." << std::endl;
+  //fclose(fp);
+
+  //std::cerr << "done." << std::endl;
 
   igtl::Matrix4x4 matrix;
   igtl::IdentityMatrix(matrix);

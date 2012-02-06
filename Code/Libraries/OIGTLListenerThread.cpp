@@ -27,6 +27,7 @@ OIGTLListenerThread::OIGTLListenerThread(QObject *parent)
   m_listeningOnPort = false;
   m_clientConnected = false;
   m_listenInterval = 1000;
+  m_messageCounter = 0;
 
   connect(&m_timeouter, SIGNAL(timeout()), this, SLOT(socketTimeout()), Qt::QueuedConnection);
   connect(this, SIGNAL(restartTimer(int )), &m_timeouter, SLOT(start(int )), Qt::QueuedConnection);
@@ -169,6 +170,8 @@ void OIGTLListenerThread::stopThread()
   m_listeningOnPort = false;
   m_port = -1;
   m_initialized = false;
+
+  QLOG_INFO() <<objectName() <<": " << "Total number of messages recieved: " <<m_messageCounter;
 
   exit(0);
 }
@@ -325,7 +328,10 @@ bool OIGTLListenerThread::receiveMessage()
   else if (strcmp(msgHeader->GetDeviceType(), "RTS_BIND") == 0)
     message = igtl::RTSBindMessage::New(); 
   else if (strcmp(msgHeader->GetDeviceType(), "IMAGE") == 0)
+  {
     message = igtl::ImageMessage::New(); 
+    msg.operator =(OIGTLImageMessage::Pointer(new OIGTLImageMessage()));
+  }
   else if (strcmp(msgHeader->GetDeviceType(), "GET_IMAGE") == 0)
     message = igtl::GetImageMessage::New();
   else if (strcmp(msgHeader->GetDeviceType(), "STT_IMAGE") == 0)
@@ -443,7 +449,8 @@ bool OIGTLListenerThread::receiveMessage()
   msg->setPort(m_port);
 
   //QLOG_INFO() <<objectName() <<": " << "Message successfully recieved";
-
+  m_messageCounter++;
+  
   emit messageReceived(msg);
   
   return true;
