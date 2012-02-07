@@ -28,8 +28,6 @@ OIGTLSenderThread::OIGTLSenderThread(QObject *parent)
   m_sendingOnSocket = false;
   m_connectTimeout = 5;
   m_hostname.clear();
-
-  //connect(&m_timeouter, SIGNAL(timeout()), this, SLOT(keepaliveTimeout()), Qt::QueuedConnection);
 }
 
 OIGTLSenderThread::~OIGTLSenderThread(void)
@@ -82,7 +80,7 @@ bool OIGTLSenderThread::initialize(std::string &hostname, int port)
   
   // Try to create a new client socket and if it is successful, set its parameters.
   m_clientSocket = igtl::ClientSocket::New();
-  if (m_clientSocket.IsNotNull())// && m_clientSocket->IsValid())
+  if (m_clientSocket.IsNotNull())
   {
     m_clientSocket->SetTimeout(m_socketTimeout);
     m_clientSocket->SetConnectionTimeout(m_connectTimeout);
@@ -107,7 +105,7 @@ bool OIGTLSenderThread::initialize(std::string &hostname, int port)
 
 void OIGTLSenderThread::startThread(void)
 {
-  if (m_initialized == false) // || m_running == true)
+  if (m_initialized == false)
     return;
 
   if (!m_sendingOnSocket && !m_running)
@@ -180,7 +178,7 @@ bool OIGTLSenderThread::activate(void)
     return false;
   }
 
-  if ( (!m_sendingOnSocket && m_clientSocket.IsNull()) )// || (!m_sendingOnSocket && !m_clientSocket->IsValid()) )
+  if ( (!m_sendingOnSocket && m_clientSocket.IsNull()) )
   {
     QLOG_INFO() <<objectName() <<": " <<"Cannot activate sender, client socket is invalid" <<endl;
     return false;
@@ -233,7 +231,8 @@ void OIGTLSenderThread::run(void)
 
       bool rval;
       m_mutex->lock();
-      rval = m_extSocket->Writable();
+      //QLOG_INFO() <<objectName() <<": " <<"Sending keepalive message" <<"\n";
+      rval = m_extSocket->Poke();
       m_mutex->unlock();
 
       if (!rval && m_running == true)
@@ -265,6 +264,8 @@ void OIGTLSenderThread::run(void)
       igtl::MessageBase::Pointer igtMsg;
       msg->getMessagePointer(igtMsg);
 
+      if (!m_running) break;
+
       if (igtMsg.IsNotNull())
       {
         int ret = 0;
@@ -291,6 +292,7 @@ void OIGTLSenderThread::run(void)
     }
     else
       QLOG_ERROR() <<objectName() <<": " <<"Cannot send message: invalid message" <<"\n";
+    this->msleep(50);
   }
 
   // All messages were sent
@@ -305,11 +307,6 @@ void OIGTLSenderThread::run(void)
 
 void OIGTLSenderThread::sendMsg(OIGTLMessage::Pointer msg)
 {
-  //QLOG_INFO() <<objectName() <<": " <<"Got new message to send, putting it to send queue.";
-
-  // Catch the signal and append message to the end of the queue
-//  if (msg.operator !=(NULL))
-//    QLOG_INFO() <<"MSG_ID: " <<msg->getId() <<endl;
   if (msg.operator ==(NULL))
   {
     QLOG_ERROR() <<objectName() <<": " <<"Invalid message arrived to send" <<"\n";

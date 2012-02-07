@@ -25,7 +25,7 @@ OIGTLThreadBase::OIGTLThreadBase(QObject *parent)
 : QThread(parent)
 {
 	m_port           = -1;
-    m_socketTimeout  = 50;
+  m_socketTimeout  = 50;
 	m_running        = false;
 	m_initialized    = false;
 	m_mutex          = NULL;

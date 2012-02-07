@@ -208,49 +208,21 @@ void OIGTLImageMessage::initializeWithTestData(void)
   msgPointer->Unpack();
 
   //-------------------------------------------------------------
-  // Set parameters
-
-  int   size[]     = {1004, 297, 1};      // image dimension
-  float spacing[]  = {1.0, 1.0, 1.0};     // spacing (mm/pixel)
-  int   svsize[]   = {1004, 297, 1};      // sub-volume size
-  int   svoffset[] = {0, 0, 0};           // sub-volume offset
-  int   scalarType = igtl::ImageMessage::TYPE_UINT32;// scalar type
-
-  msgPointer->SetDimensions(size);
-  msgPointer->SetSpacing(spacing);
-  msgPointer->SetScalarType(scalarType);
-  msgPointer->SetSubVolume(svsize, svoffset);
-  msgPointer->AllocateScalars();
-
-
-  ////------------------------------------------------------------
-  //// Generate path to the raw image file
-  //char filename[128];
-  //sprintf(filename, "testimage.png");
-  //std::cerr << "Reading " << filename << "...";
-
-  ////------------------------------------------------------------
-  //// Load raw data from the file
-  //FILE *fp = fopen(filename, "rb");
-  //if (fp == NULL)
-  //  {
-  //  std::cerr << "File opeining error: " << filename << std::endl;
-  //  return;
-  //  }
-  
+  // Load test image from resources
   QImage image;
   image.load(":/NiftyLink/UCL_LOGO.tif");
-  image.bits();
+
+  //-------------------------------------------------------------
+  // Set parameters
+  msgPointer->SetDimensions(image.width(), image.height(), 1);
+  msgPointer->SetSpacing(1.0f, 1.0f, 1.0f);
+  msgPointer->SetScalarType(igtl::ImageMessage::TYPE_UINT32);
+  //msgPointer->AllocateCompressedImage(image.byteCount());
+  msgPointer->AllocateScalars();
   
-  int fsize = msgPointer->GetImageSize();
-  //size_t b = fread(msg->GetScalarPointer(), 1, fsize, fp);
-  memcpy(msgPointer->GetScalarPointer(), image.bits(), fsize);
-
-  //fread(msgPointer->GetScalarPointer(), 1, fsize, fp);
-
-  //fclose(fp);
-
-  //std::cerr << "done." << std::endl;
+  //int fsize = msgPointer->GetImageSize();
+  int byteSizeOfImg = image.byteCount();
+  memcpy(msgPointer->GetScalarPointer(), image.bits(), byteSizeOfImg);
 
   igtl::Matrix4x4 matrix;
   igtl::IdentityMatrix(matrix);
@@ -266,10 +238,12 @@ void OIGTLImageMessage::initializeWithTestData(void)
 //	msgPointer->Unpack();
 
 //    msgPointer->SetMatrix(dummyTransformMatrix);
-//	update();
 
-//	//Pack message data
-//	msgPointer->Pack();
+  // Update timestamp, hostname and such
+  update();
+
+  //Pack message data
+  msgPointer->Pack();
 }
 
 void OIGTLImageMessage::initializeWithRandomData(void)

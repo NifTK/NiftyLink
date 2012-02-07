@@ -247,9 +247,6 @@ void OIGTLListenerThread::listenOnPort(void)
       socket = m_serverSocket->WaitForConnection(m_listenInterval);
       m_mutex->unlock();
 
-
-
-      //if (socket.IsNull() || (socket.IsNotNull() && !socket->IsValid()) )
       if (!socket->IsValid())
       {
         QLOG_INFO() <<objectName() <<": " << "No client connecting\n";
@@ -303,18 +300,15 @@ bool OIGTLListenerThread::receiveMessage()
   else if (r == 2 || r != msgHeader->GetPackSize())
   {
     // Corrupted package or keepalive, but still something
-    //QLOG_INFO() <<objectName()  <<"Keepalive received... ";
     emit restartTimer(1000);
     msgHeader.operator =(NULL);
     return true;
   }
-  //QLOG_INFO() <<objectName()  <<"RESETTING THE TIMER";
+
   emit restartTimer(1000);
 
   // Deserialize the header
   msgHeader->Unpack();
-
-  //QLOG_INFO() <<objectName() <<": " << "NEW header recieved: " << msgHeader->GetDeviceType() << endl;
 
   // Interpret message and instanciate the appropriate OIGTL message wrapper type
   if (strcmp(msgHeader->GetDeviceType(), "BIND") == 0)
@@ -429,16 +423,17 @@ bool OIGTLListenerThread::receiveMessage()
   r = m_extSocket->Receive(message->GetPackBodyPointer(), message->GetPackBodySize());
   m_mutex->unlock();
 
+  //QLOG_INFO() <<objectName()  <<"Total message bytes received: " <<r;
+  //std::cerr <<"Total message bytes received: " <<r <<std::endl;
+
   if (r <= 0)
     return false;
   else if (r <= 2 || r != message->GetPackBodySize())
   {
-    //QLOG_INFO() <<objectName()  <<"RESETTING THE TIMER";
     emit restartTimer(1000);
     return true;
   }
 
-  //QLOG_INFO() <<objectName()  <<"RESETTING THE TIMER";
   emit restartTimer(1000);
 
   igtl::TimeStamp::Pointer ts = igtl::TimeStamp::New();
