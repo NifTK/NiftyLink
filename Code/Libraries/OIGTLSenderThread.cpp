@@ -290,7 +290,7 @@ void OIGTLSenderThread::run(void)
     else
       QLOG_ERROR() <<objectName() <<": " <<"Cannot send message: igtMsg is NULL" <<"\n";
 
-    this->msleep(50);
+    //this->msleep(50);
   }
 
   // All messages were sent

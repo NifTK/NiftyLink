@@ -55,7 +55,7 @@ static igtl::Matrix4x4 dummyTransformMatrix =
 { 0, 0.98, -0.15, 50},
 { 0, 0, 0, 1} };
 
-static enum MessageTypes 
+enum MessageTypes 
 {
   NONDEFINED,
   BIND,
