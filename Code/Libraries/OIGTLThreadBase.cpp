@@ -24,12 +24,13 @@
 OIGTLThreadBase::OIGTLThreadBase(QObject *parent)
 : QThread(parent)
 {
-	m_port           = -1;
+  m_port           = -1;
   m_socketTimeout  = 50;
-	m_running        = false;
-	m_initialized    = false;
-	m_mutex          = NULL;
-	m_extSocket      = 0;
+  m_running        = false;
+  m_initialized    = false;
+  m_mutex          = NULL;
+  m_extSocket      = 0;
+  m_messageCounter = 0;
 
   m_timeouter.setInterval(m_socketTimeout);
   m_timeouter.setSingleShot(false);

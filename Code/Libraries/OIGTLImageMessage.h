@@ -61,6 +61,7 @@ public:
 	void setNormals(float t[3], float s[3], float n[3]);
 	void getNormals(float t[3], float s[3], float n[3]);
 
+  void save(QString filename);
 	virtual void initializeWithTestData(void);
 	virtual void initializeWithRandomData(void);
 

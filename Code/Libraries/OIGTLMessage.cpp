@@ -27,11 +27,12 @@
 
 OIGTLMessage::OIGTLMessage(void)
 {
-	m_timeCreated = igtl::TimeStamp::New();
-	m_timeCreated->GetTime();
-
-	m_id = m_timeCreated->GetTimeStampUint64();
-	m_resolution = 0;
+  m_timeCreated = igtl::TimeStamp::New();
+  m_timeCreated->GetTime();
+  m_senderPort = -1;
+  m_senderHostName = QString("localhost");
+  m_id = m_timeCreated->GetTimeStampUint64();
+  m_resolution = 0;
 }
 
 OIGTLMessage::~OIGTLMessage(void)
@@ -249,17 +250,18 @@ void OIGTLMessage::update()
   // Updates timestamp and hostname
 	
   if (m_message.IsNull())
-		return;
+    return;
 
-	igtl::TimeStamp::Pointer ts;
-	ts = igtl::TimeStamp::New();
-	ts->GetTime();
+  igtl::TimeStamp::Pointer ts;
+  ts = igtl::TimeStamp::New();
+  ts->GetTime();
 
-	QString lhn = getLocalHostAddress();
+  if (m_senderHostName == QString("localhost"))
+    m_senderHostName = getLocalHostAddress();
 
-	m_message->SetTimeStamp(ts);
-	m_message->SetDeviceName(lhn.toStdString().c_str());
+  m_message->SetTimeStamp(ts);
+  m_message->SetDeviceName(m_senderHostName.toStdString().c_str());
 
-	m_timeCreated.operator =(ts);
-	m_senderHostName = lhn;
+  m_timeCreated.operator =(ts);
+  //m_senderHostName = lhn;
 }

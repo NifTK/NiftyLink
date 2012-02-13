@@ -265,6 +265,31 @@ void OIGTLImageMessage::initializeWithRandomData(void)
 	msgPointer->Pack();
 }
 
+void OIGTLImageMessage::save(QString filename)
+{
+  if (m_message.IsNull())
+    return;
+
+  igtl::ImageMessage::Pointer msgPointer;
+  msgPointer = static_cast<igtl::ImageMessage *>(m_message.GetPointer());
+  msgPointer->Unpack();
+
+  if (!filename.isNull())
+  {
+    int i,j,k;
+    msgPointer->GetDimensions(i,j,k);
+    QImage image(i, j, QImage::Format_ARGB32);
+    
+    int byteSizeOfImg = image.byteCount();
+    memcpy(image.bits(), msgPointer->GetScalarPointer(), byteSizeOfImg);
+
+    image.save(filename);
+  }
+
+  //Pack message data
+	msgPointer->Pack();
+}
+
 void OIGTLImageMessage::Create_GET(OIGTLMessage::Pointer &msgToCreate)
 {
     msgToCreate.operator =(OIGTLMessage::Pointer(new OIGTLMessage()));

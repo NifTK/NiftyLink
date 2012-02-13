@@ -30,14 +30,14 @@
 
 // OpenIGTLink message types
 #include "igtlBindMessage.h"
-//#include "igtlColorTableMessage.h"
+#include "igtlColorTableMessage.h"
 #include "igtlImageMessage.h"
-//#include "igtlImageMetaMessage.h"
-//#include "igtlLabelMetaMessage.h"
+#include "igtlImageMetaMessage.h"
+#include "igtlLabelMetaMessage.h"
 #include "igtlPointMessage.h"
 #include "igtlPositionMessage.h"
 #include "igtlQuaternionTrackingDataMessage.h"
-//#include "igtlSensorMessage.h"
+#include "igtlSensorMessage.h"
 #include "igtlStatusMessage.h"
 #include "igtlStringMessage.h"
 #include "igtlTrackingDataMessage.h"
@@ -116,7 +116,7 @@ public:
   virtual void initializeWithRandomData(void) {}
 
 protected:
-  /// \brief Internal function to update the timestamp and host name after changes
+  /// \brief Internal function to update the timestamp and host name after changes. The message has to be unpacked.
 	void update();
 
   QString			m_messageType;
