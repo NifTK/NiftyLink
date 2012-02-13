@@ -27,7 +27,6 @@ OIGTLListenerThread::OIGTLListenerThread(QObject *parent)
   m_listeningOnPort = false;
   m_clientConnected = false;
   m_listenInterval = 1000;
-  m_messageCounter = 0;
 
   connect(&m_timeouter, SIGNAL(timeout()), this, SLOT(socketTimeout()), Qt::QueuedConnection);
   connect(this, SIGNAL(restartTimer(int )), &m_timeouter, SLOT(start(int )), Qt::QueuedConnection);
@@ -125,7 +124,8 @@ void OIGTLListenerThread::startThread()
 void OIGTLListenerThread::stopThread()
 {
   // Quitting thread	
-  QLOG_INFO() <<objectName() <<": " << "Quitting listener thread \n";
+  QLOG_INFO() <<objectName() <<": " << "Quitting listener thread... \n";
+  QLOG_INFO() <<objectName() <<": " << "Total number of messages recieved: " <<m_messageCounter;
 
   m_running = false;
   int err_p = 0;
@@ -171,8 +171,6 @@ void OIGTLListenerThread::stopThread()
   m_port = -1;
   m_initialized = false;
 
-  QLOG_INFO() <<objectName() <<": " << "Total number of messages recieved: " <<m_messageCounter;
-
   exit(0);
 }
 
@@ -216,7 +214,7 @@ void OIGTLListenerThread::run()
   if (!m_listeningOnPort && m_initialized)
   {
     m_clientConnected = true;
-    emit restartTimer(1000);
+    emit restartTimer(2000);
 
     listenOnSocket();
   }
@@ -257,7 +255,7 @@ void OIGTLListenerThread::listenOnPort(void)
         // Client connected, need to set socket parameters
         m_extSocket.operator =(socket);
         m_extSocket->SetTimeout(m_socketTimeout);
-        emit restartTimer(1000);
+        emit restartTimer(2000);
         emit clientConnected();
         m_clientConnected = true;
       }
@@ -300,112 +298,280 @@ bool OIGTLListenerThread::receiveMessage()
   else if (r == 2 || r != msgHeader->GetPackSize())
   {
     // Corrupted package or keepalive, but still something
-    emit restartTimer(1000);
+    emit restartTimer(2000);
     msgHeader.operator =(NULL);
     return true;
   }
 
-  emit restartTimer(1000);
+  emit restartTimer(2000);
 
   // Deserialize the header
   msgHeader->Unpack();
 
+  //Double check if message types are mapped or not
+  if (strMsgTypes.size() == 0)
+    InitMessageTypes(strMsgTypes);
+
   // Interpret message and instanciate the appropriate OIGTL message wrapper type
-  if (strcmp(msgHeader->GetDeviceType(), "BIND") == 0)
-    message = igtl::BindMessage::New(); 
-  else if (strcmp(msgHeader->GetDeviceType(), "GET_BIND") == 0)
-    message = igtl::GetBindMessage::New(); 
-  else if (strcmp(msgHeader->GetDeviceType(), "STT_BIND") == 0)
-    message = igtl::StartBindMessage::New();
-  else if (strcmp(msgHeader->GetDeviceType(), "STP_BIND") == 0)
-    message = igtl::StopBindMessage::New(); 
-  else if (strcmp(msgHeader->GetDeviceType(), "RTS_BIND") == 0)
-    message = igtl::RTSBindMessage::New(); 
-  else if (strcmp(msgHeader->GetDeviceType(), "IMAGE") == 0)
+  switch(strMsgTypes[msgHeader->GetDeviceType()])
   {
-    message = igtl::ImageMessage::New(); 
-    msg.operator =(OIGTLImageMessage::Pointer(new OIGTLImageMessage()));
-  }
-  else if (strcmp(msgHeader->GetDeviceType(), "GET_IMAGE") == 0)
-    message = igtl::GetImageMessage::New();
-  else if (strcmp(msgHeader->GetDeviceType(), "STT_IMAGE") == 0)
-  {}
-  else if (strcmp(msgHeader->GetDeviceType(), "STP_IMAGE") == 0)
-  {}
-  else if (strcmp(msgHeader->GetDeviceType(), "RTS_IMAGE") == 0)
-  {}
-  else if (strcmp(msgHeader->GetDeviceType(), "TRANSFORM") == 0)
-  {
-    message = igtl::TransformMessage::New(); 
-    msg.operator =(OIGTLTransformMessage::Pointer(new OIGTLTransformMessage()));
-  }
-  else if (strcmp(msgHeader->GetDeviceType(), "GET_TRANS") == 0)
-  {
-    message = igtl::GetTransformMessage::New();
-    OIGTLTransformMessage::Create_GET(msg);
-  }
-  else if (strcmp(msgHeader->GetDeviceType(), "STT_TRANS") == 0)
-  {
-    message = igtl::StartTransformMessage::New();
-    OIGTLTransformMessage::Create_STT(msg);
-  }
-  else if (strcmp(msgHeader->GetDeviceType(), "STP_TRANS") == 0)
-  {
-    message = igtl::StopTransformMessage::New();
-    OIGTLTransformMessage::Create_STP(msg);
-  }
-  else if (strcmp(msgHeader->GetDeviceType(), "RTS_TRANS") == 0)
-  {
-    message = igtl::RTSTransformMessage::New();
-    OIGTLTransformMessage::Create_RTS(msg);
-  }
-  else if (strcmp(msgHeader->GetDeviceType(), "POSITION") == 0)
-    message = igtl::PositionMessage::New();
-  else if (strcmp(msgHeader->GetDeviceType(), "GET_POSITION") == 0)
-  {}
-  else if (strcmp(msgHeader->GetDeviceType(), "STT_POSITION") == 0)
-  {}
-  else if (strcmp(msgHeader->GetDeviceType(), "STP_POSITION") == 0)
-  {}
-  else if (strcmp(msgHeader->GetDeviceType(), "RTS_POSITION") == 0)
-  {}
-  else if (strcmp(msgHeader->GetDeviceType(), "STATUS") == 0)
-    message = igtl::StatusMessage::New();
-  else if (strcmp(msgHeader->GetDeviceType(), "GET_STATUS") == 0)
-  {}
-  else if (strcmp(msgHeader->GetDeviceType(), "RTS_STATUS") == 0)	
-  {}
-  else if (strcmp(msgHeader->GetDeviceType(), "POINT") == 0) 
-    message = igtl::PointMessage::New();
-  else if (strcmp(msgHeader->GetDeviceType(), "GET_POINT") == 0)
-  {}
-  else if (strcmp(msgHeader->GetDeviceType(), "STT_POINT") == 0)
-  {}
-  else if (strcmp(msgHeader->GetDeviceType(), "STP_POINT") == 0)
-  {}
-  else if (strcmp(msgHeader->GetDeviceType(), "RTS_POINT") == 0)
-  {}
-  else if (strcmp(msgHeader->GetDeviceType(), "STRING") == 0) 
-    message = igtl::StringMessage::New();
-  else if (strcmp(msgHeader->GetDeviceType(), "GET_STRING") == 0)
-  {}
-  else if (strcmp(msgHeader->GetDeviceType(), "STT_STRING") == 0)
-  {}
-  else if (strcmp(msgHeader->GetDeviceType(), "STP_STRING") == 0)
-  {}
-  else if (strcmp(msgHeader->GetDeviceType(), "RTS_STRING") == 0)
-  {}
-  else
-  {
-    // if the data type is unknown, skip reading.
-    QLOG_INFO() <<objectName() <<": " << "Unknown message recieved: " << msgHeader->GetDeviceType() << endl;
+    case BIND:
+      message = igtl::BindMessage::New();
+      break;
+    case GET_BIND:
+      message = igtl::GetBindMessage::New();
+      break;
+    case STT_BIND:
+        message = igtl::StartBindMessage::New();
+        break;
+    case STP_BIND:
+        message = igtl::StopBindMessage::New();
+        break;
+    case RTS_BIND:
+        message = igtl::RTSBindMessage::New();
+        break;
+    case COLORTABLE:
+        message = igtl::ColorTableMessage::New();
+        break;
+    case GET_COLORT:
+        message = igtl::GetColorTableMessage::New();
+        break;
+    case STT_COLORT:
+        message = igtl::StartColorTableMessage::New();
+        break;
+    case STP_COLORT:
+        message = igtl::StopColorTableMessage::New();
+        break;
+    case RTS_COLORT:
+        message = igtl::RTSColorTableMessage::New();
+        break;
+    case IMAGE:
+        message = igtl::ImageMessage::New();
+        msg.operator =(OIGTLImageMessage::Pointer(new OIGTLImageMessage()));
+        //QLOG_INFO() <<objectName() <<": " << "Message successfully recieved" <<msgHeader->GetDeviceType();
+        break;
+    case GET_IMAGE:
+        message = igtl::GetImageMessage::New();
+        break;
+    case STT_IMAGE:
+        message = igtl::StartImageMessage::New();
+        break;
+    case STP_IMAGE:
+        message = igtl::StopImageMessage::New();
+        break;
+    case RTS_IMAGE:
+        message = igtl::RTSImageMessage::New();
+        break;
+    case IMGMETA:
+        message = igtl::ImageMetaMessage::New();
+        break;
+    case GET_IMGMETA:
+        message = igtl::GetImageMetaMessage::New();
+        break;
+    case STT_IMGMETA:
+        message = igtl::StartImageMetaMessage::New();
+        break;
+    case STP_IMGMETA:
+        message = igtl::StopImageMetaMessage::New();
+        break;
+    case RTS_IMGMETA:
+        message = igtl::RTSImageMetaMessage::New();
+        break;
+    case LBMETA:
+        message = igtl::LabelMetaMessage::New();
+        break;
+    case GET_LBMETA:
+        message = igtl::GetLabelMetaMessage::New();
+        break;
+    case STT_LBMETA:
+        message = igtl::StartLabelMetaMessage::New();
+        break;
+    case STP_LBMETA:
+        message = igtl::StopLabelMetaMessage::New();
+        break;
+    case RTS_LBMETA:
+        message = igtl::RTSLabelMetaMessage::New();
+        break;
+    case NDARRAY:
+        message = igtl::GetBindMessage::New();
+        break;
+    case GET_NDARRAY:
+        message = igtl::GetBindMessage::New();
+        break;
+    case STT_NDARRAY:
+        message = igtl::GetBindMessage::New();
+        break;
+    case STP_NDARRAY:
+        message = igtl::GetBindMessage::New();
+        break;
+    case RTS_NDARRAY:
+        message = igtl::GetBindMessage::New();
+        break;
+    case POINTMSG:
+        message = igtl::PointMessage::New();
+        break;
+    case GET_POINTMSG:
+        message = igtl::GetPointMessage::New();
+        break;
+    case STT_POINTMSG:
+        message = igtl::StartPointMessage::New();
+        break;
+    case STP_POINTMSG:
+        message = igtl::StopPointMessage::New();
+        break;
+    case RTS_POINTMSG:
+        message = igtl::RTSPointMessage::New();
+        break;
+    case POLYDATA:
+        message = igtl::PolyDataMessage::New();
+        break;
+    case GET_POLYDATA:
+        message = igtl::GetPolyDataMessage::New();
+        break;
+    case STT_POLYDATA:
+        message = igtl::StartPolyDataMessage::New();
+        break;
+    case STP_POLYDATA:
+        message = igtl::StopPolyDataMessage::New();
+        break;
+    case RTS_POLYDATA:
+        message = igtl::RTSPolyDataMessage::New();
+        break;
+    case POSITION:
+        message = igtl::PositionMessage::New();
+        break;
+    case GET_POSITION:
+        message = igtl::GetPositionMessage::New();
+        break;
+    case STT_POSITION:
+        message = igtl::StartPositionMessage::New();
+        break;
+    case STP_POSITION:
+        message = igtl::StopPositionMessage::New();
+        break;
+    case RTS_POSITION:
+        message = igtl::RTSPositionMessage::New();
+        break;
+    case QTDATA:
+        message = igtl::QuaternionTrackingDataMessage::New();
+        break;
+    case GET_QTDATA:
+        message = igtl::GetQuaternionTrackingDataMessage::New();
+        break;
+    case STT_QTDATA:
+        message = igtl::StartQuaternionTrackingDataMessage::New();
+        break;
+    case STP_QTDATA:
+        message = igtl::StopQuaternionTrackingDataMessage::New();
+        break;
+    case RTS_QTDATA:
+        message = igtl::RTSQuaternionTrackingDataMessage::New();
+        break;
+    case SENSOR:
+        message = igtl::SensorMessage::New();
+        break;
+    case GET_SENSOR:
+        message = igtl::GetSensorMessage::New();
+        break;
+    case STT_SENSOR:
+        message = igtl::StartSensorMessage::New();
+        break;
+    case STP_SENSOR:
+        message = igtl::StopSensorMessage::New();
+        break;
+    case RTS_SENSOR:
+        message = igtl::RTSSensorMessage::New();
+        break;
+    case STATUS:
+        message = igtl::StatusMessage::New();
+        break;
+    case GET_STATUS:
+        message = igtl::GetStatusMessage::New();
+        break;
+    case STT_STATUS:
+        message = igtl::StartStatusMessage::New();
+        break;
+    case STP_STATUS:
+        message = igtl::StopStatusMessage::New();
+        break;
+    case RTS_STATUS:
+        message = igtl::RTSStatusMessage::New();
+        break;
+    case STRING:
+        message = igtl::StringMessage::New();
+        break;
+    case GET_STRING:
+        message = igtl::GetStringMessage::New();
+        break;
+    case STT_STRING:
+        message = igtl::StartStringMessage::New();
+        break;
+    case STP_STRING:
+        message = igtl::StopStringMessage::New();
+        break;
+    case RTS_STRING:
+        message = igtl::RTSStringMessage::New();
+        break;
+    case TDATA:
+        message = igtl::TrackingDataMessage::New();
+        break;
+    case GET_TDATA:
+        message = igtl::GetTrackingDataMessage::New();
+        break;
+    case STT_TDATA:
+        message = igtl::StartTrackingDataMessage::New();
+        break;
+    case STP_TDATA:
+        message = igtl::StopTrackingDataMessage::New();
+        break;
+    case RTS_TDATA:
+        message = igtl::RTSTrackingDataMessage::New();
+        break;
+    case TRAJ:
+        message = igtl::TrajectoryMessage::New();
+        break;
+    case GET_TRAJ:
+        message = igtl::GetTrajectoryMessage::New();
+        break;
+    case STT_TRAJ:
+        message = igtl::StartTrajectoryMessage::New();
+        break;
+    case STP_TRAJ:
+        message = igtl::StopTrajectoryMessage::New();
+        break;
+    case RTS_TRAJ:
+        message = igtl::RTSTrajectoryMessage::New();
+        break;
+    case TRANSFORM:
+        message = igtl::TransformMessage::New();
+        msg.operator =(OIGTLTransformMessage::Pointer(new OIGTLTransformMessage()));
+        break;
+    case GET_TRANS:
+        message = igtl::GetTransformMessage::New();
+        OIGTLTransformMessage::Create_GET(msg);
+        break;
+    case STT_TRANS:
+        message = igtl::StartTransformMessage::New();
+        OIGTLTransformMessage::Create_STT(msg);
+        break;
+    case STP_TRANS:
+        message = igtl::StopTransformMessage::New();
+        OIGTLTransformMessage::Create_STP(msg);
+        break;
+    case RTS_TRANS:
+        message = igtl::RTSTransformMessage::New();
+        OIGTLTransformMessage::Create_RTS(msg);
+        break;
+    default:
+      // if the data type is unknown, skip reading.
+      QLOG_INFO() <<objectName() <<": " << "Unknown message recieved: " << msgHeader->GetDeviceType() << endl;
 
-    m_mutex->lock();
-    m_extSocket->Skip(msgHeader->GetBodySizeToRead(), 0);
-    m_mutex->unlock();
+      m_mutex->lock();
+      m_extSocket->Skip(msgHeader->GetBodySizeToRead(), 0);
+      m_mutex->unlock();
 
-    msgHeader.operator =(NULL);
-    return true;
+      msgHeader.operator =(NULL);
+      return true;
   }
 
   if (msg.operator ==(NULL))
@@ -430,11 +596,11 @@ bool OIGTLListenerThread::receiveMessage()
     return false;
   else if (r <= 2 || r != message->GetPackBodySize())
   {
-    emit restartTimer(1000);
+    emit restartTimer(2000);
     return true;
   }
 
-  emit restartTimer(1000);
+  emit restartTimer(2000);
 
   igtl::TimeStamp::Pointer ts = igtl::TimeStamp::New();
   ts->GetTime();
@@ -443,7 +609,7 @@ bool OIGTLListenerThread::receiveMessage()
   msg->setMessagePointer(message);
   msg->setPort(m_port);
 
-  //QLOG_INFO() <<objectName() <<": " << "Message successfully recieved";
+  //QLOG_INFO() <<objectName() <<": " << "Message successfully recieved: " <<msg->getMessageType();
   m_messageCounter++;
   
   emit messageReceived(msg);

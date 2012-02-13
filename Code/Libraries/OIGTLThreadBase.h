@@ -106,9 +106,9 @@ protected:
 
   
   /// \brief This functions tells if the current thread is currently initialized or not.
-  inline  bool isInitialized() { return m_initialized; }
+  inline  bool isInitialized() {return m_initialized; }
   /// \brief This functions returns the current port number associated with the socket.
-  inline  int  getPort(void) { return m_port; }
+  inline  int  getPort(void) {return m_port; }
   
 
 protected slots:

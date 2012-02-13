@@ -217,10 +217,9 @@ void OIGTLSocketObject::closeSocket(void)
 
 void OIGTLSocketObject::sendMessage(OIGTLMessage::Pointer msg)
 {
-  if (m_sender != NULL && m_sender->isInitialized())
+  //if (m_sender != NULL && m_sender->isInitialized() && msg.operator !=(NULL))
+  if (m_sender != NULL && msg.operator !=(NULL))
     emit messageToSend(msg);
-
-  //QLOG_INFO() <<"Emitting.........";
 }
 
 

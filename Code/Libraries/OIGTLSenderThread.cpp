@@ -121,6 +121,7 @@ void OIGTLSenderThread::stopThread(void)
 {
   // Quitting thread	
   QLOG_INFO() <<objectName() <<": " << "Quitting sender thread \n";
+  QLOG_INFO() <<objectName() <<": " << "Total number of messages sent: " <<m_messageCounter;
 
   m_running = false;
   this->msleep(100);
@@ -230,8 +231,8 @@ void OIGTLSenderThread::run(void)
       this->msleep(250);
 
       bool rval;
-      m_mutex->lock();
       //QLOG_INFO() <<objectName() <<": " <<"Sending keepalive message" <<"\n";
+      m_mutex->lock();
       rval = m_extSocket->Poke();
       m_mutex->unlock();
 
@@ -253,45 +254,42 @@ void OIGTLSenderThread::run(void)
     //QLOG_INFO() <<objectName() <<": Messages in sendque: " << m_sendQue.count();
 
     // Take the oldest message in the queue and send it to the remote host
-    m_queueMutex.lock();
     OIGTLMessage::Pointer msg;
-    msg.operator =(m_sendQue.takeFirst());
 
+    m_queueMutex.lock();
+    msg.operator =(m_sendQue.takeFirst());
     m_queueMutex.unlock();
 
-    if (msg.operator!=(NULL))
+    igtl::MessageBase::Pointer igtMsg;
+    msg->getMessagePointer(igtMsg);
+
+    if (!m_running) break;
+
+    if (igtMsg.IsNotNull())
     {
-      igtl::MessageBase::Pointer igtMsg;
-      msg->getMessagePointer(igtMsg);
+      int ret = 0;
+      
+      m_mutex->lock();
+      ret = m_extSocket->Send(igtMsg->GetPackPointer(), igtMsg->GetPackSize());
+      m_mutex->unlock();
 
-      if (!m_running) break;
-
-      if (igtMsg.IsNotNull())
+      if (ret <=0)
       {
-        int ret = 0;
-        
-        m_mutex->lock();
-        ret = m_extSocket->Send(igtMsg->GetPackPointer(), igtMsg->GetPackSize());
-        m_mutex->unlock();
+        if (m_sendingOnSocket)
+          emit disconnectedFromRemote(false);
+        else
+          emit disconnectedFromRemote(true);
 
-        if (ret <=0)
-        {
-          if (m_sendingOnSocket)
-            emit disconnectedFromRemote(false);
-          else
-            emit disconnectedFromRemote(true);
-
-          QLOG_ERROR() <<objectName() <<": " <<"Cannot send message: Disconnected from remote host" <<"\n";
-          break;
-        }
-
-        //QLOG_INFO() <<objectName() <<": " <<"Message Sent" <<endl;
+        QLOG_ERROR() <<objectName() <<": " <<"Cannot send message: Disconnected from remote host" <<"\n";
+        break;
       }
-      else
-        QLOG_ERROR() <<objectName() <<": " <<"Cannot send message: igtMsg is NULL" <<"\n";
+
+      m_messageCounter++;
+      //QLOG_INFO() <<objectName() <<": " <<"Message Sent: " <<m_messageCounter <<endl;
     }
     else
-      QLOG_ERROR() <<objectName() <<": " <<"Cannot send message: invalid message" <<"\n";
+      QLOG_ERROR() <<objectName() <<": " <<"Cannot send message: igtMsg is NULL" <<"\n";
+
     this->msleep(50);
   }
 
@@ -307,12 +305,7 @@ void OIGTLSenderThread::run(void)
 
 void OIGTLSenderThread::sendMsg(OIGTLMessage::Pointer msg)
 {
-  if (msg.operator ==(NULL))
-  {
-    QLOG_ERROR() <<objectName() <<": " <<"Invalid message arrived to send" <<"\n";
-    return;
-  }
-
+  // Append message to the sendqueue
   m_queueMutex.lock();
   m_sendQue.append(msg);
   m_queueMutex.unlock();

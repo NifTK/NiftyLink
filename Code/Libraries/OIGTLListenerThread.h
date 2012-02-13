@@ -112,7 +112,6 @@ private:
   bool m_listeningOnPort;
   bool m_clientConnected;
   int m_listenInterval;
-  unsigned long m_messageCounter;
 };
 
 #endif
