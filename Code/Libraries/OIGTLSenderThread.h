@@ -24,6 +24,8 @@
 
 #include "OIGTLThreadBase.h"
 
+class OIGTLSenderThreadTester;
+
 /**
  * \class OIGTLSenderThread
  * \brief Class for sending messages to a remote host via OpenIGTLink socket in a separate thread.
@@ -34,7 +36,7 @@
  * Data to be sent to the remote host are received via a QT slot in the form of an OIGTLMessage. These messages are appended to the end of a message queue (FIFO).
  */
 
-class OIGTLSenderThread : public OIGTLThreadBase
+class NIFTYLINKCOMMON_WINEXPORT OIGTLSenderThread : public OIGTLThreadBase
 {
   Q_OBJECT
 
@@ -49,6 +51,8 @@ signals:
   void disconnectedFromRemote(bool onPort);
   /// \brief This signal is emitted when the client has sent all messages from the message queue.
   void sendingFinished(void);
+  /// \brief This signal is emitted when the client has sent all messages from the message queue.
+  void messageSent(unsigned long long timestamp);
 
 protected:
   /// \brief Constructor which initialises the class specific member variables
@@ -98,6 +102,16 @@ private:
 
   QList<OIGTLMessage::Pointer> m_sendQue;
   QMutex m_queueMutex;
+};
+
+class NIFTYLINKCOMMON_WINEXPORT OIGTLSenderThreadTester : public OIGTLSenderThread
+{
+  Q_OBJECT
+
+  friend class TestSenderThread_General;
+
+  OIGTLSenderThreadTester(QObject *parent = 0)
+    : OIGTLSenderThread(parent) {}
 };
 
 #endif

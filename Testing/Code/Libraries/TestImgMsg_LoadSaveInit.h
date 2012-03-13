@@ -24,6 +24,7 @@ PURPOSE.  See the above copyright notices for more information.
 
 #include "igtlTransformMessage.h"
 #include "igtlMath.h"
+#include "igtl_util.h"
 
 #include "igtlBindMessage.h"
 #include "igtlColorTableMessage.h"
@@ -41,37 +42,31 @@ PURPOSE.  See the above copyright notices for more information.
 #include "OIGTLSocketObject.h"
 #include "OIGTLTransformMessage.h"
 
-class TestClass : public QObject
+
+#include <cstdlib>
+#include <cstdio>
+#include <iostream>
+#include <cstdlib>
+
+class TestImgMsg_LoadSaveInit : public QObject
 {
   Q_OBJECT
 
 signals:
   void done();
 
-  public slots:
-    void setupTest();
-    void setupTest2();
-    void performTest();
-    void quitTest();
+public:
+  TestImgMsg_LoadSaveInit(void);
+  ~TestImgMsg_LoadSaveInit(void);
 
-    void createMessage();
-
-    void catchMessage(OIGTLMessage::Pointer);
-    void sendResponse();
-    void streamResponse();
+public slots:
+  void setupTest();
+  void performTest();
+  void quitTest();
 
 private:
-  igtl::Matrix4x4 m_localMatrix;
-
-  OIGTLMessage::Pointer m_msgToSend;
-
-  OIGTLSocketObject * m_socket1;
-  OIGTLSocketObject * m_socket2;
-
-  int m_numOfMsg;
-  int m_received;
+  QString m_localhostname;
+  int m_testCounter;
   int m_successCounter;
-
-  bool m_doStream;
 };
 

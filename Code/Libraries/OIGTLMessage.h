@@ -115,10 +115,11 @@ public:
   /// \brief Function base for initilizing the message with random data (defined in NiftyLink Utils)
   virtual void initializeWithRandomData(void) {}
 
-protected:
-  /// \brief Internal function to update the timestamp and host name after changes. The message has to be unpacked.
-	void update();
+  /// \brief Function to update the timestamp and host name after changes
+	void update(QString hostname, igtl::TimeStamp::Pointer ts);
+  void update(QString hostname);
 
+protected:
   QString			m_messageType;
 	
 	igtl::MessageBase::Pointer  m_message;

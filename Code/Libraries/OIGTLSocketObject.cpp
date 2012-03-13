@@ -42,7 +42,10 @@ OIGTLSocketObject::OIGTLSocketObject(QObject *parent)
 
 OIGTLSocketObject::~OIGTLSocketObject(void)
 {
-  this->closeSocket();
+  QLOG_INFO() <<"Destructing"  <<objectName();
+
+  if (m_initialized)
+    this->closeSocket();
 
   if (m_sender != NULL)
   {
@@ -98,6 +101,7 @@ void OIGTLSocketObject::initThreads()
   ok &= connect(m_sender, SIGNAL(cannotConnectToRemote()), this, SLOT(cannotConnectToRemote()), Qt::QueuedConnection);
   ok &= connect(m_sender, SIGNAL(disconnectedFromRemote(bool )), this, SLOT(disconnectedFromRemote(bool )), Qt::QueuedConnection);
   ok &= connect(m_sender, SIGNAL(sendingFinished()), this, SIGNAL(sendingFinished()), Qt::QueuedConnection);
+  ok &= connect(m_sender, SIGNAL(messageSent(unsigned long long )), this, SIGNAL(messageSent(unsigned long long )), Qt::QueuedConnection);
   ok &= connect(this, SIGNAL(messageToSend(OIGTLMessage::Pointer)), m_sender, SLOT(sendMsg(OIGTLMessage::Pointer)));
 
   ok &= connect(m_listener, SIGNAL(clientConnected()), this, SLOT(clientConnected()), Qt::QueuedConnection);
@@ -212,6 +216,8 @@ void OIGTLSocketObject::closeSocket(void)
   m_clientConnected = false;
   m_ableToSend = false;
 
+  m_initialized = false;
+
   QLOG_INFO() <<objectName() <<": " <<"Closing socket, threads terminated.";
 }
 
@@ -222,6 +228,79 @@ void OIGTLSocketObject::sendMessage(OIGTLMessage::Pointer msg)
     emit messageToSend(msg);
 }
 
+#if defined(WIN32) || defined(_WIN32) || defined(_WIN64)
+
+void OIGTLSocketObject::initializeWinTimers()
+{
+   // Typedef functions to hold what is in the DLL
+	FunctionPtr_SETRES _NtSetTimerResolution;
+  FunctionPtr_GETRES _NtQueryTimerResolution;
+
+  // Use LoadLibrary used to load ntdll
+	HINSTANCE hInstLibrary = LoadLibrary("ntdll.dll");
+
+  if (hInstLibrary)
+	{
+    // the DLL is loaded and ready to go.
+    _NtSetTimerResolution = (FunctionPtr_SETRES)GetProcAddress(hInstLibrary, "NtSetTimerResolution");
+    _NtQueryTimerResolution = (FunctionPtr_GETRES)GetProcAddress(hInstLibrary, "NtQueryTimerResolution");
+
+    if (_NtSetTimerResolution)
+    {
+      uint DesiredResolution = 5000;
+      bool SetResolution= true;
+      ULONG MinResolution = 0;
+      ULONG MaxResolution = 0;
+      ULONG CurrentResolution = 0;
+ 
+      NTSTATUS status;
+
+      status = _NtQueryTimerResolution(&MinResolution, &MaxResolution, &CurrentResolution);
+      //QLOG_INFO() <<"Current Clock Resolution - Before: " <<CurrentResolution <<std::endl;
+
+      status = _NtSetTimerResolution(MaxResolution, SetResolution, &CurrentResolution);
+
+      status = _NtQueryTimerResolution(&MinResolution, &MaxResolution, &CurrentResolution);
+      //QLOG_INFO() <<"Current Clock Resolution - After: " <<CurrentResolution <<std::endl;
+    }
+  }
+
+  ULONGLONG tscfreq = 0;
+  ULONGLONG tscsd = 0;
+  ULONGLONG ugly_hack_offset = 0;
+  
+  QSettings settings("Niftk", "NiftyLink-ptp");
+
+  QDateTime last_calTime;
+  last_calTime = settings.value("tcslastupdate", 0).toDateTime();
+
+  QDateTime nowdt = QDateTime::currentDateTime();
+
+  if (last_calTime.secsTo(nowdt) > 6000)
+  {
+    // calibrate clock frequency counter
+    calibrate_clock_freq();
+
+    last_calTime = QDateTime::currentDateTime();
+
+    get_tsctparam(tscfreq, tscsd, ugly_hack_offset);
+
+    settings.setValue("tscfreq", tscfreq);
+    settings.setValue("tscsd", tscsd);
+    settings.setValue("ugly_hack_offset", ugly_hack_offset);
+    settings.setValue("tcslastupdate", last_calTime);
+  }
+  else
+  {
+    tscfreq = settings.value("tscfreq", 500000000uI64).toULongLong();
+    tscsd = settings.value("tscsd", 500000000uI64).toULongLong();
+    ugly_hack_offset = settings.value("ugly_hack_offset", 0).toULongLong();
+
+    set_tsctparam(tscfreq, tscsd, ugly_hack_offset);
+  }  
+}
+
+#endif
 
 //*********************************************************
 //                    INTERNAL SLOTS
@@ -286,7 +365,8 @@ void OIGTLSocketObject::clientConnected(void)
       m_ableToSend = true;
       m_sender->startThread();
     }
-
+    
+    m_clientConnected = true;
     emit clientConnectedSignal();
   }
 }
@@ -300,6 +380,8 @@ void OIGTLSocketObject::clientDisconnected(bool onPort)
 
     emit clientDisconnectedSignal();
   }
+  
+  m_clientConnected = false;
   m_ableToSend = false;
 }
 

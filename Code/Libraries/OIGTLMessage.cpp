@@ -32,11 +32,18 @@ OIGTLMessage::OIGTLMessage(void)
   m_senderPort = -1;
   m_senderHostName = QString("localhost");
   m_id = m_timeCreated->GetTimeStampUint64();
+  
+  //m_timeCreated = NULL;
   m_resolution = 0;
 }
 
 OIGTLMessage::~OIGTLMessage(void)
 {
+  QLOG_INFO() <<"Message destructor: "<<m_messageType <<m_id;
+
+  m_message.operator =(NULL);
+  m_timeReceived.operator =(NULL);
+  m_timeCreated.operator =(NULL);
 }
 
 OIGTLMessage::OIGTLMessage(const OIGTLMessage &other)
@@ -245,23 +252,42 @@ void OIGTLMessage::getResolution(igtlUint64 &res)
 	res = m_resolution;
 }
 
-void OIGTLMessage::update()
+void OIGTLMessage::update(QString hostname, igtl::TimeStamp::Pointer ts)
 {
   // Updates timestamp and hostname
 	
   if (m_message.IsNull())
     return;
 
-  igtl::TimeStamp::Pointer ts;
-  ts = igtl::TimeStamp::New();
-  ts->GetTime();
-
-  if (m_senderHostName == QString("localhost"))
-    m_senderHostName = getLocalHostAddress();
+  m_timeCreated.operator =(ts);
+  m_senderHostName = hostname;
+  
+  m_message->Unpack(); 
 
   m_message->SetTimeStamp(ts);
   m_message->SetDeviceName(m_senderHostName.toStdString().c_str());
 
+  m_message->Pack();
+}
+
+void OIGTLMessage::update(QString hostname)
+{
+  // Updates timestamp and hostname
+	
+  if (m_message.IsNull())
+    return;
+  
+  igtl::TimeStamp::Pointer ts;
+  ts = igtl::TimeStamp::New();
+  ts->GetTime_TAI();
+
   m_timeCreated.operator =(ts);
-  //m_senderHostName = lhn;
+  m_senderHostName = hostname;
+  
+  m_message->Unpack(); 
+
+  m_message->SetTimeStamp(ts);
+  m_message->SetDeviceName(m_senderHostName.toStdString().c_str());
+
+  m_message->Pack();
 }

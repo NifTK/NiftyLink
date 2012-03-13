@@ -78,7 +78,7 @@ protected:
   virtual bool activate(void) { return false; }
   
   /// \brief Function base to send a message. Only implemented in OIGTLSenderThread.
-  virtual void sendMsg(OIGTLMessage &msg) {}
+  virtual void sendMsg(OIGTLMessage::Pointer) {}
   /// \brief This function returns the actual socket pointer. This is necessary in order to set up a two communication chanel: to initiate a sender thread on a socket created by a listener thread and vica versa.
   virtual igtl::Socket::Pointer getSocketPointer(void) { return m_extSocket; }
 

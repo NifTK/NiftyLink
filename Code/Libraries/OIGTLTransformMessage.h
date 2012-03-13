@@ -68,7 +68,7 @@ public:
   void getMatrix(igtl::Matrix4x4 &matrix);
 
   /// \brief Gets the transformation matrix as QString (for printing)
-  QString GetMatrixString(void);
+  QString getMatrixAsString(void);
 
   /// \brief Sets the position array
   void setPosition(float p[3]);

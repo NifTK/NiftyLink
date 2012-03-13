@@ -32,6 +32,8 @@ OIGTLSenderThread::OIGTLSenderThread(QObject *parent)
 
 OIGTLSenderThread::~OIGTLSenderThread(void)
 {
+  QLOG_INFO() <<"Destructing"  <<objectName() <<"running: " <<this->isRunning() <<this->isActive(); 
+
   m_extSocket.operator =(NULL);
   m_clientSocket.operator =(NULL);
 }
@@ -172,10 +174,16 @@ bool OIGTLSenderThread::activate(void)
     QLOG_INFO() <<objectName() <<": " <<"Cannot activate sender, mutex not set" <<endl;
     return false;
   }
-
+  
   if ( (!m_sendingOnSocket && m_port <= 0) || (!m_sendingOnSocket && m_hostname.empty()) )
   {
     QLOG_INFO() <<objectName() <<": " <<"Cannot activate sender, hostname or port is invalid" <<endl;
+    return false;
+  }
+
+  if (!m_sendingOnSocket && resolveHostName(QString::fromStdString(m_hostname)) == QString("UNKNOWN") )
+  {
+    QLOG_INFO() <<objectName() <<": " <<"Cannot activate sender, hostname or ip address is invalid" <<endl;
     return false;
   }
 
@@ -270,6 +278,7 @@ void OIGTLSenderThread::run(void)
       int ret = 0;
       
       m_mutex->lock();
+      //std::cerr <<"\nSending...." <<igtMsg->GetPackSize() <<"\n";
       ret = m_extSocket->Send(igtMsg->GetPackPointer(), igtMsg->GetPackSize());
       m_mutex->unlock();
 
@@ -280,16 +289,25 @@ void OIGTLSenderThread::run(void)
         else
           emit disconnectedFromRemote(true);
 
+        msg.reset();
         QLOG_ERROR() <<objectName() <<": " <<"Cannot send message: Disconnected from remote host" <<"\n";
         break;
       }
+      
+      igtl::TimeStamp::Pointer ts = igtl::TimeStamp::New();
+      m_extSocket->GetSendTimestamp(ts);
 
+      emit messageSent((unsigned long long)ts->GetTimeStampUint64());
       m_messageCounter++;
+      
       //QLOG_INFO() <<objectName() <<": " <<"Message Sent: " <<m_messageCounter <<endl;
     }
     else
       QLOG_ERROR() <<objectName() <<": " <<"Cannot send message: igtMsg is NULL" <<"\n";
 
+    // Force delete
+    //msg.reset();
+    
     //this->msleep(50);
   }
 

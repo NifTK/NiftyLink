@@ -94,7 +94,7 @@ void CreateRandomTransformMatrix(igtl::Matrix4x4& matrix)
   float orientation[4];
 
   // random position
-  static float phi = 0.0;
+  static float phi = 0.2;
   position[0] = 50.0 * cos(phi);
   position[1] = 50.0 * sin(phi);
   position[2] = 50.0 * cos(phi);

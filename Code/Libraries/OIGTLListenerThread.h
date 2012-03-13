@@ -42,8 +42,10 @@
  * passed on using a Qt signal.
  */
 
+class OIGTLListenerThreadTester;
 
-class OIGTLListenerThread : public OIGTLThreadBase
+
+class NIFTYLINKCOMMON_WINEXPORT OIGTLListenerThread : public OIGTLThreadBase
 {
   Q_OBJECT
 
@@ -113,5 +115,16 @@ private:
   bool m_clientConnected;
   int m_listenInterval;
 };
+
+class NIFTYLINKCOMMON_WINEXPORT OIGTLListenerThreadTester : public OIGTLListenerThread
+{
+  Q_OBJECT
+
+  friend class TestListenerThread_General;
+
+  OIGTLListenerThreadTester(QObject *parent = 0)
+    : OIGTLListenerThread(parent) {}
+};
+
 
 #endif

@@ -99,6 +99,7 @@ SET (NIFTYLINK_LIBS
 ADD_LIBRARY(niftylink 
   ${niftylink_SRCS}
   ${niftylink_HDRS}
+  ${niftylink_MOC_HDRS}
   ${niftylink_RCC}
   ${NIFTYLINK_QT_MOC_FILES}
   )

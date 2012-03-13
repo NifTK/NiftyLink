@@ -27,6 +27,18 @@
 
 #include "NiftyLinkCommonWin32ExportHeader.h"
 
+#if defined(_WIN32) && !defined(__CYGWIN__)
+  #include <windows.h> 
+  #include <bcrypt.h>
+  #include "tsctime/TSCtime.h"
+ 
+  // Function pointers that will be used for the DLL functions.
+  typedef NTSTATUS (*FunctionPtr_SETRES) (ULONG, BOOLEAN, PULONG);
+  typedef NTSTATUS (*FunctionPtr_GETRES) (PULONG, PULONG, PULONG);
+#endif
+
+
+
 /**
  * \class OIGTLSocketObject
  * \brief Class for two way communcation using the OpenIGTLink 2.0 protocol 
@@ -49,6 +61,9 @@ signals:
   void messageToSend(OIGTLMessage::Pointer);
   /// \brief This signal is emitted when all messages were sent by the sender thread (message queue is empty).
   void sendingFinished();
+  /// \brief This signal is emitted when the sender finished sending the last message, the parameter is the send timestamp
+  void messageSent(unsigned long long timestamp);
+    
 
   /// \brief This signal is emitted when connection to the remote host has been successfully established.
   void connectedToRemoteSignal(void);
@@ -107,6 +122,11 @@ public slots:
   void setSocketTimeOut(int msec);
   /// \brief Returns the currently applied timeout in msec
    int getSocketTimeOut(void);
+
+   /// \brief Initialises the windows tsc timer when required
+#if defined(WIN32) || defined(_WIN32) || defined(_WIN64)
+   static void initializeWinTimers();
+#endif
 
 private:
   /// \brief Instantiates the sender and listener threads and the shared mutex, and sets up the signal - slot connections

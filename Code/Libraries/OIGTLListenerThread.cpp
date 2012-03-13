@@ -35,6 +35,7 @@ OIGTLListenerThread::OIGTLListenerThread(QObject *parent)
 
 OIGTLListenerThread::~OIGTLListenerThread(void)
 {
+  QLOG_INFO() <<"Destructing"  <<objectName() <<"running: " <<this->isRunning() <<this->isActive(); 
   m_serverSocket.operator =(NULL);
   m_extSocket.operator =(NULL);
 
@@ -188,7 +189,7 @@ bool OIGTLListenerThread::activate(void)
     return false;
   }
 
-  if ( (m_listeningOnPort && m_serverSocket.IsNull()) )// || (m_listeningOnPort && m_serverSocket.IsNotNull() && !m_serverSocket->IsValid()) )
+  if ( (m_listeningOnPort && m_serverSocket.IsNull()) )
   {
     QLOG_INFO() <<objectName() <<": " <<"Cannot activate listener, server socket is invalid" <<endl;
     return false;
@@ -226,8 +227,14 @@ void OIGTLListenerThread::listenOnSocket(void)
 {
   while (m_running == true && m_clientConnected == true)
   {
-    if (receiveMessage() == false)
+    int bytesPending = m_extSocket->CheckPendingData();
+   
+    if (bytesPending <= 0)
       this->msleep(100);
+    else if (bytesPending == 2)
+      emit restartTimer(2000);
+    else
+      receiveMessage();
   }
 }
 
@@ -262,8 +269,17 @@ void OIGTLListenerThread::listenOnPort(void)
 
       while (m_running == true && m_clientConnected == true) // if client connected
       {
-        if (receiveMessage() == false)
-          this->msleep(100);
+        // Quickly check if there's any pending data on the socket
+        m_mutex->lock();
+        int bytesPending = m_extSocket->CheckPendingData();
+        m_mutex->unlock();
+       
+        if (bytesPending <= 0)
+          this->msleep(100);        //Nothing to do
+        else if (bytesPending == 2)
+          emit restartTimer(2000);  //Keepalive operation, let's reset the timeout clock
+        else
+          receiveMessage();         //Message arrived, need to copy it from the socket
       }
     }
   }
@@ -271,21 +287,21 @@ void OIGTLListenerThread::listenOnPort(void)
 
 bool OIGTLListenerThread::receiveMessage()
 {
+  //Message wrapper pointer
+  OIGTLMessage::Pointer msg;
+  //Message pointer
   igtl::MessageBase::Pointer message;
 
   // Create a message buffer to receive header
   igtl::MessageHeader::Pointer msgHeader;
   msgHeader = igtl::MessageHeader::New();
 
-  //Create message wrapper
-  OIGTLMessage::Pointer msg;
-
   // Initialize receive buffer
   msgHeader->InitPack();
 
   // Receive generic header from the socket
   m_mutex->lock();
-  int r = m_extSocket->Receive(msgHeader->GetPackPointer(), msgHeader->GetPackSize());
+  int r = m_extSocket->Receive2(msgHeader->GetPackPointer(), msgHeader->GetPackSize());
   m_mutex->unlock();
 
   //QLOG_INFO() <<objectName()  <<"Bytes received: " <<r;
@@ -294,13 +310,6 @@ bool OIGTLListenerThread::receiveMessage()
   {
     msgHeader.operator =(NULL);
     return false;
-  }
-  else if (r == 2 || r != msgHeader->GetPackSize())
-  {
-    // Corrupted package or keepalive, but still something
-    emit restartTimer(2000);
-    msgHeader.operator =(NULL);
-    return true;
   }
 
   emit restartTimer(2000);
@@ -311,6 +320,8 @@ bool OIGTLListenerThread::receiveMessage()
   //Double check if message types are mapped or not
   if (strMsgTypes.size() == 0)
     InitMessageTypes(strMsgTypes);
+
+  //ULONGLONG time1 = gethectonanotime_first();
 
   // Interpret message and instanciate the appropriate OIGTL message wrapper type
   switch(strMsgTypes[msgHeader->GetDeviceType()])
@@ -574,38 +585,27 @@ bool OIGTLListenerThread::receiveMessage()
       return true;
   }
 
-  if (msg.operator ==(NULL))
-  {
-    QLOG_ERROR() <<objectName() <<": " <<"Cannot to create OIGTLMessage, receiveMessage() failed" <<endl;
-    msgHeader.operator =(NULL);
-    return false;
-  }
+  //ULONGLONG time2 = gethectonanotime_first();
 
   message->SetMessageHeader(msgHeader);
   message->AllocatePack(); 
-
-  // Receive data from the socket
-  m_mutex->lock();
-  r = m_extSocket->Receive(message->GetPackBodyPointer(), message->GetPackBodySize());
-  m_mutex->unlock();
-
-  //QLOG_INFO() <<objectName()  <<"Total message bytes received: " <<r;
-  //std::cerr <<"Total message bytes received: " <<r <<std::endl;
-
-  if (r <= 0)
-    return false;
-  else if (r <= 2 || r != message->GetPackBodySize())
+  
+  if (message->GetPackBodySize() > 0)
   {
-    emit restartTimer(2000);
-    return true;
+    // Receive data from the socket
+    m_mutex->lock();
+    r = m_extSocket->Receive2(message->GetPackBodyPointer(), message->GetPackBodySize());
+    m_mutex->unlock();
+
+    //QLOG_INFO() <<objectName()  <<"Total message bytes received: " <<r;
+    //std::cerr <<"Total message bytes received: " <<r <<std::endl;
+
+    if (r < 0)
+      return false;
   }
-
-  emit restartTimer(2000);
-
-  igtl::TimeStamp::Pointer ts = igtl::TimeStamp::New();
-  ts->GetTime();
-
-  msg->setTimeReceived(ts);
+  
+  // Get the receive timestamp from the socket
+  msg->setTimeReceived(m_extSocket->GetReceiveTimestamp());
   msg->setMessagePointer(message);
   msg->setPort(m_port);
 
@@ -613,7 +613,7 @@ bool OIGTLListenerThread::receiveMessage()
   m_messageCounter++;
   
   emit messageReceived(msg);
-  
+ 
   return true;
 }
 
