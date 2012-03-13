@@ -75,13 +75,13 @@ void TestSendReceive_Timing::setupTest()
   m_socket1->listenOnPort(3200);
   m_socket2->connectToRemote(url);
 
-  m_msgToSend.operator =(OIGTLTransformMessage::Pointer(new OIGTLTransformMessage()));
-  static_cast<OIGTLTransformMessage::Pointer>(m_msgToSend)->setMatrix(dummyTransformMatrix);
-  m_msgToSend->update(getLocalHostAddress());
-
-//  m_msgToSend.operator =(OIGTLImageMessage::Pointer(new OIGTLImageMessage()));
-//  m_msgToSend->initializeWithTestData();
+//  m_msgToSend.operator =(OIGTLTransformMessage::Pointer(new OIGTLTransformMessage()));
+//  static_cast<OIGTLTransformMessage::Pointer>(m_msgToSend)->setMatrix(dummyTransformMatrix);
 //  m_msgToSend->update(getLocalHostAddress());
+
+  m_msgToSend.operator =(OIGTLImageMessage::Pointer(new OIGTLImageMessage()));
+  m_msgToSend->initializeWithTestData();
+  m_msgToSend->update(getLocalHostAddress());
 }
 
 void TestSendReceive_Timing::performTest()

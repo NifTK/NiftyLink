@@ -301,7 +301,7 @@ bool OIGTLListenerThread::receiveMessage()
 
   // Receive generic header from the socket
   m_mutex->lock();
-  int r = m_extSocket->Receive2(msgHeader->GetPackPointer(), msgHeader->GetPackSize());
+  int r = m_extSocket->Receive(msgHeader->GetPackPointer(), msgHeader->GetPackSize());
   m_mutex->unlock();
 
   //QLOG_INFO() <<objectName()  <<"Bytes received: " <<r;
@@ -594,7 +594,7 @@ bool OIGTLListenerThread::receiveMessage()
   {
     // Receive data from the socket
     m_mutex->lock();
-    r = m_extSocket->Receive2(message->GetPackBodyPointer(), message->GetPackBodySize());
+    r = m_extSocket->Receive(message->GetPackBodyPointer(), message->GetPackBodySize());
     m_mutex->unlock();
 
     //QLOG_INFO() <<objectName()  <<"Total message bytes received: " <<r;

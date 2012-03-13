@@ -142,7 +142,7 @@ void TestSendReceive_Basic::continueTest()
   //static_cast<OIGTLTransformMessage::Pointer>(m_msgToSend)->setMatrix(dummyTransformMatrix);
   //m_msgToSend->update(getLocalHostAddress());
 
-  m_msgToSend.operator =(OIGTLMessage::Pointer(new OIGTLMessage()));
+  m_msgToSend.operator =(OIGTLImageMessage::Pointer(new OIGTLImageMessage()));
   m_msgToSend->initializeWithTestData();
   m_msgToSend->update(getLocalHostAddress());
 }
