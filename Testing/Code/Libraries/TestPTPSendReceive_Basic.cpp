@@ -65,7 +65,7 @@ void TestPTPSendReceive_Basic::setupTest()
 
   //This is required on Win to achieve accurate timings
   #if defined(_WIN32)
-    m_socket1->initializeWinTimers();
+  OIGTLSocketObject::initializeWinTimers();
   #endif
 
     m_ptpd->initialize();
