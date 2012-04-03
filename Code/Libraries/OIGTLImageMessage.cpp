@@ -36,7 +36,7 @@ OIGTLImageMessage::OIGTLImageMessage(void)
 
 OIGTLImageMessage::~OIGTLImageMessage(void)
 {
-  QLOG_INFO() <<"ImageMessage Destructor" <<m_messageType <<m_id;
+  //QLOG_INFO() <<"ImageMessage Destructor" <<m_messageType <<m_id;
 }
 
 OIGTLImageMessage::OIGTLImageMessage(const OIGTLImageMessage &other)

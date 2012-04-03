@@ -24,6 +24,7 @@
 
 // Qt related issues
 #include <QtCore>
+#include <QString>
 #include <QObject>
 #include <QSharedData>
 #include <QExplicitlySharedDataPointer>
@@ -110,6 +111,9 @@ public:
   /// \brief Returns the frequency of the stream (used in STT_ messages)
 	void getResolution(igtlUint64 &res);
 
+  inline void setToolName(QString toolname) { m_toolName = toolname; };
+  QString getToolName(void) { return m_toolName; } 
+
   /// \brief Function base for initilizing the message with test data (defined in NiftyLink Utils)
 	virtual void initializeWithTestData(void) {}
   /// \brief Function base for initilizing the message with random data (defined in NiftyLink Utils)
@@ -119,8 +123,16 @@ public:
 	void update(QString hostname, igtl::TimeStamp::Pointer ts);
   void update(QString hostname);
 
+  /// \brief Function set message processed and to check status
+  inline void setProcessed(bool p) { m_processed = p; };
+  bool getProcessed() { return m_processed; };
+
+  void setOwnerName(QString str); 
+  QString getOwnerName(void) { return m_ownerName; }
+
 protected:
   QString			m_messageType;
+  QString     m_toolName;
 	
 	igtl::MessageBase::Pointer  m_message;
 	igtl::TimeStamp::Pointer	  m_timeReceived;
@@ -133,7 +145,8 @@ protected:
 	igtlUint64	m_id;
 	igtlUint64	m_resolution;
 
-
+  bool        m_processed;
+  QString     m_ownerName;
 };
 
 Q_DECLARE_METATYPE(OIGTLMessage::Pointer);

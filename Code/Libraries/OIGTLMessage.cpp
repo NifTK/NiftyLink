@@ -35,11 +35,13 @@ OIGTLMessage::OIGTLMessage(void)
   
   //m_timeCreated = NULL;
   m_resolution = 0;
+  m_processed  = 0;
+  m_ownerName.append("!");
 }
 
 OIGTLMessage::~OIGTLMessage(void)
 {
-  QLOG_INFO() <<"Message destructor: "<<m_messageType <<m_id;
+  QLOG_INFO() <<"Message destructor (Base class): "<<m_ownerName <<m_id;
 
   m_message.operator =(NULL);
   m_timeReceived.operator =(NULL);
@@ -291,3 +293,10 @@ void OIGTLMessage::update(QString hostname)
 
   m_message->Pack();
 }
+
+void OIGTLMessage::setOwnerName(QString str) 
+  { 
+    if (!m_ownerName.isEmpty() && !m_ownerName.isNull())
+      m_ownerName.clear(); 
+    m_ownerName.append(str);
+  }

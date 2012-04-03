@@ -306,7 +306,7 @@ void OIGTLSenderThread::run(void)
       QLOG_ERROR() <<objectName() <<": " <<"Cannot send message: igtMsg is NULL" <<"\n";
 
     // Force delete
-    //msg.reset();
+    msg.reset();
     
     //this->msleep(50);
   }
