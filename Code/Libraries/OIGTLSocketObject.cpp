@@ -216,7 +216,7 @@ void OIGTLSocketObject::closeSocket(void)
   m_clientConnected = false;
   m_ableToSend = false;
 
-  m_initialized = false;
+  //m_initialized = false;
 
   QLOG_INFO() <<objectName() <<": " <<"Closing socket, threads terminated.";
 }
