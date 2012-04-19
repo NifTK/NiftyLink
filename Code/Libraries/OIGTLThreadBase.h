@@ -37,6 +37,8 @@
 #include "OIGTLMessage.h"
 #include "OIGTLTransformMessage.h"
 #include "OIGTLImageMessage.h"
+#include "OIGTLStatusMessage.h"
+#include "OIGTLStringMessage.h"
 #include "NiftyLinkUtils.h"
 
 //Logging

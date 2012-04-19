@@ -363,15 +363,19 @@ bool OIGTLListenerThread::receiveMessage()
         break;
     case GET_IMAGE:
         message = igtl::GetImageMessage::New();
+        OIGTLImageMessage::Create_GET(msg);
         break;
     case STT_IMAGE:
         message = igtl::StartImageMessage::New();
+        OIGTLImageMessage::Create_STT(msg);
         break;
     case STP_IMAGE:
         message = igtl::StopImageMessage::New();
+        OIGTLImageMessage::Create_STP(msg);
         break;
     case RTS_IMAGE:
         message = igtl::RTSImageMessage::New();
+        OIGTLImageMessage::Create_RTS(msg);
         break;
     case IMGMETA:
         message = igtl::ImageMetaMessage::New();
@@ -495,33 +499,43 @@ bool OIGTLListenerThread::receiveMessage()
         break;
     case STATUS:
         message = igtl::StatusMessage::New();
+        msg.operator =(OIGTLStatusMessage::Pointer(new OIGTLStatusMessage()));
         break;
     case GET_STATUS:
         message = igtl::GetStatusMessage::New();
+        OIGTLStatusMessage::Create_GET(msg);
         break;
     case STT_STATUS:
         message = igtl::StartStatusMessage::New();
+        OIGTLStatusMessage::Create_STT(msg);
         break;
     case STP_STATUS:
         message = igtl::StopStatusMessage::New();
+        OIGTLStatusMessage::Create_STP(msg);
         break;
     case RTS_STATUS:
         message = igtl::RTSStatusMessage::New();
+        OIGTLStatusMessage::Create_RTS(msg);
         break;
     case STRING:
         message = igtl::StringMessage::New();
+        msg.operator =(OIGTLStringMessage::Pointer(new OIGTLStringMessage()));
         break;
     case GET_STRING:
         message = igtl::GetStringMessage::New();
+        OIGTLStringMessage::Create_GET(msg);
         break;
     case STT_STRING:
         message = igtl::StartStringMessage::New();
+        OIGTLStringMessage::Create_STT(msg);
         break;
     case STP_STRING:
         message = igtl::StopStringMessage::New();
+        OIGTLStringMessage::Create_STP(msg);
         break;
     case RTS_STRING:
         message = igtl::RTSStringMessage::New();
+        OIGTLStringMessage::Create_RTS(msg);
         break;
     case TDATA:
         message = igtl::TrackingDataMessage::New();

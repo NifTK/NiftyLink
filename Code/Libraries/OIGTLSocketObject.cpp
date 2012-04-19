@@ -223,8 +223,9 @@ void OIGTLSocketObject::closeSocket(void)
 
 void OIGTLSocketObject::sendMessage(OIGTLMessage::Pointer msg)
 {
-  //if (m_sender != NULL && m_sender->isInitialized() && msg.operator !=(NULL))
-  if (m_sender != NULL && msg.operator !=(NULL))
+  // Do not add the message to the message queue if the socket is not connected 
+  // (otherwise messages will pile up and use up memory)
+  if (m_sender != NULL && msg.operator !=(NULL) && (m_clientConnected || m_connectedToRemote) )
     emit messageToSend(msg);
 }
 

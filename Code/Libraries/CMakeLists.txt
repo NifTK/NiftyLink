@@ -45,6 +45,8 @@ OIGTLListenerThread.cpp
 OIGTLSocketObject.cpp
 OIGTLTransformMessage.cpp
 OIGTLImageMessage.cpp
+OIGTLStatusMessage.cpp
+OIGTLStringMessage.cpp
 )
 
 #########################
@@ -56,6 +58,8 @@ OIGTLThreadBase.h
 OIGTLSenderThread.h
 OIGTLListenerThread.h
 OIGTLSocketObject.h
+OIGTLStatusMessage.h
+OIGTLStringMessage.h
 )
 
 #########################
