@@ -50,7 +50,7 @@ void OIGTLStringMessage::setString(QString string)
 	msgPointer = static_cast<igtl::StringMessage *>(m_message.GetPointer());
 	msgPointer->Unpack();
 
-  msgPointer->SetString(string.toStdString());
+  msgPointer->SetString(string.toStdString().c_str());
 
 	//Pack message data
 	msgPointer->Pack();
