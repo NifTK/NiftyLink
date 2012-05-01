@@ -35,6 +35,7 @@ INCLUDE(${QT_USE_FILE})
 
 SET(niftylink_SRCS
 Common/NiftyLinkUtils.cpp
+Common/NiftyLinkXMLBuilder.cpp
 Common/QsDebugOutput.cpp
 Common/QsLog.cpp
 Common/QsLogDest.cpp
@@ -54,6 +55,7 @@ OIGTLStringMessage.cpp
 #########################
 SET(niftylink_MOC_HDRS
 Common/NiftyLinkUtils.h
+Common/NiftyLinkXMLBuilder.h
 OIGTLThreadBase.h
 OIGTLSenderThread.h
 OIGTLListenerThread.h
