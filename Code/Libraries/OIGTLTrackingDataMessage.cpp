@@ -38,7 +38,7 @@ OIGTLTrackingDataMessage::OIGTLTrackingDataMessage(void)
 
 OIGTLTrackingDataMessage::~OIGTLTrackingDataMessage(void)
 {
-  QLOG_INFO() <<"TrackingDataMessage Destructor" <<m_ownerName <<m_id;
+  //QLOG_INFO() <<"TrackingDataMessage Destructor" <<m_ownerName <<m_id;
 }
 
 OIGTLTrackingDataMessage::OIGTLTrackingDataMessage(const OIGTLTrackingDataMessage &other)
@@ -61,12 +61,15 @@ void OIGTLTrackingDataMessage::setMatrix(igtl::Matrix4x4 &matrix)
   int elementNum = msgPointer->GetNumberOfTrackingDataElements();
 
   if (elementNum == 0)
+  {
     tElem = igtl::TrackingDataElement::New();
+    msgPointer->AddTrackingDataElement(tElem);
+  }
   else
     msgPointer->GetTrackingDataElement(0, tElem);
 
   tElem->SetMatrix(matrix);
-  msgPointer->AddTrackingDataElement(tElem);
+  
   
 	//Pack message data
 	msgPointer->Pack();
@@ -144,12 +147,15 @@ void OIGTLTrackingDataMessage::setPosition(float p[3])
   int elementNum = msgPointer->GetNumberOfTrackingDataElements();
 
   if (elementNum == 0)
+  {
     tElem = igtl::TrackingDataElement::New();
+    msgPointer->AddTrackingDataElement(tElem);
+  }
   else
     msgPointer->GetTrackingDataElement(0, tElem);
 
   tElem->SetPosition(p);
-  msgPointer->AddTrackingDataElement(tElem);
+  
 
 	//Pack message data
 	msgPointer->Pack();
@@ -188,12 +194,15 @@ void OIGTLTrackingDataMessage::setPosition(float px, float py, float pz)
   int elementNum = msgPointer->GetNumberOfTrackingDataElements();
 
   if (elementNum == 0)
+  {
     tElem = igtl::TrackingDataElement::New();
+    msgPointer->AddTrackingDataElement(tElem);
+  }
   else
     msgPointer->GetTrackingDataElement(0, tElem);
 
   tElem->SetPosition(px, py, pz);
-  msgPointer->AddTrackingDataElement(tElem);
+  
 
 	//Pack message data
 	msgPointer->Pack();
@@ -232,12 +241,14 @@ void OIGTLTrackingDataMessage::setTrackerToolName(QString name)
   int elementNum = msgPointer->GetNumberOfTrackingDataElements();
 
   if (elementNum == 0)
+  {
     tElem = igtl::TrackingDataElement::New();
+    msgPointer->AddTrackingDataElement(tElem);
+  }
   else
     msgPointer->GetTrackingDataElement(0, tElem);
 
   tElem->SetName(name.toStdString().c_str());
-  msgPointer->AddTrackingDataElement(tElem);
 
 	//Pack message data
 	msgPointer->Pack();
@@ -278,12 +289,14 @@ void OIGTLTrackingDataMessage::setTrackerToolType(igtlUint8 type)
   int elementNum = msgPointer->GetNumberOfTrackingDataElements();
 
   if (elementNum == 0)
+  {
     tElem = igtl::TrackingDataElement::New();
+    msgPointer->AddTrackingDataElement(tElem);
+  }
   else
     msgPointer->GetTrackingDataElement(0, tElem);
 
   tElem->SetType(type);
-  msgPointer->AddTrackingDataElement(tElem);
 
 	//Pack message data
 	msgPointer->Pack();
@@ -324,12 +337,14 @@ void OIGTLTrackingDataMessage::initializeWithTestData(void)
   int elementNum = msgPointer->GetNumberOfTrackingDataElements();
 
   if (elementNum == 0)
+  {
     tElem = igtl::TrackingDataElement::New();
+    msgPointer->AddTrackingDataElement(tElem);
+  }
   else
     msgPointer->GetTrackingDataElement(0, tElem);
 
   tElem->SetMatrix(dummyTransformMatrix);
-  msgPointer->AddTrackingDataElement(tElem);
 
 	//Pack message data
 	msgPointer->Pack();
@@ -348,7 +363,10 @@ void OIGTLTrackingDataMessage::initializeWithRandomData(void)
   int elementNum = msgPointer->GetNumberOfTrackingDataElements();
 
   if (elementNum == 0)
+  {
     tElem = igtl::TrackingDataElement::New();
+    msgPointer->AddTrackingDataElement(tElem);
+  }
   else
     msgPointer->GetTrackingDataElement(0, tElem);
 
@@ -356,7 +374,6 @@ void OIGTLTrackingDataMessage::initializeWithRandomData(void)
   CreateRandomTransformMatrix(localMatrix);
 
   tElem->SetMatrix(localMatrix);
-  msgPointer->AddTrackingDataElement(tElem);
 
 	//Pack message data
 	msgPointer->Pack();

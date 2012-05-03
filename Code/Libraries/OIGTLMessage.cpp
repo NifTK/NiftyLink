@@ -41,7 +41,7 @@ OIGTLMessage::OIGTLMessage(void)
 
 OIGTLMessage::~OIGTLMessage(void)
 {
-  QLOG_INFO() <<"Message destructor (Base class): "<<m_ownerName <<m_id;
+  //QLOG_INFO() <<"Message destructor (Base class): "<<m_ownerName <<m_id;
 
   m_message.operator =(NULL);
   m_timeReceived.operator =(NULL);
@@ -99,11 +99,29 @@ igtlUint64 OIGTLMessage::getId(void)
 
 void OIGTLMessage::changeHostName(QString hname)
 {
-	m_senderHostName = hname;
+  if (m_message.IsNull())
+    return;
+  
+  m_senderHostName = hname;
+  
+  m_message->Unpack(); 
+
+  m_message->SetDeviceName(m_senderHostName.toStdString().c_str());
+
+  m_message->Pack();
 }
 
 QString OIGTLMessage::getHostName(void)
 {
+  if (m_message.IsNull())
+    return QString();
+ 
+  m_message->Unpack(); 
+
+  m_senderHostName = m_message->GetDeviceName();
+
+  m_message->Pack();
+
 	return m_senderHostName;
 }
 
