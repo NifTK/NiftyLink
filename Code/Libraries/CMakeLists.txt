@@ -48,6 +48,7 @@ OIGTLTransformMessage.cpp
 OIGTLImageMessage.cpp
 OIGTLStatusMessage.cpp
 OIGTLStringMessage.cpp
+OIGTLTrackingDataMessage.cpp
 )
 
 #########################
@@ -62,6 +63,7 @@ OIGTLListenerThread.h
 OIGTLSocketObject.h
 OIGTLStatusMessage.h
 OIGTLStringMessage.h
+OIGTLTrackingDataMessage.h
 )
 
 #########################

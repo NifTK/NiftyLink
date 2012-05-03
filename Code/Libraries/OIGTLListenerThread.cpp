@@ -539,18 +539,23 @@ bool OIGTLListenerThread::receiveMessage()
         break;
     case TDATA:
         message = igtl::TrackingDataMessage::New();
+        msg.operator =(OIGTLTrackingDataMessage::Pointer(new OIGTLTrackingDataMessage()));
         break;
     case GET_TDATA:
         message = igtl::GetTrackingDataMessage::New();
+        OIGTLTrackingDataMessage::Create_GET(msg);
         break;
     case STT_TDATA:
         message = igtl::StartTrackingDataMessage::New();
+        OIGTLTrackingDataMessage::Create_STT(msg);
         break;
     case STP_TDATA:
         message = igtl::StopTrackingDataMessage::New();
+        OIGTLTrackingDataMessage::Create_STP(msg);
         break;
     case RTS_TDATA:
         message = igtl::RTSTrackingDataMessage::New();
+        OIGTLTrackingDataMessage::Create_RTS(msg);
         break;
     case TRAJ:
         message = igtl::TrajectoryMessage::New();
