@@ -38,6 +38,15 @@ class NIFTYLINKCOMMON_WINEXPORT OIGTLTrackingDataMessage : public OIGTLMessage
 {
 
 public:
+  
+  // Tracking data type
+  enum {
+    TYPE_TRACKER  = 1,  /* Tracker */
+    TYPE_6D       = 2,  /* 6D instrument (regular instrument) */
+    TYPE_3D       = 3,  /* 3D instrument (only tip of the instrument defined) */
+    TYPE_5D       = 4,  /* 5D instrument (tip and handle are defined, but not the normal vector) */
+  };
+
 
   typedef OIGTLTrackingDataMessage		              Self;
   typedef QExplicitlySharedDataPointer<Self>        Pointer;
