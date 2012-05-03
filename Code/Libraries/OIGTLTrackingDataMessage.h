@@ -81,14 +81,14 @@ public:
   void getPosition(float &px, float &py, float &pz);
 
   /// \brief Sets the tracker tool's name
-  void setName(QString name);
+  void setTrackerToolName(QString name);
   /// \brief Gets the tracker tool's name
-  QString getName();
+  QString getTrackerToolName();
 
   /// \brief Sets the tracker tool's type
-  void setType(igtlUint8 type);
+  void setTrackerToolType(igtlUint8 type);
   /// \brief Gets the tracker tool's name
-  igtlUint8 getType();
+  igtlUint8 getTrackerToolType();
 
   /// \brief Initializes the message with known test data
   virtual void initializeWithTestData(void);

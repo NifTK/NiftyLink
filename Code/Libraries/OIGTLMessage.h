@@ -111,8 +111,8 @@ public:
   /// \brief Returns the frequency of the stream (used in STT_ messages)
 	void getResolution(igtlUint64 &res);
 
-  inline void setToolName(QString toolname) { m_toolName = toolname; };
-  QString getToolName(void) { return m_toolName; } 
+  //inline void setToolName(QString toolname) { m_toolName = toolname; };
+  //QString getToolName(void) { return m_toolName; } 
 
   /// \brief Function base for initilizing the message with test data (defined in NiftyLink Utils)
 	virtual void initializeWithTestData(void) {}

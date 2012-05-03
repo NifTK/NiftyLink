@@ -219,7 +219,7 @@ void OIGTLTrackingDataMessage::getPosition(float &px, float &py, float &pz)
 	msgPointer->Pack();
 }
 
-void OIGTLTrackingDataMessage::setName(QString name)
+void OIGTLTrackingDataMessage::setTrackerToolName(QString name)
 {
   if (m_message.IsNull())
 		m_message.operator =(igtl::TrackingDataMessage::New());
@@ -243,7 +243,7 @@ void OIGTLTrackingDataMessage::setName(QString name)
 	msgPointer->Pack();
 }
  
-QString OIGTLTrackingDataMessage::getName()
+QString OIGTLTrackingDataMessage::getTrackerToolName()
 {
   if (m_message.IsNull())
 		return QString();
@@ -265,7 +265,7 @@ QString OIGTLTrackingDataMessage::getName()
   return str;
 }
 
-void OIGTLTrackingDataMessage::setType(igtlUint8 type)
+void OIGTLTrackingDataMessage::setTrackerToolType(igtlUint8 type)
 {
   if (m_message.IsNull())
 		m_message.operator =(igtl::TrackingDataMessage::New());
@@ -289,7 +289,7 @@ void OIGTLTrackingDataMessage::setType(igtlUint8 type)
 	msgPointer->Pack();
 }
 
-igtlUint8 OIGTLTrackingDataMessage::getType()
+igtlUint8 OIGTLTrackingDataMessage::getTrackerToolType()
 {
   if (m_message.IsNull())
 		return -1;
