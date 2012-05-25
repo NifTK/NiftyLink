@@ -39,6 +39,17 @@ QString XMLBuilderBase::parseDescriptorType(QString xmlString)
 
 //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
+ClientDescriptorXMLBuilder::ClientDescriptorXMLBuilder(const ClientDescriptorXMLBuilder &other)
+  : XMLBuilderBase(other)
+{
+  m_deviceName = other.m_deviceName;
+  m_deviceType = other.m_deviceType;
+  m_commType   = other.m_commType;
+  m_portName   = other.m_portName;
+  m_clientIP   = other.m_clientIP;
+  m_clientPort = other.m_clientPort;
+}
+
 
 QString ClientDescriptorXMLBuilder::getXMLAsString(void)
 {
@@ -57,6 +68,16 @@ QString ClientDescriptorXMLBuilder::getXMLAsString(void)
   device.setAttribute("ClientIP", m_clientIP);
   device.setAttribute("ClientPort", m_clientPort);
   root.appendChild(client);
+
+  if (m_deviceType == "Tracker")
+  {
+    for (int i = 0; i < m_trackerTools.count(); i++)
+    {
+      QDomElement param = domDocument.createElement("TrackerTool");
+      param.setAttribute("Name", m_trackerTools.at(i));
+      root.appendChild(param);
+    }
+  }
 
   domDocument.appendChild(root);
 
@@ -118,6 +139,10 @@ void ClientDescriptorXMLBuilder::setXMLString(QString desc)
               m_clientPort.clear();
               m_clientPort.append(e.attribute("ClientPort", ""));
             }
+            else if (e.tagName() == "TrackerTool")
+            {
+              m_trackerTools.append(e.attribute("Name", ""));
+            }
           }
 
           n = n.nextSibling();
@@ -128,6 +153,17 @@ void ClientDescriptorXMLBuilder::setXMLString(QString desc)
 }
 
 //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~//
+
+CommandDescriptorXMLBuilder::CommandDescriptorXMLBuilder(const CommandDescriptorXMLBuilder &other)
+  : XMLBuilderBase(other)
+{
+  m_commandName = other.m_commandName;
+  m_numOfParameters = other.m_numOfParameters;
+    
+  m_parameterNames = other.m_parameterNames;
+  m_parameterTypes = other.m_parameterTypes;
+  m_parameterValues = other.m_parameterValues;
+}
 
 void CommandDescriptorXMLBuilder::addParameter(QString pName, QString pType, QString pVal) 
 { 

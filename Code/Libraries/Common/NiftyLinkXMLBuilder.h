@@ -43,7 +43,8 @@ class NIFTYLINKCOMMON_WINEXPORT XMLBuilderBase : public QObject
 	Q_OBJECT
 
 public:
-  XMLBuilderBase() {}
+  XMLBuilderBase() { m_messageValid = false; }
+  XMLBuilderBase(const XMLBuilderBase &other) { m_descriptorString = other.m_descriptorString; m_messageValid = other.m_messageValid; }
   virtual ~XMLBuilderBase() {}
   
   /// \brief Returns true if the message is valid
@@ -71,6 +72,8 @@ class NIFTYLINKCOMMON_WINEXPORT ClientDescriptorXMLBuilder : public XMLBuilderBa
 public:
   /// \brief Basic constructor
   ClientDescriptorXMLBuilder() : XMLBuilderBase() { m_messageValid = false; }
+  // \brief Copy Constructor
+  ClientDescriptorXMLBuilder(const ClientDescriptorXMLBuilder &other);
   /// \brief Basic destructor
 	virtual ~ClientDescriptorXMLBuilder() {}
 
@@ -95,13 +98,17 @@ public:
   inline void setClientPort(QString port) { m_clientPort.clear(); m_clientPort.append(port); }
   inline QString getClientPort(void) { return m_clientPort;}
 
+  inline void addTrackerTool(QString toolName) { m_trackerTools.append(toolName); }
+  inline QStringList getTrackerTools(void) { return m_trackerTools; }
+
 private:
-  QString m_deviceName;
-  QString m_deviceType;
-  QString m_commType;
-  QString m_portName;
-  QString m_clientIP;
-  QString m_clientPort;
+  QString      m_deviceName;
+  QString      m_deviceType;
+  QString      m_commType;
+  QString      m_portName;
+  QString      m_clientIP;
+  QString      m_clientPort;
+  QStringList  m_trackerTools;
 };
 
 //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~//
@@ -113,6 +120,7 @@ class NIFTYLINKCOMMON_WINEXPORT CommandDescriptorXMLBuilder : public XMLBuilderB
 public:
   /// \brief Basic constructor
   CommandDescriptorXMLBuilder() : XMLBuilderBase() { m_messageValid = false; m_numOfParameters = 0; }
+  CommandDescriptorXMLBuilder(const CommandDescriptorXMLBuilder &other);
   /// \brief Basic destructor
 	virtual ~CommandDescriptorXMLBuilder() {}
 
