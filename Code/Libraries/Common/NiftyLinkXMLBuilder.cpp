@@ -50,6 +50,20 @@ ClientDescriptorXMLBuilder::ClientDescriptorXMLBuilder(const ClientDescriptorXML
   m_clientPort = other.m_clientPort;
 }
 
+ClientDescriptorXMLBuilder& ClientDescriptorXMLBuilder::operator=(const ClientDescriptorXMLBuilder &other)
+{
+  XMLBuilderBase::operator =(other);
+  
+  m_deviceName = other.m_deviceName;
+  m_deviceType = other.m_deviceType;
+  m_commType   = other.m_commType;
+  m_portName   = other.m_portName;
+  m_clientIP   = other.m_clientIP;
+  m_clientPort = other.m_clientPort;
+
+  return *this;
+}
+
 
 QString ClientDescriptorXMLBuilder::getXMLAsString(void)
 {
@@ -68,16 +82,6 @@ QString ClientDescriptorXMLBuilder::getXMLAsString(void)
   device.setAttribute("ClientIP", m_clientIP);
   device.setAttribute("ClientPort", m_clientPort);
   root.appendChild(client);
-
-  if (m_deviceType == "Tracker")
-  {
-    for (int i = 0; i < m_trackerTools.count(); i++)
-    {
-      QDomElement param = domDocument.createElement("TrackerTool");
-      param.setAttribute("Name", m_trackerTools.at(i));
-      root.appendChild(param);
-    }
-  }
 
   domDocument.appendChild(root);
 
@@ -139,10 +143,6 @@ void ClientDescriptorXMLBuilder::setXMLString(QString desc)
               m_clientPort.clear();
               m_clientPort.append(e.attribute("ClientPort", ""));
             }
-            else if (e.tagName() == "TrackerTool")
-            {
-              m_trackerTools.append(e.attribute("Name", ""));
-            }
           }
 
           n = n.nextSibling();
@@ -165,7 +165,22 @@ CommandDescriptorXMLBuilder::CommandDescriptorXMLBuilder(const CommandDescriptor
   m_parameterValues = other.m_parameterValues;
 }
 
-void CommandDescriptorXMLBuilder::addParameter(QString pName, QString pType, QString pVal) 
+CommandDescriptorXMLBuilder & CommandDescriptorXMLBuilder::operator =(const CommandDescriptorXMLBuilder &other)
+{
+  XMLBuilderBase::operator =(other);
+
+  m_commandName = other.m_commandName;
+  m_numOfParameters = other.m_numOfParameters;
+    
+  m_parameterNames = other.m_parameterNames;
+  m_parameterTypes = other.m_parameterTypes;
+  m_parameterValues = other.m_parameterValues;
+
+  return *this;
+}
+
+
+void CommandDescriptorXMLBuilder::addParameter(QString pName, QString pType, QString pVal)
 { 
   m_parameterNames.append(pName); 
   m_parameterTypes.append(pType); 
@@ -301,4 +316,121 @@ QStringList CommandDescriptorXMLBuilder::getParameterTypes(void)
 QStringList CommandDescriptorXMLBuilder::getParameterValues(void)
 {
   return m_parameterValues;
+}
+
+//~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~//
+
+TrackerClientDescriptor::TrackerClientDescriptor(const TrackerClientDescriptor &other)
+  : ClientDescriptorXMLBuilder(other)
+{
+  m_trackerTools = other.m_trackerTools;
+}
+
+TrackerClientDescriptor & TrackerClientDescriptor::operator=(const TrackerClientDescriptor &other)
+{
+  ClientDescriptorXMLBuilder::operator=(other);
+  m_trackerTools = other.m_trackerTools;
+
+  return *this;
+}
+
+QString TrackerClientDescriptor::getXMLAsString(void)
+{
+  QDomDocument domDocument("ClientDescriptor");
+
+  QDomElement root = domDocument.createElement("ClientDescriptor");
+  
+  QDomElement device = domDocument.createElement("Device");
+  device.setAttribute("DeviceName", m_deviceName);
+  device.setAttribute("DeviceType", m_deviceType);
+  device.setAttribute("CommunicationType", m_commType);
+  device.setAttribute("PortName", m_portName);
+  root.appendChild(device);
+
+  QDomElement client = domDocument.createElement("Client");
+  device.setAttribute("ClientIP", m_clientIP);
+  device.setAttribute("ClientPort", m_clientPort);
+  root.appendChild(client);
+
+  if (m_deviceType == "Tracker")
+  {
+    for (int i = 0; i < m_trackerTools.count(); i++)
+    {
+      QDomElement param = domDocument.createElement("TrackerTool");
+      param.setAttribute("Name", m_trackerTools.at(i));
+      root.appendChild(param);
+    }
+  }
+
+  domDocument.appendChild(root);
+
+  m_descriptorString.clear();
+  m_descriptorString.append(domDocument.toString());
+
+  QDomDocument xmlDoco;
+  m_messageValid = xmlDoco.setContent(m_descriptorString);
+
+  if (m_messageValid)
+    return m_descriptorString;
+  else
+    return QString();
+}
+
+void TrackerClientDescriptor::setXMLString(QString desc)
+{
+  m_descriptorString.clear();
+  m_descriptorString.append(desc);
+
+  QDomDocument xmlDoco;
+
+  m_messageValid = xmlDoco.setContent(desc);
+
+  if (m_messageValid)
+  {
+     // A valid XML document was received, now it's time to parse it
+      QDomElement root = xmlDoco.documentElement();
+      
+      if (root.tagName() == "ClientDescriptor")
+      {
+        QDomNode n = root.firstChild();
+        
+        while (!n.isNull())
+        {
+          QDomElement e = n.toElement();
+          
+          if (!e.isNull())
+          {
+            if (e.tagName() == "Device")
+            {
+              m_deviceName.clear();
+              m_deviceName.append(e.attribute("DeviceName", ""));
+              
+              m_deviceType.clear();
+              m_deviceType.append(e.attribute("DeviceType", ""));
+              
+              m_commType.clear();
+              m_commType.append(e.attribute("CommunicationType", ""));
+              
+              m_portName.clear();
+              m_portName.append("PortName: ");              
+            }
+            else if (e.tagName() == "Client")
+            {
+              m_clientIP.clear();
+              m_clientIP.append(e.attribute("ClientIP", ""));
+              
+              m_clientPort.clear();
+              m_clientPort.append(e.attribute("ClientPort", ""));
+            }
+            else if (e.tagName() == "TrackerTool")
+            {
+              m_trackerTools.append(e.attribute("Name", ""));
+            }
+          }
+
+          n = n.nextSibling();
+        }
+      }
+
+  }
 }
