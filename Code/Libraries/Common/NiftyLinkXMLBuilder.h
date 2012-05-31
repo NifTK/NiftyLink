@@ -204,6 +204,8 @@ public:
   QString getParameterType(int i);
   /// \brief Returns the value of the i-th parameter of the parameter list
   QString getParameterValue(int i);
+  /// \brief Returns all fields of the i-th parameter of the parameter list
+  void getParameterAllFields(int i, QString &pName, QString &pType, QString &pValue);
   
   /// \brief Returns the list of paramter names (as QStringList)
   QStringList getParameterNames(void);

@@ -303,6 +303,29 @@ QString CommandDescriptorXMLBuilder::getParameterValue(int i)
   else return pval;
 }
 
+void CommandDescriptorXMLBuilder::getParameterAllFields(int i, QString &pName, QString &pType, QString &pValue)
+{
+  if (i >= m_parameterValues.count())
+    return;
+
+  QString temp = m_parameterNames.at(i);
+  if (temp.isNull() || temp.isEmpty())
+    pName = temp;
+  else return;
+
+  temp = m_parameterTypes.at(i);
+  if (temp.isNull() || temp.isEmpty())
+    pType = temp;
+  else return;
+
+  temp = m_parameterValues.at(i);
+  if (temp.isNull() || temp.isEmpty())
+    pValue = temp;
+  else return;
+  
+}
+
+  
 QStringList CommandDescriptorXMLBuilder::getParameterNames(void)
 {
   return m_parameterNames;

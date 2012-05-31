@@ -158,46 +158,5 @@ extern "C++" NIFTYLINKCOMMON_WINEXPORT QString resolveHostName(const QString &in
 
 /// \brief This function creates a random 4x4 test matrix 
 extern "C++" NIFTYLINKCOMMON_WINEXPORT void CreateRandomTransformMatrix(igtl::Matrix4x4& matrix);
-/// \brief This function compares two image messages if they are of the same kind
-extern "C++" NIFTYLINKCOMMON_WINEXPORT bool CompareMsgData(OIGTLMessage::Pointer &msg1, OIGTLMessage::Pointer &msg2);
-
-/**
- * \class MessageCatcher
- * \brief A simple class to catch OIGTLMessage and check validity.
- */
-class NIFTYLINKCOMMON_WINEXPORT MessageCatcher : public QObject
-{
-	Q_OBJECT
-
-public:
-  /// \brief Basic constructor
-	MessageCatcher() { m_messageValid = false; }
-  /// \brief Basic destructor
-	~MessageCatcher() {}
-
-  /// \brief Return the last message caught
-	OIGTLMessage* getMessage() { return m_msg; }
-  /// \brief Returns true if the message is valid
-	bool isMessageValid() { return m_messageValid; }
-
-public slots:
-  /// \brief Slot to catch OIGTLMessage
-	void catchMessage(OIGTLMessage * msg) 
-	{ 
-		m_msg = msg; 
-		m_messageValid = true; 
-	}
-
-  /// \brief Basic slot to trigger a catch event
-	void catchMessage() 
-	{ 
-		m_messageValid = true; 
-	}
-
-private:
-	OIGTLMessage * m_msg;
-	bool m_messageValid;
-
-};
 
 #endif
