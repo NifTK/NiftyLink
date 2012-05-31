@@ -51,4 +51,4 @@ SET(NiftyLink_USE_FILE "@CMAKE_BINARY_DIR@/UseNiftyLink.cmake")
 SET(NiftyLink_BUILD_SHARED "@BUILD_SHARED_LIBS@")
 
 # A list of all libraries for NiftyLink.  
-SET(NiftyLink_LIBRARIES "niftylink igtlutil @OpenIGTLink_LIBRARIES@ ")
+SET(NiftyLink_LIBRARIES "niftylink igtlutil @OpenIGTLink_LIBRARIES@")
