@@ -79,8 +79,8 @@ QString ClientDescriptorXMLBuilder::getXMLAsString(void)
   root.appendChild(device);
 
   QDomElement client = domDocument.createElement("Client");
-  device.setAttribute("ClientIP", m_clientIP);
-  device.setAttribute("ClientPort", m_clientPort);
+  client.setAttribute("ClientIP", m_clientIP);
+  client.setAttribute("ClientPort", m_clientPort);
   root.appendChild(client);
 
   domDocument.appendChild(root);
@@ -336,9 +336,9 @@ TrackerClientDescriptor & TrackerClientDescriptor::operator=(const TrackerClient
 
 QString TrackerClientDescriptor::getXMLAsString(void)
 {
-  QDomDocument domDocument("ClientDescriptor");
+  QDomDocument domDocument("TrackerClientDescriptor");
 
-  QDomElement root = domDocument.createElement("ClientDescriptor");
+  QDomElement root = domDocument.createElement("TrackerClientDescriptor");
   
   QDomElement device = domDocument.createElement("Device");
   device.setAttribute("DeviceName", m_deviceName);
@@ -348,8 +348,8 @@ QString TrackerClientDescriptor::getXMLAsString(void)
   root.appendChild(device);
 
   QDomElement client = domDocument.createElement("Client");
-  device.setAttribute("ClientIP", m_clientIP);
-  device.setAttribute("ClientPort", m_clientPort);
+  client.setAttribute("ClientIP", m_clientIP);
+  client.setAttribute("ClientPort", m_clientPort);
   root.appendChild(client);
 
   if (m_deviceType == "Tracker")
@@ -390,7 +390,7 @@ void TrackerClientDescriptor::setXMLString(QString desc)
      // A valid XML document was received, now it's time to parse it
       QDomElement root = xmlDoco.documentElement();
       
-      if (root.tagName() == "ClientDescriptor")
+      if (root.tagName() == "TrackerClientDescriptor")
       {
         QDomNode n = root.firstChild();
         
