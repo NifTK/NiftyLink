@@ -60,7 +60,9 @@ class OIGTLThreadBase : public QThread
   Q_OBJECT
 
 signals:
+  /// \brief This signal is emitted when there was some acitivty on the socket, so the timeout timer needs to be reset
   void restartTimer(int msec);
+  /// \brief This signal is to stop the timeout timer (used on shutdown)
   void stopTimer(void);
 
 public:

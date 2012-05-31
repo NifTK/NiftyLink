@@ -302,7 +302,7 @@ QString CommandDescriptorXMLBuilder::getParameterValue(int i)
     return QString();
   else return pval;
 }
-  
+
 QStringList CommandDescriptorXMLBuilder::getParameterNames(void)
 {
   return m_parameterNames;

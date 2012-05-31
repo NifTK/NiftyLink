@@ -111,9 +111,6 @@ public:
   /// \brief Returns the frequency of the stream (used in STT_ messages)
 	void getResolution(igtlUint64 &res);
 
-  //inline void setToolName(QString toolname) { m_toolName = toolname; };
-  //QString getToolName(void) { return m_toolName; } 
-
   /// \brief Function base for initilizing the message with test data (defined in NiftyLink Utils)
 	virtual void initializeWithTestData(void) {}
   /// \brief Function base for initilizing the message with random data (defined in NiftyLink Utils)
@@ -121,13 +118,17 @@ public:
 
   /// \brief Function to update the timestamp and host name after changes
 	void update(QString hostname, igtl::TimeStamp::Pointer ts);
+  /// \brief Function to update the host name after changes
   void update(QString hostname);
 
   /// \brief Function set message processed and to check status
   inline void setProcessed(bool p) { m_processed = p; };
+  /// \brief Function to check if a message was processed
   bool getProcessed() { return m_processed; };
 
+  /// \brief Set the name of the owner class as the message is passed back and forth
   void setOwnerName(QString str); 
+  /// \brief Method to check who owns the message at the moment
   QString getOwnerName(void) { return m_ownerName; }
 
 protected:

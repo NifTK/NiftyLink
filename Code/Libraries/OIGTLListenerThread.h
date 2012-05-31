@@ -107,6 +107,7 @@ private:
   bool receiveMessage(void);
 
 private slots:
+  /// \brief This slot is triggered when the socket timeouts: eg there was no activity for the set period of time (m_socketTimeout)
   void socketTimeout(void);
 
 private:
