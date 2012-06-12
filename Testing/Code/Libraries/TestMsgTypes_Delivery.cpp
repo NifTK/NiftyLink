@@ -401,16 +401,59 @@ void TestMsgTypes_Delivery::catchMessage(OIGTLMessage::Pointer msg)
     igtl::MessageBase::Pointer message;
     msg->getMessagePointer(message);
 
-    //QLOG_INFO() <<message->GetNameOfClass();
-
-    m_received++;
+    if (strcmp(message->GetNameOfClass(), "igtl::ImageMessage") == 0)
+      m_received++;
+    else if (strcmp(message->GetNameOfClass(), "igtl::GetImageMessage") == 0)
+      m_received++;
+    else if (strcmp(message->GetNameOfClass(), "igtl::StartImageMessage") == 0)
+      m_received++;
+    else if (strcmp(message->GetNameOfClass(), "igtl::StopImageMessage") == 0)
+      m_received++;
+    else if (strcmp(message->GetNameOfClass(), "igtl::RTSImageMessage") == 0)
+      m_received++;
+    else if (strcmp(message->GetNameOfClass(), "igtl::StatusMessage") == 0)
+      m_received++;
+    else if (strcmp(message->GetNameOfClass(), "igtl::GetStatusMessage") == 0)
+      m_received++;
+    else if (strcmp(message->GetNameOfClass(), "igtl::StartStatusMessage") == 0)
+      m_received++;
+    else if (strcmp(message->GetNameOfClass(), "igtl::StopStatusMessage") == 0)
+      m_received++;
+    else if (strcmp(message->GetNameOfClass(), "igtl::RTSStatusMessage") == 0)
+      m_received++;
+    else if (strcmp(message->GetNameOfClass(), "igtl::StringMessage") == 0)
+      m_received++;
+    else if (strcmp(message->GetNameOfClass(), "igtl::GetStringMessage") == 0)
+      m_received++;
+    else if (strcmp(message->GetNameOfClass(), "igtl::StartStringMessage") == 0)
+      m_received++;
+    else if (strcmp(message->GetNameOfClass(), "igtl::StopStringMessage") == 0)
+      m_received++;
+    else if (strcmp(message->GetNameOfClass(), "igtl::RTSStringMessage") == 0)
+      m_received++;
+    else if (strcmp(message->GetNameOfClass(), "igtl::TrackingDataMessage") == 0)
+      m_received++;
+    else if (strcmp(message->GetNameOfClass(), "igtl::GetTrackingDataMessage") == 0)
+      m_received++;
+    else if (strcmp(message->GetNameOfClass(), "igtl::StartTrackingDataMessage") == 0)
+      m_received++;
+    else if (strcmp(message->GetNameOfClass(), "igtl::StopTrackingDataMessage") == 0)
+      m_received++;
+    else if (strcmp(message->GetNameOfClass(), "igtl::RTSTrackingDataMessage") == 0)
+      m_received++;
+    else if (strcmp(message->GetNameOfClass(), "igtl::TransformMessage") == 0)
+      m_received++;
+    else if (strcmp(message->GetNameOfClass(), "igtl::GetTransformMessage") == 0)
+      m_received++;
+    else if (strcmp(message->GetNameOfClass(), "igtl::StartTransformMessage") == 0)
+      m_received++;
+    else if (strcmp(message->GetNameOfClass(), "igtl::StopTransformMessage") == 0)
+      m_received++;
+    else if (strcmp(message->GetNameOfClass(), "igtl::RTSTransformMessage") == 0)
+      m_received++;
 
     if (m_received >= 25)
       quitTest();
-    //if (strcmp(message->GetNameOfClass(), "igtl::TransformMessage") == 0)
-    //  m_received++;
-    //else if (msg->getMessageType() == QString("IMAGE"))
-    //  m_received++;
 
   }
 }
