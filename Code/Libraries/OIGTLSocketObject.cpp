@@ -372,6 +372,9 @@ void OIGTLSocketObject::disconnectedFromRemote(bool onPort)
   m_connectedToRemote = false;
   m_ableToSend = false;
 
+  emit lostConnectionToRemoteSignal();
+  QCoreApplication::processEvents();
+
 }
 
 void OIGTLSocketObject::clientConnected(void)
@@ -398,7 +401,7 @@ void OIGTLSocketObject::clientConnected(void)
 
 void OIGTLSocketObject::clientDisconnected(bool onPort)
 {
-  //if (onPort)
+  if (onPort)
   {
     if (m_sender != NULL)
     {
@@ -411,8 +414,6 @@ void OIGTLSocketObject::clientDisconnected(bool onPort)
     QCoreApplication::processEvents();
   }
 
-  
-  
   m_clientConnected = false;
   m_ableToSend = false;
 }
