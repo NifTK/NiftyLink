@@ -68,6 +68,9 @@ signals:
   /// \brief This internal signal is to start the main processing loop after startProcess() finished initializing
   void startWorking(void);
 
+  /// \brief This signal is emitted when the process has fully terminated, so it is OK to terminate the hosting thread as well
+  void shutdownHostThread(void);
+
 public:
 
   /// \brief Constructor which initialises the common member variables

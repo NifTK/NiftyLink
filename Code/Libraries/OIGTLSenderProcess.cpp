@@ -126,7 +126,7 @@ void OIGTLSenderProcess::startProcess(void)
 
 void OIGTLSenderProcess::stopProcess(void)
 {
-  QLOG_INFO() <<objectName() <<": " << "Quitting sender Process \n";
+  QLOG_INFO() <<objectName() <<": " << "Attempting to stop sender process... (stopProcess()) \n";
   m_running = false;  //stops the process
 }
 
@@ -174,8 +174,12 @@ void OIGTLSenderProcess::terminateProcess()
 
   m_port = -1;
   m_hostname.clear();
-  m_initialized = false;
+  m_initialized = false; 
+  //QLOG_DEBUG() <<"!!!!  m_initialized = false; !!!! ";
+
   m_active = false;    //sets the active flag to false as the process has fully stopped
+
+  emit shutdownHostThread();
 }
 
 bool OIGTLSenderProcess::activate(void)
@@ -263,7 +267,7 @@ void OIGTLSenderProcess::doProcessing(void)
       }
       catch (std::exception &e)
       {
-        qDebug() <<"Type cast error.Always run this process from QThreadEx. Exception: " <<e.what();
+        qDebug() <<"Type cast error. Always run this process from QThreadEx. Exception: " <<e.what();
       }
       
       // Poke the socket to see if its alive or not
@@ -351,8 +355,8 @@ void OIGTLSenderProcess::doProcessing(void)
     msg.reset();
     
     QCoreApplication::processEvents();
-    //this->msleep(50);
-  }
+ 
+  }  //end of while
 
   // ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
@@ -364,6 +368,9 @@ void OIGTLSenderProcess::doProcessing(void)
 
   // Stopping the Process execution here, will restart when new messages arrive
   m_running = false;
+  
+  //QLOG_INFO()  <<objectName() <<": " <<"Main send loop has finished." <<"\n";
+  
   terminateProcess();
 }
 

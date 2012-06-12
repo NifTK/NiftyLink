@@ -134,6 +134,7 @@ void OIGTLSocketObject::initThreads()
    
   ok &= connect(m_senderHostThread, SIGNAL(eventloopStarted()), m_sender, SLOT(startProcess()));
   ok &= connect(this, SIGNAL(shutdownSender()), m_sender, SLOT(stopProcess()));
+  ok &= connect(m_sender, SIGNAL(shutdownHostThread()), m_senderHostThread, SLOT(quit()));
 
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
@@ -143,6 +144,7 @@ void OIGTLSocketObject::initThreads()
   
   ok &= connect(m_listenerHostThread, SIGNAL(eventloopStarted()), m_listener, SLOT(startProcess()));
   ok &= connect(this, SIGNAL(shutdownListener()), m_listener, SLOT(stopProcess()));
+  ok &= connect(m_listener, SIGNAL(shutdownHostThread()), m_listenerHostThread, SLOT(quit()));
 
   // Set the flag
   if (m_mutex != NULL && m_sender != NULL && m_listener != NULL && ok)
@@ -396,15 +398,20 @@ void OIGTLSocketObject::clientConnected(void)
 
 void OIGTLSocketObject::clientDisconnected(bool onPort)
 {
-  if (onPort)
+  //if (onPort)
   {
     if (m_sender != NULL)
+    {
       emit shutdownSender();
+      QCoreApplication::processEvents();
+    }
+
 
     emit clientDisconnectedSignal();
+    QCoreApplication::processEvents();
   }
 
-  QCoreApplication::processEvents();
+  
   
   m_clientConnected = false;
   m_ableToSend = false;

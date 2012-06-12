@@ -197,6 +197,9 @@ void OIGTLListenerProcess::terminateProcess()
   m_port = -1;
   m_initialized = false;
   m_active = false;
+
+  //exit(0);
+  emit shutdownHostThread();
 }
 
 bool OIGTLListenerProcess::activate(void)
@@ -682,6 +685,8 @@ bool OIGTLListenerProcess::receiveMessage()
 
     if (r < 0)
       return false;
+    else
+      m_timeouter->start(2000);
   }
   
   // Get the receive timestamp from the socket
