@@ -40,7 +40,7 @@ PURPOSE.  See the above copyright notices for more information.
 #include "igtlMath.h"
 
 #include "OIGTLSocketObject.h"
-#include "TestSendReceive_Basic.h"
+#include "TestMsgTypes_Delivery.h"
 
 #include "QsLog.h"
 #include "QsLogDest.h"
@@ -61,7 +61,7 @@ int main(int argc, char **argv)
 
   int ret = 0;
 
-  TestSendReceive_Basic * test = new TestSendReceive_Basic;
+  TestMsgTypes_Delivery * test = new TestMsgTypes_Delivery;
   QObject::connect(test, SIGNAL(done()), &app, SLOT(quit()),Qt::QueuedConnection);
   QTimer::singleShot(0, test, SLOT(startTest()));
   //QTimer::singleShot(220, &test, SLOT(listen()));

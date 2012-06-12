@@ -141,7 +141,7 @@ void TestImgMsg_General::performTest()
 
   bool ok = true;
 
-  for (int i = 0; i < 4; i++)
+  for (int i = 0; i < 4; i++)   
   {
     for (int j = 0; j < 3; j++)
     {
@@ -241,13 +241,59 @@ void TestImgMsg_General::performTest()
   else
     { std::cout <<" OK\n"; m_successCounter++; }
 
+   //***********************************************
+  std::cout <<++m_testCounter <<". Set resolution settings..";
+  OIGTLMessage::Pointer sttImg;
+  sttImg.reset();
+  OIGTLImageMessage::Create_STT(sttImg);
+  sttImg->setResolution(100);
+ 
+  igtlUint64 res = 0;
+  sttImg->getResolution(res);
+
+  if (res != 100)
+    std::cout <<" FAILED\n";
+  else
+    { std::cout <<" OK\n"; m_successCounter++; }
+
+  //***********************************************
+  std::cout <<++m_testCounter <<". Deleting messages..";
+  imageMsg.reset();
+  imageMsg.operator =(NULL);
+  
+  sttImg.reset();
+  sttImg.operator =(NULL);
+   
+  if (sttImg.operator !=(NULL) || imageMsg.operator !=(NULL))
+    std::cout <<" FAILED\n";
+  else
+    { std::cout <<" OK\n"; m_successCounter++; }
+
+  //***********************************************
+
   quitTest();
 }
 
 void TestImgMsg_General::quitTest()
 {
   emit done();
+
   if (m_testCounter > m_successCounter)
+  {
+    std::cout <<"\n\n\n";
+    std::cout <<"****************************************************\n";
+    std::cout <<"**************** TESTING FINISHED: *****************\n";
+    std::cout <<"***************** " <<(m_testCounter - m_successCounter) << " TEST(S) FAILED *****************\n";
+    std::cout <<"****************************************************\n";
     exit(-1);
-  else exit(0);
+  }
+  else
+  {
+    std::cout <<"\n\n\n";
+    std::cout <<"****************************************************\n";
+    std::cout <<"**************** TESTING FINISHED: *****************\n";
+    std::cout <<"********* ALL TESTS COMPLETED SUCCESSFULLY *********\n";
+    std::cout <<"****************************************************\n";
+    exit(0);
+  }
 }

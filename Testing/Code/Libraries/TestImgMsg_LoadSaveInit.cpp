@@ -103,13 +103,41 @@ void TestImgMsg_LoadSaveInit::performTest()
   else
      std::cout <<" FAILED\n";
 
+  //***********************************************
+  std::cout <<++m_testCounter <<". Deleting messages..";
+  imageMsg.reset();
+  imageMsg.operator =(NULL);
+  
+  if (imageMsg.operator !=(NULL))
+    std::cout <<" FAILED\n";
+  else
+    { std::cout <<" OK\n"; m_successCounter++; }
+
+  //***********************************************
+
   quitTest();
 }
 
 void TestImgMsg_LoadSaveInit::quitTest()
 {
   emit done();
+
   if (m_testCounter > m_successCounter)
+  {
+    std::cout <<"\n\n\n";
+    std::cout <<"****************************************************\n";
+    std::cout <<"**************** TESTING FINISHED: *****************\n";
+    std::cout <<"***************** " <<(m_testCounter - m_successCounter) << " TEST(S) FAILED *****************\n";
+    std::cout <<"****************************************************\n";
     exit(-1);
-  else exit(0);
+  }
+  else
+  {
+    std::cout <<"\n\n\n";
+    std::cout <<"****************************************************\n";
+    std::cout <<"**************** TESTING FINISHED: *****************\n";
+    std::cout <<"********* ALL TESTS COMPLETED SUCCESSFULLY *********\n";
+    std::cout <<"****************************************************\n";
+    exit(0);
+  }
 }

@@ -63,6 +63,7 @@ public slots:
   void setupTest();
   void performTest();
   void quitTest();
+  void quitTest2();
 
   void createMessage();
 
@@ -92,5 +93,7 @@ private:
 
   bool   m_doStream;
   QTimer m_timeOut;
+
+  unsigned long long m_totalTimeDiff;
 };
 

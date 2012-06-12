@@ -61,6 +61,28 @@ TARGET_LINK_LIBRARIES(TestNL_MsgTypes_ConstrDestr ${MsgType_ConstrDestr_LIBRARIE
 ADD_TEST(TestNL_MsgTypes_ConstrDestr ${EXECUTABLE_OUTPUT_PATH}/TestNL_MsgTypes_ConstrDestr )
 
 ###########################################################################
+###             TEST MESSAGE TYPE DELIVERY
+###########################################################################
+
+SET(MsgTypes_Delivery_SRCS
+NLTest_MsgTypes_Delivery.cpp
+TestMsgTypes_Delivery.cpp
+)
+
+SET(MsgTypes_Delivery_HDRS
+TestMsgTypes_Delivery.h
+)
+
+QT4_WRAP_CPP(MsgTypes_Delivery_QT_MOC_FILES ${MsgTypes_Delivery_HDRS})
+SOURCE_GROUP("Generated Files" FILES ${MsgTypes_Delivery_QT_MOC_FILES})
+
+SET(MsgTypes_Delivery_LIBRARIES niftylink ${QT_QTTEST_LIBRARY} ${QT_LIBRARIES} )
+
+ADD_EXECUTABLE(TestNL_MsgTypes_Delivery ${MsgTypes_Delivery_SRCS} ${MsgTypes_Delivery_HDRS} ${MsgTypes_Delivery_QT_MOC_FILES})
+TARGET_LINK_LIBRARIES(TestNL_MsgTypes_Delivery ${MsgTypes_Delivery_LIBRARIES} )
+ADD_TEST(TestNL_MsgTypes_Delivery ${EXECUTABLE_OUTPUT_PATH}/TestNL_MsgTypes_Delivery )
+
+###########################################################################
 ###             TEST IMAGEMESSAGE GENERAL GET / SET
 ###########################################################################
 
@@ -127,48 +149,114 @@ TARGET_LINK_LIBRARIES(TestNL_TransMsg_General ${TransMsgType_General_LIBRARIES} 
 ADD_TEST(TestNL_TransMsg_General ${EXECUTABLE_OUTPUT_PATH}/TestNL_TransMsg_General )
 
 ###########################################################################
-###             TEST SENDERTHREAD GENERAL
+###             TEST TRACKERDATAMESSAGE GENERAL GET / SET
 ###########################################################################
 
-SET(SenderThread_General_SRCS
-NLTest_SenderThread_General.cpp
-TestSenderThread_General.cpp
+SET(TdataMsgType_General_SRCS
+NLTest_TdataMsg_General.cpp
+TestTdataMsg_General.cpp
 )
 
-SET(SenderThread_General_HDRS
-TestSenderThread_General.h
+SET(TdataMsgType_General_HDRS
+TestTdataMsg_General.h
 )
 
-QT4_WRAP_CPP(SenderThread_General_QT_MOC_FILES ${SenderThread_General_HDRS})
-SOURCE_GROUP("Generated Files" FILES ${SenderThread_General_QT_MOC_FILES})
+QT4_WRAP_CPP(TdataMsgType_General_QT_MOC_FILES ${TdataMsgType_General_HDRS})
+SOURCE_GROUP("Generated Files" FILES ${TdataMsgType_General_QT_MOC_FILES})
 
-SET(SenderThread_General_LIBRARIES niftylink ${QT_QTTEST_LIBRARY} ${QT_LIBRARIES} )
+SET(TdataMsgType_General_LIBRARIES niftylink ${QT_QTTEST_LIBRARY} ${QT_LIBRARIES} )
 
-ADD_EXECUTABLE(TestNL_SenderThread_General ${SenderThread_General_SRCS} ${SenderThread_General_HDRS} ${SenderThread_General_QT_MOC_FILES})
-TARGET_LINK_LIBRARIES(TestNL_SenderThread_General ${SenderThread_General_LIBRARIES} )
-ADD_TEST(TestNL_SenderThread_General ${EXECUTABLE_OUTPUT_PATH}/TestNL_SenderThread_General )
+ADD_EXECUTABLE(TestNL_TdataMsg_General ${TdataMsgType_General_SRCS} ${TdataMsgType_General_HDRS} ${TdataMsgType_General_QT_MOC_FILES})
+TARGET_LINK_LIBRARIES(TestNL_TdataMsg_General ${TdataMsgType_General_LIBRARIES} )
+ADD_TEST(TestNL_TdataMsg_General ${EXECUTABLE_OUTPUT_PATH}/TestNL_TdataMsg_General )
 
 ###########################################################################
-###             TEST LISTENERTHREAD GENERAL
+###             TEST STATUSMESSAGE GENERAL GET / SET
 ###########################################################################
 
-SET(ListenerThread_General_SRCS
-NLTest_ListenerThread_General.cpp
-TestListenerThread_General.cpp
+SET(StatusMsgType_General_SRCS
+NLTest_StatusMsg_General.cpp
+TestStatusMsg_General.cpp
 )
 
-SET(ListenerThread_General_HDRS
-TestListenerThread_General.h
+SET(StatusMsgType_General_HDRS
+TestStatusMsg_General.h
 )
 
-QT4_WRAP_CPP(ListenerThread_General_QT_MOC_FILES ${ListenerThread_General_HDRS})
-SOURCE_GROUP("Generated Files" FILES ${ListenerThread_General_QT_MOC_FILES})
+QT4_WRAP_CPP(StatusMsgType_General_QT_MOC_FILES ${StatusMsgType_General_HDRS})
+SOURCE_GROUP("Generated Files" FILES ${StatusMsgType_General_QT_MOC_FILES})
 
-SET(ListenerThread_General_LIBRARIES niftylink ${QT_QTTEST_LIBRARY} ${QT_LIBRARIES} )
+SET(StatusMsgType_General_LIBRARIES niftylink ${QT_QTTEST_LIBRARY} ${QT_LIBRARIES} )
 
-ADD_EXECUTABLE(TestNL_ListenerThread_General ${ListenerThread_General_SRCS} ${ListenerThread_General_HDRS} ${ListenerThread_General_QT_MOC_FILES})
-TARGET_LINK_LIBRARIES(TestNL_ListenerThread_General ${ListenerThread_General_LIBRARIES} )
-ADD_TEST(TestNL_ListenerThread_General ${EXECUTABLE_OUTPUT_PATH}/TestNL_ListenerThread_General )
+ADD_EXECUTABLE(TestNL_StatusMsg_General ${StatusMsgType_General_SRCS} ${StatusMsgType_General_HDRS} ${StatusMsgType_General_QT_MOC_FILES})
+TARGET_LINK_LIBRARIES(TestNL_StatusMsg_General ${StatusMsgType_General_LIBRARIES} )
+ADD_TEST(TestNL_StatusMsg_General ${EXECUTABLE_OUTPUT_PATH}/TestNL_StatusMsg_General )
+
+###########################################################################
+###             TEST STRINGMESSAGE GENERAL GET / SET
+###########################################################################
+
+SET(StringMsgType_General_SRCS
+NLTest_StringMsg_General.cpp
+TestStringMsg_General.cpp
+)
+
+SET(StringMsgType_General_HDRS
+TestStringMsg_General.h
+)
+
+QT4_WRAP_CPP(StringMsgType_General_QT_MOC_FILES ${StringMsgType_General_HDRS})
+SOURCE_GROUP("Generated Files" FILES ${StringMsgType_General_QT_MOC_FILES})
+
+SET(StringMsgType_General_LIBRARIES niftylink ${QT_QTTEST_LIBRARY} ${QT_LIBRARIES} )
+
+ADD_EXECUTABLE(TestNL_StringMsg_General ${StringMsgType_General_SRCS} ${StringMsgType_General_HDRS} ${StringMsgType_General_QT_MOC_FILES})
+TARGET_LINK_LIBRARIES(TestNL_StringMsg_General ${StringMsgType_General_LIBRARIES} )
+ADD_TEST(TestNL_StringMsg_General ${EXECUTABLE_OUTPUT_PATH}/TestNL_StringMsg_General )
+
+###########################################################################
+###             TEST SENDERPROCESS GENERAL
+###########################################################################
+
+SET(SenderProcess_General_SRCS
+NLTest_SenderProcess_General.cpp
+TestSenderProcess_General.cpp
+)
+
+SET(SenderProcess_General_HDRS
+TestSenderProcess_General.h
+)
+
+QT4_WRAP_CPP(SenderProcess_General_QT_MOC_FILES ${SenderProcess_General_HDRS})
+SOURCE_GROUP("Generated Files" FILES ${SenderProcess_General_QT_MOC_FILES})
+
+SET(SenderProcess_General_LIBRARIES niftylink ${QT_QTTEST_LIBRARY} ${QT_LIBRARIES} )
+
+ADD_EXECUTABLE(TestNL_SenderProcess_General ${SenderProcess_General_SRCS} ${SenderProcess_General_HDRS} ${SenderProcess_General_QT_MOC_FILES})
+TARGET_LINK_LIBRARIES(TestNL_SenderProcess_General ${SenderProcess_General_LIBRARIES} )
+ADD_TEST(TestNL_SenderProcess_General ${EXECUTABLE_OUTPUT_PATH}/TestNL_SenderProcess_General )
+
+###########################################################################
+###             TEST LISTENERPROCESS GENERAL
+###########################################################################
+
+SET(ListenerProcess_General_SRCS
+NLTest_ListenerProcess_General.cpp
+TestListenerProcess_General.cpp
+)
+
+SET(ListenerProcess_General_HDRS
+TestListenerProcess_General.h
+)
+
+QT4_WRAP_CPP(ListenerProcess_General_QT_MOC_FILES ${ListenerProcess_General_HDRS})
+SOURCE_GROUP("Generated Files" FILES ${ListenerProcess_General_QT_MOC_FILES})
+
+SET(ListenerProcess_General_LIBRARIES niftylink ${QT_QTTEST_LIBRARY} ${QT_LIBRARIES} )
+
+ADD_EXECUTABLE(TestNL_ListenerProcess_General ${ListenerProcess_General_SRCS} ${ListenerProcess_General_HDRS} ${ListenerProcess_General_QT_MOC_FILES})
+TARGET_LINK_LIBRARIES(TestNL_ListenerProcess_General ${ListenerProcess_General_LIBRARIES} )
+ADD_TEST(TestNL_ListenerProcess_General ${EXECUTABLE_OUTPUT_PATH}/TestNL_ListenerProcess_General )
 
 ###########################################################################
 ###             TEST SEND / RECEIVE MESSAGES
@@ -218,20 +306,20 @@ ADD_TEST(TestNL_SendReceive_Timing ${EXECUTABLE_OUTPUT_PATH}/TestNL_SendReceive_
 ###             TEST PTP SEND / RECEIVE MESSAGES
 ###########################################################################
 
-SET(PTPSendReceive_Basic_SRCS
-NLTest_PTPSendReceive_Basic.cpp
-TestPTPSendReceive_Basic.cpp
-)
+#SET(PTPSendReceive_Basic_SRCS
+#NLTest_PTPSendReceive_Basic.cpp
+#TestPTPSendReceive_Basic.cpp
+#)
 
-SET(PTPSendReceive_Basic_HDRS
-TestPTPSendReceive_Basic.h
-)
+#SET(PTPSendReceive_Basic_HDRS
+#TestPTPSendReceive_Basic.h
+#)
 
-QT4_WRAP_CPP(PTPSendReceive_Basic_QT_MOC_FILES ${PTPSendReceive_Basic_HDRS})
-SOURCE_GROUP("Generated Files" FILES ${PTPSendReceive_Basic_QT_MOC_FILES})
+#QT4_WRAP_CPP(PTPSendReceive_Basic_QT_MOC_FILES ${PTPSendReceive_Basic_HDRS})
+#SOURCE_GROUP("Generated Files" FILES ${PTPSendReceive_Basic_QT_MOC_FILES})
 
-SET(PTPSendReceive_Basic_LIBRARIES niftylink ${QT_QTTEST_LIBRARY} ${QT_LIBRARIES} )
+#SET(PTPSendReceive_Basic_LIBRARIES niftylink ${QT_QTTEST_LIBRARY} ${QT_LIBRARIES} )
 
-ADD_EXECUTABLE(TestNL_PTPSendReceive_Basic ${PTPSendReceive_Basic_SRCS} ${PTPSendReceive_Basic_HDRS} ${PTPSendReceive_Basic_QT_MOC_FILES})
-TARGET_LINK_LIBRARIES(TestNL_PTPSendReceive_Basic ${PTPSendReceive_Basic_LIBRARIES} )
-ADD_TEST(TestNL_PTPSendReceive_Basic ${EXECUTABLE_OUTPUT_PATH}/TestNL_PTPSendReceive_Basic )
+#ADD_EXECUTABLE(TestNL_PTPSendReceive_Basic ${PTPSendReceive_Basic_SRCS} ${PTPSendReceive_Basic_HDRS} ${PTPSendReceive_Basic_QT_MOC_FILES})
+#TARGET_LINK_LIBRARIES(TestNL_PTPSendReceive_Basic ${PTPSendReceive_Basic_LIBRARIES} )
+#ADD_TEST(TestNL_PTPSendReceive_Basic ${EXECUTABLE_OUTPUT_PATH}/TestNL_PTPSendReceive_Basic )

@@ -48,7 +48,7 @@ PURPOSE.  See the above copyright notices for more information.
 #include <iostream>
 #include <cstdlib>
 
-class TestSendReceive_Basic : public QObject
+class TestMsgTypes_Delivery : public QObject
 {
   Q_OBJECT
 
@@ -56,8 +56,8 @@ signals:
   void done();
 
 public:
-  TestSendReceive_Basic(void);
-  ~TestSendReceive_Basic(void);
+  TestMsgTypes_Delivery(void);
+  ~TestMsgTypes_Delivery(void);
 
 public slots:
   void startTest();
@@ -69,10 +69,6 @@ private slots:
   void clientConnected();
   void connectedToRemote();
   void continueTest();
-  void testCloseSocket1();
-  void testCloseSocket2();
-  
-  void sendMessages();
 
 private:
   igtl::Matrix4x4 m_localMatrix;
@@ -82,14 +78,9 @@ private:
   OIGTLSocketObject * m_socket1;
   OIGTLSocketObject * m_socket2;
 
-  QList<ULONGLONG> m_socket1Timestamps;
-  QList<ULONGLONG> m_socket2Timestamps;
-
-  QList<OIGTLMessage::Pointer> m_socket1Messages;
-  QList<OIGTLMessage::Pointer> m_socket2Messages;
-
   int m_numOfMsg;
   int m_received;
+  int m_sent;
 
   int m_testCounter;
   int m_successCounter;

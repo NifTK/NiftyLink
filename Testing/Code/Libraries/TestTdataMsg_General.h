@@ -40,7 +40,7 @@ PURPOSE.  See the above copyright notices for more information.
 #include "QsLogDest.h"
 
 #include "OIGTLSocketObject.h"
-#include "OIGTLTransformMessage.h"
+#include "OIGTLTrackingDataMessage.h"
 
 
 #include <cstdlib>
@@ -48,7 +48,7 @@ PURPOSE.  See the above copyright notices for more information.
 #include <iostream>
 #include <cstdlib>
 
-class TestSendReceive_Basic : public QObject
+class TestTdataMsg_General : public QObject
 {
   Q_OBJECT
 
@@ -56,49 +56,17 @@ signals:
   void done();
 
 public:
-  TestSendReceive_Basic(void);
-  ~TestSendReceive_Basic(void);
+  TestTdataMsg_General(void);
+  ~TestTdataMsg_General(void);
 
 public slots:
-  void startTest();
+  void setupTest();
+  void performTest();
   void quitTest();
 
-  void catchMessage(OIGTLMessage::Pointer);
-
-private slots:
-  void clientConnected();
-  void connectedToRemote();
-  void continueTest();
-  void testCloseSocket1();
-  void testCloseSocket2();
-  
-  void sendMessages();
-
 private:
-  igtl::Matrix4x4 m_localMatrix;
-
-  OIGTLMessage::Pointer m_msgToSend;
-
-  OIGTLSocketObject * m_socket1;
-  OIGTLSocketObject * m_socket2;
-
-  QList<ULONGLONG> m_socket1Timestamps;
-  QList<ULONGLONG> m_socket2Timestamps;
-
-  QList<OIGTLMessage::Pointer> m_socket1Messages;
-  QList<OIGTLMessage::Pointer> m_socket2Messages;
-
-  int m_numOfMsg;
-  int m_received;
-
+  QString m_localhostname;
   int m_testCounter;
   int m_successCounter;
-
-  bool m_doStream;
-  bool m_inShutdownTests;
-
-  bool   m_connectedTo;
-  bool   m_connecting;
-  QTimer m_timeOut;
 };
 

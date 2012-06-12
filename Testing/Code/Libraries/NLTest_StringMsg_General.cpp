@@ -40,7 +40,7 @@ PURPOSE.  See the above copyright notices for more information.
 #include "igtlMath.h"
 
 #include "OIGTLSocketObject.h"
-#include "TestSendReceive_Basic.h"
+#include "TestStringMsg_General.h"
 
 #include "QsLog.h"
 #include "QsLogDest.h"
@@ -59,15 +59,13 @@ int main(int argc, char **argv)
   logger.addDestination(debugDestination.get());
   logger.addDestination(fileDestination.get());
 
-  int ret = 0;
-
-  TestSendReceive_Basic * test = new TestSendReceive_Basic;
+  TestStringMsg_General * test = new TestStringMsg_General;
   QObject::connect(test, SIGNAL(done()), &app, SLOT(quit()),Qt::QueuedConnection);
-  QTimer::singleShot(0, test, SLOT(startTest()));
+  test->setupTest();
+
+  QTimer::singleShot(220, test, SLOT(performTest()));
   //QTimer::singleShot(220, &test, SLOT(listen()));
-  ret = app.exec();
-  
-  
+  int ret = app.exec();
   delete test;
 
   std::cerr <<"TestClass Deleted";

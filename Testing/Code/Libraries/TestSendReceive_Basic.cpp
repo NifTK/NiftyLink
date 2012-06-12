@@ -38,11 +38,13 @@ TestSendReceive_Basic::TestSendReceive_Basic(void)
   m_connectedTo = false;
   m_connecting  = false;
 
+  m_inShutdownTests = false;
+
   m_testCounter = 0;
   m_successCounter = 0;
 
   connect(&m_timeOut, SIGNAL(timeout()), this, SLOT(quitTest()) );
-  m_timeOut.start(4000);
+  m_timeOut.start(60000);
 
 }
 
@@ -51,7 +53,7 @@ TestSendReceive_Basic::~TestSendReceive_Basic(void)
 }
 
 
-void TestSendReceive_Basic::setupTest()
+void TestSendReceive_Basic::startTest()
 {
 
   //***********************************************
@@ -104,11 +106,30 @@ void TestSendReceive_Basic::setupTest()
   igtl::Sleep(500);
 
   //***********************************************
-  //Starting up listener thread 
+  //Starting up sender thread - false attempt
+
+  std::cout <<++m_testCounter <<". Starting up the sender socket - false url attempt..";
+
+  QUrl url;
+  url.setHost(QString("non-existing-host"));
+  url.setPort(3200);
+
+  m_socket2->connectToRemote(url);
+
+  igtl::Sleep(4000);
+
+  ok = m_socket2->isConnected();
+
+  if (!ok)
+    { std::cout <<" NOT POSSIBLE: OK\n"; m_successCounter++; }
+  else
+    std::cout <<" FAILED\n";
+
+  //***********************************************
+  //Starting up sender thread 
 
   std::cout <<++m_testCounter <<". Starting up the sender socket..";
 
-  QUrl url;
   url.setHost(QString("localhost"));
   url.setPort(3200);
 
@@ -117,7 +138,6 @@ void TestSendReceive_Basic::setupTest()
 
 void TestSendReceive_Basic::continueTest()
 {
-  
   if (m_socket2->isConnected())
     { std::cout <<" OK\n"; m_successCounter++; }
   else
@@ -137,32 +157,24 @@ void TestSendReceive_Basic::continueTest()
   else
     std::cout <<" FAILED\n";
 
+  if (m_inShutdownTests)
+    testCloseSocket2();
 
-  //m_msgToSend.operator =(OIGTLTransformMessage::Pointer(new OIGTLTransformMessage()));
-  //static_cast<OIGTLTransformMessage::Pointer>(m_msgToSend)->setMatrix(dummyTransformMatrix);
+
+  m_msgToSend.operator =(OIGTLTransformMessage::Pointer(new OIGTLTransformMessage()));
+  static_cast<OIGTLTransformMessage::Pointer>(m_msgToSend)->setMatrix(dummyTransformMatrix);
+  m_msgToSend->update(getLocalHostAddress());
+
+  //m_msgToSend.operator =(OIGTLImageMessage::Pointer(new OIGTLImageMessage()));
+  //m_msgToSend->initializeWithTestData();
   //m_msgToSend->update(getLocalHostAddress());
 
-  m_msgToSend.operator =(OIGTLImageMessage::Pointer(new OIGTLImageMessage()));
-  m_msgToSend->initializeWithTestData();
-  m_msgToSend->update(getLocalHostAddress());
+  sendMessages();
+
+  //qDebug() <<"end of part 2";
 }
 
-void TestSendReceive_Basic::clientConnected()
-{
-  m_connecting = true;
-
-  if (m_connecting && m_connectedTo)
-    continueTest();
-}
-void TestSendReceive_Basic::connectedToRemote()
-{
-  m_connectedTo = true;
-  
-  if (m_connecting && m_connectedTo)
-    continueTest();
-}
-
-void TestSendReceive_Basic::performTest()
+void TestSendReceive_Basic::sendMessages()
 {
   std::cout <<++m_testCounter <<". Sending 10 messages from one socket to the other ..";
   for (int i = 0; i< m_numOfMsg; i++)
@@ -171,27 +183,73 @@ void TestSendReceive_Basic::performTest()
   }
 }
 
+void TestSendReceive_Basic::clientConnected()
+{
+  m_connecting = true;
+
+  if (m_inShutdownTests)
+    qDebug() <<"Successfully continued the tests after shutdown";
+
+  if (m_connecting && m_connectedTo)
+    continueTest();
+}
+void TestSendReceive_Basic::connectedToRemote()
+{
+  m_connectedTo = true;
+
+  if (m_inShutdownTests)
+    qDebug() <<"Successfully continued the tests after shutdown";
+  
+  if (m_connecting && m_connectedTo)
+    continueTest();
+}
+
 void TestSendReceive_Basic::quitTest()
 {
   if (m_socket1 != NULL)
   {
+    m_socket1->closeSocket();
+
+    while (m_socket1->isActive())
+      igtl::Sleep(100);
+
     delete m_socket1;
     m_socket1 = NULL;
   }
 
   if (m_socket2 != NULL)
   {
+    m_socket2->closeSocket();
+
+    while (m_socket2->isActive())
+      igtl::Sleep(100);
+
     delete m_socket2;
     m_socket2 = NULL;
   }
 
   m_msgToSend.reset();
-  
+
   emit done();
-  
+    
   if (m_testCounter > m_successCounter)
+  {
+    std::cout <<"\n\n\n";
+    std::cout <<"****************************************************\n";
+    std::cout <<"**************** TESTING FINISHED: *****************\n";
+    std::cout <<"***************** " <<(m_testCounter - m_successCounter) << " TEST(S) FAILED *****************\n";
+    std::cout <<"****************************************************\n";
     exit(-1);
-  else exit(0);
+  }
+  else
+  {
+    std::cout <<"\n\n\n";
+    std::cout <<"****************************************************\n";
+    std::cout <<"**************** TESTING FINISHED: *****************\n";
+    std::cout <<"********* ALL TESTS COMPLETED SUCCESSFULLY *********\n";
+    std::cout <<"****************************************************\n";
+    exit(0);
+  }
 }
 
 void TestSendReceive_Basic::catchMessage(OIGTLMessage::Pointer msg)
@@ -252,5 +310,91 @@ void TestSendReceive_Basic::catchMessage(OIGTLMessage::Pointer msg)
 
   //if (m_received >= m_numOfMsg)
   if (m_received >= m_numOfMsg)
-    { std::cout <<" OK\n"; m_successCounter++; quitTest(); }
+    { std::cout <<" OK\n"; m_successCounter++; testCloseSocket1(); }
+}
+
+
+void TestSendReceive_Basic::testCloseSocket1()
+{
+  //***********************************************
+  //Test what happens if one socket shuts down
+
+  std::cout <<++m_testCounter <<". Testing client shutdown..";
+
+  m_socket2->closeSocket();
+
+  igtl::Sleep(200);
+
+  bool a = m_socket1->isClientConnecting();
+  bool b = m_socket2->isConnected();
+  bool c = m_socket2->isAbleToSend();
+
+  unsigned int count  = 0;
+
+  while ((a || b || c) && count < 4000)
+  {
+    QCoreApplication::processEvents();
+
+    a = m_socket1->isClientConnecting();
+    b = m_socket2->isConnected();
+    c = m_socket2->isAbleToSend();
+    
+    igtl::Sleep(200);
+    count += 200;
+  }
+
+  if (a || b || c)
+    std::cout <<" FAILED\n";
+  else { std::cout <<" OK\n"; m_successCounter++; }
+
+  m_inShutdownTests = true;
+  m_connectedTo = false;
+  m_connecting = false;
+
+  //***********************************************
+  //Starting up sender thread 
+
+  std::cout <<++m_testCounter <<". Starting up the sender socket..";
+
+  QUrl url;
+  url.setHost(QString("localhost"));
+  url.setPort(3200);
+
+  m_socket2->connectToRemote(url);
+  //igtl::Sleep(1000);
+
+}
+
+void TestSendReceive_Basic::testCloseSocket2()
+{
+  std::cout <<++m_testCounter <<". Testing server shutdown..";
+
+  m_socket1->closeSocket();
+
+  //igtl::Sleep(4000);
+
+  bool a = m_socket1->isListening();
+  bool b = m_socket2->isConnected();
+  bool c = m_socket2->isAbleToSend();
+
+  unsigned int count  = 0;
+
+  while ((a || b || c) && count < 4000)
+  {
+    QCoreApplication::processEvents();
+
+    a = m_socket1->isClientConnecting();
+    b = m_socket2->isConnected();
+    c = m_socket2->isAbleToSend();
+
+    igtl::Sleep(200);
+    count += 200;
+  }
+
+  if(a || b || c)
+    std::cout <<" FAILED\n";
+  else
+    { std::cout <<" OK\n"; m_successCounter++; }
+
+  quitTest();
 }
