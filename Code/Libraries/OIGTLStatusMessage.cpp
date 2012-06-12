@@ -33,7 +33,7 @@ OIGTLStatusMessage::OIGTLStatusMessage(void)
 
 OIGTLStatusMessage::~OIGTLStatusMessage(void)
 {
-  QLOG_INFO() <<"StatusMessage Destructor" <<m_ownerName <<m_id;
+  //QLOG_INFO() <<"StatusMessage Destructor" <<m_ownerName <<m_id;
 }
 
 OIGTLStatusMessage::OIGTLStatusMessage(const OIGTLStatusMessage &other)
@@ -183,6 +183,9 @@ void OIGTLStatusMessage::initializeWithTestData(void)
 	msgPointer->Unpack();
 
   msgPointer->SetCode(igtl::StatusMessage::STATUS_OK);
+  msgPointer->SetSubCode(igtl::StatusMessage::STATUS_PANICK_MODE);
+  msgPointer->SetErrorName("ErrorName");
+  msgPointer->SetStatusString("StatusString");
 
 	//Pack message data
 	msgPointer->Pack();

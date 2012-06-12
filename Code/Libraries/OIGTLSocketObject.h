@@ -22,8 +22,9 @@
 #ifndef OIGTLSOCKETOBJECT_H
 #define OIGTLSOCKETOBJECT_H
 
-#include "OIGTLSenderThread.h"
-#include "OIGTLListenerThread.h"
+#include "OIGTLSenderProcess.h"
+#include "OIGTLListenerProcess.h"
+#include "OIGTLProcessBase.h"
 
 #include "NiftyLinkCommonWin32ExportHeader.h"
 
@@ -69,13 +70,16 @@ signals:
   void connectedToRemoteSignal(void);
   /// \brief This signal is emitted when connection to the remote host cannot be established.
   void cannotConnectToRemoteSignal(void);
-  /// \brief This signal is emitted when connection is lost to the remote host.
-  void lostConnectionToRemoteSignal(void);
+  ///// \brief This signal is emitted when connection is lost to the remote host.
+  //void lostConnectionToRemoteSignal(void);
 
   /// \brief This signal is emitted when a client has connected to the local server (listener thread).
   void clientConnectedSignal(void);
   /// \brief This signal is emitted when a client has disconnected from the local server (listener thread).
   void clientDisconnectedSignal(void);
+
+  void shutdownListener();
+  void shutdownSender();
 
 public:
   /// \brief Constructor which initialises member variables and calls initThreads()
@@ -101,6 +105,9 @@ public:
   inline bool isClientConnecting() { return m_clientConnected; }
   /// \brief Returns if the socket is valid for sending data
   inline bool isAbleToSend() { return m_ableToSend; }
+
+  /// \brief Returns true if the socket is active (one of the threads are running).
+  inline bool isActive() { return m_active; }
 
 public slots:
   /// \brief This slot catches the signal with the message to send and it pass it on to the sender thread
@@ -149,9 +156,13 @@ private:
   int      m_port;
   QMutex * m_mutex;
 
-  OIGTLSenderThread   * m_sender;
-  OIGTLListenerThread * m_listener;
+  OIGTLSenderProcess   * m_sender;
+  OIGTLListenerProcess * m_listener;
 
+  QThreadEx * m_senderHostThread;
+  QThreadEx * m_listenerHostThread;
+
+  bool m_active;
   bool m_initialized;
 
   bool m_listening;

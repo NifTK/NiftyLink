@@ -40,9 +40,9 @@ Common/QsDebugOutput.cpp
 Common/QsLog.cpp
 Common/QsLogDest.cpp
 OIGTLMessage.cpp
-OIGTLThreadBase.cpp
-OIGTLSenderThread.cpp
-OIGTLListenerThread.cpp
+OIGTLProcessBase.cpp
+OIGTLSenderProcess.cpp
+OIGTLListenerProcess.cpp
 OIGTLSocketObject.cpp
 OIGTLTransformMessage.cpp
 OIGTLImageMessage.cpp
@@ -57,9 +57,9 @@ OIGTLTrackingDataMessage.cpp
 SET(niftylink_MOC_HDRS
 Common/NiftyLinkUtils.h
 Common/NiftyLinkXMLBuilder.h
-OIGTLThreadBase.h
-OIGTLSenderThread.h
-OIGTLListenerThread.h
+OIGTLProcessBase.h
+OIGTLSenderProcess.h
+OIGTLListenerProcess.h
 OIGTLSocketObject.h
 OIGTLStatusMessage.h
 OIGTLStringMessage.h

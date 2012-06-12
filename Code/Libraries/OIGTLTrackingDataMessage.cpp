@@ -46,6 +46,8 @@ OIGTLTrackingDataMessage::OIGTLTrackingDataMessage(const OIGTLTrackingDataMessag
 {
 
 	m_p[0] = other.m_p[0];
+  m_p[1] = other.m_p[1];
+  m_p[2] = other.m_p[2];
 }
 
 void OIGTLTrackingDataMessage::setMatrix(igtl::Matrix4x4 &matrix)

@@ -52,15 +52,17 @@ OIGTLMessage::OIGTLMessage(const OIGTLMessage &other)
 	: QSharedData(other)
 {
   // Copy constructor
-	m_message.operator=(other.m_message);
+	m_message.operator     =(other.m_message);
 	m_timeReceived.operator=(other.m_timeReceived);
 
-	m_senderHostName = other.m_senderHostName;
-	m_messageType = other.m_messageType;
-	m_senderPort = other.m_senderPort;
+	m_senderHostName       = other.m_senderHostName;
+	m_messageType          = other.m_messageType;
+	m_senderPort           = other.m_senderPort;
 
-	m_resolution = other.m_resolution;
-	m_id = other.m_id;
+	m_resolution           = other.m_resolution;
+	m_id                   = other.m_id;
+
+  m_ownerName            = other.m_ownerName;
 }
 
 void OIGTLMessage::setMessagePointer(igtl::MessageBase::Pointer mp)
@@ -153,6 +155,11 @@ void OIGTLMessage::setResolution(igtlUint64 res)
 	if (m_message.IsNull())
 		return;
 
+  QString className(m_message->GetNameOfClass());
+
+  if (!className.contains("Start"))
+    return;
+
 	m_message->Unpack();
 	
 	if (strcmp(m_message->GetNameOfClass(), "igtl::StartTransformMessage") == 0)
@@ -213,6 +220,11 @@ void OIGTLMessage::getResolution(igtlUint64 &res)
 {
 	if (m_message.IsNull())
 		return;
+
+  QString className(m_message->GetNameOfClass());
+
+  if (!className.contains("Start"))
+    return;
 
 	m_message->Unpack();
 	

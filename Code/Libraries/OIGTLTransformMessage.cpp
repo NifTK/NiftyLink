@@ -33,14 +33,15 @@ OIGTLTransformMessage::OIGTLTransformMessage(void)
 
 OIGTLTransformMessage::~OIGTLTransformMessage(void)
 {
-  QLOG_INFO() <<"TransformMessage Destructor" <<m_ownerName <<m_id;
+  //QLOG_INFO() <<"TransformMessage Destructor" <<m_ownerName <<m_id;
 }
 
 OIGTLTransformMessage::OIGTLTransformMessage(const OIGTLTransformMessage &other)
 	: OIGTLMessage(other)
 {
-
 	m_p[0] = other.m_p[0];
+  m_p[1] = other.m_p[1];
+  m_p[2] = other.m_p[2];
 }
 
 void OIGTLTransformMessage::setMatrix(igtl::Matrix4x4 &matrix)

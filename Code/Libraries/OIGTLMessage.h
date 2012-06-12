@@ -133,7 +133,6 @@ public:
 
 protected:
   QString			m_messageType;
-  QString     m_toolName;
 	
 	igtl::MessageBase::Pointer  m_message;
 	igtl::TimeStamp::Pointer	  m_timeReceived;

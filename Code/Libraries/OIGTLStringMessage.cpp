@@ -33,7 +33,7 @@ OIGTLStringMessage::OIGTLStringMessage(void)
 
 OIGTLStringMessage::~OIGTLStringMessage(void)
 {
-  QLOG_INFO() <<"StringMessage Destructor" <<m_ownerName <<m_id;
+  //QLOG_INFO() <<"StringMessage Destructor" <<m_ownerName <<m_id;
 }
 
 OIGTLStringMessage::OIGTLStringMessage(const OIGTLStringMessage &other)
