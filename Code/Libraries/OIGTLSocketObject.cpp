@@ -358,6 +358,8 @@ void OIGTLSocketObject::disconnectedFromRemote(bool onPort)
     if (m_listener != NULL)
       emit shutdownListener();
 
+    emit lostConnectionToRemoteSignal();
+  
     QCoreApplication::processEvents();
   }
   // There was a client connecting to the local listener, but we cannot send messages through the socket any more
@@ -371,10 +373,6 @@ void OIGTLSocketObject::disconnectedFromRemote(bool onPort)
 
   m_connectedToRemote = false;
   m_ableToSend = false;
-
-  emit lostConnectionToRemoteSignal();
-  QCoreApplication::processEvents();
-
 }
 
 void OIGTLSocketObject::clientConnected(void)
