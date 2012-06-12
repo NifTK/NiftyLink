@@ -138,20 +138,20 @@ void OIGTLSenderProcess::terminateProcess()
   QLOG_INFO() <<objectName() <<": " << "Terminating sender process \n";
   QLOG_INFO() <<objectName() <<": " << "Total number of messages sent: " <<m_messageCounter;
 
+  int err = 0;
+  QLOG_INFO() <<objectName() <<": " << "Closing socket... \n";
+
+  m_mutex->lock();
+  if (m_extSocket.IsNotNull())
+  {
+    err |= m_extSocket->CloseSocket();
+    
+    m_extSocket.operator =(NULL);
+  }
+  m_mutex->unlock();
+
   if (!m_sendingOnSocket)
   {
-    int err = 0;
-    QLOG_INFO() <<objectName() <<": " << "Closing socket... \n";
-
-    m_mutex->lock();
-    if (m_extSocket.IsNotNull())
-    {
-      err |= m_extSocket->CloseSocket();
-      
-      m_extSocket.operator =(NULL);
-    }
-    m_mutex->unlock();
-
     m_mutex->lock();
     if (m_clientSocket.IsNotNull())
     {
@@ -160,12 +160,12 @@ void OIGTLSenderProcess::terminateProcess()
       m_clientSocket.operator =(NULL);
     }
     m_mutex->unlock();
-
-    if (err != 0)
-      QLOG_ERROR() <<objectName() <<"CloseSocket returned with error: " <<err;
-    else
-      QLOG_INFO() <<objectName() <<"CloseSocket returned with error: " <<err;
   }
+
+  if (err != 0)
+    QLOG_ERROR() <<objectName() <<"CloseSocket returned with error: " <<err;
+  else
+    QLOG_INFO() <<objectName() <<"CloseSocket returned with error: " <<err;
 
   m_sendingOnSocket = false;
   m_sendQue.clear();

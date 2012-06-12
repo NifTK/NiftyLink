@@ -62,6 +62,7 @@ OIGTLSocketObject::~OIGTLSocketObject(void)
 
     disconnect(m_senderHostThread, SIGNAL(eventloopStarted()), m_sender, SLOT(startProcess()));
     disconnect(this, SIGNAL(shutdownSender()), m_sender, SLOT(stopProcess()));
+    disconnect(m_sender, SIGNAL(shutdownHostThread()), m_senderHostThread, SLOT(quit()));
 
 
     // Delete sender
@@ -78,6 +79,7 @@ OIGTLSocketObject::~OIGTLSocketObject(void)
 
     disconnect(m_listenerHostThread, SIGNAL(eventloopStarted()), m_listener, SLOT(startProcess()));
     disconnect(this, SIGNAL(shutdownListener()), m_listener, SLOT(stopProcess()));
+    disconnect(m_listener, SIGNAL(shutdownHostThread()), m_listenerHostThread, SLOT(quit()));
 
     // Delete listener
     delete m_listener;
