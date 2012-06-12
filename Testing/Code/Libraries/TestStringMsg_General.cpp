@@ -69,9 +69,9 @@ void TestStringMsg_General::performTest()
   
   //***********************************************
   std::cout <<++m_testCounter <<". Setting string..";
-  stringMsg->setString("This is a random string which crashes the OIGTL lib");
+  stringMsg->setString("This is a random string which meant to crash the OIGTL lib");
 
-  if (stringMsg->getString() != QString("This is a random string"))
+  if (stringMsg->getString() != QString("This is a random string which meant to crash the OIGTL lib"))
     std::cout <<" FAILED\n";
   else
     { std::cout <<" OK\n"; m_successCounter++; }
