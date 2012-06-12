@@ -319,9 +319,6 @@ void TestMsgTypes_Delivery::clientConnected()
 {
   m_connecting = true;
 
-  if (m_inShutdownTests)
-    qDebug() <<"Successfully continued the tests after shutdown";
-
   if (m_connecting && m_connectedTo)
     continueTest();
 }
@@ -329,9 +326,6 @@ void TestMsgTypes_Delivery::connectedToRemote()
 {
   m_connectedTo = true;
 
-  if (m_inShutdownTests)
-    qDebug() <<"Successfully continued the tests after shutdown";
-  
   if (m_connecting && m_connectedTo)
     continueTest();
 }

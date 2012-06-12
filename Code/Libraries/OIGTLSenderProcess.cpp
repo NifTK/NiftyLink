@@ -224,7 +224,7 @@ void OIGTLSenderProcess::doProcessing(void)
   {
     int r = m_clientSocket->ConnectToServer(m_hostname.c_str(), m_port);
     
-    QCoreApplication::processEvents();
+    //QCoreApplication::processEvents();
 
     if (r != 0)
     {
@@ -251,8 +251,6 @@ void OIGTLSenderProcess::doProcessing(void)
   // Start processing the message queue
   while (m_running == true)
   {
-    QCoreApplication::processEvents();
-
     // ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
     // If the sendqueue is empty we're going to perform a keepalive - send 2 bytes through the socket
     if (m_sendQue.isEmpty())
@@ -289,6 +287,8 @@ void OIGTLSenderProcess::doProcessing(void)
         break;
       } 
 
+      QCoreApplication::processEvents();
+
       if (p!=NULL)
         p->msleepEx(250);
 
@@ -308,7 +308,7 @@ void OIGTLSenderProcess::doProcessing(void)
     igtl::MessageBase::Pointer igtMsg;
     msg->getMessagePointer(igtMsg);
 
-    QCoreApplication::processEvents();
+    //QCoreApplication::processEvents();
 
     if (!m_running) break;
 
@@ -328,10 +328,13 @@ void OIGTLSenderProcess::doProcessing(void)
         else
           emit disconnectedFromRemote(true);
 
+        QCoreApplication::processEvents();
+
         msg.reset();
         QLOG_ERROR() <<objectName() <<": " <<"Cannot send message: Disconnected from remote host" <<"\n";
         break;
       }
+      
       
       igtl::TimeStamp::Pointer ts = igtl::TimeStamp::New();
       m_extSocket->GetSendTimestamp(ts);
@@ -347,6 +350,7 @@ void OIGTLSenderProcess::doProcessing(void)
     // Force delete
     msg.reset();
     
+    QCoreApplication::processEvents();
     //this->msleep(50);
   }
 
