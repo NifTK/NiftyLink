@@ -66,17 +66,18 @@ signals:
   void messageSent(unsigned long long timestamp);
     
 
+  // These signals are to update the outside world about the current connection status
   /// \brief This signal is emitted when connection to the remote host has been successfully established.
   void connectedToRemoteSignal(void);
   /// \brief This signal is emitted when connection to the remote host cannot be established.
   void cannotConnectToRemoteSignal(void);
   ///// \brief This signal is emitted when connection is lost to the remote host.
-  //void lostConnectionToRemoteSignal(void);
+  void lostConnectionToRemoteSignal(void);
 
   /// \brief This signal is emitted when a client has connected to the local server (listener thread).
   void clientConnectedSignal(void);
   /// \brief This signal is emitted when a client has disconnected from the local server (listener thread).
-  void clientDisconnectedSignal(void);
+  void clientDisconnectedSignal(void); 
 
   void shutdownListener();
   void shutdownSender();
