@@ -95,12 +95,16 @@ OIGTLSocketObject::~OIGTLSocketObject(void)
 
   if (m_senderHostThread != NULL)
   {
+    m_senderHostThread->exit(0);
+    //m_senderHostThread->deleteLater();
     delete m_senderHostThread;
     m_senderHostThread = NULL;
   }
 
   if (m_listenerHostThread != NULL)
   {
+    m_listenerHostThread->exit(0);
+    //m_listenerHostThread->deleteLater();
     delete m_listenerHostThread;
     m_listenerHostThread = NULL;
   }
