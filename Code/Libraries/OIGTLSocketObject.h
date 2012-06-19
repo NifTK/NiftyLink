@@ -110,6 +110,9 @@ public:
   /// \brief Returns true if the socket is active (one of the threads are running).
   inline bool isActive() { return m_active; }
 
+  /// \brief Sets the object names, including the sender / listener threads etc.
+  void setObjectNames(QString name);
+
 public slots:
   /// \brief This slot catches the signal with the message to send and it pass it on to the sender thread
   void sendMessage(OIGTLMessage::Pointer msg);
