@@ -101,4 +101,7 @@ set(CTEST_CUSTOM_WARNING_EXCEPTION
   # Visual studio spurious warnings...
   "The following environment variables were not found"
   
+  # Ignore MOC warning / error when header doesn't contain Qt stuff
+  ".*No relevant classes found. No output generated."
+  
   )
