@@ -30,10 +30,11 @@
  * \class OIGTLStatusMessage
  * \brief Message type to hold status info.
  * 
- * OIGTLStatusMessage hold data related with the OpenIGTLink "STATUS" message type. It offers functions to set and get the member variables and to intilize the message with random or known test data.
- * It also includes a bunch of static member functions to create the related GET_ STT_ STP_ RTS_ messages which are used to control the data flow. 
+ * OIGTLStatusMessage hold data related with the OpenIGTLink "STATUS" message type.
+ * It offers functions to set and get the member variables and to intilize the message
+ * with random or known test data. It also includes a bunch of static member functions
+ * to create the related GET_ STT_ STP_ RTS_ messages which are used to control the data flow.
  */
-
 class NIFTYLINKCOMMON_WINEXPORT OIGTLStatusMessage : public OIGTLMessage
 {
 
@@ -45,8 +46,10 @@ public:
   
   /// \brief Basic constructor which sets the message and data types to "STATUS"
   OIGTLStatusMessage(void);
+
   /// \brief Basic destructor
   ~OIGTLStatusMessage(void);
+
   /// \brief Basic copy constructor required for this data type
   OIGTLStatusMessage(const OIGTLStatusMessage &other); 
 
@@ -64,20 +67,25 @@ public:
 
   /// \brief Sets the error code
   void setErrorCode(int code);
+
   /// \brief Returns the current error code
   int  getErrorCode();
+
   /// \brief Sets the error sub-code
   void setErrorSubCode(igtlInt64 subcode);
+
   /// \brief Returns the current error sub-code
   igtlInt64 getErrorSubCode();
   
   /// \brief Sets error string
   void    setErrorName(QString name);
+
   /// \brief Returns the current error string
   QString getErrorName();
 
   /// \brief Sets the status string
   void    setStatusString(QString str);
+
   /// \brief Returns the current status string
   QString getStatusString();
 

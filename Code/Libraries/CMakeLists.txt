@@ -55,7 +55,6 @@ OIGTLTrackingDataMessage.cpp
 # Does need moc.
 #########################
 SET(niftylink_MOC_HDRS
-Common/NiftyLinkUtils.h
 Common/NiftyLinkXMLBuilder.h
 OIGTLProcessBase.h
 OIGTLSenderProcess.h
@@ -70,6 +69,7 @@ OIGTLTrackingDataMessage.h
 # Does not need moc.
 #########################
 SET(niftylink_HDRS
+Common/NiftyLinkUtils.h
 Common/NiftyLinkCommonWin32ExportHeader.h
 Common/QsDebugOutput.h
 Common/QsLog.h

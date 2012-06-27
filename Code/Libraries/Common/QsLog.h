@@ -46,6 +46,10 @@ enum Level
 
 class NIFTYLINKCOMMON_WINEXPORT LoggerImpl; // d pointer
 
+/**
+ * \class Logger
+ * \brief Main logging class, sorting out log levels, and logging destinations.
+ */
 class NIFTYLINKCOMMON_WINEXPORT Logger
 {
 public:
@@ -62,8 +66,10 @@ public:
    //! The default level is INFO
    Level loggingLevel() const;
 
-   //! The helper forwards the streaming to QDebug and builds the final
-   //! log message.
+   /**
+    * \class Helper
+    * \brief The helper forwards the streaming to QDebug and builds the final log message.
+    */
    class NIFTYLINKCOMMON_WINEXPORT  Helper
    {
    public:

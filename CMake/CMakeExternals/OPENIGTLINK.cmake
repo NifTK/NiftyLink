@@ -40,7 +40,7 @@ IF(NOT DEFINED OpenIGTLink_DIR)
     ENDIF()
 
     ExternalProject_Add(${proj}
-    GIT_REPOSITORY git://github.com/zomboir/OpenIGTLink.git
+    GIT_REPOSITORY ${NIFTYLINK_OPENIGTLINK_LOCATION}
     GIT_TAG ${revision_tag}
     BINARY_DIR ${proj}-build
     INSTALL_COMMAND ""

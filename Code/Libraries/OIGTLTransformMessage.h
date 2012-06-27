@@ -30,10 +30,11 @@
  * \class OIGTLTransformMessage
  * \brief Message type to hold transform data.
  * 
- * OIGTLTransformMessage hold data related with the OpenIGTLink "TRANSFORM" message type. It offers functions to set and get the member variables and to intilize the message with random or known test data.
- * It also includes a bunch of static member functions to create the related GET_ STT_ STP_ RTS_ messages which are used to control the data flow. 
+ * OIGTLTransformMessage hold data related with the OpenIGTLink "TRANSFORM" message type.
+ * It offers functions to set and get the member variables and to intilize the message with
+ * random or known test data. It also includes a bunch of static member functions to create
+ * the related GET_ STT_ STP_ RTS_ messages which are used to control the data flow.
  */
-
 class NIFTYLINKCOMMON_WINEXPORT OIGTLTransformMessage : public OIGTLMessage
 {
 
@@ -45,8 +46,10 @@ public:
   
   /// \brief Basic constructor which sets the message and data types to "TRANSFORM"
   OIGTLTransformMessage(void);
+
   /// \brief Basic destructor
   ~OIGTLTransformMessage(void);
+
   /// \brief Basic copy constructor required for this data type
   OIGTLTransformMessage(const OIGTLTransformMessage &other); 
 
@@ -64,6 +67,7 @@ public:
 
   /// \brief Sets the transformation matrix
   void setMatrix(igtl::Matrix4x4 &matrix);
+
   /// \brief Gets the transformation matrix
   void getMatrix(igtl::Matrix4x4 &matrix);
 
@@ -72,26 +76,31 @@ public:
 
   /// \brief Sets the position array
   void setPosition(float p[3]);
+
   /// \brief Gets the position array
   void getPosition(float p[3]);
 
   /// \brief Sets the position coordinates
   void setPosition(float px, float py, float pz);
+
   /// \brief Gets the position coordinates
   void getPosition(float &px, float &py, float &pz);
 
   /// \brief Sets the normals' array
   void setNormals(float o[3][3]);
+
   /// \brief Gets the normals' array
   void getNormals(float o[3][3]);
 
   /// \brief Sets the normals' components
   void setNormals(float t[3], float s[3], float n[3]);
+
   /// \brief Gets the normals' components
   void getNormals(float t[3], float s[3], float n[3]);
 
   /// \brief Initializes the message with known test data
   virtual void initializeWithTestData(void);
+
   /// \brief Initializes the message with random test data
   virtual void initializeWithRandomData(void);
 

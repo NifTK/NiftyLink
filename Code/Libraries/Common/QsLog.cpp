@@ -71,6 +71,10 @@ static const char* LevelToText(Level theLevel)
    }
 }
 
+/**
+ * \class LoggerImpl
+ * \brief Private (d-pointer) logger implementation.
+ */
 class LoggerImpl
 {
 public:

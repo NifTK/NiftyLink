@@ -10,13 +10,19 @@
 
 \section MainPageIntroduction Introduction
 
-Introduce the application here.
+NiftyLink is a small messaging library developed at the Centre For Medical Image Computing 
+<a href="http://cmic.cs.ucl.ac.uk/">(CMIC)</a> at University College London
+<a href="http://www.ucl.ac.uk/">(UCL)</a>. NiftyLink is a lightweight library
+with no end-user product and intended for developers only. NiftyLink uses the OpenIGTLink protocol
+to transfer data between image guided surgery applications. The key advantage of NiftyLink over and
+above OpenIGTLink is improved usability and reliability.
 
-\section MainPageManuals Further Information
+This version of NiftyLink has been built using OpenIGTLink version @NIFTYLINK_OPENIGTLINK_REVISION_ID@
+committed <a href="@NIFTYLINK_OPENIGTLINK_LOCATION@">here</a>, and Qt version
+@QT_VERSION_MAJOR@.@QT_VERSION_MINOR@.@QT_VERSION_PATCH@ downloaded from the main Qt website.
 
-There are two manuals
+Further information is provided in:
 
-\li \subpage UserManual "The User Manual"
 \li \subpage TechnicalManual "The Technical Manual"
 
 and two mailing lists for discussion

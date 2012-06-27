@@ -61,10 +61,13 @@ class OIGTLProcessBase : public QObject
   Q_OBJECT
 
 signals:
+
   /// \brief This signal is emitted when there was some acitivty on the socket, so the timeout timer needs to be reset
   void restartTimer(int msec);
+
   /// \brief This signal is to stop the timeout timer (used on shutdown)
   void stopTimer(void);
+
   /// \brief This internal signal is to start the main processing loop after startProcess() finished initializing
   void startWorking(void);
 
@@ -80,13 +83,16 @@ public:
   ~OIGTLProcessBase(void);
 
 protected:
+
   /// \brief Initialize the Process on a given, externally created OpenIGTLink socket (igtl::Socket), while specifying the related port. Process specific functionalty are defined in the derived classes.
   virtual bool initialize(igtl::Socket::Pointer socket = 0, int port = -1) { return false; }
+
   /// \brief Attempt to activate the Process: do an overall sanity check to see if all required objects / parameters are correctly initialized. Process specific functionalty are defined in the derived classes.
   virtual bool activate(void) { return false; }
   
   /// \brief Function base to send a message. Only implemented in OIGTLSenderProcess.
   virtual void sendMsg(OIGTLMessage::Pointer) {}
+
   /// \brief This function returns the actual socket pointer. This is necessary in order to set up a two communication chanel: to initiate a sender Process on a socket created by a listener Process and vica versa.
   virtual igtl::Socket::Pointer getSocketPointer(void) { return m_extSocket; }
 
@@ -95,31 +101,34 @@ protected:
 
   /// \brief Function base for setting connection timeout in seconds when connecting to a remote peer. Only implemented in OIGTLSenderProcess.
   virtual void setConnectTimeOut(int sec) {}
+
   /// \brief Function base getting the currently applied connection timeout in seconds. Only implemented in OIGTLSenderProcess.
   virtual  int getConnectTimeOut(void) { return -1; }
 
   /// \brief Function base for setting the delay between to "Listen" events on the local server socket. 
   /// This is to detect the connection of a client and to create a specific socket handler. The timeout is in msec. Only implemented in OIGTLListenerProcess. 
   virtual void setListenInterval(int msec) {}
+
   /// \brief Function base for getting the currently applied listen interval.
   virtual  int getListenInterval(void) { return -1; }
 
   /// \brief This function sets the general timeout interval of all operations on the socket, in msec.
   inline void setSocketTimeOut(int msec) { m_socketTimeout = msec; }
+
   /// \brief This function returns the general timeout interval currently applied to the socket, in msec.
   inline  int getSocketTimeOut(void)     { return m_socketTimeout; }
 
   /// \brief This functions tells if the current is in the state of execution or idle.
   inline  bool isActive() { return m_active; }
 
-  
   /// \brief This functions tells if the current Process is currently initialized or not.
   inline  bool isInitialized() {return m_initialized; }
+
   /// \brief This functions returns the current port number associated with the socket.
   inline  int  getPort(void) {return m_port; }
   
-
 protected slots:
+
   /// \brief Function base for starting a Process. Process specific functionalty are defined in the derived classes.
   virtual void startProcess() = 0;
   
