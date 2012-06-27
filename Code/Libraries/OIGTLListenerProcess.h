@@ -129,6 +129,10 @@ private:
   int m_listenInterval;
 };
 
+/**
+ * \class OIGTLListenerProcessTester
+ * \brief Class derived from OIGTLListenerProcess to enable unit testing.
+ */
 class NIFTYLINKCOMMON_WINEXPORT OIGTLListenerProcessTester : public OIGTLListenerProcess
 {
   Q_OBJECT

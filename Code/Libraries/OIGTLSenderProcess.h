@@ -119,6 +119,10 @@ private:
   QMutex m_queueMutex;
 };
 
+/**
+ * \class OIGTLSenderProcessTester
+ * \brief Class derived from OIGTLSenderProcess to enable unit testing.
+ */
 class NIFTYLINKCOMMON_WINEXPORT OIGTLSenderProcessTester : public OIGTLSenderProcess
 {
   Q_OBJECT
