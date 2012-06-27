@@ -60,9 +60,6 @@ OIGTLProcessBase.h
 OIGTLSenderProcess.h
 OIGTLListenerProcess.h
 OIGTLSocketObject.h
-OIGTLStatusMessage.h
-OIGTLStringMessage.h
-OIGTLTrackingDataMessage.h
 )
 
 #########################
@@ -77,6 +74,9 @@ Common/QsLogDest.h
 OIGTLMessage.h
 OIGTLTransformMessage.h
 OIGTLImageMessage.h
+OIGTLTrackingDataMessage.h
+OIGTLStringMessage.h
+OIGTLStatusMessage.h
 )
 
 #########################
