@@ -83,11 +83,6 @@ QString getLocalHostAddress(void)
     return QString("UNKNOWN");
 }
 
-int NiftyLinkDummyFunction1()
-{
-  return 0;
-}
-
 void CreateRandomTransformMatrix(igtl::Matrix4x4& matrix)
 {
   float position[3];

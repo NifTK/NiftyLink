@@ -34,6 +34,10 @@ class QString;
 namespace QsLogging
 {
 
+/**
+ * \class Destination
+ * \brief Base class for FileDestination and DebugOutputDestination.
+ */
 class NIFTYLINKCOMMON_WINEXPORT Destination
 {
 public:
@@ -43,8 +47,12 @@ public:
 
 typedef std::auto_ptr<Destination> DestinationPtr;
 
-//! Creates logging destinations/sinks. The caller will have ownership of 
-//! the newly created destinations.
+/**
+ * \class DestinationFactory
+ * \brief Creates logging destinations/sinks.
+ *
+ * The caller will have ownership of the newly created destinations.
+ */
 class NIFTYLINKCOMMON_WINEXPORT DestinationFactory
 {
 public:
