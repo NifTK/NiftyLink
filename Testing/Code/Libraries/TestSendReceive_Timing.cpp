@@ -24,6 +24,7 @@ PURPOSE.  See the above copyright notices for more information.
 #include <QSettings>
 #include <QDateTime>
 #include "TestSendReceive_Timing.h"
+#include "NLTest_Data.h"
 
 TestSendReceive_Timing::TestSendReceive_Timing(void)
 {
@@ -115,7 +116,7 @@ void TestSendReceive_Timing::quitTest()
     ts = m_socket2Timestamps.at(i);
     igtlUint32 sec      = static_cast<igtlUint32>((ts >> 32 ) & 0xFFFFFFFF);
     igtlUint32 fraction = static_cast<igtlUint32>(ts & 0xFFFFFFFF);
-    unsigned long long nanotime = sec*1e9 + igtl_frac_to_nanosec(static_cast<igtlUint32>(fraction));
+    unsigned long long nanotime = (unsigned long long)(sec*1e9 + igtl_frac_to_nanosec(static_cast<igtlUint32>(fraction)));
     
     igtl::ConvertToSec(nanotime, sec, msec, usec, nsec);
     QLOG_INFO() <<"Socket2 sent message" <<i <<"at:" <<sec <<"s" <<msec <<"ms" <<usec <<"usec" <<nsec <<"ns"; 
@@ -128,7 +129,7 @@ void TestSendReceive_Timing::quitTest()
   {
     igtl::TimeStamp::Pointer time = m_socket1Messages.at(i)->getTimeReceived();
     time->GetTimeStamp(&sec, &nsec);
-    nanotime = sec*1e9 + nsec;
+    nanotime = (unsigned long long)(sec*1e9 + nsec);
     
     igtl::ConvertToSec(nanotime, sec, msec, usec, nsec);
     QLOG_INFO() <<"Socket1 received message" <<i <<"at:" <<sec <<"s" <<msec <<"ms" <<usec <<"usec" <<nsec <<"ns"; 
@@ -143,7 +144,7 @@ void TestSendReceive_Timing::quitTest()
     ts = m_socket1Timestamps.at(i);
     sec      = static_cast<igtlUint32>((ts >> 32 ) & 0xFFFFFFFF);
     fraction = static_cast<igtlUint32>(ts & 0xFFFFFFFF);
-    nanotime = sec*1e9 + igtl_frac_to_nanosec(static_cast<igtlUint32>(fraction));
+    nanotime = (unsigned long long)(sec*1e9 + igtl_frac_to_nanosec(static_cast<igtlUint32>(fraction)));
 
     igtl::ConvertToSec(nanotime, sec, msec, usec, nsec);
     QLOG_INFO() <<"Socket1 sent message" <<i <<"at:" <<sec <<"s" <<msec <<"ms" <<usec <<"usec" <<nsec <<"ns"; 
@@ -156,7 +157,7 @@ void TestSendReceive_Timing::quitTest()
   {
     igtl::TimeStamp::Pointer time = m_socket2Messages.at(i)->getTimeReceived();
     time->GetTimeStamp(&sec, &nsec);
-    nanotime = sec*1e9 + nsec;
+    nanotime = (unsigned long long)(sec*1e9 + nsec);
 
     igtl::ConvertToSec(nanotime, sec, msec, usec, nsec);
     QLOG_INFO() <<"Socket2 received message" <<i <<"at:" <<sec <<"s" <<msec <<"ms" <<usec <<"usec" <<nsec <<"ns"; 
@@ -211,7 +212,7 @@ void TestSendReceive_Timing::quitTest2()
   {
     igtl::TimeStamp::Pointer time = m_socket1Messages.at(i)->getTimeReceived();
     time->GetTimeStamp(&sec, &nsec);
-    nanotime = sec*1e9 + nsec;
+    nanotime = (unsigned long long)(sec*1e9 + nsec);
     
     //igtl::ConvertToSec(nanotime, sec, msec, usec, nsec);
     //QLOG_INFO() <<"Socket1 received message" <<i <<"at:" <<sec <<"s" <<msec <<"ms" <<usec <<"usec" <<nsec <<"ns"; 
@@ -220,7 +221,7 @@ void TestSendReceive_Timing::quitTest2()
 
     igtl::TimeStamp::Pointer time_c = m_socket1Messages.at(i)->getTimeCreated();
     time_c->GetTimeStamp(&sec_c, &nsec_c);
-    nanotime_c = sec_c*1e9 + nsec_c;
+    nanotime_c = (unsigned long long)(sec_c*1e9 + nsec_c);
     
     //igtl::ConvertToSec(nanotime_c, sec_c, msec_c, usec_c, nsec_c);
     //QLOG_INFO() <<"Message " <<i <<"was created at:" <<sec_c <<"s" <<msec_c <<"ms" <<usec_c <<"usec" <<nsec_c <<"ns"; 
@@ -246,7 +247,7 @@ void TestSendReceive_Timing::quitTest2()
   {
     igtl::TimeStamp::Pointer time = m_socket2Messages.at(i)->getTimeReceived();
     time->GetTimeStamp(&sec, &nsec);
-    nanotime = sec*1e9 + nsec;
+    nanotime = (unsigned long long)(sec*1e9 + nsec);
 
     //igtl::ConvertToSec(nanotime, sec, msec, usec, nsec);
     //QLOG_INFO() <<"Socket2 received message" <<i <<"at:" <<sec <<"s" <<msec <<"ms" <<usec <<"usec" <<nsec <<"ns"; 
@@ -255,7 +256,7 @@ void TestSendReceive_Timing::quitTest2()
 
     igtl::TimeStamp::Pointer time_c = m_socket2Messages.at(i)->getTimeCreated();
     time_c->GetTimeStamp(&sec_c, &nsec_c);
-    nanotime_c = sec_c*1e9 + nsec_c;
+    nanotime_c = (unsigned long long)(sec_c*1e9 + nsec_c);
 
     //igtl::ConvertToSec(nanotime_c, sec_c, msec_c, usec_c, nsec_c);
     //QLOG_INFO() <<"Message " <<i <<"was created at:" <<sec_c <<"s" <<msec_c <<"ms" <<usec_c <<"usec" <<nsec_c <<"ns"; 
@@ -277,11 +278,11 @@ void TestSendReceive_Timing::quitTest2()
 
   igtl::TimeStamp::Pointer timeFirstReceived = m_socket1Messages.first()->getTimeReceived();
   timeFirstReceived->GetTimeStamp(&sec, &nsec);
-  nanotimeFirst = sec*1e9 + nsec;
+  nanotimeFirst = (unsigned long long)(sec*1e9 + nsec);
   
   igtl::TimeStamp::Pointer timeLastReceived = m_socket1Messages.last()->getTimeReceived();
   timeLastReceived->GetTimeStamp(&sec, &nsec);
-  nanotimeLast = sec*1e9 + nsec;
+  nanotimeLast = (unsigned long long)(sec*1e9 + nsec);
 
   totalTimeElapsed2to1 = nanotimeLast-nanotimeFirst; 
 
@@ -291,11 +292,11 @@ void TestSendReceive_Timing::quitTest2()
 
   timeFirstReceived = m_socket2Messages.first()->getTimeReceived();
   timeFirstReceived->GetTimeStamp(&sec, &nsec);
-  nanotimeFirst = sec*1e9 + nsec;
+  nanotimeFirst = (unsigned long long)(sec*1e9 + nsec);
   
   timeLastReceived = m_socket2Messages.last()->getTimeReceived();
   timeLastReceived->GetTimeStamp(&sec, &nsec);
-  nanotimeLast = sec*1e9 + nsec;
+  nanotimeLast = (unsigned long long)(sec*1e9 + nsec);
 
   totalTimeElapsed1to2 = nanotimeLast-nanotimeFirst;
 

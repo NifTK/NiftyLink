@@ -49,12 +49,6 @@
 #include "QsLog.h"
 #include "QsLogDest.h"
 
-static igtl::Matrix4x4 dummyTransformMatrix = 
-{{ -1, 0, 0, 50},
-{  0, 0.15, 0.98, 0},
-{ 0, 0.98, -0.15, 50},
-{ 0, 0, 0, 1} };
-
 enum MessageTypes 
 {
   NONDEFINED,

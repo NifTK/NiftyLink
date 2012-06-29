@@ -330,3 +330,4 @@ void OIGTLMessage::setOwnerName(QString str)
       m_ownerName.clear(); 
     m_ownerName.append(str);
   }
+

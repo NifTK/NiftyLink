@@ -23,6 +23,7 @@ PURPOSE.  See the above copyright notices for more information.
 #include <QDebug>
 #include <QSettings>
 #include <QDateTime>
+#include "NLTest_Data.h"
 #include "TestImgMsg_General.h"
 
 #include <cmath>

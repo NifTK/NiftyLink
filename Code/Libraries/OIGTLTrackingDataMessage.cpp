@@ -326,7 +326,7 @@ igtlUint8 OIGTLTrackingDataMessage::getTrackerToolType()
   return type;
 }
 
-void OIGTLTrackingDataMessage::initializeWithTestData(void)
+void OIGTLTrackingDataMessage::initializeWithTestData(igtl::Matrix4x4& testMatrix)
 {
 	if (m_message.IsNull())
 		m_message.operator =(igtl::TrackingDataMessage::New());
@@ -346,7 +346,7 @@ void OIGTLTrackingDataMessage::initializeWithTestData(void)
   else
     msgPointer->GetTrackingDataElement(0, tElem);
 
-  tElem->SetMatrix(dummyTransformMatrix);
+  tElem->SetMatrix(testMatrix);
 
 	//Pack message data
 	msgPointer->Pack();

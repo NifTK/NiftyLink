@@ -254,8 +254,8 @@ void OIGTLImageMessage::initializeWithRandomData(void)
 
   // random position
   static float phi = 0.2;
-  int x = (image.width()-30)  * sin(phi);
-  int y = (image.height()-30) * cos(phi);
+  int x = (int)((image.width()-30)  * sin(phi));
+  int y = (int)((image.height()-30) * cos(phi));
   phi = phi + 0.2;
   
   QRect rectangle(x, y, 30, 30);

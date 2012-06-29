@@ -108,7 +108,7 @@ public:
   igtlUint8 getTrackerToolType();
 
   /// \brief Initializes the message with known test data
-  virtual void initializeWithTestData(void);
+  virtual void initializeWithTestData(igtl::Matrix4x4& testMatrix);
 
   /// \brief Initializes the message with random test data
   virtual void initializeWithRandomData(void);

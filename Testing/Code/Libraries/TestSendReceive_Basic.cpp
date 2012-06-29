@@ -24,6 +24,7 @@ PURPOSE.  See the above copyright notices for more information.
 #include <QSettings>
 #include <QDateTime>
 #include "TestSendReceive_Basic.h"
+#include "NLTest_Data.h"
 
 TestSendReceive_Basic::TestSendReceive_Basic(void)
 {
