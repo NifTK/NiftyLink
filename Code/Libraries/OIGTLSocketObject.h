@@ -32,10 +32,12 @@
   #include <windows.h> 
   #include <bcrypt.h>
   #include "tsctime/TSCtime.h"
+  
+  #define WINAPI __stdcall
  
   // Function pointers that will be used for the DLL functions.
-  typedef NTSTATUS (*FunctionPtr_SETRES) (ULONG, BOOLEAN, PULONG);
-  typedef NTSTATUS (*FunctionPtr_GETRES) (PULONG, PULONG, PULONG);
+  typedef NTSTATUS (__stdcall *FunctionPtr_SETRES) (ULONG, BOOLEAN, PULONG);
+  typedef NTSTATUS (__stdcall *FunctionPtr_GETRES) (PULONG, PULONG, PULONG);
 #endif
 
 
