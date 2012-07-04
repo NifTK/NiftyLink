@@ -98,6 +98,35 @@ ELSE(BUILD_SUPERBUILD)
 ENDIF(BUILD_SUPERBUILD)
 
 ######################################################################
+# Setting build name based on local system details
+######################################################################
+
+IF(CMAKE_GENERATOR MATCHES Make)
+
+  find_program(UNAME NAMES uname)
+  macro(getuname name flag)
+    exec_program("${UNAME}" ARGS "${flag}" OUTPUT_VARIABLE "${name}")
+  endmacro(getuname)
+
+  getuname(osname -s)
+  getuname(cpu    -m)
+
+  execute_process(COMMAND ${CMAKE_C_COMPILER} -dumpversion OUTPUT_VARIABLE GCC_VERSION)
+
+  #MESSAGE(STATUS "gcc version: ${GCC_VERSION}")
+
+  set(CTBN "${osname}-${cpu}-gcc-${GCC_VERSION}")
+  string(REPLACE "\n" "" CTBN ${CTBN})
+  MESSAGE(STATUS "Buildname: ${CTBN}")
+  SET(BUILDNAME ${CTBN} CACHE STRING "${CTBN}")
+  SET(CTEST_BUILD_NAME ${CTBN} CACHE STRING "${CTBN}")
+ELSE()
+  MESSAGE(STATUS "Buildname: ${CMAKE_GENERATOR}")
+  SET(BUILDNAME ${CMAKE_GENERATOR} CACHE STRING "${CMAKE_GENERATOR}")
+  SET(CTEST_BUILD_NAME ${CMAKE_GENERATOR} CACHE STRING "${CMAKE_GENERATOR}")
+ENDIF()
+
+######################################################################
 # Options. These are set up front, so are available when configuring
 # the SuperBuild, and hence they must also be passed to the normal
 # build. So, look in CMake/Superbuild.cmake to see where they are
