@@ -17,9 +17,13 @@ with no end-user product and intended for developers only. NiftyLink uses the Op
 to transfer data between image guided surgery applications. The key advantage of NiftyLink over and
 above OpenIGTLink is improved usability and reliability.
 
-This version of NiftyLink has been built using OpenIGTLink version @NIFTYLINK_OPENIGTLINK_REVISION_ID@
-committed <a href="@NIFTYLINK_OPENIGTLINK_LOCATION@">here</a>, and Qt version
-@QT_VERSION_MAJOR@.@QT_VERSION_MINOR@.@QT_VERSION_PATCH@ downloaded from the main Qt website.
+This version of the NiftyLink package has been built using
+
+\li Git revision @NIFTYLINK_SVN_REVISION_ID@
+\li Qt version @QT_VERSION_MAJOR@.@QT_VERSION_MINOR@.@QT_VERSION_PATCH@
+\li OpenIGTLink downloaded from <a href="@NIFTYLINK_OPENIGTLINK_LOCATION@">here</a>, version: @NIFTYLINK_OPENIGTLINK_REVISION_ID@
+
+which themselves may depend on other libraries.
 
 Further information is provided in:
 
