@@ -124,7 +124,7 @@ SET(ImgMsgType_LoadSaveInit_LIBRARIES niftylink ${QT_QTTEST_LIBRARY} ${QT_LIBRAR
 
 ADD_EXECUTABLE(TestNL_ImgMsg_LoadSaveInit ${ImgMsgType_LoadSaveInit_SRCS} ${ImgMsgType_LoadSaveInit_HDRS} ${ImgMsgType_LoadSaveInit_QT_MOC_FILES})
 TARGET_LINK_LIBRARIES(TestNL_ImgMsg_LoadSaveInit ${ImgMsgType_LoadSaveInit_LIBRARIES} )
-ADD_TEST(TestNL_ImgMsg_LoadSaveInit ${EXECUTABLE_OUTPUT_PATH}/TestNL_ImgMsg_LoadSaveInit )
+ADD_TEST(TestNL_ImgMsg_LoadSaveInit ${EXECUTABLE_OUTPUT_PATH}/TestNL_ImgMsg_LoadSaveInit ${CMAKE_SOURCE_DIR}/Testing/Data/niftkUltrasonix.png)
 
 ###########################################################################
 ###             TEST TRANSFORMMESSAGE GENERAL GET / SET

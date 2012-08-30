@@ -23,6 +23,7 @@ PURPOSE.  See the above copyright notices for more information.
 #include <QDebug>
 #include <QSettings>
 #include <QDateTime>
+#include <QImage>
 #include "TestImgMsg_LoadSaveInit.h"
 
 #include <cmath>
@@ -39,9 +40,10 @@ TestImgMsg_LoadSaveInit::~TestImgMsg_LoadSaveInit(void)
 }
 
 
-void TestImgMsg_LoadSaveInit::setupTest()
+void TestImgMsg_LoadSaveInit::setupTest(int argc, char **argv)
 {
-  //Nothing to do right now
+  m_argc = argc;
+  m_argv = argv;
 }
 
 
@@ -71,7 +73,6 @@ void TestImgMsg_LoadSaveInit::performTest()
     { std::cout <<" OK\n"; m_successCounter++; }
   else
      std::cout <<" FAILED\n";
-
   //***********************************************
   std::cout <<++m_testCounter <<". Setting test image data..";
   imageMsg->initializeWithTestData();
@@ -81,7 +82,6 @@ void TestImgMsg_LoadSaveInit::performTest()
     { std::cout <<" OK\n"; m_successCounter++; }
   else
      std::cout <<" FAILED\n";
-
   //***********************************************
   std::cout <<++m_testCounter <<". Setting random image data..";
   imageMsg->initializeWithRandomData();
@@ -91,7 +91,6 @@ void TestImgMsg_LoadSaveInit::performTest()
     { std::cout <<" OK\n"; m_successCounter++; }
   else
      std::cout <<" FAILED\n";
-
   //***********************************************
   std::cout <<++m_testCounter <<". Saving and loading test image data..";
   imageMsg->initializeWithTestData();
@@ -102,12 +101,31 @@ void TestImgMsg_LoadSaveInit::performTest()
     { std::cout <<" OK\n"; m_successCounter++; }
   else
      std::cout <<" FAILED\n";
+  //***********************************************
+  std::cerr <<++m_testCounter <<". Testing specifically with supplied image file 1..";
+  QString imageFileName = m_argv[1];
+  QImage inputImage(imageFileName);
+
+  // NOTE: At the moment, we have to convert image to ARGB32.
+  QImage convertedInputImage = inputImage.convertToFormat(QImage::Format_ARGB32);
+
+  imageMsg->setQImage(convertedInputImage);
+  QImage outputImage = imageMsg->getQImage();
+
+  if (convertedInputImage == outputImage)
+  {
+    std::cerr <<" OK\n"; m_successCounter++;
+  }
+  else
+  {
+    std::cerr <<" FAILED\n";
+  }
 
   //***********************************************
   std::cout <<++m_testCounter <<". Deleting messages..";
   imageMsg.reset();
   imageMsg.operator =(NULL);
-  
+
   if (imageMsg.operator !=(NULL))
     std::cout <<" FAILED\n";
   else

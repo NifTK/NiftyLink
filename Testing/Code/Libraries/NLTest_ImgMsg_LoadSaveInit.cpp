@@ -61,7 +61,7 @@ int main(int argc, char **argv)
 
   TestImgMsg_LoadSaveInit * test = new TestImgMsg_LoadSaveInit;
   QObject::connect(test, SIGNAL(done()), &app, SLOT(quit()),Qt::QueuedConnection);
-  test->setupTest();
+  test->setupTest(argc, argv);
 
   QTimer::singleShot(220, test, SLOT(performTest()));
   //QTimer::singleShot(220, &test, SLOT(listen()));
