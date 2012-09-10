@@ -48,8 +48,8 @@ OIGTLSocketObject::~OIGTLSocketObject(void)
 {
   QLOG_INFO() <<"Destructing"  <<objectName();
 
-  if (m_initialized)
-    this->closeSocket();
+  // Call closeSocket, just in case
+  this->closeSocket();
 
   if (m_sender != NULL)
   {
@@ -62,6 +62,7 @@ OIGTLSocketObject::~OIGTLSocketObject(void)
 
     disconnect(m_senderHostThread, SIGNAL(eventloopStarted()), m_sender, SLOT(startProcess()));
     disconnect(this, SIGNAL(shutdownSender()), m_sender, SLOT(stopProcess()));
+    disconnect(m_sender, SIGNAL(shutdownHostThread()), m_senderHostThread, SLOT(quit()));
 
 
     // Delete sender
@@ -78,6 +79,7 @@ OIGTLSocketObject::~OIGTLSocketObject(void)
 
     disconnect(m_listenerHostThread, SIGNAL(eventloopStarted()), m_listener, SLOT(startProcess()));
     disconnect(this, SIGNAL(shutdownListener()), m_listener, SLOT(stopProcess()));
+    disconnect(m_listener, SIGNAL(shutdownHostThread()), m_listenerHostThread, SLOT(quit()));
 
     // Delete listener
     delete m_listener;
@@ -93,7 +95,7 @@ OIGTLSocketObject::~OIGTLSocketObject(void)
 
   if (m_senderHostThread != NULL)
   {
-    delete m_senderHostThread;
+  	delete m_senderHostThread;
     m_senderHostThread = NULL;
   }
 
@@ -134,6 +136,7 @@ void OIGTLSocketObject::initThreads()
    
   ok &= connect(m_senderHostThread, SIGNAL(eventloopStarted()), m_sender, SLOT(startProcess()));
   ok &= connect(this, SIGNAL(shutdownSender()), m_sender, SLOT(stopProcess()));
+  ok &= connect(m_sender, SIGNAL(shutdownHostThread()), m_senderHostThread, SLOT(quit()));
 
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
@@ -143,11 +146,35 @@ void OIGTLSocketObject::initThreads()
   
   ok &= connect(m_listenerHostThread, SIGNAL(eventloopStarted()), m_listener, SLOT(startProcess()));
   ok &= connect(this, SIGNAL(shutdownListener()), m_listener, SLOT(stopProcess()));
+  ok &= connect(m_listener, SIGNAL(shutdownHostThread()), m_listenerHostThread, SLOT(quit()));
 
   // Set the flag
   if (m_mutex != NULL && m_sender != NULL && m_listener != NULL && ok)
     m_initialized = true;
 
+}
+
+void OIGTLSocketObject::setObjectNames(QString name)
+{
+  QString tmp;
+  tmp.append(name);
+  
+  this->setObjectName(name);
+
+  if (m_sender != NULL)
+    m_sender->setObjectName(tmp.append("_S"));
+
+  if (m_senderHostThread != NULL)
+    m_senderHostThread->setObjectName(tmp.append("H"));
+
+  tmp.clear();
+  tmp.append(name);
+
+  if (m_listener != NULL)
+    m_listener->setObjectName(tmp.append("_L"));
+
+  if (m_listenerHostThread != NULL)
+    m_listenerHostThread->setObjectName(tmp.append("H"));
 }
 
 bool OIGTLSocketObject::listenOnPort(int port)
@@ -275,12 +302,27 @@ void OIGTLSocketObject::closeSocket(void)
       m_listenerHostThread->msleepEx(250);
   }
 
-  m_senderHostThread->exit(0);
-  //m_senderHostThread->terminate();
+  if (m_senderHostThread != NULL)
+  {
+    //Terminate sender host thread
+    m_senderHostThread->exit(0);
+    m_senderHostThread->wait(500);
 
-  m_listenerHostThread->exit(0);
-  //m_listenerHostThread->terminate();
+    //If it is still running (like usually on cmicdev) then forcibly terminate
+    if (m_senderHostThread->isRunning())
+      m_senderHostThread->terminate();
+  }
 
+  if (m_listenerHostThread != NULL)
+  {
+    //Terminate listener host thread
+    m_listenerHostThread->exit(0);
+    m_listenerHostThread->wait(500);
+
+    //If it is still running (like usually on cmicdev) then forcibly terminate
+    if (m_listenerHostThread->isRunning())
+      m_listenerHostThread->terminate();
+  }
 
   m_port = -1;
   m_listening = false;
@@ -292,7 +334,24 @@ void OIGTLSocketObject::closeSocket(void)
   // Socket finally terminted, set flag accordingly
   m_active = false;
 
-  QLOG_INFO() <<objectName() <<": " <<"Closing socket, threads terminated.";
+  bool senderOn = false, listenerOn = false;
+  
+  if (m_senderHostThread != NULL)
+  {
+    senderOn = m_senderHostThread->isRunning();
+	  QLOG_INFO() <<objectName() <<": " <<"Sender host thread running: " <<m_senderHostThread->isRunning();
+  }
+
+  if (m_listenerHostThread != NULL)
+  {
+    listenerOn = m_listenerHostThread->isRunning();
+  	QLOG_INFO() <<objectName() <<": " <<"Listener host thread running: " <<m_listenerHostThread->isRunning();
+  }
+
+  if (!senderOn && !listenerOn)
+    QLOG_INFO() <<objectName() <<": " <<"Closing socket, threads terminated.";
+  else
+    QLOG_ERROR() <<objectName() <<": " <<"Threads DID NOT terminate when closing socket!";
 }
 
 void OIGTLSocketObject::sendMessage(OIGTLMessage::Pointer msg)
@@ -356,6 +415,8 @@ void OIGTLSocketObject::disconnectedFromRemote(bool onPort)
     if (m_listener != NULL)
       emit shutdownListener();
 
+    emit lostConnectionToRemoteSignal();
+  
     QCoreApplication::processEvents();
   }
   // There was a client connecting to the local listener, but we cannot send messages through the socket any more
@@ -369,7 +430,6 @@ void OIGTLSocketObject::disconnectedFromRemote(bool onPort)
 
   m_connectedToRemote = false;
   m_ableToSend = false;
-
 }
 
 void OIGTLSocketObject::clientConnected(void)
@@ -399,13 +459,16 @@ void OIGTLSocketObject::clientDisconnected(bool onPort)
   if (onPort)
   {
     if (m_sender != NULL)
+    {
       emit shutdownSender();
+      QCoreApplication::processEvents();
+    }
+
 
     emit clientDisconnectedSignal();
+    QCoreApplication::processEvents();
   }
 
-  QCoreApplication::processEvents();
-  
   m_clientConnected = false;
   m_ableToSend = false;
 }

@@ -28,6 +28,10 @@
 
 class QString;
 
+/**
+ * \class QsDebugOutput
+ * \brief Low level logging output, sorting out different outputs on different operating systems.
+ */
 class QsDebugOutput
 {
 public:

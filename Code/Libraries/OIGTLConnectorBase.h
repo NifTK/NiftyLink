@@ -18,6 +18,10 @@
 
 #include "OIGTLThreadBase.h"
 
+/**
+ * \class OIGTLConnectorBase
+ * \brief Not in use.
+ */
 class OIGTLConnectorBase : public QObject
 {
 	Q_OBJECT

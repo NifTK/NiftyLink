@@ -24,6 +24,7 @@ PURPOSE.  See the above copyright notices for more information.
 #include <QSettings>
 #include <QDateTime>
 #include "TestMsgTypes_ConstrDestr.h"
+#include "NLTest_Data.h"
 
 TestMsgTypes_ConstrDestr::TestMsgTypes_ConstrDestr(void)
 {
@@ -183,7 +184,7 @@ void TestMsgTypes_ConstrDestr::performTest()
 
   //***********************************************
   std::cout <<++m_testCounter <<". Setting test transform data..";
-  transMsg->initializeWithTestData();
+  transMsg->initializeWithTestData(dummyTransformMatrix);
   igtl::MessageBase::Pointer q;
   transMsg->getMessagePointer(q);
   if (q.IsNotNull())
@@ -507,7 +508,7 @@ void TestMsgTypes_ConstrDestr::performTest()
 
   //***********************************************
   std::cout <<++m_testCounter <<". Setting test tracking data..";
-  tdataMsg->initializeWithTestData();
+  tdataMsg->initializeWithTestData(dummyTransformMatrix);
   igtl::MessageBase::Pointer t;
   tdataMsg->getMessagePointer(t);
   if (t.IsNotNull())

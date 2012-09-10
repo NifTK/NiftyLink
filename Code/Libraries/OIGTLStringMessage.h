@@ -30,10 +30,11 @@
  * \class OIGTLStringMessage
  * \brief Message type to hold status info.
  * 
- * OIGTLStringMessage hold data related with the OpenIGTLink "STRING" message type. It offers functions to set and get the member variables and to intilize the message with random or known test data.
- * It also includes a bunch of static member functions to create the related GET_ STT_ STP_ RTS_ messages which are used to control the data flow. 
+ * OIGTLStringMessage hold data related with the OpenIGTLink "STRING" message type.
+ * It offers functions to set and get the member variables and to intilize the message
+ * with random or known test data. It also includes a bunch of static member functions
+ * to create the related GET_ STT_ STP_ RTS_ messages which are used to control the data flow.
  */
-
 class NIFTYLINKCOMMON_WINEXPORT OIGTLStringMessage : public OIGTLMessage
 {
 
@@ -45,8 +46,10 @@ public:
   
   /// \brief Basic constructor which sets the message and data types to "STRING"
   OIGTLStringMessage(void);
+
   /// \brief Basic destructor
   ~OIGTLStringMessage(void);
+
   /// \brief Basic copy constructor required for this data type
   OIGTLStringMessage(const OIGTLStringMessage &other); 
 
@@ -64,6 +67,7 @@ public:
 
   /// \brief Sets the message string
   void setString(QString string);
+
   /// \brief Sets the encoding
   void setEncoding(igtlUint16 enc);
 

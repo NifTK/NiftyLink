@@ -215,7 +215,7 @@ void OIGTLTransformMessage::getNormals(float t[3], float s[3], float n[3])
 	msgPointer->Pack();
 }
 
-void OIGTLTransformMessage::initializeWithTestData(void)
+void OIGTLTransformMessage::initializeWithTestData(igtl::Matrix4x4& testMatrix)
 {
 	if (m_message.IsNull())
 		m_message.operator =(igtl::TransformMessage::New());
@@ -224,7 +224,7 @@ void OIGTLTransformMessage::initializeWithTestData(void)
 	msgPointer = static_cast<igtl::TransformMessage *>(m_message.GetPointer());
 	msgPointer->Unpack();
 
-  msgPointer->SetMatrix(dummyTransformMatrix);
+	msgPointer->SetMatrix(testMatrix);
 
 	//Pack message data
 	msgPointer->Pack();

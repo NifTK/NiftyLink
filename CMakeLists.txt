@@ -98,6 +98,35 @@ ELSE(BUILD_SUPERBUILD)
 ENDIF(BUILD_SUPERBUILD)
 
 ######################################################################
+# Setting build name based on local system details
+######################################################################
+
+IF(CMAKE_GENERATOR MATCHES Make)
+
+  find_program(UNAME NAMES uname)
+  macro(getuname name flag)
+    exec_program("${UNAME}" ARGS "${flag}" OUTPUT_VARIABLE "${name}")
+  endmacro(getuname)
+
+  getuname(osname -s)
+  getuname(cpu    -m)
+
+  execute_process(COMMAND ${CMAKE_C_COMPILER} -dumpversion OUTPUT_VARIABLE GCC_VERSION)
+
+  #MESSAGE(STATUS "gcc version: ${GCC_VERSION}")
+
+  set(CTBN "${osname}-${cpu}-gcc-${GCC_VERSION}")
+  string(REPLACE "\n" "" CTBN ${CTBN})
+  MESSAGE(STATUS "Buildname: ${CTBN}")
+  SET(BUILDNAME ${CTBN} CACHE STRING "${CTBN}")
+  SET(CTEST_BUILD_NAME ${CTBN} CACHE STRING "${CTBN}")
+ELSE()
+  MESSAGE(STATUS "Buildname: ${CMAKE_GENERATOR}")
+  SET(BUILDNAME ${CMAKE_GENERATOR} CACHE STRING "${CMAKE_GENERATOR}")
+  SET(CTEST_BUILD_NAME ${CMAKE_GENERATOR} CACHE STRING "${CMAKE_GENERATOR}")
+ENDIF()
+
+######################################################################
 # Options. These are set up front, so are available when configuring
 # the SuperBuild, and hence they must also be passed to the normal
 # build. So, look in CMake/Superbuild.cmake to see where they are
@@ -127,6 +156,7 @@ SET(NIFTYLINK_USER_CONTACT "https://www.mailinglists.ucl.ac.uk/mailman/listinfo/
 SET(NIFTYLINK_DEVELOPER_CONTACT "https://www.mailinglists.ucl.ac.uk/mailman/listinfo/niftk-developers" CACHE STRING "Contact address for developers." FORCE )
 SET(NIFTYLINK_VERSION_STRING "${NIFTYLINK_VERSION_MAJOR}.${NIFTYLINK_VERSION_MINOR}.${NIFTYLINK_VERSION_PATCH}" CACHE STRING "String to describe fully named version" FORCE)
 SET(NIFTYLINK_DEPLOY_NAME "${NIFTYLINK_NAME}-${NIFTYLINK_VERSION_STRING}" CACHE STRING "String to describe deployed name" FORCE)
+SET(NIFTYLINK_OPENIGTLINK_LOCATION "git://github.com/zomboir/OpenIGTLink.git" CACHE STRING "URL of OpenIGTLink, so we can refer to it in documentation" FORCE)
 
 ######################################################################
 # Hide these variables from the user, unless they are 'advanced' :-)
@@ -145,6 +175,7 @@ MARK_AS_ADVANCED(NIFTYLINK_DEVELOPER_CONTACT)
 MARK_AS_ADVANCED(NIFTYLINK_VERSION_STRING)
 MARK_AS_ADVANCED(NIFTYLINK_DEPLOY_NAME)
 MARK_AS_ADVANCED(NIFTYLINK_CHECK_COVERAGE)
+MARK_AS_ADVANCED(NIFTYLINK_OPENIGTLINK_LOCATION)
 
 ######################################################################
 # Setup the path to load CMake macros, and extra CMake files.
@@ -238,7 +269,7 @@ MESSAGE("CMAKE_SOURCE_DIR=${CMAKE_SOURCE_DIR}")
 MESSAGE("CMAKE_BINARY_DIR=${CMAKE_BINARY_DIR}")
 MESSAGE("Qt version=${QT_VERSION_MAJOR}.${QT_VERSION_MINOR}.${QT_VERSION_PATCH}")
 MESSAGE("OpenIGTLink version=${NIFTYLINK_OPENIGTLINK_REVISION_ID}")
-MESSAGE("NiftyLink svn version=${NIFTYLINK_SVN_REVISION_ID}")
+MESSAGE("NiftyLink git version=${NIFTYLINK_SVN_REVISION_ID}")
 
 ######################################################################
 # Test for some required system information. 
@@ -271,10 +302,12 @@ ENDIF(BUILD_TESTING)
 
 CONFIGURE_FILE(${CMAKE_SOURCE_DIR}/Config/NiftyLinkConfig.h.in ${CMAKE_BINARY_DIR}/NiftyLinkConfig.h)
 CONFIGURE_FILE(${CMAKE_SOURCE_DIR}/Doc/MainPage.dox.in ${CMAKE_BINARY_DIR}/Doxygen/MainPage.dox)
+CONFIGURE_FILE(${CMAKE_SOURCE_DIR}/Doc/License.dox.in ${CMAKE_BINARY_DIR}/Doxygen/License.dox)
 CONFIGURE_FILE(${CMAKE_SOURCE_DIR}/Doc/Doxygen/niftylinkdoxygen.pl.in ${CMAKE_BINARY_DIR}/niftylinkdoxygen.pl)
 CONFIGURE_FILE(${CMAKE_SOURCE_DIR}/Doc/Doxygen/doxygen.config.in ${CMAKE_BINARY_DIR}/doxygen.config)
+CONFIGURE_FILE(${CMAKE_SOURCE_DIR}/Doc/License_OpenIGTLink.txt ${CMAKE_BINARY_DIR}/LICENSE_OpenIGTLink.txt @ONLY)
+CONFIGURE_FILE(${CMAKE_SOURCE_DIR}/Doc/License_Qt.txt ${CMAKE_BINARY_DIR}/LICENSE_QT.txt @ONLY)
 CONFIGURE_FILE(${CMAKE_SOURCE_DIR}/LICENSE.txt ${CMAKE_BINARY_DIR}/LICENSE.txt @ONLY)
-CONFIGURE_FILE(${CMAKE_SOURCE_DIR}/LICENSE.txt ${CMAKE_BINARY_DIR}/Doxygen/LICENSE.dox @ONLY)
 CONFIGURE_FILE(${CMAKE_SOURCE_DIR}/README.txt ${CMAKE_BINARY_DIR}/README.txt @ONLY)
 
 ######################################################################

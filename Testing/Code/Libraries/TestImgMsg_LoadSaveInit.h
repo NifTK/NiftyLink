@@ -60,7 +60,7 @@ public:
   ~TestImgMsg_LoadSaveInit(void);
 
 public slots:
-  void setupTest();
+  void setupTest(int argc, char **argv);
   void performTest();
   void quitTest();
 
@@ -68,5 +68,8 @@ private:
   QString m_localhostname;
   int m_testCounter;
   int m_successCounter;
+  int m_argc;
+  char **m_argv;
+
 };
 

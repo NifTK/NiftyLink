@@ -24,6 +24,7 @@ PURPOSE.  See the above copyright notices for more information.
 #include <QSettings>
 #include <QDateTime>
 #include "TestMsgTypes_Delivery.h"
+#include "NLTest_Data.h"
 
 TestMsgTypes_Delivery::TestMsgTypes_Delivery(void)
 {
@@ -247,7 +248,7 @@ void TestMsgTypes_Delivery::continueTest()
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
   m_msgToSend.operator =(OIGTLTrackingDataMessage::Pointer(new OIGTLTrackingDataMessage()));
-  static_cast<OIGTLTrackingDataMessage::Pointer>(m_msgToSend)->initializeWithTestData();
+  static_cast<OIGTLTrackingDataMessage::Pointer>(m_msgToSend)->initializeWithTestData(dummyTransformMatrix);
   m_msgToSend->update(getLocalHostAddress());
 
   m_socket2->sendMessage(m_msgToSend);
@@ -281,7 +282,7 @@ void TestMsgTypes_Delivery::continueTest()
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
   m_msgToSend.operator =(OIGTLTransformMessage::Pointer(new OIGTLTransformMessage()));
-  static_cast<OIGTLTransformMessage::Pointer>(m_msgToSend)->initializeWithTestData();
+  static_cast<OIGTLTransformMessage::Pointer>(m_msgToSend)->initializeWithTestData(dummyTransformMatrix);
   m_msgToSend->update(getLocalHostAddress());
 
   m_socket2->sendMessage(m_msgToSend);

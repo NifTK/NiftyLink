@@ -22,21 +22,21 @@
 # --------------------------------------------------------------------------
 # Sources
 
-SET(TestNL_Utils_SRCS
-Common/NiftyLinkUtilsTests.cpp
-)
+#SET(TestNL_Utils_SRCS
+#Common/NiftyLinkUtilsTests.cpp
+#)
 
-SET(TestNL_Utils_HDRS
-Common/NiftyLinkUtilsTests.h
-)
+#SET(TestNL_Utils_HDRS
+#Common/NiftyLinkUtilsTests.h
+#)
 
-QT4_WRAP_CPP(UTILSTEST_QT_MOC_FILES ${TestNL_Utils_HDRS})
-SOURCE_GROUP("Generated Files" FILES ${UTILSTEST_QT_MOC_FILES})
-SET(TEST_LIBRARIES niftylink ${QT_QTTEST_LIBRARY} ${QT_LIBRARIES} )
+#QT4_WRAP_CPP(UTILSTEST_QT_MOC_FILES ${TestNL_Utils_HDRS})
+#SOURCE_GROUP("Generated Files" FILES ${UTILSTEST_QT_MOC_FILES})
+#SET(TEST_LIBRARIES niftylink ${QT_QTTEST_LIBRARY} ${QT_LIBRARIES} )
 
-ADD_EXECUTABLE(TestNL_Utils ${TestNL_Utils_SRCS} ${TestNL_Utils_HDRS} ${UTILSTEST_QT_MOC_FILES})
-TARGET_LINK_LIBRARIES(TestNL_Utils ${TEST_LIBRARIES} )
-ADD_TEST(TestNL_Utils ${EXECUTABLE_OUTPUT_PATH}/TestNL_Utils )
+#ADD_EXECUTABLE(TestNL_Utils ${TestNL_Utils_SRCS} ${TestNL_Utils_HDRS} ${UTILSTEST_QT_MOC_FILES})
+#TARGET_LINK_LIBRARIES(TestNL_Utils ${TEST_LIBRARIES} )
+#ADD_TEST(TestNL_Utils ${EXECUTABLE_OUTPUT_PATH}/TestNL_Utils )
 
 ###########################################################################
 ###             TEST MESSAGE TYPE CONSTRUCTOR / DESTRUCTOR
@@ -124,7 +124,7 @@ SET(ImgMsgType_LoadSaveInit_LIBRARIES niftylink ${QT_QTTEST_LIBRARY} ${QT_LIBRAR
 
 ADD_EXECUTABLE(TestNL_ImgMsg_LoadSaveInit ${ImgMsgType_LoadSaveInit_SRCS} ${ImgMsgType_LoadSaveInit_HDRS} ${ImgMsgType_LoadSaveInit_QT_MOC_FILES})
 TARGET_LINK_LIBRARIES(TestNL_ImgMsg_LoadSaveInit ${ImgMsgType_LoadSaveInit_LIBRARIES} )
-ADD_TEST(TestNL_ImgMsg_LoadSaveInit ${EXECUTABLE_OUTPUT_PATH}/TestNL_ImgMsg_LoadSaveInit )
+ADD_TEST(TestNL_ImgMsg_LoadSaveInit ${EXECUTABLE_OUTPUT_PATH}/TestNL_ImgMsg_LoadSaveInit ${CMAKE_SOURCE_DIR}/Testing/Data/niftkUltrasonix.png)
 
 ###########################################################################
 ###             TEST TRANSFORMMESSAGE GENERAL GET / SET

@@ -457,3 +457,4 @@ void TrackerClientDescriptor::setXMLString(QString desc)
 
   }
 }
+

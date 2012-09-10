@@ -24,6 +24,7 @@ PURPOSE.  See the above copyright notices for more information.
 #include <QSettings>
 #include <QDateTime>
 #include "TestSendReceive_Basic.h"
+#include "NLTest_Data.h"
 
 TestSendReceive_Basic::TestSendReceive_Basic(void)
 {
@@ -60,9 +61,10 @@ void TestSendReceive_Basic::startTest()
   //Instanciate socket objects
   std::cout <<++m_testCounter <<". Creating two socket object..";
   m_socket1 = new OIGTLSocketObject();
-  m_socket1->setObjectName("Socket1");
   m_socket2 = new OIGTLSocketObject();
-  m_socket2->setObjectName("Socket2");
+
+  m_socket2->setObjectNames("Socket2");
+  m_socket1->setObjectNames("Socket1");
 
   if (m_socket1 != NULL && m_socket2 != NULL)
     { std::cout <<" OK\n"; m_successCounter++; }
@@ -187,8 +189,8 @@ void TestSendReceive_Basic::clientConnected()
 {
   m_connecting = true;
 
-  if (m_inShutdownTests)
-    qDebug() <<"Successfully continued the tests after shutdown";
+  //if (m_inShutdownTests)
+  //  qDebug() <<"Successfully continued the tests after shutdown";
 
   if (m_connecting && m_connectedTo)
     continueTest();
@@ -197,8 +199,8 @@ void TestSendReceive_Basic::connectedToRemote()
 {
   m_connectedTo = true;
 
-  if (m_inShutdownTests)
-    qDebug() <<"Successfully continued the tests after shutdown";
+  //if (m_inShutdownTests)
+  //  qDebug() <<"Successfully continued the tests after shutdown";
   
   if (m_connecting && m_connectedTo)
     continueTest();

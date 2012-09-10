@@ -49,12 +49,6 @@
 #include "QsLog.h"
 #include "QsLogDest.h"
 
-static igtl::Matrix4x4 dummyTransformMatrix = 
-{{ -1, 0, 0, 50},
-{  0, 0.15, 0.98, 0},
-{ 0, 0.98, -0.15, 50},
-{ 0, 0, 0, 1} };
-
 enum MessageTypes 
 {
   NONDEFINED,
@@ -144,15 +138,15 @@ enum MessageTypes
 typedef std::map<std::string, MessageTypes> mapStrMsgType;
 static mapStrMsgType strMsgTypes; 
 
+/// \brief Initialises the types map.
 extern "C" NIFTYLINKCOMMON_WINEXPORT void InitMessageTypes(mapStrMsgType &types);
-
-/// \brief dummy function to test if the building and linking works correctly
-extern "C" NIFTYLINKCOMMON_WINEXPORT int NiftyLinkDummyFunction1();
 
 /// \brief Simple function which validates if an IP address is valid or not
 extern "C++" NIFTYLINKCOMMON_WINEXPORT bool validateIp(const QString &inputIP);
+
 /// \brief This function which returns the local IP address
 extern "C++" NIFTYLINKCOMMON_WINEXPORT QString getLocalHostAddress(void);
+
 /// \brief This function resolves a given hostname to IP
 extern "C++" NIFTYLINKCOMMON_WINEXPORT QString resolveHostName(const QString &input);
 

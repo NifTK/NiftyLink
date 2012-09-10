@@ -24,6 +24,7 @@ PURPOSE.  See the above copyright notices for more information.
 #include <QSettings>
 #include <QDateTime>
 #include "TestTdataMsg_General.h"
+#include "NLTest_Data.h"
 
 #include <cmath>
 
@@ -78,7 +79,7 @@ void TestTdataMsg_General::performTest()
 
   //***********************************************
   std::cout <<++m_testCounter <<". Initializing with test data..";
-  tdataMsg->initializeWithTestData();
+  tdataMsg->initializeWithTestData(dummyTransformMatrix);
   tdataMsg->getMatrix(matrix);
 
   ok = true;

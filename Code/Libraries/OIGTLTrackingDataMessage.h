@@ -30,10 +30,11 @@
  * \class OIGTLTrackingDataMessage
  * \brief Message type to hold transform data.
  * 
- * OIGTLTrackingDataMessage hold data related with the OpenIGTLink "TRACKINGDATA" message type. It offers functions to set and get the member variables and to intilize the message with random or known test data.
- * It also includes a bunch of static member functions to create the related GET_ STT_ STP_ RTS_ messages which are used to control the data flow. 
+ * OIGTLTrackingDataMessage hold data related with the OpenIGTLink "TRACKINGDATA" message type.
+ * It offers functions to set and get the member variables and to intilize the message with
+ * random or known test data. It also includes a bunch of static member functions to create
+ * the related GET_ STT_ STP_ RTS_ messages which are used to control the data flow.
  */
-
 class NIFTYLINKCOMMON_WINEXPORT OIGTLTrackingDataMessage : public OIGTLMessage
 {
 
@@ -54,8 +55,10 @@ public:
   
   /// \brief Basic constructor which sets the message and data types to "TRACKINGDATA"
   OIGTLTrackingDataMessage(void);
+
   /// \brief Basic destructor
   ~OIGTLTrackingDataMessage(void);
+
   /// \brief Basic copy constructor required for this data type
   OIGTLTrackingDataMessage(const OIGTLTrackingDataMessage &other); 
 
@@ -73,6 +76,7 @@ public:
 
   /// \brief Sets the transformation matrix
   void setMatrix(igtl::Matrix4x4 &matrix);
+
   /// \brief Gets the transformation matrix
   void getMatrix(igtl::Matrix4x4 &matrix);
 
@@ -81,26 +85,31 @@ public:
 
   /// \brief Sets the position array
   void setPosition(float p[3]);
+
   /// \brief Gets the position array
   void getPosition(float p[3]);
 
   /// \brief Sets the position coordinates
   void setPosition(float px, float py, float pz);
+
   /// \brief Gets the position coordinates
   void getPosition(float &px, float &py, float &pz);
 
   /// \brief Sets the tracker tool's name
   void setTrackerToolName(QString name);
+
   /// \brief Gets the tracker tool's name
   QString getTrackerToolName();
 
   /// \brief Sets the tracker tool's type
   void setTrackerToolType(igtlUint8 type);
+
   /// \brief Gets the tracker tool's name
   igtlUint8 getTrackerToolType();
 
   /// \brief Initializes the message with known test data
-  virtual void initializeWithTestData(void);
+  virtual void initializeWithTestData(igtl::Matrix4x4& testMatrix);
+
   /// \brief Initializes the message with random test data
   virtual void initializeWithRandomData(void);
 
