@@ -101,8 +101,9 @@ ENDIF(BUILD_SUPERBUILD)
 # Setting build name based on local system details
 ######################################################################
 
-IF(CMAKE_GENERATOR MATCHES Make)
+MESSAGE(STATUS "Cmake generator: ${CMAKE_GENERATOR}")
 
+IF(CMAKE_GENERATOR MATCHES Make AND NOT (CMAKE_GENERATOR MATCHES NMake) )
   find_program(UNAME NAMES uname)
   macro(getuname name flag)
     exec_program("${UNAME}" ARGS "${flag}" OUTPUT_VARIABLE "${name}")
