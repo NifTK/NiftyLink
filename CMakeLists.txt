@@ -157,7 +157,7 @@ SET(NIFTYLINK_USER_CONTACT "https://www.mailinglists.ucl.ac.uk/mailman/listinfo/
 SET(NIFTYLINK_DEVELOPER_CONTACT "https://www.mailinglists.ucl.ac.uk/mailman/listinfo/niftk-developers" CACHE STRING "Contact address for developers." FORCE )
 SET(NIFTYLINK_VERSION_STRING "${NIFTYLINK_VERSION_MAJOR}.${NIFTYLINK_VERSION_MINOR}.${NIFTYLINK_VERSION_PATCH}" CACHE STRING "String to describe fully named version" FORCE)
 SET(NIFTYLINK_DEPLOY_NAME "${NIFTYLINK_NAME}-${NIFTYLINK_VERSION_STRING}" CACHE STRING "String to describe deployed name" FORCE)
-SET(NIFTYLINK_OPENIGTLINK_LOCATION "git://github.com/zomboir/OpenIGTLink.git" CACHE STRING "URL of OpenIGTLink, so we can refer to it in documentation" FORCE)
+SET(NIFTYLINK_OPENIGTLINK_LOCATION "git://github.com/NifTK/OpenIGTLink.git" CACHE STRING "URL of OpenIGTLink, so we can refer to it in documentation" FORCE)
 
 ######################################################################
 # Hide these variables from the user, unless they are 'advanced' :-)
