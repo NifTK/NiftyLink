@@ -284,6 +284,15 @@ void OIGTLImageMessage::save(QString filename)
     return;
 
   QImage image = getQImage();
+	//getQImage currently does not set the color table
+	//lets do it here. Insert a default index table for indexed image type
+	if ( image.format() == QImage::Indexed_8)
+	{
+		QVector<QRgb> colors=QVector<QRgb> (256);
+		for ( int i = 0 ; i < 256 ; i ++)
+			colors[i] = qRgb(i,i,i);
+		image.setColorTable(colors);
+	}
   
   if (!image.isNull())
     image.save(filename);
@@ -307,7 +316,10 @@ void OIGTLImageMessage::setQImage(QImage image)
   if (image.isNull())
     return;
   else
-    image.convertToFormat(QImage::Format_ARGB32);
+	{
+	  if ( image.format() != QImage::Format_Indexed8 )  
+      image.convertToFormat(QImage::Format_ARGB32);
+	}
   
   if (m_message.IsNull())
     m_message.operator =(igtl::ImageMessage::New());
@@ -321,10 +333,16 @@ void OIGTLImageMessage::setQImage(QImage image)
   // Set parameters
   msgPointer->SetDimensions(image.width(), image.height(), 1);
   msgPointer->SetSpacing(1.0f, 1.0f, 1.0f);
-  msgPointer->SetScalarType(igtl::ImageMessage::TYPE_UINT32);
+	if ( image.format() != QImage::Format_Indexed8 ) 
+    msgPointer->SetScalarType(igtl::ImageMessage::TYPE_UINT32);
+	else
+		msgPointer->SetScalarType(igtl::ImageMessage::TYPE_UINT8);
   msgPointer->AllocateScalars();
 
   // Copy image data to igtl::ImageMessage
+	// for QImage::Format_Indexed8 this is going to lose the index table
+	// This may or may not be a problem depending on what happens to the 
+	// image at the other end
   int byteSizeOfImg = image.byteCount();
   memcpy(msgPointer->GetScalarPointer(), image.bits(), byteSizeOfImg);
 
@@ -344,11 +362,23 @@ QImage OIGTLImageMessage::getQImage(void)
 
   int i,j,k;
   msgPointer->GetDimensions(i,j,k);
-  QImage image(i, j, QImage::Format_ARGB32);
-  
+	QImage image();
+	if ( msgPointer->GetScalarType() == TYPE_UINT32 ) 
+  	image = QImage::image(i, j, QImage::Format_ARGB32);
+	else
+	{
+		if ( msgPointer->GetScalarType() == TYPE_UINT32 )
+	    //Should probably put in a default color table here or we might get some odd 
+	    //results if we save the image, but lets leave it won't be a problem in most cases
+			image = QImage::image(i, j, QImage::Format_Indexed8);
+		else	
+		{
+			QLOG_ERROR() << objectName() << ": Attempt to get QImage from image message of type " << msgPointer->GetScalarType() << " not implemented. \n";
+			return NULL;
+		}
+	}
   int byteSizeOfImg = image.byteCount();
   memcpy(image.bits(), msgPointer->GetScalarPointer(), byteSizeOfImg);
-
   //Pack message data
 	msgPointer->Pack();
 
