@@ -286,7 +286,7 @@ void OIGTLImageMessage::save(QString filename)
   QImage image = getQImage();
 	//getQImage currently does not set the color table
 	//lets do it here. Insert a default index table for indexed image type
-	if ( image.format() == QImage::Indexed_8)
+	if ( image.format() == QImage::Format_Indexed_8)
 	{
 		QVector<QRgb> colors=QVector<QRgb> (256);
 		for ( int i = 0 ; i < 256 ; i ++)
