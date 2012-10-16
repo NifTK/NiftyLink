@@ -34,7 +34,7 @@ SET(OPENIGTLINK_DEPENDS ${proj})
  
 IF(NOT DEFINED OpenIGTLink_DIR)
 
-    SET(revision_tag development)
+    SET(revision_tag b1766-Check-recording-and-sending-of-motor-position)
     IF(${proj}_REVISION_TAG)
         SET(revision_tag ${${proj}_REVISION_TAG})
     ENDIF()
