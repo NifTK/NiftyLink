@@ -320,7 +320,6 @@ void OIGTLImageMessage::setQImage(QImage image)
   //-------------------------------------------------------------
   // Set parameters
   msgPointer->SetDimensions(image.width(), image.height(), 1);
-  msgPointer->SetSpacing(1.0f, 1.0f, 1.0f);
   msgPointer->SetScalarType(igtl::ImageMessage::TYPE_UINT32);
   msgPointer->AllocateScalars();
 
