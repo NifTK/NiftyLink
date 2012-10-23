@@ -511,7 +511,7 @@ QImage OIGTLImageMessage::getQImage(void)
   	image = QImage::QImage(i, j, QImage::Format_ARGB32);
 	else
 	{
-		if ( msgPointer->GetScalarType() == igtl::ImageMessage::TYPE_UINT32 )
+		if ( msgPointer->GetScalarType() == igtl::ImageMessage::TYPE_UINT8 )
 	    //Should probably put in a default color table here or we might get some odd 
 	    //results if we save the image, but lets leave it won't be a problem in most cases
 			image = QImage::QImage(i, j, QImage::Format_Indexed8);
