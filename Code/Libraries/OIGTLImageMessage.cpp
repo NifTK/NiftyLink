@@ -224,6 +224,151 @@ void OIGTLImageMessage::getOrigin(float &si, float &sj, float &sk)
 	//Pack message data
 	msgPointer->Pack();
 }
+void OIGTLImageMessage::SetDimensions(int s[3])
+{
+	if (m_message.IsNull())
+		m_message.operator =(igtl::ImageMessage::New());
+
+	igtl::ImageMessage::Pointer msgPointer;
+	msgPointer = static_cast<igtl::ImageMessage *>(m_message.GetPointer());
+	msgPointer->Unpack();
+
+	msgPointer->SetDimensions(s);
+	
+	//Pack message data
+	msgPointer->Pack();
+}
+void OIGTLImageMessage::SetDimensions(int i, int j , int k)
+{
+	if (m_message.IsNull())
+		m_message.operator =(igtl::ImageMessage::New());
+
+	igtl::ImageMessage::Pointer msgPointer;
+	msgPointer = static_cast<igtl::ImageMessage *>(m_message.GetPointer());
+	msgPointer->Unpack();
+
+	msgPointer->SetDimensions(i,j,k);
+	
+	//Pack message data
+	msgPointer->Pack();
+}
+void OIGTLImageMessage::GetDimensions(int s[3])
+{
+	if (m_message.IsNull())
+		return;
+
+	igtl::ImageMessage::Pointer msgPointer;
+	msgPointer = static_cast<igtl::ImageMessage *>(m_message.GetPointer());
+	msgPointer->Unpack();
+
+	msgPointer->GetDimensions(s);
+	
+	//Pack message data
+	msgPointer->Pack();
+}
+void OIGTLImageMessage::GetDimensions(int &i, int &j , int &k)
+{
+	if (m_message.IsNull())
+		return;
+
+	igtl::ImageMessage::Pointer msgPointer;
+	msgPointer = static_cast<igtl::ImageMessage *>(m_message.GetPointer());
+	msgPointer->Unpack();
+
+	msgPointer->GetDimensions(i,j,k);
+	
+	//Pack message data
+	msgPointer->Pack();
+}
+int OIGTLImageMessage::SetSubVolume(int dim[3], int off[3])
+{
+	if (m_message.IsNull())
+		m_message.operator =(igtl::ImageMessage::New());
+
+	igtl::ImageMessage::Pointer msgPointer;
+	msgPointer = static_cast<igtl::ImageMessage *>(m_message.GetPointer());
+	msgPointer->Unpack();
+	
+	int retv = msgPointer->SetSubVolume ( dim, off);
+	
+	//Pack message data
+	msgPointer->Pack();
+	return retv;
+}
+int OIGTLImageMessage::SetSubVolume(int dimi, int dimj , int dimk, int offi ,int offj , int offk)
+{
+	if (m_message.IsNull())
+		m_message.operator =(igtl::ImageMessage::New());
+
+	igtl::ImageMessage::Pointer msgPointer;
+	msgPointer = static_cast<igtl::ImageMessage *>(m_message.GetPointer());
+	msgPointer->Unpack();
+
+	int retv=msgPointer->SetSubVolume (dimi,dimj,dimk,offi,offj,offk);
+	
+	//Pack message data
+	msgPointer->Pack();
+	return retv;
+}
+void OIGTLImageMessage::GetSubVolume(int dim[3], int off[3])
+{
+	if (m_message.IsNull())
+		return;
+
+	igtl::ImageMessage::Pointer msgPointer;
+	msgPointer = static_cast<igtl::ImageMessage *>(m_message.GetPointer());
+	msgPointer->Unpack();
+
+	msgPointer->GetSubVolume(dim,off);
+	
+	//Pack message data
+	msgPointer->Pack();
+}
+void OIGTLImageMessage::GetSubVolume(int &dimi, int &dimj, int &dimk, 
+		int &offi, int &offj, int &offk)
+{
+	if (m_message.IsNull())
+		return;
+
+	igtl::ImageMessage::Pointer msgPointer;
+	msgPointer = static_cast<igtl::ImageMessage *>(m_message.GetPointer());
+	msgPointer->Unpack();
+
+	msgPointer->GetSubVolume(dimi, dimj, dimk, offi, offj,offk);
+	
+	//Pack message data
+	msgPointer->Pack();
+}
+void OIGTLImageMessage::SetNumComponents(int num)
+{
+	if (m_message.IsNull())
+		m_message.operator =(igtl::ImageMessage::New());
+
+	igtl::ImageMessage::Pointer msgPointer;
+	msgPointer = static_cast<igtl::ImageMessage *>(m_message.GetPointer());
+	msgPointer->Unpack();
+
+	msgPointer->SetNumComponents(num);
+	
+	//Pack message data
+	msgPointer->Pack();
+}
+int OIGTLImageMessage::GetNumComponents()
+{
+	if (m_message.IsNull())
+		return -1;
+
+	igtl::ImageMessage::Pointer msgPointer;
+	msgPointer = static_cast<igtl::ImageMessage *>(m_message.GetPointer());
+	msgPointer->Unpack();
+
+	int retv = msgPointer->GetNumComponents();
+	
+	//Pack message data
+	msgPointer->Pack();
+	return retv;
+}
+
 
 void OIGTLImageMessage::initializeWithTestData(void)
 {

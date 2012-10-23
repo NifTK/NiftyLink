@@ -69,28 +69,39 @@ public:
   /// \brief Function which creates a RTS_IMAGE message (igtl::RTSImageMessage)
 	static void Create_RTS(OIGTLMessage::Pointer &msgToCreate);
 
-	//    TODO: Add these functions
-  /*
-    // Image dimensions.
-  // SetDimensions() should be called prior to SetSubVolume(), since SetDimensions()
-  // sets subvolume parameters automatically assuming that subvolume = entire volume.
+	/// \brief Set the image dimensions
+  /// SetDimensions() should be called prior to SetSubVolume(), since SetDimensions()
+  /// sets subvolume parameters automatically assuming that subvolume = entire volume.
+	/// This is done automatically by setQimage()
   void SetDimensions(int s[3]);
+	/// \brief Set the image dimensions
+  /// SetDimensions() should be called prior to SetSubVolume(), since SetDimensions()
+  /// sets subvolume parameters automatically assuming that subvolume = entire volume.
+	/// This is done automatically by setQimage()
   void SetDimensions(int i, int j, int k);
+	/// \brief Get the image dimensions
   void GetDimensions(int s[3]);
+	/// \brief Get the image dimensions
   void GetDimensions(int &i, int &j, int &k);
 
-  // Sub-volume dimensions and offset.
-  // SetSubVolume() should be called after calling SetDiemensions(), since SetDimensions()
-  // reset the subvolume parameters automatically.
+	/// \brief Set the image sub volume
+  /// SetDimensions() should be called prior to SetSubVolume(), since SetDimensions()
+  /// sets subvolume parameters automatically assuming that subvolume = entire volume.
   int  SetSubVolume(int dim[3], int off[3]);
+	/// \brief Set the image sub volume
+  /// SetDimensions() should be called prior to SetSubVolume(), since SetDimensions()
+  /// sets subvolume parameters automatically assuming that subvolume = entire volume.
   int  SetSubVolume(int dimi, int dimj, int dimk, int offi, int offj, int offk);
+	/// \brief Get the image sub volume
   void GetSubVolume(int dim[3], int off[3]);
+	/// \brief Get the image sub volume
   void GetSubVolume(int &dimi, int &dimj, int &dimk, int &offi, int &offj, int &offk);
 
-    // Number of components
-  void SetNumComponents(int num);
+  /// \brief Set the number of image components.
+	/// This is done automatically by setQimage()
+	void SetNumComponents(int num);
+  /// \brief Get the number of image components.
   int  GetNumComponents();
-  */
   
   /// \brief Sets the image's origin / orientation matrix
   void setMatrix(igtl::Matrix4x4 &matrix);
