@@ -69,6 +69,8 @@ void OIGTLImageMessage::getMatrix(igtl::Matrix4x4 &matrix)
 
 	msgPointer->Unpack();
   msgPointer->GetMatrix(matrix);
+	//Need to set the matrix or pack will overwrite it
+	msgPointer->SetMatrix(matrix);
 
 	//Pack message data
 	msgPointer->Pack();
@@ -224,6 +226,151 @@ void OIGTLImageMessage::getOrigin(float &si, float &sj, float &sk)
 	//Pack message data
 	msgPointer->Pack();
 }
+void OIGTLImageMessage::SetDimensions(int s[3])
+{
+	if (m_message.IsNull())
+		m_message.operator =(igtl::ImageMessage::New());
+
+	igtl::ImageMessage::Pointer msgPointer;
+	msgPointer = static_cast<igtl::ImageMessage *>(m_message.GetPointer());
+	msgPointer->Unpack();
+
+	msgPointer->SetDimensions(s);
+	
+	//Pack message data
+	msgPointer->Pack();
+}
+void OIGTLImageMessage::SetDimensions(int i, int j , int k)
+{
+	if (m_message.IsNull())
+		m_message.operator =(igtl::ImageMessage::New());
+
+	igtl::ImageMessage::Pointer msgPointer;
+	msgPointer = static_cast<igtl::ImageMessage *>(m_message.GetPointer());
+	msgPointer->Unpack();
+
+	msgPointer->SetDimensions(i,j,k);
+	
+	//Pack message data
+	msgPointer->Pack();
+}
+void OIGTLImageMessage::GetDimensions(int s[3])
+{
+	if (m_message.IsNull())
+		return;
+
+	igtl::ImageMessage::Pointer msgPointer;
+	msgPointer = static_cast<igtl::ImageMessage *>(m_message.GetPointer());
+	msgPointer->Unpack();
+
+	msgPointer->GetDimensions(s);
+	
+	//Pack message data
+	msgPointer->Pack();
+}
+void OIGTLImageMessage::GetDimensions(int &i, int &j , int &k)
+{
+	if (m_message.IsNull())
+		return;
+
+	igtl::ImageMessage::Pointer msgPointer;
+	msgPointer = static_cast<igtl::ImageMessage *>(m_message.GetPointer());
+	msgPointer->Unpack();
+
+	msgPointer->GetDimensions(i,j,k);
+	
+	//Pack message data
+	msgPointer->Pack();
+}
+int OIGTLImageMessage::SetSubVolume(int dim[3], int off[3])
+{
+	if (m_message.IsNull())
+		m_message.operator =(igtl::ImageMessage::New());
+
+	igtl::ImageMessage::Pointer msgPointer;
+	msgPointer = static_cast<igtl::ImageMessage *>(m_message.GetPointer());
+	msgPointer->Unpack();
+	
+	int retv = msgPointer->SetSubVolume ( dim, off);
+	
+	//Pack message data
+	msgPointer->Pack();
+	return retv;
+}
+int OIGTLImageMessage::SetSubVolume(int dimi, int dimj , int dimk, int offi ,int offj , int offk)
+{
+	if (m_message.IsNull())
+		m_message.operator =(igtl::ImageMessage::New());
+
+	igtl::ImageMessage::Pointer msgPointer;
+	msgPointer = static_cast<igtl::ImageMessage *>(m_message.GetPointer());
+	msgPointer->Unpack();
+
+	int retv=msgPointer->SetSubVolume (dimi,dimj,dimk,offi,offj,offk);
+	
+	//Pack message data
+	msgPointer->Pack();
+	return retv;
+}
+void OIGTLImageMessage::GetSubVolume(int dim[3], int off[3])
+{
+	if (m_message.IsNull())
+		return;
+
+	igtl::ImageMessage::Pointer msgPointer;
+	msgPointer = static_cast<igtl::ImageMessage *>(m_message.GetPointer());
+	msgPointer->Unpack();
+
+	msgPointer->GetSubVolume(dim,off);
+	
+	//Pack message data
+	msgPointer->Pack();
+}
+void OIGTLImageMessage::GetSubVolume(int &dimi, int &dimj, int &dimk, 
+		int &offi, int &offj, int &offk)
+{
+	if (m_message.IsNull())
+		return;
+
+	igtl::ImageMessage::Pointer msgPointer;
+	msgPointer = static_cast<igtl::ImageMessage *>(m_message.GetPointer());
+	msgPointer->Unpack();
+
+	msgPointer->GetSubVolume(dimi, dimj, dimk, offi, offj,offk);
+	
+	//Pack message data
+	msgPointer->Pack();
+}
+void OIGTLImageMessage::SetNumComponents(int num)
+{
+	if (m_message.IsNull())
+		m_message.operator =(igtl::ImageMessage::New());
+
+	igtl::ImageMessage::Pointer msgPointer;
+	msgPointer = static_cast<igtl::ImageMessage *>(m_message.GetPointer());
+	msgPointer->Unpack();
+
+	msgPointer->SetNumComponents(num);
+	
+	//Pack message data
+	msgPointer->Pack();
+}
+int OIGTLImageMessage::GetNumComponents()
+{
+	if (m_message.IsNull())
+		return -1;
+
+	igtl::ImageMessage::Pointer msgPointer;
+	msgPointer = static_cast<igtl::ImageMessage *>(m_message.GetPointer());
+	msgPointer->Unpack();
+
+	int retv = msgPointer->GetNumComponents();
+	
+	//Pack message data
+	msgPointer->Pack();
+	return retv;
+}
+
 
 void OIGTLImageMessage::initializeWithTestData(void)
 {
@@ -284,6 +431,15 @@ void OIGTLImageMessage::save(QString filename)
     return;
 
   QImage image = getQImage();
+	//getQImage currently does not set the color table
+	//lets do it here. Insert a default index table for indexed image type
+	if ( image.format() == QImage::Format_Indexed8)
+	{
+		QVector<QRgb> colors=QVector<QRgb> (256);
+		for ( int i = 0 ; i < 256 ; i ++)
+			colors[i] = qRgb(i,i,i);
+		image.setColorTable(colors);
+	}
   
   if (!image.isNull())
     image.save(filename);
@@ -307,7 +463,10 @@ void OIGTLImageMessage::setQImage(QImage image)
   if (image.isNull())
     return;
   else
-    image.convertToFormat(QImage::Format_ARGB32);
+	{
+	  if ( image.format() != QImage::Format_Indexed8 )  
+      image.convertToFormat(QImage::Format_ARGB32);
+	}
   
   if (m_message.IsNull())
     m_message.operator =(igtl::ImageMessage::New());
@@ -320,10 +479,16 @@ void OIGTLImageMessage::setQImage(QImage image)
   //-------------------------------------------------------------
   // Set parameters
   msgPointer->SetDimensions(image.width(), image.height(), 1);
-  msgPointer->SetScalarType(igtl::ImageMessage::TYPE_UINT32);
+	if ( image.format() != QImage::Format_Indexed8 ) 
+    msgPointer->SetScalarType(igtl::ImageMessage::TYPE_UINT32);
+	else
+		msgPointer->SetScalarType(igtl::ImageMessage::TYPE_UINT8);
   msgPointer->AllocateScalars();
 
   // Copy image data to igtl::ImageMessage
+	// for QImage::Format_Indexed8 this is going to lose the index table
+	// This may or may not be a problem depending on what happens to the 
+	// image at the other end
   int byteSizeOfImg = image.byteCount();
   memcpy(msgPointer->GetScalarPointer(), image.bits(), byteSizeOfImg);
 
@@ -343,11 +508,23 @@ QImage OIGTLImageMessage::getQImage(void)
 
   int i,j,k;
   msgPointer->GetDimensions(i,j,k);
-  QImage image(i, j, QImage::Format_ARGB32);
-  
+	QImage image = QImage();
+	if ( msgPointer->GetScalarType() == igtl::ImageMessage::TYPE_UINT32 ) 
+  	image = QImage::QImage(i, j, QImage::Format_ARGB32);
+	else
+	{
+		if ( msgPointer->GetScalarType() == igtl::ImageMessage::TYPE_UINT8 )
+	    //Should probably put in a default color table here or we might get some odd 
+	    //results if we save the image, but lets leave it won't be a problem in most cases
+			image = QImage::QImage(i, j, QImage::Format_Indexed8);
+		else	
+		{
+			QLOG_ERROR() << "OIGTLImageMessage::getQImage(void)" << ": Attempt to get QImage from image message of type " << msgPointer->GetScalarType() << " not implemented. \n";
+			return QImage();
+		}
+	}
   int byteSizeOfImg = image.byteCount();
   memcpy(image.bits(), msgPointer->GetScalarPointer(), byteSizeOfImg);
-
   //Pack message data
 	msgPointer->Pack();
 
