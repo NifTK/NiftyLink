@@ -69,6 +69,8 @@ void OIGTLImageMessage::getMatrix(igtl::Matrix4x4 &matrix)
 
 	msgPointer->Unpack();
   msgPointer->GetMatrix(matrix);
+	//Need to set the matrix or pack will overwrite it
+	msgPointer->SetMatrix(matrix);
 
 	//Pack message data
 	msgPointer->Pack();
