@@ -109,6 +109,10 @@ public:
   /// \brief Returns the image's origin / orientation matrix
 	void getMatrix(igtl::Matrix4x4 &matrix);
 
+	/// \brief Set the matrixset flag to true to prevent the image matrix being 
+	/// destroyed during pack and unpack. This should be done when messages are received.
+	void PreserveMatrix();
+
   /// \brief Sets the image's normals
 	void setNormals(float t[3], float s[3], float n[3]);
 

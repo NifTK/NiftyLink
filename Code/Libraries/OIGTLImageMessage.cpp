@@ -69,12 +69,18 @@ void OIGTLImageMessage::getMatrix(igtl::Matrix4x4 &matrix)
 
 	msgPointer->Unpack();
   msgPointer->GetMatrix(matrix);
-	//Need to set the matrix or pack will overwrite it
-	msgPointer->SetMatrix(matrix);
 
 	//Pack message data
 	msgPointer->Pack();
 
+}
+void OIGTLImageMessage::PreserveMatrix()
+{
+	if (m_message.IsNull())
+		return;
+	igtl::ImageMessage::Pointer msgPointer;
+	msgPointer = static_cast<igtl::ImageMessage *>(m_message.GetPointer());
+	msgPointer->PreserveMatrix();
 }
 
 void OIGTLImageMessage::setNormals(float t[3], float s[3], float n[3])
