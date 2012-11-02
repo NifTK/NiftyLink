@@ -9,7 +9,7 @@
 
 In addition, the OpenIGTLink license is reproduced below. NiftyLink
 uses a modified version of OpenIGTLink available from
-<a href="@NIFTYLINK_OPENIGTLINK_LOCATION@">here</a>, and this documentation
+<a href="@NIFTYLINK_OPENIGTLINK_URL@">here</a>, and this documentation
 was generated from commit @NIFTYLINK_OPENIGTLINK_REVISION_ID@.
 
 \include License_OpenIGTLink.txt

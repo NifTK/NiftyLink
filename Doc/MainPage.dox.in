@@ -21,7 +21,7 @@ This version of the NiftyLink package has been built using
 
 \li Git revision @NIFTYLINK_SVN_REVISION_ID@
 \li Qt version @QT_VERSION_MAJOR@.@QT_VERSION_MINOR@.@QT_VERSION_PATCH@
-\li OpenIGTLink downloaded from <a href="@NIFTYLINK_OPENIGTLINK_LOCATION@">here</a>, version: @NIFTYLINK_OPENIGTLINK_REVISION_ID@
+\li A modifed version of OpenIGTLink downloaded from <a href="@NIFTYLINK_OPENIGTLINK_URL@">here</a>, version: @NIFTYLINK_OPENIGTLINK_REVISION_ID@
 
 which themselves may depend on other libraries.
 
