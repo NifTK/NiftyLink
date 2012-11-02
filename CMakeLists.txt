@@ -2,20 +2,13 @@
 #
 #  NiftyLink:  A software library to facilitate communication over OpenIGTLink. 
 #  
-#              http://cmic.cs.ucl.ac.uk/
-#              http://www.ucl.ac.uk/
-#
-#  Copyright (c) UCL : See LICENSE.txt in the top level directory for details. 
-#
-#  Last Changed      : $LastChangedDate: 2011-12-01 15:19:31 +0000 (Thu, 01 Dec 2011) $ 
-#  Revision          : $Revision: 7901 $
-#  Last modified by  : $Author: gerge $
-#
-#  Original author   : m.clarkson@ucl.ac.uk
+#  Copyright (c) University College London (UCL). All rights reserved.
 #
 #  This software is distributed WITHOUT ANY WARRANTY; without even
 #  the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR
-#  PURPOSE.  See the above copyright notices for more information.
+#  PURPOSE.  
+#
+#  See LICENSE.txt in the top level directory for details. 
 #
 #=================================================================================*/
 
@@ -157,7 +150,8 @@ SET(NIFTYLINK_USER_CONTACT "https://www.mailinglists.ucl.ac.uk/mailman/listinfo/
 SET(NIFTYLINK_DEVELOPER_CONTACT "https://www.mailinglists.ucl.ac.uk/mailman/listinfo/niftk-developers" CACHE STRING "Contact address for developers." FORCE )
 SET(NIFTYLINK_VERSION_STRING "${NIFTYLINK_VERSION_MAJOR}.${NIFTYLINK_VERSION_MINOR}.${NIFTYLINK_VERSION_PATCH}" CACHE STRING "String to describe fully named version" FORCE)
 SET(NIFTYLINK_DEPLOY_NAME "${NIFTYLINK_NAME}-${NIFTYLINK_VERSION_STRING}" CACHE STRING "String to describe deployed name" FORCE)
-SET(NIFTYLINK_OPENIGTLINK_LOCATION "git://github.com/NifTK/OpenIGTLink.git" CACHE STRING "URL of OpenIGTLink, so we can refer to it in documentation" FORCE)
+SET(NIFTYLINK_OPENIGTLINK_LOCATION "git://github.com/NifTK/OpenIGTLink.git" CACHE STRING "git URL of OpenIGTLink, so we can download" FORCE)
+SET(NIFTYLINK_OPENIGTLINK_URL "http://github.com/NifTK/OpenIGTLink/tree/development"  CACHE STRING "URL of OpenIGTLink, so we can refer to it in documentation" FORCE)
 
 ######################################################################
 # Hide these variables from the user, unless they are 'advanced' :-)
@@ -204,9 +198,7 @@ SET(NIFTYLINK_ADDITIONAL_CXX_FLAGS "" CACHE STRING "Additional CXX Flags")
 MARK_AS_ADVANCED(NIFTYLINK_ADDITIONAL_CXX_FLAGS)
 
 ######################################################################
-# Find Qt. We need to check for Qt first, before we go ahead and do
-# the Superbuild, because VTK needs to know if we have Qt.
-# Qt and VTK are mandatory, so in effect VTK is always built with Qt.
+# Find Qt. 
 ######################################################################
 
 FIND_PACKAGE(Qt4 COMPONENTS QtCore QtXml QtGui QtNetwork REQUIRED)
@@ -217,18 +209,6 @@ SET(QT_USE_PHONON 0)
 SET(QT_USE_QTTEST 1)    
 INCLUDE(${QT_USE_FILE})
   
-# This is to pass to VTK, so VTK is built with Qt support.
-IF(BUILD_SUPERBUILD)
-  SET(VTK_QT_ARGS
-    -DDESIRED_QT_VERSION:STRING=4
-    -DVTK_USE_GUISUPPORT:BOOL=ON
-    -DVTK_USE_QVTK_QTOPENGL:BOOL=ON
-    -DVTK_USE_QVTK:BOOL=ON
-    -DVTK_USE_QT:BOOL=ON
-    -DQT_QMAKE_EXECUTABLE:FILEPATH=${QT_QMAKE_EXECUTABLE}
-   )
-ENDIF(BUILD_SUPERBUILD)
-
 ########################################################################
 # Now, if required, do the SuperBuild
 # If we are doing SuperBuild 
@@ -308,6 +288,7 @@ CONFIGURE_FILE(${CMAKE_SOURCE_DIR}/Doc/Doxygen/niftylinkdoxygen.pl.in ${CMAKE_BI
 CONFIGURE_FILE(${CMAKE_SOURCE_DIR}/Doc/Doxygen/doxygen.config.in ${CMAKE_BINARY_DIR}/doxygen.config)
 CONFIGURE_FILE(${CMAKE_SOURCE_DIR}/Doc/License_OpenIGTLink.txt ${CMAKE_BINARY_DIR}/LICENSE_OpenIGTLink.txt @ONLY)
 CONFIGURE_FILE(${CMAKE_SOURCE_DIR}/Doc/License_Qt.txt ${CMAKE_BINARY_DIR}/LICENSE_QT.txt @ONLY)
+CONFIGURE_FILE(${CMAKE_SOURCE_DIR}/Doc/License_QsLog.txt ${CMAKE_BINARY_DIR}/LICENSE_QsLog.txt @ONLY)
 CONFIGURE_FILE(${CMAKE_SOURCE_DIR}/LICENSE.txt ${CMAKE_BINARY_DIR}/LICENSE.txt @ONLY)
 CONFIGURE_FILE(${CMAKE_SOURCE_DIR}/README.txt ${CMAKE_BINARY_DIR}/README.txt @ONLY)
 

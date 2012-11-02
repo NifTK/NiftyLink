@@ -2,20 +2,13 @@
 #
 #  NiftyLink:  A software library to facilitate communication over OpenIGTLink. 
 #  
-#              http://cmic.cs.ucl.ac.uk/
-#              http://www.ucl.ac.uk/
-#
-#  Copyright (c) UCL : See LICENSE.txt in the top level directory for details. 
-#
-#  Last Changed      : $LastChangedDate: 2011-12-01 15:19:31 +0000 (Thu, 01 Dec 2011) $ 
-#  Revision          : $Revision: 7901 $
-#  Last modified by  : $Author: gerge $
-#
-#  Original author   : m.clarkson@ucl.ac.uk
+#  Copyright (c) University College London (UCL). All rights reserved.
 #
 #  This software is distributed WITHOUT ANY WARRANTY; without even
 #  the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR
-#  PURPOSE.  See the above copyright notices for more information.
+#  PURPOSE.  
+#
+#  See LICENSE.txt in the top level directory for details. 
 #
 #=================================================================================*/
 
@@ -59,24 +52,7 @@ set(CTEST_CUSTOM_WARNING_EXCEPTION
   "[Kk][Ww][Ss]tyle.*kws.*h"
   "[Kk][Ww][Ss]tyle.*metaCommand.*cxx"
 
-  # vtk suppressions
-  "vtkfreetype"
-  "Utilities.vtktiff"
-  "VTK.*IO.vtkMySQLQuery.cxx"
-  "VTK.*Utilities.vtkexodus2"
-  "VTK.*Utilities.vtklibproj"
-  "VTK.*Utilities.vtksqlite"
-  "VTK.*Utilities.vtkmetaio"
-  "VTK.*warn_unused_result"
-  "VTK.*Filtering.*cxx"
-  "VTK.*IO.*cxx"
-  "VTK.*Infovis.*cxx"
-
-  # qt suppressions from vtk...
-  # Some VTK dashboards include building bits of Qt which produce lots of
-  # the following warnings when built with the MS compilers. Qt guys should
-  # fix their code. Until they do, keep the Qt chatter off the VTK dashboard
-  # results:
+  # Qt suppressions.
   "include.[Qq]t([Cc]ore|[Gg]ui).*warning C4127: conditional expression is constant"
   "[Qq]t.*h.*warning.*declaration of .* shadows a member of .this"
   "[Qq]t.*h.*warning.*(copy constructor|assignment operator) could not be generated"  
@@ -87,10 +63,6 @@ set(CTEST_CUSTOM_WARNING_EXCEPTION
   # For NifTK in Trac #1278 and subsequently Trac #1287 for NiftyLink. Suppress Qt warnings on Lion
   ".*[Qq][Gg]lobal.h.*warning.*This version of Mac OS X is unsupported.*"
   
-  # PythonQt suppressions
-  "PythonQt.*src.*PythonQt.*(cpp|h)"
-  "include.PythonQt.PythonQt.*h"
-
   # Suppressing warnings about duplicate libraries in Darwin
   # At some point this may be addressed by CMake feature request: 
   # http://public.kitware.com/Bug/view.php?id=10179
