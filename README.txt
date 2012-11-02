@@ -28,12 +28,17 @@ where the modified version of OpenIGTLink can be downloaded from:
 
 @NIFTYLINK_OPENIGTLINK_URL@.
 
-Library : Qt
-Website : http://qt-project.org/
-Purpose : Cross platform general purpose library. 
-License : http://opensource.org/licenses/lgpl-2.1.php (LGPL)
-
 Library : OpenIGTLink
 Website : http://www.na-mic.org/Wiki/index.php/OpenIGTLink
 Purpose : Network protocol, somewhat tailored to medical imaging.
-License : http://www.opensource.org/licenses/bsd-license.php (BSD)
+License : BSD
+
+Library : Qt
+Website : http://qt-project.org/
+Purpose : Cross platform general purpose library. 
+License : LGPL 2.1
+
+Library : QsLog
+Website : https://bitbucket.org/razvanpetru/qt-components/wiki/QsLog
+Purpose : Logging library.
+License : BSD
