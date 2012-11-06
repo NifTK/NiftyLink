@@ -146,6 +146,8 @@ SET(NIFTYLINK_WIKI_URL "https://cmicdev.cs.ucl.ac.uk/trac/wiki/MidasPlatform" CA
 SET(NIFTYLINK_WIKI_TEXT "wiki" CACHE STRING "Wiki text" FORCE )
 SET(NIFTYLINK_DASHBOARD_URL "https://cmicdev.cs.ucl.ac.uk/cdash/index.php?project=UCLToolkit" CACHE STRING "Dashboard URL" FORCE)
 SET(NIFTYLINK_DASHBOARD_TEXT "dashboard" CACHE STRING "Dashboard text" FORCE)
+SET(NIFTYLINK_DOCUMENTATION_URL "http://cmicdev.cs.ucl.ac.uk/NiftyLink/html/index.html" CACHE STRING "Documentation URL" FORCE)
+SET(NIFTYLINK_DOCUMENTATION_TEXT "doxygen" CACHE STRING "Documentation text" FORCE)
 SET(NIFTYLINK_USER_CONTACT "https://www.mailinglists.ucl.ac.uk/mailman/listinfo/niftk-users" CACHE STRING "Contact address for users." FORCE )
 SET(NIFTYLINK_DEVELOPER_CONTACT "https://www.mailinglists.ucl.ac.uk/mailman/listinfo/niftk-developers" CACHE STRING "Contact address for developers." FORCE )
 SET(NIFTYLINK_VERSION_STRING "${NIFTYLINK_VERSION_MAJOR}.${NIFTYLINK_VERSION_MINOR}.${NIFTYLINK_VERSION_PATCH}" CACHE STRING "String to describe fully named version" FORCE)
