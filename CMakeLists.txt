@@ -132,7 +132,7 @@ IF (NOT BUILD_SHARED_LIBS)
 ENDIF()
 
 OPTION(BUILD_TESTING "Build Unit tests in NiftyLink/Testing/Code" ON)
-OPTION(NIFTYLINK_OIGTLINK_DEV "Build the development version of OpenIGTLink" OFF)
+OPTION(NIFTYLINK_OIGTLINK_DEV "Build the development version of OpenIGTLink" ON)
 OPTION(NIFTYLINK_CHECK_COVERAGE "Enable/Disable code coverage checking." OFF)
 
 ######################################################################
