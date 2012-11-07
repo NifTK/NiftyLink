@@ -28,8 +28,7 @@ SET(OPENIGTLINK_DEPENDS ${proj})
 IF(NOT DEFINED OpenIGTLink_DIR)
 
     ExternalProject_Add(${proj}
-    URL ${NIFTYLINK_OPENIGTLINK_LOCATION}
-    URL_MD5 d5ec0dc26bd66be759986fcb6baaf5ab
+    ${OIGTL_OPTIONS}
     BINARY_DIR ${proj}-build
     INSTALL_COMMAND ""
     CMAKE_GENERATOR ${GEN}

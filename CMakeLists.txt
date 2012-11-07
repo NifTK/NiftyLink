@@ -132,6 +132,7 @@ IF (NOT BUILD_SHARED_LIBS)
 ENDIF()
 
 OPTION(BUILD_TESTING "Build Unit tests in NiftyLink/Testing/Code" ON)
+OPTION(NIFTYLINK_OIGTLINK_DEV "Build the development version of OpenIGTLink" OFF)
 OPTION(NIFTYLINK_CHECK_COVERAGE "Enable/Disable code coverage checking." OFF)
 
 ######################################################################
@@ -153,7 +154,9 @@ SET(NIFTYLINK_DEVELOPER_CONTACT "https://www.mailinglists.ucl.ac.uk/mailman/list
 SET(NIFTYLINK_VERSION_STRING "${NIFTYLINK_VERSION_MAJOR}.${NIFTYLINK_VERSION_MINOR}.${NIFTYLINK_VERSION_PATCH}" CACHE STRING "String to describe fully named version" FORCE)
 SET(NIFTYLINK_DEPLOY_NAME "${NIFTYLINK_NAME}-${NIFTYLINK_VERSION_STRING}" CACHE STRING "String to describe deployed name" FORCE)
 SET(NIFTYLINK_OPENIGTLINK_VERSION "3caf6120c7"  CACHE STRING "OpenIGTLink version" FORCE)
+SET(NIFTYLINK_OPENIGTLINK_MD5 "d5ec0dc26bd66be759986fcb6baaf5ab" CACHE STRING "OpenIGTLink MD5" FORCE)
 SET(NIFTYLINK_OPENIGTLINK_LOCATION "http://cmic.cs.ucl.ac.uk/platform/dependencies/NifTK-OpenIGTLink-${NIFTYLINK_OPENIGTLINK_VERSION}.tar.gz" CACHE STRING "Location of OpenIGTLink .tar.gz" FORCE)
+SET(NIFTYLINK_OPENIGTLINK_LOCATION_DEV "https://github.com/NifTK/OpenIGTLink.git" CACHE STRING "Development version of OpenIGTLink." FORCE)
 
 ######################################################################
 # Hide these variables from the user, unless they are 'advanced' :-)
@@ -175,8 +178,25 @@ MARK_AS_ADVANCED(NIFTYLINK_VERSION_STRING)
 MARK_AS_ADVANCED(NIFTYLINK_DEPLOY_NAME)
 MARK_AS_ADVANCED(NIFTYLINK_CHECK_COVERAGE)
 MARK_AS_ADVANCED(NIFTYLINK_OPENIGTLINK_VERSION)
+MARK_AS_ADVANCED(NIFTYLINK_OPENIGTLINK_MD5)
 MARK_AS_ADVANCED(NIFTYLINK_OPENIGTLINK_LOCATION)
+MARK_AS_ADVANCED(NIFTYLINK_OPENIGTLINK_LOCATION_DEV)
 MARK_AS_ADVANCED(UNAME)
+
+######################################################################
+# Sort out which version of OpenIGTLink we are using
+######################################################################
+IF(NIFTYLINK_OIGTLINK_DEV)
+  SET(OIGTL_OPTIONS
+    GIT_REPOSITORY ${NIFTYLINK_OPENIGTLINK_LOCATION_DEV}
+    GIT_TAG development
+  )
+ELSE()
+  SET(OIGTL_OPTIONS
+    URL ${NIFTYLINK_OPENIGTLINK_LOCATION}
+    URL_MD5 ${NIFTYLINK_OPENIGTLINK_MD5}
+  )
+ENDIF()
 
 ######################################################################
 # Setup the path to load CMake macros, and extra CMake files.
