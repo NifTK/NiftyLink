@@ -264,7 +264,14 @@ ENDIF(BUILD_SUPERBUILD)
 FIND_PACKAGE(OpenIGTLink REQUIRED)
 IF(OpenIGTLink_FOUND)
   MESSAGE("Found OpenIGTLink")    
-  INCLUDE(${OpenIGTLink_USE_FILE})  
+  INCLUDE(${OpenIGTLink_USE_FILE}) 
+  IF(NIFTYLINK_OIGTLINK_DEV)
+    mitkFunctionGetVersion(${OpenIGTLink_SOURCE_DIR} OPENIGTLINK)
+    MESSAGE("OpenIGTLink git version=${OPENIGTLINK_REVISION_ID}")   
+  ELSE()
+    SET(OPENIGTLINK_REVISION_ID ${NIFTYLINK_OPENIGTLINK_VERSION})
+    MESSAGE("OpenIGTLink version=${OPENIGTLINK_REVISION_ID}")
+  ENDIF()
 ENDIF(OpenIGTLink_FOUND)
 
 ######################################################################
@@ -274,7 +281,6 @@ mitkFunctionGetVersion(${CMAKE_SOURCE_DIR} NIFTYLINK_GIT)
 MESSAGE("CMAKE_SOURCE_DIR=${CMAKE_SOURCE_DIR}")
 MESSAGE("CMAKE_BINARY_DIR=${CMAKE_BINARY_DIR}")
 MESSAGE("Qt version=${QT_VERSION_MAJOR}.${QT_VERSION_MINOR}.${QT_VERSION_PATCH}")
-MESSAGE("OpenIGTLink version=${NIFTYLINK_OPENIGTLINK_VERSION}")
 MESSAGE("NiftyLink git version=${NIFTYLINK_GIT_REVISION_ID}")
 
 ######################################################################
