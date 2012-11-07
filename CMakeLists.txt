@@ -152,8 +152,8 @@ SET(NIFTYLINK_USER_CONTACT "https://www.mailinglists.ucl.ac.uk/mailman/listinfo/
 SET(NIFTYLINK_DEVELOPER_CONTACT "https://www.mailinglists.ucl.ac.uk/mailman/listinfo/niftk-developers" CACHE STRING "Contact address for developers." FORCE )
 SET(NIFTYLINK_VERSION_STRING "${NIFTYLINK_VERSION_MAJOR}.${NIFTYLINK_VERSION_MINOR}.${NIFTYLINK_VERSION_PATCH}" CACHE STRING "String to describe fully named version" FORCE)
 SET(NIFTYLINK_DEPLOY_NAME "${NIFTYLINK_NAME}-${NIFTYLINK_VERSION_STRING}" CACHE STRING "String to describe deployed name" FORCE)
-SET(NIFTYLINK_OPENIGTLINK_LOCATION "git://github.com/NifTK/OpenIGTLink.git" CACHE STRING "git URL of OpenIGTLink, so we can download" FORCE)
-SET(NIFTYLINK_OPENIGTLINK_URL "http://github.com/NifTK/OpenIGTLink/tree/development"  CACHE STRING "URL of OpenIGTLink, so we can refer to it in documentation" FORCE)
+SET(NIFTYLINK_OPENIGTLINK_VERSION "3caf6120c7"  CACHE STRING "OpenIGTLink version" FORCE)
+SET(NIFTYLINK_OPENIGTLINK_LOCATION "http://cmic.cs.ucl.ac.uk/platform/dependencies/NifTK-OpenIGTLink-${NIFTYLINK_OPENIGTLINK_VERSION}.tar.gz" CACHE STRING "Location of OpenIGTLink .tar.gz" FORCE)
 
 ######################################################################
 # Hide these variables from the user, unless they are 'advanced' :-)
@@ -167,12 +167,16 @@ MARK_AS_ADVANCED(NIFTYLINK_WIKI_URL)
 MARK_AS_ADVANCED(NIFTYLINK_WIKI_TEXT)
 MARK_AS_ADVANCED(NIFTYLINK_DASHBOARD_URL)
 MARK_AS_ADVANCED(NIFTYLINK_DASHBOARD_TEXT)
+MARK_AS_ADVANCED(NIFTYLINK_DOCUMENTATION_URL)
+MARK_AS_ADVANCED(NIFTYLINK_DOCUMENTATION_TEXT)
 MARK_AS_ADVANCED(NIFTYLINK_USER_CONTACT)
 MARK_AS_ADVANCED(NIFTYLINK_DEVELOPER_CONTACT)
 MARK_AS_ADVANCED(NIFTYLINK_VERSION_STRING)
 MARK_AS_ADVANCED(NIFTYLINK_DEPLOY_NAME)
 MARK_AS_ADVANCED(NIFTYLINK_CHECK_COVERAGE)
+MARK_AS_ADVANCED(NIFTYLINK_OPENIGTLINK_VERSION)
 MARK_AS_ADVANCED(NIFTYLINK_OPENIGTLINK_LOCATION)
+MARK_AS_ADVANCED(UNAME)
 
 ######################################################################
 # Setup the path to load CMake macros, and extra CMake files.
@@ -246,13 +250,12 @@ ENDIF(OpenIGTLink_FOUND)
 ######################################################################
 # Retrieve version info.
 ######################################################################
-mitkFunctionGetVersion(${CMAKE_SOURCE_DIR} NIFTYLINK_SVN)
-mitkFunctionGetVersion(${OpenIGTLink_SOURCE_DIR} NIFTYLINK_OPENIGTLINK)
+mitkFunctionGetVersion(${CMAKE_SOURCE_DIR} NIFTYLINK_GIT)
 MESSAGE("CMAKE_SOURCE_DIR=${CMAKE_SOURCE_DIR}")
 MESSAGE("CMAKE_BINARY_DIR=${CMAKE_BINARY_DIR}")
 MESSAGE("Qt version=${QT_VERSION_MAJOR}.${QT_VERSION_MINOR}.${QT_VERSION_PATCH}")
-MESSAGE("OpenIGTLink version=${NIFTYLINK_OPENIGTLINK_REVISION_ID}")
-MESSAGE("NiftyLink git version=${NIFTYLINK_SVN_REVISION_ID}")
+MESSAGE("OpenIGTLink version=${NIFTYLINK_OPENIGTLINK_VERSION}")
+MESSAGE("NiftyLink git version=${NIFTYLINK_GIT_REVISION_ID}")
 
 ######################################################################
 # Test for some required system information. 

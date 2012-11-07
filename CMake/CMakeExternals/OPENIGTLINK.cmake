@@ -27,14 +27,9 @@ SET(OPENIGTLINK_DEPENDS ${proj})
  
 IF(NOT DEFINED OpenIGTLink_DIR)
 
-    SET(revision_tag development)
-    IF(${proj}_REVISION_TAG)
-        SET(revision_tag ${${proj}_REVISION_TAG})
-    ENDIF()
-
     ExternalProject_Add(${proj}
-    GIT_REPOSITORY ${NIFTYLINK_OPENIGTLINK_LOCATION}
-    GIT_TAG ${revision_tag}
+    URL ${NIFTYLINK_OPENIGTLINK_LOCATION}
+    URL_MD5 d5ec0dc26bd66be759986fcb6baaf5ab
     BINARY_DIR ${proj}-build
     INSTALL_COMMAND ""
     CMAKE_GENERATOR ${GEN}
