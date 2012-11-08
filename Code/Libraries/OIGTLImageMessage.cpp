@@ -507,13 +507,17 @@ QImage OIGTLImageMessage::getQImage(void)
   msgPointer->GetDimensions(i,j,k);
 	QImage image = QImage();
 	if ( msgPointer->GetScalarType() == igtl::ImageMessage::TYPE_UINT32 ) 
-  	image = QImage::QImage(i, j, QImage::Format_ARGB32);
+	{
+	  image = QImage(i, j, QImage::Format_ARGB32);
+	}
 	else
 	{
 		if ( msgPointer->GetScalarType() == igtl::ImageMessage::TYPE_UINT8 )
-	    //Should probably put in a default color table here or we might get some odd 
-	    //results if we save the image, but lets leave it won't be a problem in most cases
-			image = QImage::QImage(i, j, QImage::Format_Indexed8);
+		{
+      //Should probably put in a default color table here or we might get some odd
+      //results if we save the image, but lets leave it won't be a problem in most cases
+      image = QImage(i, j, QImage::Format_Indexed8);
+		}
 		else	
 		{
 			QLOG_ERROR() << "OIGTLImageMessage::getQImage(void)" << ": Attempt to get QImage from image message of type " << msgPointer->GetScalarType() << " not implemented. \n";
