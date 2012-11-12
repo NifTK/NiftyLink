@@ -157,6 +157,8 @@ SET(NIFTYLINK_OPENIGTLINK_VERSION "3caf6120c7"  CACHE STRING "OpenIGTLink versio
 SET(NIFTYLINK_OPENIGTLINK_MD5 "d5ec0dc26bd66be759986fcb6baaf5ab" CACHE STRING "OpenIGTLink MD5" )
 SET(NIFTYLINK_OPENIGTLINK_LOCATION "http://cmic.cs.ucl.ac.uk/platform/dependencies/NifTK-OpenIGTLink-${NIFTYLINK_OPENIGTLINK_VERSION}.tar.gz" CACHE STRING "Location of OpenIGTLink .tar.gz" )
 SET(NIFTYLINK_OPENIGTLINK_LOCATION_DEV "git://github.com/NifTK/OpenIGTLink.git" CACHE STRING "Development version of OpenIGTLink." )
+SET(NIFTYLINK_OPENIGTLINK_LOCATION_URL "https://github.com/NifTK/OpenIGTLink" CACHE STRING "OpenIGTLink on Github" FORCE )
+SET(NIFTYLINK_QT_URL "http://cmic.cs.ucl.ac.uk/platform/dependencies/qt-everywhere-opensource-src-4.7.4.tar.gz" CACHE STRING "Example Qt download" FORCE )
 
 ######################################################################
 # Hide these variables from the user, unless they are 'advanced' :-)
