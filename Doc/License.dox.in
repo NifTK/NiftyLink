@@ -11,28 +11,17 @@ NiftyLink also uses the following libraries:
 \li \ref LicenseQt
 \li \ref LicenseQsLog
 
-\section LicenseOpenIGTLink OpenIGTLink
+The licenses for these packages are included below for reference. Please do read them.
 
-In addition, the OpenIGTLink license is reproduced below. NiftyLink
-uses a modified version of OpenIGTLink available from
-<a href="@NIFTYLINK_OPENIGTLINK_URL@">here</a>, and this documentation
-was generated from commit @NIFTYLINK_OPENIGTLINK_REVISION_ID@.
+\section LicenseOpenIGTLink OpenIGTLink
 
 \include License_OpenIGTLink.txt
 
 \section LicenseQt Qt
 
-NiftyLink uses Qt under the LGPL v2.1 license, reproduced below for convenience.
-Qt was downloaded from the main Qt website, and this version of NiftyLink was
-built using Qt version @QT_VERSION_MAJOR@.@QT_VERSION_MINOR@.@QT_VERSION_PATCH@.
-
 \include License_Qt.txt
 
 \section LicenseQsLog QsLog
-
-NiftyLink also uses a library called QsLog
-described <a href="https://bitbucket.org/razvanpetru/qt-components/wiki/QsLog">here</a>,
-with the license reproduced below.
 
 \include License_QsLog.txt
 
