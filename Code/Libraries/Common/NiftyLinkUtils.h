@@ -144,4 +144,10 @@ extern "C++" NIFTYLINKCOMMON_WINEXPORT QString resolveHostName(const QString &in
 /// \brief This function creates a random 4x4 test matrix 
 extern "C++" NIFTYLINKCOMMON_WINEXPORT void CreateRandomTransformMatrix(igtl::Matrix4x4& matrix);
 
+/// \brief Returns the time as igtlUint64 in nanoseconds.
+extern "C++" NIFTYLINKCOMMON_WINEXPORT igtlUint64 GetTimeInNanoSeconds(igtl::TimeStamp* time);
+
+/// \brief Returns the difference in nanoseconds.
+extern "C++" NIFTYLINKCOMMON_WINEXPORT igtlUint64 GetDifferenceInNanoSeconds(igtl::TimeStamp* timeA, igtl::TimeStamp* timeB);
+
 #endif
