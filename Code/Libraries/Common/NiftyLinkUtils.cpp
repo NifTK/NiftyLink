@@ -12,6 +12,7 @@
 
 #include "NiftyLinkUtils.h"
 
+//-----------------------------------------------------------------------------
 bool validateIp(const QString &inputIP)
 {
 	QStringList nums = inputIP.split(".");
@@ -31,6 +32,8 @@ bool validateIp(const QString &inputIP)
 	return true;
 }
 
+
+//-----------------------------------------------------------------------------
 QString resolveHostName(const QString &input)
 {
 	if (validateIp(input))
@@ -51,6 +54,8 @@ QString resolveHostName(const QString &input)
 
 }
 
+
+//-----------------------------------------------------------------------------
 QString getLocalHostAddress(void)
 {
     QNetworkConfigurationManager mgr;
@@ -74,6 +79,8 @@ QString getLocalHostAddress(void)
     return QString("UNKNOWN");
 }
 
+
+//-----------------------------------------------------------------------------
 void CreateRandomTransformMatrix(igtl::Matrix4x4& matrix)
 {
   float position[3];
@@ -104,6 +111,8 @@ void CreateRandomTransformMatrix(igtl::Matrix4x4& matrix)
   //igtl::PrintMatrix(matrix);
 }
 
+
+//-----------------------------------------------------------------------------
 void InitMessageTypes(mapStrMsgType &types)
 {
   types["NONDEFINED"] = NONDEFINED;
@@ -187,4 +196,37 @@ void InitMessageTypes(mapStrMsgType &types)
   types["STT_TRANS"] = STT_TRANS;
   types["STP_TRANS"] = STP_TRANS;
   types["RTS_TRANS"] = RTS_TRANS;
+}
+
+//-----------------------------------------------------------------------------
+igtlUint64 GetTimeInNanoSeconds(igtl::TimeStamp* time)
+{
+  igtlUint32 seconds, nanoseconds;
+  time->GetTimeStamp(&seconds, &nanoseconds);
+
+  igtlUint64 result = (igtlUint64)seconds * 1000000000 + (igtlUint64)nanoseconds;
+  return result;
+}
+
+
+//-----------------------------------------------------------------------------
+igtlUint64 GetDifferenceInNanoSeconds(igtl::TimeStamp* timeA, igtl::TimeStamp* timeB)
+{
+  igtlUint64 a = GetTimeInNanoSeconds(timeA);
+  igtlUint64 b = GetTimeInNanoSeconds(timeB);
+  igtlUint64 d;
+
+  if (a>b)
+  {
+    d = a-b;
+  }
+  else if (b>a)
+  {
+    d = b-a;
+  }
+  else
+  {
+    d = 0;
+  }
+  return d;
 }
