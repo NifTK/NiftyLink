@@ -11,6 +11,7 @@
 =============================================================================*/
 
 #include "NiftyLinkUtils.h"
+#include <cmath>
 
 //-----------------------------------------------------------------------------
 bool validateIp(const QString &inputIP)
@@ -206,6 +207,18 @@ igtlUint64 GetTimeInNanoSeconds(igtl::TimeStamp* time)
 
   igtlUint64 result = (igtlUint64)seconds * 1000000000 + (igtlUint64)nanoseconds;
   return result;
+}
+
+
+//-----------------------------------------------------------------------------
+void SetTimeInNanoSeconds(igtl::TimeStamp* time, const igtlUint64& totalNanos)
+{
+  igtlUint32 seconds, nanoseconds;
+
+  seconds = (igtlUint64)totalNanos / (igtlUint64)1000000000;
+  nanoseconds = (igtlUint64)totalNanos % (igtlUint64)1000000000;
+
+  time->SetTime(seconds, nanoseconds);
 }
 
 

@@ -147,6 +147,9 @@ extern "C++" NIFTYLINKCOMMON_WINEXPORT void CreateRandomTransformMatrix(igtl::Ma
 /// \brief Returns the time as igtlUint64 in nanoseconds.
 extern "C++" NIFTYLINKCOMMON_WINEXPORT igtlUint64 GetTimeInNanoSeconds(igtl::TimeStamp* time);
 
+/// \brief Similar to GetTimeInNanoSeconds, enables the setting of a time stamp in nanoseconds.
+extern "C++" NIFTYLINKCOMMON_WINEXPORT void SetTimeInNanoSeconds(igtl::TimeStamp* time, const igtlUint64& nanos);
+
 /// \brief Returns the difference in nanoseconds.
 extern "C++" NIFTYLINKCOMMON_WINEXPORT igtlUint64 GetDifferenceInNanoSeconds(igtl::TimeStamp* timeA, igtl::TimeStamp* timeB);
 
