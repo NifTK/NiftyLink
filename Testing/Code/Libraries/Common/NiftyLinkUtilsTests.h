@@ -22,7 +22,5 @@ class UtilsTests: public QObject
 private slots:
      void initTestCase();
      void cleanupTestCase();
-     void myFirstTest();
-     void mySecondTest();
-     void myThirdTest();
+     void timeStampSetGetDifferenceTest();
  };
