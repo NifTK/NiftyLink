@@ -22,7 +22,7 @@ OIGTLMessage::OIGTLMessage(void)
   m_timeCreated->GetTime();
   m_senderPort = -1;
   m_senderHostName = QString("localhost");
-  m_id = m_timeCreated->GetTimeStampUint64();
+  m_id = GetTimeInNanoSeconds(m_timeCreated);
   
   //m_timeCreated = NULL;
   m_resolution = 0;
@@ -306,6 +306,7 @@ void OIGTLMessage::update(QString hostname)
 
   m_timeCreated.operator =(ts);
   m_senderHostName = hostname;
+  m_id = GetTimeInNanoSeconds(ts);
   
   m_message->Unpack(); 
 
