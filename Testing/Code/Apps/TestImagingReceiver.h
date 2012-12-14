@@ -54,4 +54,4 @@ private:
   igtlUint64               m_CumulativeTime;
 };
 
-#endif TestImagingReceiver_H
+#endif // TestImagingReceiver_H

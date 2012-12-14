@@ -58,4 +58,4 @@ private:
 
 };
 
-#endif TestImagingSender_H
+#endif // TestImagingSender_H
