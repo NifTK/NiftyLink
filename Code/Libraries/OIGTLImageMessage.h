@@ -143,7 +143,7 @@ public:
   void save(QString filename);
 
   /// \brief Sets the message's contents in QImage format
-  void setQImage(QImage image);
+  void setQImage(const QImage& image);
 
   /// \brief Returns the message's contents in QImage format
   QImage getQImage(void);
