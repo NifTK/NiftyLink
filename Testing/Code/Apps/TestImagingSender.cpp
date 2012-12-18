@@ -134,14 +134,14 @@ void TestImagingSender::Run()
 
     // Calculate results
     igtlUint64 result = GetDifferenceInNanoSeconds(endTime, startTime);
-    double bps = (m_NumberOfIterations*(m_Image->byteCount())*8) / ((double)result/(double)1000000000.0);
+    double bps = ((double)m_NumberOfIterations*((double)m_Image->byteCount())*(double)8) / ((double)result/(double)1000000000.0);
 
     std::cout << "Timing: for " << m_NumberOfIterations << " iterations:" << std::endl;
     std::cout << "  total time=" << result / (double)1000000000.0 << "(s)" << std::endl;
     std::cout << "         fps=" << 1.0/((double)result/(double)m_NumberOfIterations/1000000000.0) << std::endl;
     std::cout << "         bps=" << bps << std::endl;
-    std::cout << "        kbps=" << bps/1024 << std::endl;
-    std::cout << "        mbps=" << bps/1024/1024 << std::endl;
+    std::cout << "        kbps=" << bps/(double)1024 << std::endl;
+    std::cout << "        mbps=" << bps/(double)1024/(double)1024 << std::endl;
     std::cout << "     packing=" << m_TimePackingMessage / (double)1000000000.0 << "(s)" << " (" << 100.0*(double)m_TimePackingMessage/(double)result << "%)" << std::endl;
 
     // Tidy up.
@@ -159,7 +159,7 @@ void TestImagingSender::SendData(const int& numberOfIterations)
     igtl::TimeStamp::Pointer startIteration = igtl::TimeStamp::New();
 
     igtl::Matrix4x4 matrix;
-    OIGTLImageMessage::Pointer msg = (OIGTLImageMessage::Pointer(new OIGTLImageMessage()));
+    OIGTLImageMessage::Pointer msg(new OIGTLImageMessage());
     msg->setQImage(*m_Image);
     msg->setMatrix(matrix);
 
@@ -213,7 +213,7 @@ int main(int argc, char** argv)
     std::cerr << "Failed to load image:" << imagename << std::endl;
     return EXIT_FAILURE;
   }
-
+  image.convertToFormat(QImage::Format_Indexed8);
   TestImagingSender sender(&image, QString(hostname), port, iters);
 
   QApplication app(argc,argv);

@@ -21,11 +21,12 @@ class OIGTLSenderProcessTester;
  * \class OIGTLSenderProcess
  * \brief Class for sending messages to a remote host via OpenIGTLink socket in a separate Process.
  * 
- * OIGTLSenderProcess implements the fuctionality required to establish connection to a remote host and to transmit messages. 
- * It can be initialized with a combination of hostname and port or on a previously created socket pointer.
- * When initilized using hostname + port the Process will attempt to connect to the remote host and then enter an idle
- * loop waiting for messages. Data to be sent to the remote host are received via a QT slot in the form of an OIGTLMessage.
- * These messages are appended to the end of a message queue (FIFO).
+ * OIGTLSenderProcess implements the fuctionality required to establish connection to a
+ * remote host and to transmit messages.  It can be initialized with a combination of
+ * hostname and port or on a previously created socket pointer. When initilized using
+ * hostname + port the Process will attempt to connect to the remote host and then enter an idle
+ * loop waiting for messages. Data to be sent to the remote host are received via a QT slot
+ * in the form of an OIGTLMessage. These messages are appended to the end of a message queue (FIFO).
  */
 class NIFTYLINKCOMMON_WINEXPORT OIGTLSenderProcess : public OIGTLProcessBase
 {

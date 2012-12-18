@@ -18,6 +18,7 @@
 #include <QtGui/QImage>
 #include <QtGui/QPainter>
 
+//-----------------------------------------------------------------------------
 OIGTLImageMessage::OIGTLImageMessage(void)
 	: OIGTLMessage()
 {
@@ -25,16 +26,22 @@ OIGTLImageMessage::OIGTLImageMessage(void)
 	m_message.operator =(NULL);
 }
 
+
+//-----------------------------------------------------------------------------
 OIGTLImageMessage::~OIGTLImageMessage(void)
 {
   //QLOG_INFO() <<"ImageMessage Destructor" <<m_messageType <<m_id;
 }
 
+
+//-----------------------------------------------------------------------------
 OIGTLImageMessage::OIGTLImageMessage(const OIGTLImageMessage &other)
 	: OIGTLMessage(other)
 {
 }
 
+
+//-----------------------------------------------------------------------------
 void OIGTLImageMessage::setMatrix(igtl::Matrix4x4 &matrix)
 {
 	if (m_message.IsNull())
@@ -42,14 +49,14 @@ void OIGTLImageMessage::setMatrix(igtl::Matrix4x4 &matrix)
 
 	igtl::ImageMessage::Pointer msgPointer;
 	msgPointer = static_cast<igtl::ImageMessage *>(m_message.GetPointer());
+
 	msgPointer->Unpack();
-
 	msgPointer->SetMatrix(matrix);
-
-	//Pack message data
 	msgPointer->Pack();
 }
 
+
+//-----------------------------------------------------------------------------
 void OIGTLImageMessage::getMatrix(igtl::Matrix4x4 &matrix)
 {
 	if (m_message.IsNull())
@@ -60,20 +67,23 @@ void OIGTLImageMessage::getMatrix(igtl::Matrix4x4 &matrix)
 
 	msgPointer->Unpack();
   msgPointer->GetMatrix(matrix);
-
-	//Pack message data
 	msgPointer->Pack();
-
 }
+
+
+//-----------------------------------------------------------------------------
 void OIGTLImageMessage::PreserveMatrix()
 {
 	if (m_message.IsNull())
 		return;
+
 	igtl::ImageMessage::Pointer msgPointer;
 	msgPointer = static_cast<igtl::ImageMessage *>(m_message.GetPointer());
 	msgPointer->PreserveMatrix();
 }
 
+
+//-----------------------------------------------------------------------------
 void OIGTLImageMessage::setNormals(float t[3], float s[3], float n[3])
 {
 	if (m_message.IsNull())
@@ -81,14 +91,14 @@ void OIGTLImageMessage::setNormals(float t[3], float s[3], float n[3])
 
 	igtl::ImageMessage::Pointer msgPointer;
 	msgPointer = static_cast<igtl::ImageMessage *>(m_message.GetPointer());
+
 	msgPointer->Unpack();
-
 	msgPointer->SetNormals(t, s, n);
-
-	//Pack message data
 	msgPointer->Pack();
 }
 
+
+//-----------------------------------------------------------------------------
 void OIGTLImageMessage::getNormals(float t[3], float s[3], float n[3])
 {
 	if (m_message.IsNull())
@@ -96,14 +106,14 @@ void OIGTLImageMessage::getNormals(float t[3], float s[3], float n[3])
 
 	igtl::ImageMessage::Pointer msgPointer;
 	msgPointer = static_cast<igtl::ImageMessage *>(m_message.GetPointer());
-	msgPointer->Unpack();
 
+	msgPointer->Unpack();
 	msgPointer->GetNormals(t, s, n);
-	
-	//Pack message data
 	msgPointer->Pack();
 }
 
+
+//-----------------------------------------------------------------------------
 void OIGTLImageMessage::setSpacing(float s[3])
 {
 	if (m_message.IsNull())
@@ -111,14 +121,14 @@ void OIGTLImageMessage::setSpacing(float s[3])
 
 	igtl::ImageMessage::Pointer msgPointer;
 	msgPointer = static_cast<igtl::ImageMessage *>(m_message.GetPointer());
+
 	msgPointer->Unpack();
-
 	msgPointer->SetSpacing(s);
-
-	//Pack message data
 	msgPointer->Pack();
 }
 
+
+//-----------------------------------------------------------------------------
 void OIGTLImageMessage::setSpacing(float si, float sj, float sk)
 {
 	if (m_message.IsNull())
@@ -126,14 +136,14 @@ void OIGTLImageMessage::setSpacing(float si, float sj, float sk)
 
 	igtl::ImageMessage::Pointer msgPointer;
 	msgPointer = static_cast<igtl::ImageMessage *>(m_message.GetPointer());
+
 	msgPointer->Unpack();
-
 	msgPointer->SetSpacing(si, sj, sk);
-
-	//Pack message data
 	msgPointer->Pack();
 }
 
+
+//-----------------------------------------------------------------------------
 void OIGTLImageMessage::getSpacing(float s[3])
 {
 	if (m_message.IsNull())
@@ -141,14 +151,14 @@ void OIGTLImageMessage::getSpacing(float s[3])
 
 	igtl::ImageMessage::Pointer msgPointer;
 	msgPointer = static_cast<igtl::ImageMessage *>(m_message.GetPointer());
-	msgPointer->Unpack();
 
+	msgPointer->Unpack();
 	msgPointer->GetSpacing(s);
-	
-	//Pack message data
 	msgPointer->Pack();
 }
 
+
+//-----------------------------------------------------------------------------
 void OIGTLImageMessage::getSpacing(float &si, float &sj, float &sk)
 {
 	if (m_message.IsNull())
@@ -156,14 +166,14 @@ void OIGTLImageMessage::getSpacing(float &si, float &sj, float &sk)
 
 	igtl::ImageMessage::Pointer msgPointer;
 	msgPointer = static_cast<igtl::ImageMessage *>(m_message.GetPointer());
-	msgPointer->Unpack();
 
+	msgPointer->Unpack();
 	msgPointer->GetSpacing(si, sj, sk);
-	
-	//Pack message data
 	msgPointer->Pack();
 }
 
+
+//-----------------------------------------------------------------------------
 void OIGTLImageMessage::setOrigin(float s[3])
 {
 	if (m_message.IsNull())
@@ -171,14 +181,14 @@ void OIGTLImageMessage::setOrigin(float s[3])
 
 	igtl::ImageMessage::Pointer msgPointer;
 	msgPointer = static_cast<igtl::ImageMessage *>(m_message.GetPointer());
+
 	msgPointer->Unpack();
-
 	msgPointer->SetOrigin(s);
-
-	//Pack message data
 	msgPointer->Pack();
 }
 
+
+//-----------------------------------------------------------------------------
 void OIGTLImageMessage::setOrigin(float si, float sj, float sk)
 {
 	if (m_message.IsNull())
@@ -186,14 +196,14 @@ void OIGTLImageMessage::setOrigin(float si, float sj, float sk)
 
 	igtl::ImageMessage::Pointer msgPointer;
 	msgPointer = static_cast<igtl::ImageMessage *>(m_message.GetPointer());
+
 	msgPointer->Unpack();
-
 	msgPointer->SetOrigin(si, sj, sk);
-
-	//Pack message data
 	msgPointer->Pack();
 }
 
+
+//-----------------------------------------------------------------------------
 void OIGTLImageMessage::getOrigin(float s[3])
 {
 	if (m_message.IsNull())
@@ -201,14 +211,14 @@ void OIGTLImageMessage::getOrigin(float s[3])
 
 	igtl::ImageMessage::Pointer msgPointer;
 	msgPointer = static_cast<igtl::ImageMessage *>(m_message.GetPointer());
-	msgPointer->Unpack();
 
+	msgPointer->Unpack();
 	msgPointer->GetOrigin(s);
-	
-	//Pack message data
 	msgPointer->Pack();
 }
 
+
+//-----------------------------------------------------------------------------
 void OIGTLImageMessage::getOrigin(float &si, float &sj, float &sk)
 {
 	if (m_message.IsNull())
@@ -216,13 +226,14 @@ void OIGTLImageMessage::getOrigin(float &si, float &sj, float &sk)
 
 	igtl::ImageMessage::Pointer msgPointer;
 	msgPointer = static_cast<igtl::ImageMessage *>(m_message.GetPointer());
-	msgPointer->Unpack();
 
+	msgPointer->Unpack();
 	msgPointer->GetOrigin(si, sj, sk);
-	
-	//Pack message data
 	msgPointer->Pack();
 }
+
+
+//-----------------------------------------------------------------------------
 void OIGTLImageMessage::SetDimensions(int s[3])
 {
 	if (m_message.IsNull())
@@ -230,13 +241,14 @@ void OIGTLImageMessage::SetDimensions(int s[3])
 
 	igtl::ImageMessage::Pointer msgPointer;
 	msgPointer = static_cast<igtl::ImageMessage *>(m_message.GetPointer());
-	msgPointer->Unpack();
 
+	msgPointer->Unpack();
 	msgPointer->SetDimensions(s);
-	
-	//Pack message data
 	msgPointer->Pack();
 }
+
+
+//-----------------------------------------------------------------------------
 void OIGTLImageMessage::SetDimensions(int i, int j , int k)
 {
 	if (m_message.IsNull())
@@ -244,13 +256,14 @@ void OIGTLImageMessage::SetDimensions(int i, int j , int k)
 
 	igtl::ImageMessage::Pointer msgPointer;
 	msgPointer = static_cast<igtl::ImageMessage *>(m_message.GetPointer());
-	msgPointer->Unpack();
 
+	msgPointer->Unpack();
 	msgPointer->SetDimensions(i,j,k);
-	
-	//Pack message data
 	msgPointer->Pack();
 }
+
+
+//-----------------------------------------------------------------------------
 void OIGTLImageMessage::GetDimensions(int s[3])
 {
 	if (m_message.IsNull())
@@ -258,13 +271,14 @@ void OIGTLImageMessage::GetDimensions(int s[3])
 
 	igtl::ImageMessage::Pointer msgPointer;
 	msgPointer = static_cast<igtl::ImageMessage *>(m_message.GetPointer());
-	msgPointer->Unpack();
 
+	msgPointer->Unpack();
 	msgPointer->GetDimensions(s);
-	
-	//Pack message data
 	msgPointer->Pack();
 }
+
+
+//-----------------------------------------------------------------------------
 void OIGTLImageMessage::GetDimensions(int &i, int &j , int &k)
 {
 	if (m_message.IsNull())
@@ -272,13 +286,14 @@ void OIGTLImageMessage::GetDimensions(int &i, int &j , int &k)
 
 	igtl::ImageMessage::Pointer msgPointer;
 	msgPointer = static_cast<igtl::ImageMessage *>(m_message.GetPointer());
-	msgPointer->Unpack();
 
+	msgPointer->Unpack();
 	msgPointer->GetDimensions(i,j,k);
-	
-	//Pack message data
 	msgPointer->Pack();
 }
+
+
+//-----------------------------------------------------------------------------
 int OIGTLImageMessage::SetSubVolume(int dim[3], int off[3])
 {
 	if (m_message.IsNull())
@@ -286,14 +301,16 @@ int OIGTLImageMessage::SetSubVolume(int dim[3], int off[3])
 
 	igtl::ImageMessage::Pointer msgPointer;
 	msgPointer = static_cast<igtl::ImageMessage *>(m_message.GetPointer());
+
 	msgPointer->Unpack();
-	
 	int retv = msgPointer->SetSubVolume ( dim, off);
-	
-	//Pack message data
 	msgPointer->Pack();
+	
 	return retv;
 }
+
+
+//-----------------------------------------------------------------------------
 int OIGTLImageMessage::SetSubVolume(int dimi, int dimj , int dimk, int offi ,int offj , int offk)
 {
 	if (m_message.IsNull())
@@ -301,14 +318,16 @@ int OIGTLImageMessage::SetSubVolume(int dimi, int dimj , int dimk, int offi ,int
 
 	igtl::ImageMessage::Pointer msgPointer;
 	msgPointer = static_cast<igtl::ImageMessage *>(m_message.GetPointer());
-	msgPointer->Unpack();
 
+	msgPointer->Unpack();
 	int retv=msgPointer->SetSubVolume (dimi,dimj,dimk,offi,offj,offk);
-	
-	//Pack message data
 	msgPointer->Pack();
+
 	return retv;
 }
+
+
+//-----------------------------------------------------------------------------
 void OIGTLImageMessage::GetSubVolume(int dim[3], int off[3])
 {
 	if (m_message.IsNull())
@@ -316,13 +335,14 @@ void OIGTLImageMessage::GetSubVolume(int dim[3], int off[3])
 
 	igtl::ImageMessage::Pointer msgPointer;
 	msgPointer = static_cast<igtl::ImageMessage *>(m_message.GetPointer());
-	msgPointer->Unpack();
 
+	msgPointer->Unpack();
 	msgPointer->GetSubVolume(dim,off);
-	
-	//Pack message data
 	msgPointer->Pack();
 }
+
+
+//-----------------------------------------------------------------------------
 void OIGTLImageMessage::GetSubVolume(int &dimi, int &dimj, int &dimk, 
 		int &offi, int &offj, int &offk)
 {
@@ -331,13 +351,14 @@ void OIGTLImageMessage::GetSubVolume(int &dimi, int &dimj, int &dimk,
 
 	igtl::ImageMessage::Pointer msgPointer;
 	msgPointer = static_cast<igtl::ImageMessage *>(m_message.GetPointer());
-	msgPointer->Unpack();
 
+	msgPointer->Unpack();
 	msgPointer->GetSubVolume(dimi, dimj, dimk, offi, offj,offk);
-	
-	//Pack message data
 	msgPointer->Pack();
 }
+
+
+//-----------------------------------------------------------------------------
 void OIGTLImageMessage::SetNumComponents(int num)
 {
 	if (m_message.IsNull())
@@ -345,13 +366,14 @@ void OIGTLImageMessage::SetNumComponents(int num)
 
 	igtl::ImageMessage::Pointer msgPointer;
 	msgPointer = static_cast<igtl::ImageMessage *>(m_message.GetPointer());
-	msgPointer->Unpack();
 
+	msgPointer->Unpack();
 	msgPointer->SetNumComponents(num);
-	
-	//Pack message data
 	msgPointer->Pack();
 }
+
+
+//-----------------------------------------------------------------------------
 int OIGTLImageMessage::GetNumComponents()
 {
 	if (m_message.IsNull())
@@ -359,16 +381,16 @@ int OIGTLImageMessage::GetNumComponents()
 
 	igtl::ImageMessage::Pointer msgPointer;
 	msgPointer = static_cast<igtl::ImageMessage *>(m_message.GetPointer());
-	msgPointer->Unpack();
 
+	msgPointer->Unpack();
 	int retv = msgPointer->GetNumComponents();
-	
-	//Pack message data
 	msgPointer->Pack();
+	
 	return retv;
 }
 
 
+//-----------------------------------------------------------------------------
 void OIGTLImageMessage::initializeWithTestData(void)
 {
   if (m_message.IsNull())
@@ -383,6 +405,8 @@ void OIGTLImageMessage::initializeWithTestData(void)
     setQImage(image);
 }
 
+
+//-----------------------------------------------------------------------------
 void OIGTLImageMessage::initializeWithRandomData(void)
 {
 	if (m_message.IsNull())
@@ -417,11 +441,11 @@ void OIGTLImageMessage::initializeWithRandomData(void)
   CreateRandomTransformMatrix(localMatrix);
 
   msgPointer->SetMatrix(localMatrix);
-
-	//Pack message data
 	msgPointer->Pack();
 }
 
+
+//-----------------------------------------------------------------------------
 void OIGTLImageMessage::save(QString filename)
 {
   if (m_message.IsNull() || filename.isEmpty())
@@ -442,6 +466,8 @@ void OIGTLImageMessage::save(QString filename)
     image.save(filename);
 }
 
+
+//-----------------------------------------------------------------------------
 void OIGTLImageMessage::load(QString filename)
 {
   if (filename.isEmpty())
@@ -455,16 +481,15 @@ void OIGTLImageMessage::load(QString filename)
     setQImage(image);
 }
 
-void OIGTLImageMessage::setQImage(QImage image)
+
+//-----------------------------------------------------------------------------
+void OIGTLImageMessage::setQImage(const QImage& inputImage)
 {
-  if (image.isNull())
+  if (inputImage.isNull())
+  {
     return;
-  else
-	{
-	  if ( image.format() != QImage::Format_Indexed8 )  
-      image.convertToFormat(QImage::Format_ARGB32);
-	}
-  
+  }
+
   if (m_message.IsNull())
     m_message.operator =(igtl::ImageMessage::New());
 
@@ -473,27 +498,37 @@ void OIGTLImageMessage::setQImage(QImage image)
   msgPointer = static_cast<igtl::ImageMessage *>(m_message.GetPointer());
   msgPointer->Unpack();
 
-  //-------------------------------------------------------------
-  // Set parameters
-  msgPointer->SetDimensions(image.width(), image.height(), 1);
-	if ( image.format() != QImage::Format_Indexed8 ) 
+  // The aim of this stuff is to make QImage of type Format_Indexed8 as efficient as possible.
+  unsigned long int byteSizeOfImage = 0;
+  if ( inputImage.format() != QImage::Format_Indexed8 )
+  {
+    QImage image(inputImage);
+    image.convertToFormat(QImage::Format_ARGB32);
+    msgPointer->SetDimensions(image.width(), image.height(), 1);
     msgPointer->SetScalarType(igtl::ImageMessage::TYPE_UINT32);
-	else
-		msgPointer->SetScalarType(igtl::ImageMessage::TYPE_UINT8);
-  msgPointer->AllocateScalars();
+    msgPointer->AllocateScalars();
+    byteSizeOfImage = image.byteCount();
+    memcpy(msgPointer->GetScalarPointer(), image.bits(), byteSizeOfImage);
+  }
+  else
+  {
+    msgPointer->SetDimensions(inputImage.width(), inputImage.height(), 1);
+    msgPointer->SetScalarType(igtl::ImageMessage::TYPE_UINT8);
+    msgPointer->AllocateScalars();
+    byteSizeOfImage = inputImage.byteCount();
 
-  // Copy image data to igtl::ImageMessage
-	// for QImage::Format_Indexed8 this is going to lose the index table
-	// This may or may not be a problem depending on what happens to the 
-	// image at the other end
-  int byteSizeOfImg = image.byteCount();
-  memcpy(msgPointer->GetScalarPointer(), image.bits(), byteSizeOfImg);
-
-  //Pack message data
+    // Copy image data to igtl::ImageMessage
+    // for QImage::Format_Indexed8 this is going to lose the index table
+    // This may or may not be a problem depending on what happens to the
+    // image at the other end
+    memcpy(msgPointer->GetScalarPointer(), inputImage.bits(), byteSizeOfImage);
+  }
+  
   msgPointer->Pack();
-
 }
 
+
+//-----------------------------------------------------------------------------
 QImage OIGTLImageMessage::getQImage(void)
 {
   if (m_message.IsNull())
@@ -524,9 +559,9 @@ QImage OIGTLImageMessage::getQImage(void)
 			return QImage();
 		}
 	}
+
   int byteSizeOfImg = image.byteCount();
   memcpy(image.bits(), msgPointer->GetScalarPointer(), byteSizeOfImg);
-  //Pack message data
 	msgPointer->Pack();
 
   return image;
@@ -536,6 +571,7 @@ QImage OIGTLImageMessage::getQImage(void)
 //       ASSOCIATED CONTROL MESSAGE TYPES
 //*************************************************************
 
+//-----------------------------------------------------------------------------
 void OIGTLImageMessage::Create_GET(OIGTLMessage::Pointer &msgToCreate)
 {
     msgToCreate.operator =(OIGTLMessage::Pointer(new OIGTLMessage()));
@@ -549,16 +585,15 @@ void OIGTLImageMessage::Create_GET(OIGTLMessage::Pointer &msgToCreate)
 
     QString lhn = getLocalHostAddress();
 
-    //Set parameters
     cmdMsg->SetTimeStamp(ts);
     cmdMsg->SetDeviceName(lhn.toStdString().c_str());
-
-    //Pack message data
     cmdMsg->Pack();
 
     msgToCreate->setMessagePointer((igtl::MessageBase::Pointer) cmdMsg);
 }
 
+
+//-----------------------------------------------------------------------------
 void OIGTLImageMessage::Create_STT(OIGTLMessage::Pointer &msgToCreate)
 {
     msgToCreate.operator =(OIGTLMessage::Pointer(new OIGTLMessage()));
@@ -572,16 +607,15 @@ void OIGTLImageMessage::Create_STT(OIGTLMessage::Pointer &msgToCreate)
 
     QString lhn = getLocalHostAddress();
 
-    //Set parameters
     cmdMsg->SetTimeStamp(ts);
     cmdMsg->SetDeviceName(lhn.toStdString().c_str());
-
-    //Pack message data
     cmdMsg->Pack();
 
     msgToCreate->setMessagePointer((igtl::MessageBase::Pointer) cmdMsg);
 }
 
+
+//-----------------------------------------------------------------------------
 void OIGTLImageMessage::Create_STP(OIGTLMessage::Pointer &msgToCreate)
 {
     msgToCreate.operator =(OIGTLMessage::Pointer(new OIGTLMessage()));
@@ -595,16 +629,15 @@ void OIGTLImageMessage::Create_STP(OIGTLMessage::Pointer &msgToCreate)
 
     QString lhn = getLocalHostAddress();
 
-    //Set parameters
     cmdMsg->SetTimeStamp(ts);
     cmdMsg->SetDeviceName(lhn.toStdString().c_str());
-
-    //Pack message data
     cmdMsg->Pack();
 
     msgToCreate->setMessagePointer((igtl::MessageBase::Pointer) cmdMsg);
 }
 
+
+//-----------------------------------------------------------------------------
 void OIGTLImageMessage::Create_RTS(OIGTLMessage::Pointer &msgToCreate)
 {
     msgToCreate.operator =(OIGTLMessage::Pointer(new OIGTLMessage()));
@@ -618,11 +651,8 @@ void OIGTLImageMessage::Create_RTS(OIGTLMessage::Pointer &msgToCreate)
 
     QString lhn = getLocalHostAddress();
 
-    //Set parameters
     cmdMsg->SetTimeStamp(ts);
     cmdMsg->SetDeviceName(lhn.toStdString().c_str());
-
-    //Pack message data
     cmdMsg->Pack();
 
     msgToCreate->setMessagePointer((igtl::MessageBase::Pointer) cmdMsg);

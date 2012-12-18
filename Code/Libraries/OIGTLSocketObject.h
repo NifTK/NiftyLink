@@ -178,6 +178,7 @@ private slots:
   void clientDisconnected(bool onPort);
 
 private:
+
   int      m_port;
   QMutex * m_mutex;
 

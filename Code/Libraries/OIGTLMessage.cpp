@@ -16,6 +16,7 @@
 #include "QsLogDest.h"
 #include "NiftyLinkUtils.h"
 
+//-----------------------------------------------------------------------------
 OIGTLMessage::OIGTLMessage(void)
 {
   m_timeCreated = igtl::TimeStamp::New();
@@ -31,6 +32,8 @@ OIGTLMessage::OIGTLMessage(void)
   m_ownerName.append("!");
 }
 
+
+//-----------------------------------------------------------------------------
 OIGTLMessage::~OIGTLMessage(void)
 {
   //QLOG_INFO() <<"Message destructor (Base class): "<<m_ownerName <<m_id;
@@ -40,6 +43,8 @@ OIGTLMessage::~OIGTLMessage(void)
   m_timeCreated.operator =(NULL);
 }
 
+
+//-----------------------------------------------------------------------------
 OIGTLMessage::OIGTLMessage(const OIGTLMessage &other)
 	: QSharedData(other)
 {
@@ -57,6 +62,8 @@ OIGTLMessage::OIGTLMessage(const OIGTLMessage &other)
   m_ownerName            = other.m_ownerName;
 }
 
+
+//-----------------------------------------------------------------------------
 void OIGTLMessage::setMessagePointer(igtl::MessageBase::Pointer mp)
 {
   // Embeds the OpenIGTLink message pointer into the message
@@ -66,31 +73,43 @@ void OIGTLMessage::setMessagePointer(igtl::MessageBase::Pointer mp)
 	m_senderHostName = QString(m_message->GetDeviceName());
 }
 
+
+//-----------------------------------------------------------------------------
 void OIGTLMessage::getMessagePointer(igtl::MessageBase::Pointer &mp)
 {
 	mp.operator = (m_message);
 }
 
+
+//-----------------------------------------------------------------------------
 void OIGTLMessage::setTimeReceived(igtl::TimeStamp::Pointer ts)
 {
 	m_timeReceived.operator=(ts);
 }
 
+
+//-----------------------------------------------------------------------------
 igtl::TimeStamp::Pointer OIGTLMessage::getTimeReceived(void)
 {
 	return m_timeReceived;
 }
 
+
+//-----------------------------------------------------------------------------
 igtl::TimeStamp::Pointer OIGTLMessage::getTimeCreated(void)
 {
 	return m_timeCreated;
 }
 
+
+//-----------------------------------------------------------------------------
 igtlUint64 OIGTLMessage::getId(void)
 {
 	return m_id;
 }
 
+
+//-----------------------------------------------------------------------------
 void OIGTLMessage::changeHostName(QString hname)
 {
   if (m_message.IsNull())
@@ -99,46 +118,54 @@ void OIGTLMessage::changeHostName(QString hname)
   m_senderHostName = hname;
   
   m_message->Unpack(); 
-
   m_message->SetDeviceName(m_senderHostName.toStdString().c_str());
-
   m_message->Pack();
 }
 
+
+//-----------------------------------------------------------------------------
 QString OIGTLMessage::getHostName(void)
 {
   if (m_message.IsNull())
     return QString();
  
   m_message->Unpack(); 
-
   m_senderHostName = m_message->GetDeviceName();
-
   m_message->Pack();
 
 	return m_senderHostName;
 }
 
+
+//-----------------------------------------------------------------------------
 void OIGTLMessage::setPort(int port)
 {
 	m_senderPort = port;
 }
 
+
+//-----------------------------------------------------------------------------
 int OIGTLMessage::getPort(void)
 {
 	return m_senderPort;
 }
 
+
+//-----------------------------------------------------------------------------
 void OIGTLMessage::changeMessageType(QString type)
 {
 	m_messageType = type;
 }
 
+
+//-----------------------------------------------------------------------------
 QString OIGTLMessage::getMessageType(void)
 {
 	return m_messageType;
 }
 
+
+//-----------------------------------------------------------------------------
 void OIGTLMessage::setResolution(igtlUint64 res)
 {
   // This is to set the streaming frequency
@@ -208,6 +235,8 @@ void OIGTLMessage::setResolution(igtlUint64 res)
 	m_message->Pack();
 }
 
+
+//-----------------------------------------------------------------------------
 void OIGTLMessage::getResolution(igtlUint64 &res)
 {
 	if (m_message.IsNull())
@@ -276,6 +305,8 @@ void OIGTLMessage::getResolution(igtlUint64 &res)
 	res = m_resolution;
 }
 
+
+//-----------------------------------------------------------------------------
 void OIGTLMessage::update(QString hostname, igtl::TimeStamp::Pointer ts)
 {
   // Updates timestamp and hostname
@@ -287,13 +318,13 @@ void OIGTLMessage::update(QString hostname, igtl::TimeStamp::Pointer ts)
   m_senderHostName = hostname;
   
   m_message->Unpack(); 
-
   m_message->SetTimeStamp(ts);
   m_message->SetDeviceName(m_senderHostName.toStdString().c_str());
-
   m_message->Pack();
 }
 
+
+//-----------------------------------------------------------------------------
 void OIGTLMessage::update(QString hostname)
 {
   // Updates timestamp and hostname
@@ -311,13 +342,13 @@ void OIGTLMessage::update(QString hostname)
   m_id = GetTimeInNanoSeconds(ts);
   
   m_message->Unpack(); 
-
   m_message->SetTimeStamp(ts);
   m_message->SetDeviceName(m_senderHostName.toStdString().c_str());
-
   m_message->Pack();
 }
 
+
+//-----------------------------------------------------------------------------
 void OIGTLMessage::setOwnerName(QString str) 
   { 
     if (!m_ownerName.isEmpty() && !m_ownerName.isNull())

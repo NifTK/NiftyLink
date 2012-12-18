@@ -25,14 +25,16 @@ class OIGTLListenerProcessTester;
 
 /**
  * \class OIGTLListenerProcess
- * \brief Class for listening on a given local port to receive messages from a remote host via OpenIGTLink socket
- * in a separate Process.
+ * \brief Class for listening on a given local port to receive messages from a
+ * remote host via OpenIGTLink socket in a separate Process.
  * 
- * OIGTLListenerProcess implements the fuctionality required to listen on a selected local port and to receive messages.
- * It can be initialized by specifying the local port or by passing a previously created socket pointer.
- * After initialization the Process starts listening on the given port / socket waiting for clients to connect.
- * If a connection is detected the Process attempts to receive messages from the remote client. The received data is
- *  processed and inperpreted, resulting in an OIGTLMessage, which is passed on using a Qt signal.
+ * OIGTLListenerProcess implements the fuctionality required to listen on a selected
+ * local port and to receive messages. It can be initialized by specifying the local
+ * port or by passing a previously created socket pointer. After initialization the
+ * Process starts listening on the given port / socket waiting for clients to connect.
+ * If a connection is detected the Process attempts to receive messages from the remote
+ * client. The received data is processed and interpreted, resulting in an OIGTLMessage, \
+ * which is passed on using a Qt signal.
  */
 class NIFTYLINKCOMMON_WINEXPORT OIGTLListenerProcess : public OIGTLProcessBase
 {
