@@ -65,13 +65,16 @@ public:
   /// sets subvolume parameters automatically assuming that subvolume = entire volume.
 	/// This is done automatically by setQimage()
   void SetDimensions(int s[3]);
+
 	/// \brief Set the image dimensions
   /// SetDimensions() should be called prior to SetSubVolume(), since SetDimensions()
   /// sets subvolume parameters automatically assuming that subvolume = entire volume.
 	/// This is done automatically by setQimage()
   void SetDimensions(int i, int j, int k);
+
 	/// \brief Get the image dimensions
   void GetDimensions(int s[3]);
+
 	/// \brief Get the image dimensions
   void GetDimensions(int &i, int &j, int &k);
 
@@ -79,18 +82,22 @@ public:
   /// SetDimensions() should be called prior to SetSubVolume(), since SetDimensions()
   /// sets subvolume parameters automatically assuming that subvolume = entire volume.
   int  SetSubVolume(int dim[3], int off[3]);
+
 	/// \brief Set the image sub volume
   /// SetDimensions() should be called prior to SetSubVolume(), since SetDimensions()
   /// sets subvolume parameters automatically assuming that subvolume = entire volume.
   int  SetSubVolume(int dimi, int dimj, int dimk, int offi, int offj, int offk);
+
 	/// \brief Get the image sub volume
   void GetSubVolume(int dim[3], int off[3]);
+
 	/// \brief Get the image sub volume
   void GetSubVolume(int &dimi, int &dimj, int &dimk, int &offi, int &offj, int &offk);
 
   /// \brief Set the number of image components.
 	/// This is done automatically by setQimage()
 	void SetNumComponents(int num);
+
   /// \brief Get the number of image components.
   int  GetNumComponents();
   

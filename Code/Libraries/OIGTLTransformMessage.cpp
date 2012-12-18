@@ -15,6 +15,7 @@
 #include "QsLog.h"
 #include "QsLogDest.h"
 
+//-----------------------------------------------------------------------------
 OIGTLTransformMessage::OIGTLTransformMessage(void)
 	: OIGTLMessage()
 {
@@ -22,11 +23,15 @@ OIGTLTransformMessage::OIGTLTransformMessage(void)
 	m_message.operator =(NULL);
 }
 
+
+//-----------------------------------------------------------------------------
 OIGTLTransformMessage::~OIGTLTransformMessage(void)
 {
   //QLOG_INFO() <<"TransformMessage Destructor" <<m_ownerName <<m_id;
 }
 
+
+//-----------------------------------------------------------------------------
 OIGTLTransformMessage::OIGTLTransformMessage(const OIGTLTransformMessage &other)
 	: OIGTLMessage(other)
 {
@@ -35,6 +40,8 @@ OIGTLTransformMessage::OIGTLTransformMessage(const OIGTLTransformMessage &other)
   m_p[2] = other.m_p[2];
 }
 
+
+//-----------------------------------------------------------------------------
 void OIGTLTransformMessage::setMatrix(igtl::Matrix4x4 &matrix)
 {
 	if (m_message.IsNull())
@@ -42,14 +49,14 @@ void OIGTLTransformMessage::setMatrix(igtl::Matrix4x4 &matrix)
 
 	igtl::TransformMessage::Pointer msgPointer;
 	msgPointer = static_cast<igtl::TransformMessage *>(m_message.GetPointer());
+
 	msgPointer->Unpack();
-
 	msgPointer->SetMatrix(matrix);
-
-	//Pack message data
 	msgPointer->Pack();
 }
 
+
+//-----------------------------------------------------------------------------
 void OIGTLTransformMessage::getMatrix(igtl::Matrix4x4 &matrix)
 {
 	if (m_message.IsNull())
@@ -60,12 +67,11 @@ void OIGTLTransformMessage::getMatrix(igtl::Matrix4x4 &matrix)
 
 	msgPointer->Unpack();
   msgPointer->GetMatrix(matrix);
-
-	//Pack message data
 	msgPointer->Pack();
-
 }
 
+
+//-----------------------------------------------------------------------------
 QString OIGTLTransformMessage::getMatrixAsString()
 {
   if (m_message.IsNull())
@@ -74,18 +80,18 @@ QString OIGTLTransformMessage::getMatrixAsString()
   igtl::TransformMessage::Pointer msgPointer;
   msgPointer = static_cast<igtl::TransformMessage *>(m_message.GetPointer());
 
-  msgPointer->Unpack();
   std::string stdStr;
+
+  msgPointer->Unpack();
   msgPointer->GetMatrixAsString(stdStr);
-
   QString strMat = QString(stdStr.c_str());
-
-  //Pack message data
   msgPointer->Pack();
 
   return strMat;
 }
 
+
+//-----------------------------------------------------------------------------
 void OIGTLTransformMessage::setPosition(float p[3])
 {
 	if (m_message.IsNull())
@@ -93,14 +99,14 @@ void OIGTLTransformMessage::setPosition(float p[3])
 
 	igtl::TransformMessage::Pointer msgPointer;
 	msgPointer = static_cast<igtl::TransformMessage *>(m_message.GetPointer());
+
 	msgPointer->Unpack();
-
 	msgPointer->SetPosition(p);
-
-	//Pack message data
 	msgPointer->Pack();
 }
 
+
+//-----------------------------------------------------------------------------
 void OIGTLTransformMessage::getPosition(float p[3])
 {
 	if (m_message.IsNull())
@@ -108,14 +114,14 @@ void OIGTLTransformMessage::getPosition(float p[3])
 
 	igtl::TransformMessage::Pointer msgPointer;
 	msgPointer = static_cast<igtl::TransformMessage *>(m_message.GetPointer());
+
 	msgPointer->Unpack();
-
 	msgPointer->GetPosition(p);
-
-	//Pack message data
 	msgPointer->Pack();
 }
 
+
+//-----------------------------------------------------------------------------
 void OIGTLTransformMessage::setPosition(float px, float py, float pz)
 {
 	if (m_message.IsNull())
@@ -123,14 +129,14 @@ void OIGTLTransformMessage::setPosition(float px, float py, float pz)
 
 	igtl::TransformMessage::Pointer msgPointer;
 	msgPointer = static_cast<igtl::TransformMessage *>(m_message.GetPointer());
+
 	msgPointer->Unpack();
-
 	msgPointer->SetPosition(px, py, pz);
-
-	//Pack message data
 	msgPointer->Pack();
 }
 
+
+//-----------------------------------------------------------------------------
 void OIGTLTransformMessage::getPosition(float &px, float &py, float &pz)
 {
 	if (m_message.IsNull())
@@ -138,14 +144,14 @@ void OIGTLTransformMessage::getPosition(float &px, float &py, float &pz)
 
 	igtl::TransformMessage::Pointer msgPointer;
 	msgPointer = static_cast<igtl::TransformMessage *>(m_message.GetPointer());
+
 	msgPointer->Unpack();
-
 	msgPointer->GetPosition(&px, &py, &pz);
-
-	//Pack message data
 	msgPointer->Pack();
 }
 
+
+//-----------------------------------------------------------------------------
 void OIGTLTransformMessage::setNormals(float o[3][3])
 {
 	if (m_message.IsNull())
@@ -153,14 +159,14 @@ void OIGTLTransformMessage::setNormals(float o[3][3])
 
 	igtl::TransformMessage::Pointer msgPointer;
 	msgPointer = static_cast<igtl::TransformMessage *>(m_message.GetPointer());
+
 	msgPointer->Unpack();
-
 	msgPointer->SetNormals(o);
-
-	//Pack message data
 	msgPointer->Pack();
 }
 
+
+//-----------------------------------------------------------------------------
 void OIGTLTransformMessage::getNormals(float o[3][3])
 {
 	if (m_message.IsNull())
@@ -168,14 +174,14 @@ void OIGTLTransformMessage::getNormals(float o[3][3])
 
 	igtl::TransformMessage::Pointer msgPointer;
 	msgPointer = static_cast<igtl::TransformMessage *>(m_message.GetPointer());
+
 	msgPointer->Unpack();
-
 	msgPointer->GetNormals(o);
-
-	//Pack message data
 	msgPointer->Pack();
 }
 
+
+//-----------------------------------------------------------------------------
 void OIGTLTransformMessage::setNormals(float t[3], float s[3], float n[3])
 {
 	if (m_message.IsNull())
@@ -183,14 +189,14 @@ void OIGTLTransformMessage::setNormals(float t[3], float s[3], float n[3])
 
 	igtl::TransformMessage::Pointer msgPointer;
 	msgPointer = static_cast<igtl::TransformMessage *>(m_message.GetPointer());
+
 	msgPointer->Unpack();
-
 	msgPointer->SetNormals(t, s, n);
-
-	//Pack message data
 	msgPointer->Pack();
 }
 
+
+//-----------------------------------------------------------------------------
 void OIGTLTransformMessage::getNormals(float t[3], float s[3], float n[3])
 {
 	if (m_message.IsNull())
@@ -198,14 +204,14 @@ void OIGTLTransformMessage::getNormals(float t[3], float s[3], float n[3])
 
 	igtl::TransformMessage::Pointer msgPointer;
 	msgPointer = static_cast<igtl::TransformMessage *>(m_message.GetPointer());
-	msgPointer->Unpack();
 
+	msgPointer->Unpack();
 	msgPointer->GetNormals(t, s, n);
-	
-	//Pack message data
 	msgPointer->Pack();
 }
 
+
+//-----------------------------------------------------------------------------
 void OIGTLTransformMessage::initializeWithTestData(igtl::Matrix4x4& testMatrix)
 {
 	if (m_message.IsNull())
@@ -213,14 +219,14 @@ void OIGTLTransformMessage::initializeWithTestData(igtl::Matrix4x4& testMatrix)
 
 	igtl::TransformMessage::Pointer msgPointer;
 	msgPointer = static_cast<igtl::TransformMessage *>(m_message.GetPointer());
+
 	msgPointer->Unpack();
-
 	msgPointer->SetMatrix(testMatrix);
-
-	//Pack message data
 	msgPointer->Pack();
 }
 
+
+//-----------------------------------------------------------------------------
 void OIGTLTransformMessage::initializeWithRandomData(void)
 {
 	if (m_message.IsNull())
@@ -228,17 +234,18 @@ void OIGTLTransformMessage::initializeWithRandomData(void)
 
 	igtl::TransformMessage::Pointer msgPointer;
 	msgPointer = static_cast<igtl::TransformMessage *>(m_message.GetPointer());
+
 	msgPointer->Unpack();
 
 	igtl::Matrix4x4 localMatrix;
   CreateRandomTransformMatrix(localMatrix);
 
   msgPointer->SetMatrix(localMatrix);
-
-	//Pack message data
 	msgPointer->Pack();
 }
 
+
+//-----------------------------------------------------------------------------
 void OIGTLTransformMessage::Create_GET(OIGTLMessage::Pointer &msgToCreate)
 {
     msgToCreate.operator =(OIGTLMessage::Pointer(new OIGTLMessage()));
@@ -252,17 +259,16 @@ void OIGTLTransformMessage::Create_GET(OIGTLMessage::Pointer &msgToCreate)
 
     QString lhn = getLocalHostAddress();
 
-    //Set parameters
     cmdMsg->SetTimeStamp(ts);
     cmdMsg->SetDeviceName(lhn.toStdString().c_str());
-
-    //Pack message data
     cmdMsg->Pack();
 
     msgToCreate->setMessagePointer((igtl::MessageBase::Pointer) cmdMsg);
     msgToCreate->changeMessageType("GET_TRANS");
 }
 
+
+//-----------------------------------------------------------------------------
 void OIGTLTransformMessage::Create_STT(OIGTLMessage::Pointer &msgToCreate)
 {
     msgToCreate.operator =(OIGTLMessage::Pointer(new OIGTLMessage()));
@@ -276,17 +282,16 @@ void OIGTLTransformMessage::Create_STT(OIGTLMessage::Pointer &msgToCreate)
 
     QString lhn = getLocalHostAddress();
 
-    //Set parameters
     cmdMsg->SetTimeStamp(ts);
     cmdMsg->SetDeviceName(lhn.toStdString().c_str());
-
-    //Pack message data
     cmdMsg->Pack();
 
     msgToCreate->setMessagePointer((igtl::MessageBase::Pointer) cmdMsg);
     msgToCreate->changeMessageType("STT_TRANS");
 }
 
+
+//-----------------------------------------------------------------------------
 void OIGTLTransformMessage::Create_STP(OIGTLMessage::Pointer &msgToCreate)
 {
     msgToCreate.operator =(OIGTLMessage::Pointer(new OIGTLMessage()));
@@ -300,17 +305,16 @@ void OIGTLTransformMessage::Create_STP(OIGTLMessage::Pointer &msgToCreate)
 
     QString lhn = getLocalHostAddress();
 
-    //Set parameters
     cmdMsg->SetTimeStamp(ts);
     cmdMsg->SetDeviceName(lhn.toStdString().c_str());
-
-    //Pack message data
     cmdMsg->Pack();
 
     msgToCreate->setMessagePointer((igtl::MessageBase::Pointer) cmdMsg);
     msgToCreate->changeMessageType("STP_TRANS");
 }
 
+
+//-----------------------------------------------------------------------------
 void OIGTLTransformMessage::Create_RTS(OIGTLMessage::Pointer &msgToCreate)
 {
     msgToCreate.operator =(OIGTLMessage::Pointer(new OIGTLMessage()));
@@ -324,11 +328,8 @@ void OIGTLTransformMessage::Create_RTS(OIGTLMessage::Pointer &msgToCreate)
 
     QString lhn = getLocalHostAddress();
 
-    //Set parameters
     cmdMsg->SetTimeStamp(ts);
     cmdMsg->SetDeviceName(lhn.toStdString().c_str());
-
-    //Pack message data
     cmdMsg->Pack();
 
     msgToCreate->setMessagePointer((igtl::MessageBase::Pointer) cmdMsg);

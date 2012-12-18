@@ -139,7 +139,8 @@ public:
   QString getOwnerName(void) { return m_ownerName; }
 
 protected:
-	QString			                 m_messageType;
+
+	QString			                m_messageType;
 	igtl::MessageBase::Pointer  m_message;
 	igtl::TimeStamp::Pointer    m_timeReceived;
 	igtl::TimeStamp::Pointer    m_timeCreated;
@@ -150,8 +151,8 @@ protected:
 	igtlUint64	                m_id;
 	igtlUint64	                m_resolution;
 
-  bool                       m_processed;
-  QString                    m_ownerName;
+  bool                        m_processed;
+  QString                     m_ownerName;
 };
 
 Q_DECLARE_METATYPE(OIGTLMessage::Pointer);

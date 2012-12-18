@@ -12,6 +12,7 @@
 
 #include "OIGTLProcessBase.h"
 
+//-----------------------------------------------------------------------------
 OIGTLProcessBase::OIGTLProcessBase(QObject *parent)
 : QObject(parent)
 {
@@ -26,6 +27,8 @@ OIGTLProcessBase::OIGTLProcessBase(QObject *parent)
   m_messageCounter = 0;
 }
 
+
+//-----------------------------------------------------------------------------
 OIGTLProcessBase::~OIGTLProcessBase(void)
 {
 }

@@ -12,6 +12,7 @@
 
 #include "OIGTLSocketObject.h"
 
+//-----------------------------------------------------------------------------
 OIGTLSocketObject::OIGTLSocketObject(QObject *parent)
 : QObject(parent)
 {
@@ -35,6 +36,8 @@ OIGTLSocketObject::OIGTLSocketObject(QObject *parent)
   initThreads();
 }
 
+
+//-----------------------------------------------------------------------------
 OIGTLSocketObject::~OIGTLSocketObject(void)
 {
   QLOG_INFO() <<"Destructing"  <<objectName();
@@ -97,6 +100,8 @@ OIGTLSocketObject::~OIGTLSocketObject(void)
   }
 }
 
+
+//-----------------------------------------------------------------------------
 void OIGTLSocketObject::initThreads()
 {
   qRegisterMetaType<OIGTLMessage::Pointer>();
@@ -145,6 +150,8 @@ void OIGTLSocketObject::initThreads()
 
 }
 
+
+//-----------------------------------------------------------------------------
 void OIGTLSocketObject::setObjectNames(QString name)
 {
   QString tmp;
@@ -168,6 +175,8 @@ void OIGTLSocketObject::setObjectNames(QString name)
     m_listenerHostThread->setObjectName(tmp.append("H"));
 }
 
+
+//-----------------------------------------------------------------------------
 bool OIGTLSocketObject::listenOnPort(int port)
 {
   if (!m_initialized)
@@ -177,6 +186,7 @@ bool OIGTLSocketObject::listenOnPort(int port)
   {
     // Set parameters
     m_listener->setObjectName(this->objectName().append("_L"));
+
     // Initialize the port
     bool ok = m_listener->initialize(port);
 
@@ -210,6 +220,8 @@ bool OIGTLSocketObject::listenOnPort(int port)
   else return false;
 }
 
+
+//-----------------------------------------------------------------------------
 bool OIGTLSocketObject::connectToRemote(QUrl url)
 {
   if (!m_initialized)
@@ -271,6 +283,8 @@ bool OIGTLSocketObject::connectToRemote(QUrl url)
   else return false;
 }
 
+
+//-----------------------------------------------------------------------------
 void OIGTLSocketObject::closeSocket(void)
 {
   // Shuts down the sender thread
@@ -318,7 +332,6 @@ void OIGTLSocketObject::closeSocket(void)
   m_port = -1;
   m_listening = false;
   m_connectedToRemote = false;
- 
   m_clientConnected = false;
   m_ableToSend = false;
 
@@ -345,13 +358,14 @@ void OIGTLSocketObject::closeSocket(void)
     QLOG_ERROR() <<objectName() <<": " <<"Threads DID NOT terminate when closing socket!";
 }
 
+
+//-----------------------------------------------------------------------------
 void OIGTLSocketObject::sendMessage(OIGTLMessage::Pointer msg)
 {
   // Do not add the message to the message queue if the socket is not connected 
   // (otherwise messages will pile up and use up memory)
   if (m_sender != NULL && msg.operator !=(NULL) && (m_clientConnected || m_connectedToRemote) )
   {
-    //m_sender->sendMsg(msg);
     emit messageToSend(msg);
     QCoreApplication::processEvents();
   }
@@ -361,6 +375,8 @@ void OIGTLSocketObject::sendMessage(OIGTLMessage::Pointer msg)
 //                    INTERNAL SLOTS
 //*********************************************************
 
+
+//-----------------------------------------------------------------------------
 void OIGTLSocketObject::connectedToRemote(void)
 {
   //Sender established connection to remote host, need to set up listener on socket
@@ -381,6 +397,8 @@ void OIGTLSocketObject::connectedToRemote(void)
   }
 }
 
+
+//-----------------------------------------------------------------------------
 void OIGTLSocketObject::cannotConnectToRemote(void)
 {
   //Could not establish connection to remote host
@@ -393,6 +411,8 @@ void OIGTLSocketObject::cannotConnectToRemote(void)
   QCoreApplication::processEvents();
 }
 
+
+//-----------------------------------------------------------------------------
 void OIGTLSocketObject::disconnectedFromRemote(bool onPort)
 {
   // We were successfully connected to a remote host (onPort = true) but the the connection lost
@@ -423,6 +443,8 @@ void OIGTLSocketObject::disconnectedFromRemote(bool onPort)
   m_ableToSend = false;
 }
 
+
+//-----------------------------------------------------------------------------
 void OIGTLSocketObject::clientConnected(void)
 {
   // A new client has connected to the local listener
@@ -445,6 +467,8 @@ void OIGTLSocketObject::clientConnected(void)
   }
 }
 
+
+//-----------------------------------------------------------------------------
 void OIGTLSocketObject::clientDisconnected(bool onPort)
 {
   if (onPort)
@@ -464,6 +488,8 @@ void OIGTLSocketObject::clientDisconnected(bool onPort)
   m_ableToSend = false;
 }
 
+
+//-----------------------------------------------------------------------------
 void OIGTLSocketObject::catchMsgSignal(OIGTLMessage::Pointer msg)
 {
   //QLOG_INFO() <<objectName() <<": " <<"Message signal received";
@@ -478,12 +504,16 @@ void OIGTLSocketObject::catchMsgSignal(OIGTLMessage::Pointer msg)
 //*********************************************************
 
 
+
+//-----------------------------------------------------------------------------
 void OIGTLSocketObject::setConnectTimeOut(int sec)
 {
   if (m_sender != NULL)
     m_sender->setConnectTimeOut(sec);
 }
 
+
+//-----------------------------------------------------------------------------
 int OIGTLSocketObject::getConnectTimeOut(void)
 {
   if (m_sender != NULL)
@@ -491,12 +521,16 @@ int OIGTLSocketObject::getConnectTimeOut(void)
   else return -1;
 }
 
+
+//-----------------------------------------------------------------------------
 void OIGTLSocketObject::setListenInterval(int msec)
 {
   if (m_listener != NULL)
     m_listener->setListenInterval(msec);
 }
 
+
+//-----------------------------------------------------------------------------
 int OIGTLSocketObject::getListenInterval(void)
 {
   if (m_listener != NULL)
@@ -504,6 +538,8 @@ int OIGTLSocketObject::getListenInterval(void)
   else return -1;
 }
 
+
+//-----------------------------------------------------------------------------
 void OIGTLSocketObject::setSocketTimeOut(int msec)
 {
   if (m_listener != NULL)
@@ -513,6 +549,8 @@ void OIGTLSocketObject::setSocketTimeOut(int msec)
     m_sender->setSocketTimeOut(msec);
 }
 
+
+//-----------------------------------------------------------------------------
 int OIGTLSocketObject::getSocketTimeOut(void)
 {
   if (m_listener != NULL)
