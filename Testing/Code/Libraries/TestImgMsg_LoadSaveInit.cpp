@@ -113,6 +113,27 @@ void TestImgMsg_LoadSaveInit::performTest()
   }
 
   //***********************************************
+  std::cerr <<++m_testCounter <<". Testing specifically with supplied image file 1 " << m_argv[1] << ", ... and doing Format_Indexed8 .." << std::endl;
+  QString imageFileName2 = m_argv[1];
+  QImage inputImage2(imageFileName2);
+
+  std::cerr << "... Image format=" << inputImage2.format() << std::endl;
+
+  convertedInputImage = inputImage2.convertToFormat(QImage::Format_Indexed8);
+
+  imageMsg->setQImage(convertedInputImage);
+  outputImage = imageMsg->getQImage();
+
+  if (convertedInputImage == outputImage)
+  {
+    std::cerr <<" OK\n"; m_successCounter++;
+  }
+  else
+  {
+    std::cerr <<" FAILED\n";
+  }
+
+  //***********************************************
   std::cout <<++m_testCounter <<". Deleting messages..";
   imageMsg.reset();
   imageMsg.operator =(NULL);
