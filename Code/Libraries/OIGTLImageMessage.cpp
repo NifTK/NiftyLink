@@ -491,7 +491,9 @@ void OIGTLImageMessage::setQImage(const QImage& inputImage)
   }
 
   if (m_message.IsNull())
+  {
     m_message.operator =(igtl::ImageMessage::New());
+  }
 
   // Cast pointer and unpack message
   igtl::ImageMessage::Pointer msgPointer;
@@ -523,16 +525,18 @@ void OIGTLImageMessage::setQImage(const QImage& inputImage)
     // image at the other end
     memcpy(msgPointer->GetScalarPointer(), inputImage.bits(), byteSizeOfImage);
   }
-  
+
+  // Pack message data
   msgPointer->Pack();
 }
 
-
-//-----------------------------------------------------------------------------
+//-------------------------------------------------------------
 QImage OIGTLImageMessage::getQImage(void)
 {
   if (m_message.IsNull())
+  {
     return QImage();
+  }
 
   igtl::ImageMessage::Pointer msgPointer;
   msgPointer = static_cast<igtl::ImageMessage *>(m_message.GetPointer());
@@ -540,29 +544,36 @@ QImage OIGTLImageMessage::getQImage(void)
 
   int i,j,k;
   msgPointer->GetDimensions(i,j,k);
-	QImage image = QImage();
-	if ( msgPointer->GetScalarType() == igtl::ImageMessage::TYPE_UINT32 ) 
-	{
-	  image = QImage(i, j, QImage::Format_ARGB32);
-	}
-	else
-	{
-		if ( msgPointer->GetScalarType() == igtl::ImageMessage::TYPE_UINT8 )
-		{
-      //Should probably put in a default color table here or we might get some odd
-      //results if we save the image, but lets leave it won't be a problem in most cases
+
+  QImage image = QImage();
+  if ( msgPointer->GetScalarType() == igtl::ImageMessage::TYPE_UINT32 )
+  {
+    image = QImage(i, j, QImage::Format_ARGB32);
+  }
+  else
+  {
+    if ( msgPointer->GetScalarType() == igtl::ImageMessage::TYPE_UINT8 )
+    {
       image = QImage(i, j, QImage::Format_Indexed8);
-		}
-		else	
-		{
-			QLOG_ERROR() << "OIGTLImageMessage::getQImage(void)" << ": Attempt to get QImage from image message of type " << msgPointer->GetScalarType() << " not implemented. \n";
-			return QImage();
-		}
-	}
+      QVector<QRgb> colors = QVector<QRgb>(256);
+      for ( int i = 0 ; i < 256 ; i ++)
+      {
+        colors[i] = qRgb(i,i,i);
+      }
+      image.setColorTable(colors);
+    }
+    else
+    {
+      QLOG_ERROR() << "OIGTLImageMessage::getQImage(void)" << ": Attempt to get QImage from image message of type " << msgPointer->GetScalarType() << " not implemented. \n";
+      return QImage();
+    }
+  }
 
   int byteSizeOfImg = image.byteCount();
   memcpy(image.bits(), msgPointer->GetScalarPointer(), byteSizeOfImg);
-	msgPointer->Pack();
+
+  // Pack message data
+  msgPointer->Pack();
 
   return image;
 }
