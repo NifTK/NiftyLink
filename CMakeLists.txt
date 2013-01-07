@@ -311,6 +311,11 @@ IF(BUILD_TESTING)
 ENDIF(BUILD_TESTING)
 
 ######################################################################
+# NiftyLink uses KWStyle for checking the coding style
+######################################################################
+INCLUDE(${CMAKE_SOURCE_DIR}/Utilities/KWStyle/NiftyLinkKWStyle.cmake)
+
+######################################################################
 # Stuff that needs generating. For example before we compile.
 ######################################################################
 
