@@ -216,6 +216,11 @@ SET(CMAKE_MODULE_PATH
 INCLUDE(mitkFunctionGetVersion)
 INCLUDE(mitkMacroEmptyExternalProject)
 
+######################################################################
+# NiftyLink uses KWStyle for checking the coding style
+######################################################################
+INCLUDE(${CMAKE_SOURCE_DIR}/Utilities/KWStyle/NiftyLinkKWStyle.cmake)
+
 ###########################################################################
 # Set these compiler flags early, so it can be applied to all dependencies.
 ###########################################################################
@@ -309,11 +314,6 @@ IF(BUILD_TESTING)
   CONFIGURE_FILE(CMake/CTestCustom.cmake.in ${CMAKE_BINARY_DIR}/CTestCustom.cmake @ONLY)
   
 ENDIF(BUILD_TESTING)
-
-######################################################################
-# NiftyLink uses KWStyle for checking the coding style
-######################################################################
-INCLUDE(${CMAKE_SOURCE_DIR}/Utilities/KWStyle/NiftyLinkKWStyle.cmake)
 
 ######################################################################
 # Stuff that needs generating. For example before we compile.
