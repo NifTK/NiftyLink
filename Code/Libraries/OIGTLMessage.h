@@ -1,23 +1,14 @@
 /*=============================================================================
+  NiftyLink:  A software library to facilitate communication over OpenIGTLink.
 
- NiftyLink:  A software library to facilitate communication over OpenIGTLink.
+  Copyright (c) University College London (UCL). All rights reserved.
 
-             http://cmic.cs.ucl.ac.uk/
-             http://www.ucl.ac.uk/
+  This software is distributed WITHOUT ANY WARRANTY; without even
+  the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR
+  PURPOSE.
 
- Copyright (c) UCL : See LICENSE.txt in the top level directory for details.
-
- Last Changed      : $Date: 2010-05-25 17:02:50 +0100 (Tue, 25 May 2010) $
- Revision          : $Revision: 3300 $
- Last modified by  : $Author: mjc $
-
- Original author   : m.clarkson@ucl.ac.uk
-
- This software is distributed WITHOUT ANY WARRANTY; without even
- the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR
- PURPOSE.  See the above copyright notices for more information.
-
- ============================================================================*/
+  See LICENSE.txt in the top level directory for details.
+=============================================================================*/
 
 #ifndef OIGTLMESSAGE_H
 #define OIGTLMESSAGE_H
@@ -148,7 +139,8 @@ public:
   QString getOwnerName(void) { return m_ownerName; }
 
 protected:
-	QString			                 m_messageType;
+
+	QString			                m_messageType;
 	igtl::MessageBase::Pointer  m_message;
 	igtl::TimeStamp::Pointer    m_timeReceived;
 	igtl::TimeStamp::Pointer    m_timeCreated;
@@ -159,8 +151,8 @@ protected:
 	igtlUint64	                m_id;
 	igtlUint64	                m_resolution;
 
-  bool                       m_processed;
-  QString                    m_ownerName;
+  bool                        m_processed;
+  QString                     m_ownerName;
 };
 
 Q_DECLARE_METATYPE(OIGTLMessage::Pointer);

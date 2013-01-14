@@ -2,20 +2,13 @@
 #
 #  NiftyLink:  A software library to facilitate communication over OpenIGTLink. 
 #  
-#              http://cmic.cs.ucl.ac.uk/
-#              http://www.ucl.ac.uk/
-#
-#  Copyright (c) UCL : See LICENSE.txt in the top level directory for details. 
-#
-#  Last Changed      : $LastChangedDate: 2011-12-01 15:19:31 +0000 (Thu, 01 Dec 2011) $ 
-#  Revision          : $Revision: 7901 $
-#  Last modified by  : $Author: gerge $
-#
-#  Original author   : m.clarkson@ucl.ac.uk
+#  Copyright (c) University College London (UCL). All rights reserved.
 #
 #  This software is distributed WITHOUT ANY WARRANTY; without even
 #  the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR
-#  PURPOSE.  See the above copyright notices for more information.
+#  PURPOSE.  
+#
+#  See LICENSE.txt in the top level directory for details. 
 #
 #=================================================================================*/
 
@@ -101,8 +94,9 @@ ENDIF(BUILD_SUPERBUILD)
 # Setting build name based on local system details
 ######################################################################
 
-IF(CMAKE_GENERATOR MATCHES Make)
+MESSAGE(STATUS "Cmake generator: ${CMAKE_GENERATOR}")
 
+IF(CMAKE_GENERATOR MATCHES Make AND NOT (CMAKE_GENERATOR MATCHES NMake) )
   find_program(UNAME NAMES uname)
   macro(getuname name flag)
     exec_program("${UNAME}" ARGS "${flag}" OUTPUT_VARIABLE "${name}")
@@ -138,6 +132,7 @@ IF (NOT BUILD_SHARED_LIBS)
 ENDIF()
 
 OPTION(BUILD_TESTING "Build Unit tests in NiftyLink/Testing/Code" ON)
+OPTION(NIFTYLINK_OIGTLINK_DEV "Build the development version of OpenIGTLink" ON)
 OPTION(NIFTYLINK_CHECK_COVERAGE "Enable/Disable code coverage checking." OFF)
 
 ######################################################################
@@ -152,11 +147,18 @@ SET(NIFTYLINK_WIKI_URL "https://cmicdev.cs.ucl.ac.uk/trac/wiki/MidasPlatform" CA
 SET(NIFTYLINK_WIKI_TEXT "wiki" CACHE STRING "Wiki text" FORCE )
 SET(NIFTYLINK_DASHBOARD_URL "https://cmicdev.cs.ucl.ac.uk/cdash/index.php?project=UCLToolkit" CACHE STRING "Dashboard URL" FORCE)
 SET(NIFTYLINK_DASHBOARD_TEXT "dashboard" CACHE STRING "Dashboard text" FORCE)
+SET(NIFTYLINK_DOCUMENTATION_URL "http://cmicdev.cs.ucl.ac.uk/NiftyLink/html/index.html" CACHE STRING "Documentation URL" FORCE)
+SET(NIFTYLINK_DOCUMENTATION_TEXT "doxygen" CACHE STRING "Documentation text" FORCE)
 SET(NIFTYLINK_USER_CONTACT "https://www.mailinglists.ucl.ac.uk/mailman/listinfo/niftk-users" CACHE STRING "Contact address for users." FORCE )
 SET(NIFTYLINK_DEVELOPER_CONTACT "https://www.mailinglists.ucl.ac.uk/mailman/listinfo/niftk-developers" CACHE STRING "Contact address for developers." FORCE )
 SET(NIFTYLINK_VERSION_STRING "${NIFTYLINK_VERSION_MAJOR}.${NIFTYLINK_VERSION_MINOR}.${NIFTYLINK_VERSION_PATCH}" CACHE STRING "String to describe fully named version" FORCE)
 SET(NIFTYLINK_DEPLOY_NAME "${NIFTYLINK_NAME}-${NIFTYLINK_VERSION_STRING}" CACHE STRING "String to describe deployed name" FORCE)
-SET(NIFTYLINK_OPENIGTLINK_LOCATION "git://github.com/zomboir/OpenIGTLink.git" CACHE STRING "URL of OpenIGTLink, so we can refer to it in documentation" FORCE)
+SET(NIFTYLINK_OPENIGTLINK_VERSION "20fbf0c24a"  CACHE STRING "OpenIGTLink version" FORCE )
+SET(NIFTYLINK_OPENIGTLINK_MD5 "5ed1347e57358f34266e4e03979a9975" CACHE STRING "OpenIGTLink MD5" FORCE )
+SET(NIFTYLINK_OPENIGTLINK_LOCATION "http://cmic.cs.ucl.ac.uk/platform/dependencies/NifTK-OpenIGTLink-${NIFTYLINK_OPENIGTLINK_VERSION}.tar.gz" CACHE STRING "Location of OpenIGTLink .tar.gz" FORCE )
+SET(NIFTYLINK_OPENIGTLINK_LOCATION_DEV "git://github.com/NifTK/OpenIGTLink.git" CACHE STRING "Development version of OpenIGTLink." )
+SET(NIFTYLINK_OPENIGTLINK_LOCATION_URL "https://github.com/NifTK/OpenIGTLink" CACHE STRING "OpenIGTLink on Github" FORCE )
+SET(NIFTYLINK_QT_URL "http://cmic.cs.ucl.ac.uk/platform/dependencies/qt-everywhere-opensource-src-4.7.4.tar.gz" CACHE STRING "Example Qt download" FORCE )
 
 ######################################################################
 # Hide these variables from the user, unless they are 'advanced' :-)
@@ -170,12 +172,33 @@ MARK_AS_ADVANCED(NIFTYLINK_WIKI_URL)
 MARK_AS_ADVANCED(NIFTYLINK_WIKI_TEXT)
 MARK_AS_ADVANCED(NIFTYLINK_DASHBOARD_URL)
 MARK_AS_ADVANCED(NIFTYLINK_DASHBOARD_TEXT)
+MARK_AS_ADVANCED(NIFTYLINK_DOCUMENTATION_URL)
+MARK_AS_ADVANCED(NIFTYLINK_DOCUMENTATION_TEXT)
 MARK_AS_ADVANCED(NIFTYLINK_USER_CONTACT)
 MARK_AS_ADVANCED(NIFTYLINK_DEVELOPER_CONTACT)
 MARK_AS_ADVANCED(NIFTYLINK_VERSION_STRING)
 MARK_AS_ADVANCED(NIFTYLINK_DEPLOY_NAME)
 MARK_AS_ADVANCED(NIFTYLINK_CHECK_COVERAGE)
+MARK_AS_ADVANCED(NIFTYLINK_OPENIGTLINK_VERSION)
+MARK_AS_ADVANCED(NIFTYLINK_OPENIGTLINK_MD5)
 MARK_AS_ADVANCED(NIFTYLINK_OPENIGTLINK_LOCATION)
+MARK_AS_ADVANCED(NIFTYLINK_OPENIGTLINK_LOCATION_DEV)
+MARK_AS_ADVANCED(UNAME)
+
+######################################################################
+# Sort out which version of OpenIGTLink we are using
+######################################################################
+IF(NIFTYLINK_OIGTLINK_DEV)
+  SET(OIGTL_OPTIONS
+    GIT_REPOSITORY ${NIFTYLINK_OPENIGTLINK_LOCATION_DEV}
+    GIT_TAG development
+  )
+ELSE()
+  SET(OIGTL_OPTIONS
+    URL ${NIFTYLINK_OPENIGTLINK_LOCATION}
+    URL_MD5 ${NIFTYLINK_OPENIGTLINK_MD5}
+  )
+ENDIF()
 
 ######################################################################
 # Setup the path to load CMake macros, and extra CMake files.
@@ -193,6 +216,11 @@ SET(CMAKE_MODULE_PATH
 INCLUDE(mitkFunctionGetVersion)
 INCLUDE(mitkMacroEmptyExternalProject)
 
+######################################################################
+# NiftyLink uses KWStyle for checking the coding style
+######################################################################
+INCLUDE(${CMAKE_SOURCE_DIR}/Utilities/KWStyle/NiftyLinkKWStyle.cmake)
+
 ###########################################################################
 # Set these compiler flags early, so it can be applied to all dependencies.
 ###########################################################################
@@ -203,9 +231,7 @@ SET(NIFTYLINK_ADDITIONAL_CXX_FLAGS "" CACHE STRING "Additional CXX Flags")
 MARK_AS_ADVANCED(NIFTYLINK_ADDITIONAL_CXX_FLAGS)
 
 ######################################################################
-# Find Qt. We need to check for Qt first, before we go ahead and do
-# the Superbuild, because VTK needs to know if we have Qt.
-# Qt and VTK are mandatory, so in effect VTK is always built with Qt.
+# Find Qt. 
 ######################################################################
 
 FIND_PACKAGE(Qt4 COMPONENTS QtCore QtXml QtGui QtNetwork REQUIRED)
@@ -216,18 +242,6 @@ SET(QT_USE_PHONON 0)
 SET(QT_USE_QTTEST 1)    
 INCLUDE(${QT_USE_FILE})
   
-# This is to pass to VTK, so VTK is built with Qt support.
-IF(BUILD_SUPERBUILD)
-  SET(VTK_QT_ARGS
-    -DDESIRED_QT_VERSION:STRING=4
-    -DVTK_USE_GUISUPPORT:BOOL=ON
-    -DVTK_USE_QVTK_QTOPENGL:BOOL=ON
-    -DVTK_USE_QVTK:BOOL=ON
-    -DVTK_USE_QT:BOOL=ON
-    -DQT_QMAKE_EXECUTABLE:FILEPATH=${QT_QMAKE_EXECUTABLE}
-   )
-ENDIF(BUILD_SUPERBUILD)
-
 ########################################################################
 # Now, if required, do the SuperBuild
 # If we are doing SuperBuild 
@@ -257,19 +271,24 @@ ENDIF(BUILD_SUPERBUILD)
 FIND_PACKAGE(OpenIGTLink REQUIRED)
 IF(OpenIGTLink_FOUND)
   MESSAGE("Found OpenIGTLink")    
-  INCLUDE(${OpenIGTLink_USE_FILE})  
+  INCLUDE(${OpenIGTLink_USE_FILE}) 
+  IF(NIFTYLINK_OIGTLINK_DEV)
+    mitkFunctionGetVersion(${OpenIGTLink_SOURCE_DIR} OPENIGTLINK)
+    MESSAGE("OpenIGTLink git version=${OPENIGTLINK_REVISION_ID}")   
+  ELSE()
+    SET(OPENIGTLINK_REVISION_ID ${NIFTYLINK_OPENIGTLINK_VERSION})
+    MESSAGE("OpenIGTLink version=${OPENIGTLINK_REVISION_ID}")
+  ENDIF()
 ENDIF(OpenIGTLink_FOUND)
 
 ######################################################################
 # Retrieve version info.
 ######################################################################
-mitkFunctionGetVersion(${CMAKE_SOURCE_DIR} NIFTYLINK_SVN)
-mitkFunctionGetVersion(${OpenIGTLink_SOURCE_DIR} NIFTYLINK_OPENIGTLINK)
+mitkFunctionGetVersion(${CMAKE_SOURCE_DIR} NIFTYLINK_GIT)
 MESSAGE("CMAKE_SOURCE_DIR=${CMAKE_SOURCE_DIR}")
 MESSAGE("CMAKE_BINARY_DIR=${CMAKE_BINARY_DIR}")
 MESSAGE("Qt version=${QT_VERSION_MAJOR}.${QT_VERSION_MINOR}.${QT_VERSION_PATCH}")
-MESSAGE("OpenIGTLink version=${NIFTYLINK_OPENIGTLINK_REVISION_ID}")
-MESSAGE("NiftyLink git version=${NIFTYLINK_SVN_REVISION_ID}")
+MESSAGE("NiftyLink git version=${NIFTYLINK_GIT_REVISION_ID}")
 
 ######################################################################
 # Test for some required system information. 
@@ -307,6 +326,7 @@ CONFIGURE_FILE(${CMAKE_SOURCE_DIR}/Doc/Doxygen/niftylinkdoxygen.pl.in ${CMAKE_BI
 CONFIGURE_FILE(${CMAKE_SOURCE_DIR}/Doc/Doxygen/doxygen.config.in ${CMAKE_BINARY_DIR}/doxygen.config)
 CONFIGURE_FILE(${CMAKE_SOURCE_DIR}/Doc/License_OpenIGTLink.txt ${CMAKE_BINARY_DIR}/LICENSE_OpenIGTLink.txt @ONLY)
 CONFIGURE_FILE(${CMAKE_SOURCE_DIR}/Doc/License_Qt.txt ${CMAKE_BINARY_DIR}/LICENSE_QT.txt @ONLY)
+CONFIGURE_FILE(${CMAKE_SOURCE_DIR}/Doc/License_QsLog.txt ${CMAKE_BINARY_DIR}/LICENSE_QsLog.txt @ONLY)
 CONFIGURE_FILE(${CMAKE_SOURCE_DIR}/LICENSE.txt ${CMAKE_BINARY_DIR}/LICENSE.txt @ONLY)
 CONFIGURE_FILE(${CMAKE_SOURCE_DIR}/README.txt ${CMAKE_BINARY_DIR}/README.txt @ONLY)
 

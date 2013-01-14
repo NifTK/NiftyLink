@@ -1,0 +1,4 @@
+@CMAKE_SOURCE_DIR@/Code/Libraries/Common/NiftyLink*.h
+@CMAKE_SOURCE_DIR@/Code/Libraries/Common/NiftyLink*.cpp
+@CMAKE_SOURCE_DIR@/Code/Libraries/*.h
+@CMAKE_SOURCE_DIR@/Code/Libraries/*.cpp

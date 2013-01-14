@@ -1,26 +1,18 @@
 /*=============================================================================
+  NiftyLink:  A software library to facilitate communication over OpenIGTLink.
 
- NiftyLink:  A software library to facilitate communication over OpenIGTLink.
+  Copyright (c) University College London (UCL). All rights reserved.
 
-             http://cmic.cs.ucl.ac.uk/
-             http://www.ucl.ac.uk/
+  This software is distributed WITHOUT ANY WARRANTY; without even
+  the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR
+  PURPOSE.
 
- Copyright (c) UCL : See LICENSE.txt in the top level directory for details.
-
- Last Changed      : $Date: 2010-05-25 17:02:50 +0100 (Tue, 25 May 2010) $
- Revision          : $Revision: 3300 $
- Last modified by  : $Author: mjc $
-
- Original author   : m.clarkson@ucl.ac.uk
-
- This software is distributed WITHOUT ANY WARRANTY; without even
- the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR
- PURPOSE.  See the above copyright notices for more information.
-
- ============================================================================*/
+  See LICENSE.txt in the top level directory for details.
+=============================================================================*/
 
 #include "OIGTLSocketObject.h"
 
+//-----------------------------------------------------------------------------
 OIGTLListenerProcess::OIGTLListenerProcess(QObject *parent)
 : OIGTLProcessBase(parent)
 {
@@ -29,13 +21,16 @@ OIGTLListenerProcess::OIGTLListenerProcess(QObject *parent)
   m_listenInterval = 1000;
 }
 
+
+//-----------------------------------------------------------------------------
 OIGTLListenerProcess::~OIGTLListenerProcess(void)
 {
-  //QLOG_INFO() <<"Destructing"  <<objectName() <<"running: " <<this->isRunning() <<this->isActive(); 
   m_serverSocket.operator =(NULL);
   m_extSocket.operator =(NULL);
 }
 
+
+//-----------------------------------------------------------------------------
 bool OIGTLListenerProcess::initialize(igtl::Socket::Pointer socket, int port)
 {
   if (socket.IsNull() || (socket.IsNotNull() && !socket->IsValid()) )
@@ -62,6 +57,8 @@ bool OIGTLListenerProcess::initialize(igtl::Socket::Pointer socket, int port)
   return true;
 }
 
+
+//-----------------------------------------------------------------------------
 bool OIGTLListenerProcess::initialize(int port)
 {
   //Set up a new instance of listener on a given port and create a new server socket
@@ -100,6 +97,8 @@ bool OIGTLListenerProcess::initialize(int port)
   return true;
 }
 
+
+//-----------------------------------------------------------------------------
 void OIGTLListenerProcess::startProcess()
 {
   if (m_initialized == false || m_running == true)
@@ -119,6 +118,8 @@ void OIGTLListenerProcess::startProcess()
   QCoreApplication::processEvents();
 }
 
+
+//-----------------------------------------------------------------------------
 void OIGTLListenerProcess::stopProcess()
 {
   // Stopping Process
@@ -128,8 +129,12 @@ void OIGTLListenerProcess::stopProcess()
 
 }
 
+
+//-----------------------------------------------------------------------------
 void OIGTLListenerProcess::terminateProcess()
 {
+  int sleepInterval = 100; // milliseconds
+
   // Terminate the process
   m_running = false; //Just in case...
 
@@ -149,7 +154,8 @@ void OIGTLListenerProcess::terminateProcess()
  
     try
     {
-      dynamic_cast<QThreadEx *>(QThread::currentThread())->msleepEx(100);
+      QLOG_DEBUG() << "Terminating OIGTLListenerProcess, waiting for " << sleepInterval << " ms for socket on port " << m_port << " to close\n";
+      dynamic_cast<QThreadEx *>(QThread::currentThread())->msleepEx(sleepInterval);
     }
     catch (std::exception &e)
     {
@@ -175,7 +181,8 @@ void OIGTLListenerProcess::terminateProcess()
 
     try
     {
-      dynamic_cast<QThreadEx *>(QThread::currentThread())->msleepEx(100);
+      QLOG_DEBUG() << "Terminating OIGTLListenerProcess, waiting for " << sleepInterval << " ms for server socket on port " << m_port << " to close\n";
+      dynamic_cast<QThreadEx *>(QThread::currentThread())->msleepEx(sleepInterval);
     }
     catch (std::exception &e)
     {
@@ -202,6 +209,8 @@ void OIGTLListenerProcess::terminateProcess()
   emit shutdownHostThread();
 }
 
+
+//-----------------------------------------------------------------------------
 bool OIGTLListenerProcess::activate(void)
 {
   if (m_mutex == NULL)
@@ -235,6 +244,8 @@ bool OIGTLListenerProcess::activate(void)
   return true;
 }
 
+
+//-----------------------------------------------------------------------------
 void OIGTLListenerProcess::doProcessing(void)
 {
   m_timeouter = new QTimer();
@@ -259,8 +270,12 @@ void OIGTLListenerProcess::doProcessing(void)
   terminateProcess();
 }
 
+
+//-----------------------------------------------------------------------------
 void OIGTLListenerProcess::listenOnSocket(void)
 {
+  int sleepInterval = 100; // milliseconds
+
   while (m_running == true && m_clientConnected == true)
   {
     QCoreApplication::processEvents();
@@ -271,7 +286,8 @@ void OIGTLListenerProcess::listenOnSocket(void)
     {
       try
       {
-        dynamic_cast<QThreadEx *>(QThread::currentThread())->msleepEx(100);
+        QLOG_DEBUG() << "OIGTLListenerProcess listening with socket on port " << m_port << ", but waiting for " << sleepInterval << " ms\n";
+        dynamic_cast<QThreadEx *>(QThread::currentThread())->msleepEx(sleepInterval);
       }
       catch (std::exception &e)
       {
@@ -285,8 +301,11 @@ void OIGTLListenerProcess::listenOnSocket(void)
   }
 }
 
+
+//-----------------------------------------------------------------------------
 void OIGTLListenerProcess::listenOnPort(void)
 {
+  int sleepInterval = 100; // milliseconds
   igtl::Socket::Pointer socket;
 
   while (m_running == true)
@@ -333,7 +352,8 @@ void OIGTLListenerProcess::listenOnPort(void)
         {
           try
           {
-            dynamic_cast<QThreadEx *>(QThread::currentThread())->msleepEx(100);
+            QLOG_DEBUG() << "OIGTLListenerProcess listening on port " << m_port << ", but waiting for " << sleepInterval << " ms\n";
+            dynamic_cast<QThreadEx *>(QThread::currentThread())->msleepEx(sleepInterval);
           }
           catch (std::exception &e)
           {
@@ -349,11 +369,11 @@ void OIGTLListenerProcess::listenOnPort(void)
   }
 }
 
+
+//-----------------------------------------------------------------------------
 bool OIGTLListenerProcess::receiveMessage()
 {
-  //Message wrapper pointer
   OIGTLMessage::Pointer msg;
-  //Message pointer
   igtl::MessageBase::Pointer message;
 
   // Create a message buffer to receive header
@@ -681,7 +701,6 @@ bool OIGTLListenerProcess::receiveMessage()
     m_mutex->unlock();
 
     //QLOG_INFO() <<objectName()  <<"Total message bytes received: " <<r;
-    //std::cerr <<"Total message bytes received: " <<r <<std::endl;
 
     if (r < 0)
       return false;
@@ -703,16 +722,22 @@ bool OIGTLListenerProcess::receiveMessage()
   return true;
 }
 
+
+//-----------------------------------------------------------------------------
 void OIGTLListenerProcess::setListenInterval(int msec) 
 { 
   m_listenInterval = msec;
 } 
 
+
+//-----------------------------------------------------------------------------
 int OIGTLListenerProcess::getListenInterval(void) 
 { 
   return m_listenInterval; 
 }
 
+
+//-----------------------------------------------------------------------------
 void OIGTLListenerProcess::socketTimeout(void)
 {
   QLOG_INFO() <<objectName() <<": " <<"Client disconnected.. terminating socket." <<"\n";

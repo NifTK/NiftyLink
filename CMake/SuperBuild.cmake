@@ -2,20 +2,13 @@
 #
 #  NiftyLink:  A software library to facilitate communication over OpenIGTLink. 
 #  
-#              http://cmic.cs.ucl.ac.uk/
-#              http://www.ucl.ac.uk/
-#
-#  Copyright (c) UCL : See LICENSE.txt in the top level directory for details. 
-#
-#  Last Changed      : $LastChangedDate: 2011-12-01 15:19:31 +0000 (Thu, 01 Dec 2011) $ 
-#  Revision          : $Revision: 7901 $
-#  Last modified by  : $Author: gerge $
-#
-#  Original author   : m.clarkson@ucl.ac.uk
+#  Copyright (c) University College London (UCL). All rights reserved.
 #
 #  This software is distributed WITHOUT ANY WARRANTY; without even
 #  the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR
-#  PURPOSE.  See the above copyright notices for more information.
+#  PURPOSE.  
+#
+#  See LICENSE.txt in the top level directory for details. 
 #
 #=================================================================================*/
 
@@ -114,12 +107,14 @@ IF(NOT DEFINED SUPERBUILD_EXCLUDE_NIFTYLINKBUILD_TARGET OR NOT SUPERBUILD_EXCLUD
       -DNIFTYLINK_DEPLOY_NAME:STRING=${NIFTYLINK_DEPLOY_NAME}
       -DNIFTYLINK_CHECK_COVERAGE:BOOL=${NIFTYLINK_CHECK_COVERAGE}
       -DNIFTYLINK_ADDITIONAL_C_FLAGS:STRING=${NIFTYLINK_ADDITIONAL_C_FLAGS}
-      -DNIFTYLINK_ADDITIONAL_CXX_FLAGS:STRING=${NIFTYLINK_ADDITIONAL_CXX_FLAGS}      
-	  -DBUILDNAME:STRING=${BUILDNAME}
-	  -DCTEST_BUILD_NAME:STRING=${CTEST_BUILD_NAME}
+      -DNIFTYLINK_ADDITIONAL_CXX_FLAGS:STRING=${NIFTYLINK_ADDITIONAL_CXX_FLAGS} 
+      -DNIFTYLINK_OIGTLINK_DEV:BOOL=${NIFTYLINK_OIGTLINK_DEV}     
+	    -DBUILDNAME:STRING=${BUILDNAME}
+	    -DCTEST_BUILD_NAME:STRING=${CTEST_BUILD_NAME}
       -DOpenIGTLink_SOURCE_DIR:PATH=${OpenIGTLink_SOURCE_DIR}
       -DOpenIGTLink_DIR:PATH=${OpenIGTLink_DIR}
-      -DQT_QMAKE_EXECUTABLE:FILEPATH=${QT_QMAKE_EXECUTABLE} 
+      -DQT_QMAKE_EXECUTABLE:FILEPATH=${QT_QMAKE_EXECUTABLE}
+      -DNIFTYLINK_USE_KWSTYLE:BOOL=${NIFTYLINK_USE_KWSTYLE} 
      DEPENDS ${proj_DEPENDENCIES}
   )
 

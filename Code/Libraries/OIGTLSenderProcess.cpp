@@ -1,27 +1,19 @@
 /*=============================================================================
+  NiftyLink:  A software library to facilitate communication over OpenIGTLink.
 
- NiftyLink:  A software library to facilitate communication over OpenIGTLink.
+  Copyright (c) University College London (UCL). All rights reserved.
 
-             http://cmic.cs.ucl.ac.uk/
-             http://www.ucl.ac.uk/
+  This software is distributed WITHOUT ANY WARRANTY; without even
+  the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR
+  PURPOSE.
 
- Copyright (c) UCL : See LICENSE.txt in the top level directory for details.
-
- Last Changed      : $Date: 2010-05-25 17:02:50 +0100 (Tue, 25 May 2010) $
- Revision          : $Revision: 3300 $
- Last modified by  : $Author: mjc $
-
- Original author   : m.clarkson@ucl.ac.uk
-
- This software is distributed WITHOUT ANY WARRANTY; without even
- the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR
- PURPOSE.  See the above copyright notices for more information.
-
- ============================================================================*/
+  See LICENSE.txt in the top level directory for details.
+=============================================================================*/
 
 #include "OIGTLSenderProcess.h"
 #include "igtlOSUtil.h"
 
+//-----------------------------------------------------------------------------
 OIGTLSenderProcess::OIGTLSenderProcess(QObject *parent)
 : OIGTLProcessBase(parent)
 {
@@ -30,14 +22,16 @@ OIGTLSenderProcess::OIGTLSenderProcess(QObject *parent)
   m_hostname.clear();
 }
 
+
+//-----------------------------------------------------------------------------
 OIGTLSenderProcess::~OIGTLSenderProcess(void)
 {
-  //QLOG_INFO() <<"Destructing"  <<objectName() <<"running: " <<this->isRunning() <<this->isActive(); 
-
   m_extSocket.operator =(NULL);
   m_clientSocket.operator =(NULL);
 }
 
+
+//-----------------------------------------------------------------------------
 bool OIGTLSenderProcess::initialize(igtl::Socket::Pointer socket, int port)
 {
   if (socket.IsNull() || (socket.IsNotNull() && !socket->IsValid()) )
@@ -64,6 +58,7 @@ bool OIGTLSenderProcess::initialize(igtl::Socket::Pointer socket, int port)
 }
 
 
+//-----------------------------------------------------------------------------
 bool OIGTLSenderProcess::initialize(std::string &hostname, int port)
 {
   if (port <= 0 || hostname.empty())
@@ -105,6 +100,8 @@ bool OIGTLSenderProcess::initialize(std::string &hostname, int port)
   return true;
 }
 
+
+//-----------------------------------------------------------------------------
 void OIGTLSenderProcess::startProcess(void)
 {
   if (m_initialized == false)
@@ -124,12 +121,16 @@ void OIGTLSenderProcess::startProcess(void)
   QCoreApplication::processEvents();
 }
 
+
+//-----------------------------------------------------------------------------
 void OIGTLSenderProcess::stopProcess(void)
 {
   QLOG_INFO() <<objectName() <<": " << "Attempting to stop sender process... (stopProcess()) \n";
   m_running = false;  //stops the process
 }
 
+
+//-----------------------------------------------------------------------------
 void OIGTLSenderProcess::terminateProcess()
 {
   m_running = false; //Just in case...
@@ -182,6 +183,8 @@ void OIGTLSenderProcess::terminateProcess()
   emit shutdownHostThread();
 }
 
+
+//-----------------------------------------------------------------------------
 bool OIGTLSenderProcess::activate(void)
 {
   if (m_mutex == NULL)
@@ -221,9 +224,13 @@ bool OIGTLSenderProcess::activate(void)
   return true;
 }
 
+
+//-----------------------------------------------------------------------------
 void OIGTLSenderProcess::doProcessing(void)
 {
-  //Try to connect to remote
+  int sleepInterval = 250; // milliseconds
+
+  // Try to connect to remote
   if (!m_sendingOnSocket && m_extSocket.IsNull())
   {
     int r = m_clientSocket->ConnectToServer(m_hostname.c_str(), m_port);
@@ -263,7 +270,9 @@ void OIGTLSenderProcess::doProcessing(void)
       try
       {
         p = dynamic_cast<QThreadEx *>(QThread::currentThread());
-        p->msleepEx(250);
+
+        QLOG_DEBUG() << "Before keep alive check: Send queue to host " << QString::fromStdString(m_hostname) << ", port " << m_port << ", is empty, so sleeping for " << sleepInterval << " ms\n";
+        p->msleepEx(sleepInterval);
       }
       catch (std::exception &e)
       {
@@ -294,7 +303,10 @@ void OIGTLSenderProcess::doProcessing(void)
       QCoreApplication::processEvents();
 
       if (p!=NULL)
-        p->msleepEx(250);
+      {
+        QLOG_DEBUG() << "After keep alive check: Send queue to host " << QString::fromStdString(m_hostname) << ", port " << m_port << ", is empty, so sleeping for " << sleepInterval << " ms\n";
+        p->msleepEx(sleepInterval);
+      }
 
       continue;
     }
@@ -321,7 +333,6 @@ void OIGTLSenderProcess::doProcessing(void)
       int ret = 0;
       
       m_mutex->lock();
-      //std::cerr <<"\nSending...." <<igtMsg->GetPackSize() <<"\n";
       ret = m_extSocket->Send(igtMsg->GetPackPointer(), igtMsg->GetPackSize());
       m_mutex->unlock();
 
@@ -374,6 +385,8 @@ void OIGTLSenderProcess::doProcessing(void)
   terminateProcess();
 }
 
+
+//-----------------------------------------------------------------------------
 void OIGTLSenderProcess::sendMsg(OIGTLMessage::Pointer msg)
 {
   // Append message to the sendqueue
@@ -382,11 +395,15 @@ void OIGTLSenderProcess::sendMsg(OIGTLMessage::Pointer msg)
   m_queueMutex.unlock();
 }
 
+
+//-----------------------------------------------------------------------------
 void OIGTLSenderProcess::setConnectTimeOut(int msec) 
 { 
   m_connectTimeout = msec; 
 }
 
+
+//-----------------------------------------------------------------------------
 int OIGTLSenderProcess::getConnectTimeOut(void)     
 { 
   return m_connectTimeout; 

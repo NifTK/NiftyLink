@@ -1,26 +1,19 @@
 /*=============================================================================
+  NiftyLink:  A software library to facilitate communication over OpenIGTLink.
 
- NiftyLink:  A software library to facilitate communication over OpenIGTLink.
+  Copyright (c) University College London (UCL). All rights reserved.
 
-             http://cmic.cs.ucl.ac.uk/
-             http://www.ucl.ac.uk/
+  This software is distributed WITHOUT ANY WARRANTY; without even
+  the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR
+  PURPOSE.
 
- Copyright (c) UCL : See LICENSE.txt in the top level directory for details.
-
- Last Changed      : $Date: 2010-05-25 17:02:50 +0100 (Tue, 25 May 2010) $
- Revision          : $Revision: 3300 $
- Last modified by  : $Author: mjc $
-
- Original author   : m.clarkson@ucl.ac.uk
-
- This software is distributed WITHOUT ANY WARRANTY; without even
- the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR
- PURPOSE.  See the above copyright notices for more information.
-
- ============================================================================*/
+  See LICENSE.txt in the top level directory for details.
+=============================================================================*/
 
 #include "NiftyLinkUtils.h"
+#include <cmath>
 
+//-----------------------------------------------------------------------------
 bool validateIp(const QString &inputIP)
 {
 	QStringList nums = inputIP.split(".");
@@ -40,6 +33,8 @@ bool validateIp(const QString &inputIP)
 	return true;
 }
 
+
+//-----------------------------------------------------------------------------
 QString resolveHostName(const QString &input)
 {
 	if (validateIp(input))
@@ -60,6 +55,8 @@ QString resolveHostName(const QString &input)
 
 }
 
+
+//-----------------------------------------------------------------------------
 QString getLocalHostAddress(void)
 {
     QNetworkConfigurationManager mgr;
@@ -83,6 +80,8 @@ QString getLocalHostAddress(void)
     return QString("UNKNOWN");
 }
 
+
+//-----------------------------------------------------------------------------
 void CreateRandomTransformMatrix(igtl::Matrix4x4& matrix)
 {
   float position[3];
@@ -113,6 +112,8 @@ void CreateRandomTransformMatrix(igtl::Matrix4x4& matrix)
   //igtl::PrintMatrix(matrix);
 }
 
+
+//-----------------------------------------------------------------------------
 void InitMessageTypes(mapStrMsgType &types)
 {
   types["NONDEFINED"] = NONDEFINED;
@@ -196,4 +197,49 @@ void InitMessageTypes(mapStrMsgType &types)
   types["STT_TRANS"] = STT_TRANS;
   types["STP_TRANS"] = STP_TRANS;
   types["RTS_TRANS"] = RTS_TRANS;
+}
+
+//-----------------------------------------------------------------------------
+igtlUint64 GetTimeInNanoSeconds(igtl::TimeStamp* time)
+{
+  igtlUint32 seconds, nanoseconds;
+  time->GetTimeStamp(&seconds, &nanoseconds);
+
+  igtlUint64 result = (igtlUint64)seconds * 1000000000 + (igtlUint64)nanoseconds;
+  return result;
+}
+
+
+//-----------------------------------------------------------------------------
+void SetTimeInNanoSeconds(igtl::TimeStamp* time, const igtlUint64& totalNanos)
+{
+  igtlUint32 seconds, nanoseconds;
+
+  seconds = (igtlUint64)totalNanos / (igtlUint64)1000000000;
+  nanoseconds = (igtlUint64)totalNanos % (igtlUint64)1000000000;
+
+  time->SetTime(seconds, nanoseconds);
+}
+
+
+//-----------------------------------------------------------------------------
+igtlUint64 GetDifferenceInNanoSeconds(igtl::TimeStamp* timeA, igtl::TimeStamp* timeB)
+{
+  igtlUint64 a = GetTimeInNanoSeconds(timeA);
+  igtlUint64 b = GetTimeInNanoSeconds(timeB);
+  igtlUint64 d;
+
+  if (a>b)
+  {
+    d = a-b;
+  }
+  else if (b>a)
+  {
+    d = b-a;
+  }
+  else
+  {
+    d = 0;
+  }
+  return d;
 }

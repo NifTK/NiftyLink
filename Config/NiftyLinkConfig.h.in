@@ -1,23 +1,14 @@
 /*=============================================================================
+  NiftyLink:  A software library to facilitate communication over OpenIGTLink.
 
- NiftyLink:  A software library to facilitate communication over OpenIGTLink.
+  Copyright (c) University College London (UCL). All rights reserved.
 
-             http://cmic.cs.ucl.ac.uk/
-             http://www.ucl.ac.uk/
+  This software is distributed WITHOUT ANY WARRANTY; without even
+  the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR
+  PURPOSE.
 
- Copyright (c) UCL : See LICENSE.txt in the top level directory for details.
-
- Last Changed      : $Date: 2010-05-25 17:02:50 +0100 (Tue, 25 May 2010) $
- Revision          : $Revision: 3300 $
- Last modified by  : $Author: mjc $
-
- Original author   : m.clarkson@ucl.ac.uk
-
- This software is distributed WITHOUT ANY WARRANTY; without even
- the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR
- PURPOSE.  See the above copyright notices for more information.
-
- ============================================================================*/
+  See LICENSE.txt in the top level directory for details.
+=============================================================================*/
 
 /* 
  * here is where system computed values get stored these values should only
@@ -103,6 +94,6 @@
 
 /* Important software version information */
 #define NIFTYLINK_QT_VERSION "@QT_VERSION_MAJOR@.@QT_VERSION_MINOR@.@QT_VERSION_PATCH@"
-#define NIFTYLINK_OPENIGTLINK_REVISION_ID "@NIFTYLINK_OPENIGTLINK_REVISION_ID@"
-#define NIFTYLINK_SVN_REVISION_ID "@NIFTYLINK_SVN_REVISION_ID@"
+#define NIFTYLINK_OPENIGTLINK_VERSION "@OPENIGTLINK_REVISION_ID@"
+#define NIFTYLINK_GIT_REVISION_ID "@NIFTYLINK_GIT_REVISION_ID@"
 

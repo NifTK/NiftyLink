@@ -1,23 +1,14 @@
 /*=============================================================================
+  NiftyLink:  A software library to facilitate communication over OpenIGTLink.
 
- NiftyLink:  A software library to facilitate communication over OpenIGTLink.
+  Copyright (c) University College London (UCL). All rights reserved.
 
-             http://cmic.cs.ucl.ac.uk/
-             http://www.ucl.ac.uk/
+  This software is distributed WITHOUT ANY WARRANTY; without even
+  the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR
+  PURPOSE.
 
- Copyright (c) UCL : See LICENSE.txt in the top level directory for details.
-
- Last Changed      : $Date: 2010-05-25 17:02:50 +0100 (Tue, 25 May 2010) $
- Revision          : $Revision: 3300 $
- Last modified by  : $Author: mjc $
-
- Original author   : m.clarkson@ucl.ac.uk
-
- This software is distributed WITHOUT ANY WARRANTY; without even
- the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR
- PURPOSE.  See the above copyright notices for more information.
-
- ============================================================================*/
+  See LICENSE.txt in the top level directory for details.
+=============================================================================*/
 
 #include "NiftyLinkUtilsTests.h"
 #include "stdlib.h"
@@ -26,28 +17,41 @@
 
 void UtilsTests::initTestCase()
 {
-  qDebug("called before everything else");
 }
 
 void UtilsTests::cleanupTestCase()
 {
-  qDebug("called after myFirstTest and mySecondTest");
 }
 
-void UtilsTests::myFirstTest()
+void UtilsTests::timeStampSetGetDifferenceTest()
 {
-  QVERIFY(1 == 1);
-}
+  igtlUint32 seconds, nanoseconds;
+  igtlUint32 seconds2, nanoseconds2;
+  igtlUint64 totalTimeInNanoseconds;
+  igtlUint64 totalTimeInNanoseconds2;
 
-void UtilsTests::mySecondTest()
-{
-  QVERIFY(1 != 2);
-}
+  igtl::TimeStamp::Pointer timeStamp = igtl::TimeStamp::New();
+  timeStamp->GetTimeStamp(&seconds, &nanoseconds);
 
-void UtilsTests::myThirdTest()
-{
-  int result = NiftyLinkDummyFunction1();
-  QVERIFY(result == 0);
+  totalTimeInNanoseconds = GetTimeInNanoSeconds(timeStamp);
+  totalTimeInNanoseconds2 = (igtlUint64)((igtlUint64)seconds*(igtlUint64)1000000000 + (igtlUint64)nanoseconds);
+
+  QVERIFY(totalTimeInNanoseconds == totalTimeInNanoseconds2);
+
+  SetTimeInNanoSeconds(timeStamp, totalTimeInNanoseconds);
+  totalTimeInNanoseconds2 = GetTimeInNanoSeconds(timeStamp);
+
+  QVERIFY(totalTimeInNanoseconds == totalTimeInNanoseconds2);
+
+  timeStamp->GetTimeStamp(&seconds2, &nanoseconds2);
+
+  QVERIFY(seconds == seconds2);
+  QVERIFY(nanoseconds == nanoseconds2);
+
+  timeStamp->SetTime(seconds, nanoseconds + 1);
+  totalTimeInNanoseconds2 = GetTimeInNanoSeconds(timeStamp);
+
+  QVERIFY(totalTimeInNanoseconds2 - totalTimeInNanoseconds == 1);
 }
 
 QTEST_MAIN( UtilsTests )

@@ -1,23 +1,14 @@
 /*=============================================================================
+  NiftyLink:  A software library to facilitate communication over OpenIGTLink.
 
- NiftyLink:  A software library to facilitate communication over OpenIGTLink.
+  Copyright (c) University College London (UCL). All rights reserved.
 
-             http://cmic.cs.ucl.ac.uk/
-             http://www.ucl.ac.uk/
+  This software is distributed WITHOUT ANY WARRANTY; without even
+  the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR
+  PURPOSE.
 
- Copyright (c) UCL : See LICENSE.txt in the top level directory for details.
-
- Last Changed      : $Date: 2010-05-25 17:02:50 +0100 (Tue, 25 May 2010) $
- Revision          : $Revision: 3300 $
- Last modified by  : $Author: mjc $
-
- Original author   : m.clarkson@ucl.ac.uk
-
- This software is distributed WITHOUT ANY WARRANTY; without even
- the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR
- PURPOSE.  See the above copyright notices for more information.
-
- ============================================================================*/
+  See LICENSE.txt in the top level directory for details.
+=============================================================================*/
 
 #ifndef NIFTYLINKCOMMONUTILS_H
 #define NIFTYLINKCOMMONUTILS_H
@@ -152,5 +143,14 @@ extern "C++" NIFTYLINKCOMMON_WINEXPORT QString resolveHostName(const QString &in
 
 /// \brief This function creates a random 4x4 test matrix 
 extern "C++" NIFTYLINKCOMMON_WINEXPORT void CreateRandomTransformMatrix(igtl::Matrix4x4& matrix);
+
+/// \brief Returns the time as igtlUint64 in nanoseconds.
+extern "C++" NIFTYLINKCOMMON_WINEXPORT igtlUint64 GetTimeInNanoSeconds(igtl::TimeStamp* time);
+
+/// \brief Similar to GetTimeInNanoSeconds, enables the setting of a time stamp in nanoseconds.
+extern "C++" NIFTYLINKCOMMON_WINEXPORT void SetTimeInNanoSeconds(igtl::TimeStamp* time, const igtlUint64& nanos);
+
+/// \brief Returns the difference in nanoseconds.
+extern "C++" NIFTYLINKCOMMON_WINEXPORT igtlUint64 GetDifferenceInNanoSeconds(igtl::TimeStamp* timeA, igtl::TimeStamp* timeB);
 
 #endif

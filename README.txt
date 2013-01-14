@@ -2,7 +2,7 @@ Welcome
 -----------------------------
 
 Welcome to NiftyLink version @NIFTYLINK_VERSION_STRING@, a small messaging library
-to facilitate communication over OpenIGTLink between NiftyView and NiftyGuide.
+to facilitate communication over OpenIGTLink.
  
 For all questions, please contact: 
 
@@ -12,7 +12,7 @@ For all questions, please contact:
 Funding
 ---------------
 
-This platform was funded by the Comprehensive Biomedical 
+This project was funded by the Comprehensive Biomedical 
 Research Centre at University College London (UCL) and 
 University College London Hospitals (UCLH), the
 Technology Strategy Board (TSB) and the Engineering And
@@ -24,12 +24,31 @@ Additional Libraries
 
 This platform uses these libraries/projects listed below. 
 
-Library : Qt
-Website : http://qt.nokia.com/products
-Purpose : Gui framework.
-License : http://www.gnu.org/licenses/old-licenses/lgpl-2.1.html (LGPL)
+In addition, note that we use a modified OpenIGTLink.
 
-Library : OpenIGTLink
-Website : http://www.na-mic.org/Wiki/index.php/OpenIGTLink
-Purpose : Network protocol
-License : http://www.opensource.org/licenses/bsd-license.php (BSD)
+Library  : OpenIGTLink
+Website  : http://www.na-mic.org/Wiki/index.php/OpenIGTLink
+Purpose  : Network protocol, somewhat tailored to medical imaging.
+License  : BSD
+Download : @NIFTYLINK_OPENIGTLINK_URL@
+
+Library  : Qt
+Website  : http://qt-project.org/
+Purpose  : Cross platform general purpose library. 
+License  : LGPL 2.1
+Download : qt-project website, or here: 
+           http://cmic.cs.ucl.ac.uk/platform/dependencies/qt-everywhere-opensource-src-4.7.4.tar.gz
+
+Library  : QsLog
+Website  : https://bitbucket.org/razvanpetru/qt-components/wiki/QsLog
+Purpose  : Logging library.
+License  : BSD
+Download : Checked into this code base under NiftyLink/Code/Libraries/Common
+
+In addition, you can view the nightly generated @NIFTYLINK_DOCUMENTATION_TEXT@ here:
+
+@NIFTYLINK_DOCUMENTATION_URL@
+
+which contains copies of the licenses. These licences are distributed within the source
+tree at NiftyLink/Doc/ and also get copied to the build directory at compile time.
+There is currently no "make install" task.

@@ -1,23 +1,14 @@
 /*=============================================================================
+  NiftyLink:  A software library to facilitate communication over OpenIGTLink.
 
- NiftyLink:  A software library to facilitate communication over OpenIGTLink.
+  Copyright (c) University College London (UCL). All rights reserved.
 
-             http://cmic.cs.ucl.ac.uk/
-             http://www.ucl.ac.uk/
+  This software is distributed WITHOUT ANY WARRANTY; without even
+  the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR
+  PURPOSE.
 
- Copyright (c) UCL : See LICENSE.txt in the top level directory for details.
-
- Last Changed      : $Date: 2010-05-25 17:02:50 +0100 (Tue, 25 May 2010) $
- Revision          : $Revision: 3300 $
- Last modified by  : $Author: mjc $
-
- Original author   : m.clarkson@ucl.ac.uk
-
- This software is distributed WITHOUT ANY WARRANTY; without even
- the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR
- PURPOSE.  See the above copyright notices for more information.
-
- ============================================================================*/
+  See LICENSE.txt in the top level directory for details.
+=============================================================================*/
 
 #ifndef OIGTLIMAGEMESSAGE_H
 #define OIGTLIMAGEMESSAGE_H
@@ -69,34 +60,56 @@ public:
   /// \brief Function which creates a RTS_IMAGE message (igtl::RTSImageMessage)
 	static void Create_RTS(OIGTLMessage::Pointer &msgToCreate);
 
-	//    TODO: Add these functions
-  /*
-    // Image dimensions.
-  // SetDimensions() should be called prior to SetSubVolume(), since SetDimensions()
-  // sets subvolume parameters automatically assuming that subvolume = entire volume.
+	/// \brief Set the image dimensions
+  /// SetDimensions() should be called prior to SetSubVolume(), since SetDimensions()
+  /// sets subvolume parameters automatically assuming that subvolume = entire volume.
+	/// This is done automatically by setQimage()
   void SetDimensions(int s[3]);
+
+	/// \brief Set the image dimensions
+  /// SetDimensions() should be called prior to SetSubVolume(), since SetDimensions()
+  /// sets subvolume parameters automatically assuming that subvolume = entire volume.
+	/// This is done automatically by setQimage()
   void SetDimensions(int i, int j, int k);
+
+	/// \brief Get the image dimensions
   void GetDimensions(int s[3]);
+
+	/// \brief Get the image dimensions
   void GetDimensions(int &i, int &j, int &k);
 
-  // Sub-volume dimensions and offset.
-  // SetSubVolume() should be called after calling SetDiemensions(), since SetDimensions()
-  // reset the subvolume parameters automatically.
+	/// \brief Set the image sub volume
+  /// SetDimensions() should be called prior to SetSubVolume(), since SetDimensions()
+  /// sets subvolume parameters automatically assuming that subvolume = entire volume.
   int  SetSubVolume(int dim[3], int off[3]);
+
+	/// \brief Set the image sub volume
+  /// SetDimensions() should be called prior to SetSubVolume(), since SetDimensions()
+  /// sets subvolume parameters automatically assuming that subvolume = entire volume.
   int  SetSubVolume(int dimi, int dimj, int dimk, int offi, int offj, int offk);
+
+	/// \brief Get the image sub volume
   void GetSubVolume(int dim[3], int off[3]);
+
+	/// \brief Get the image sub volume
   void GetSubVolume(int &dimi, int &dimj, int &dimk, int &offi, int &offj, int &offk);
 
-    // Number of components
-  void SetNumComponents(int num);
+  /// \brief Set the number of image components.
+	/// This is done automatically by setQimage()
+	void SetNumComponents(int num);
+
+  /// \brief Get the number of image components.
   int  GetNumComponents();
-  */
   
   /// \brief Sets the image's origin / orientation matrix
   void setMatrix(igtl::Matrix4x4 &matrix);
 
   /// \brief Returns the image's origin / orientation matrix
 	void getMatrix(igtl::Matrix4x4 &matrix);
+
+	/// \brief Set the matrixset flag to true to prevent the image matrix being 
+	/// destroyed during pack and unpack. This should be done when messages are received.
+	void PreserveMatrix();
 
   /// \brief Sets the image's normals
 	void setNormals(float t[3], float s[3], float n[3]);
@@ -137,7 +150,7 @@ public:
   void save(QString filename);
 
   /// \brief Sets the message's contents in QImage format
-  void setQImage(QImage image);
+  void setQImage(const QImage& image);
 
   /// \brief Returns the message's contents in QImage format
   QImage getQImage(void);

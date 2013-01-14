@@ -1,23 +1,14 @@
 /*=============================================================================
+  NiftyLink:  A software library to facilitate communication over OpenIGTLink.
 
- NiftyLink:  A software library to facilitate communication over OpenIGTLink.
+  Copyright (c) University College London (UCL). All rights reserved.
 
-             http://cmic.cs.ucl.ac.uk/
-             http://www.ucl.ac.uk/
+  This software is distributed WITHOUT ANY WARRANTY; without even
+  the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR
+  PURPOSE.
 
- Copyright (c) UCL : See LICENSE.txt in the top level directory for details.
-
- Last Changed      : $Date: 2010-05-25 17:02:50 +0100 (Tue, 25 May 2010) $
- Revision          : $Revision: 3300 $
- Last modified by  : $Author: mjc $
-
- Original author   : m.clarkson@ucl.ac.uk
-
- This software is distributed WITHOUT ANY WARRANTY; without even
- the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR
- PURPOSE.  See the above copyright notices for more information.
-
- ============================================================================*/
+  See LICENSE.txt in the top level directory for details.
+=============================================================================*/
 
 #ifndef OIGTLLISTENERPROCESS_H
 #define OIGTLLISTENERPROCESS_H
@@ -34,14 +25,16 @@ class OIGTLListenerProcessTester;
 
 /**
  * \class OIGTLListenerProcess
- * \brief Class for listening on a given local port to receive messages from a remote host via OpenIGTLink socket
- * in a separate Process.
+ * \brief Class for listening on a given local port to receive messages from a
+ * remote host via OpenIGTLink socket in a separate Process.
  * 
- * OIGTLListenerProcess implements the fuctionality required to listen on a selected local port and to receive messages.
- * It can be initialized by specifying the local port or by passing a previously created socket pointer.
- * After initialization the Process starts listening on the given port / socket waiting for clients to connect.
- * If a connection is detected the Process attempts to receive messages from the remote client. The received data is
- *  processed and inperpreted, resulting in an OIGTLMessage, which is passed on using a Qt signal.
+ * OIGTLListenerProcess implements the fuctionality required to listen on a selected
+ * local port and to receive messages. It can be initialized by specifying the local
+ * port or by passing a previously created socket pointer. After initialization the
+ * Process starts listening on the given port / socket waiting for clients to connect.
+ * If a connection is detected the Process attempts to receive messages from the remote
+ * client. The received data is processed and interpreted, resulting in an OIGTLMessage, \
+ * which is passed on using a Qt signal.
  */
 class NIFTYLINKCOMMON_WINEXPORT OIGTLListenerProcess : public OIGTLProcessBase
 {

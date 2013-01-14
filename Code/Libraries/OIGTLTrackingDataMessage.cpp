@@ -1,23 +1,14 @@
 /*=============================================================================
+  NiftyLink:  A software library to facilitate communication over OpenIGTLink.
 
- NiftyLink:  A software library to facilitate communication over OpenIGTLink.
+  Copyright (c) University College London (UCL). All rights reserved.
 
-             http://cmic.cs.ucl.ac.uk/
-             http://www.ucl.ac.uk/
+  This software is distributed WITHOUT ANY WARRANTY; without even
+  the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR
+  PURPOSE.
 
- Copyright (c) UCL : See LICENSE.txt in the top level directory for details.
-
- Last Changed      : $Date: 2010-05-25 17:02:50 +0100 (Tue, 25 May 2010) $
- Revision          : $Revision: 3300 $
- Last modified by  : $Author: mjc $
-
- Original author   : m.clarkson@ucl.ac.uk
-
- This software is distributed WITHOUT ANY WARRANTY; without even
- the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR
- PURPOSE.  See the above copyright notices for more information.
-
- ============================================================================*/
+  See LICENSE.txt in the top level directory for details.
+=============================================================================*/
 
 #include "OIGTLTrackingDataMessage.h"
 
@@ -29,6 +20,7 @@
 #include "QsLog.h"
 #include "QsLogDest.h"
 
+//-----------------------------------------------------------------------------
 OIGTLTrackingDataMessage::OIGTLTrackingDataMessage(void)
 	: OIGTLMessage()
 {
@@ -36,11 +28,15 @@ OIGTLTrackingDataMessage::OIGTLTrackingDataMessage(void)
 	m_message.operator =(NULL);
 }
 
+
+//-----------------------------------------------------------------------------
 OIGTLTrackingDataMessage::~OIGTLTrackingDataMessage(void)
 {
   //QLOG_INFO() <<"TrackingDataMessage Destructor" <<m_ownerName <<m_id;
 }
 
+
+//-----------------------------------------------------------------------------
 OIGTLTrackingDataMessage::OIGTLTrackingDataMessage(const OIGTLTrackingDataMessage &other)
 	: OIGTLMessage(other)
 {
@@ -50,6 +46,8 @@ OIGTLTrackingDataMessage::OIGTLTrackingDataMessage(const OIGTLTrackingDataMessag
   m_p[2] = other.m_p[2];
 }
 
+
+//-----------------------------------------------------------------------------
 void OIGTLTrackingDataMessage::setMatrix(igtl::Matrix4x4 &matrix)
 {
 	if (m_message.IsNull())
@@ -57,6 +55,7 @@ void OIGTLTrackingDataMessage::setMatrix(igtl::Matrix4x4 &matrix)
 
 	igtl::TrackingDataMessage::Pointer msgPointer;
 	msgPointer = static_cast<igtl::TrackingDataMessage *>(m_message.GetPointer());
+
 	msgPointer->Unpack();
 
   igtl::TrackingDataElement::Pointer tElem;
@@ -71,12 +70,12 @@ void OIGTLTrackingDataMessage::setMatrix(igtl::Matrix4x4 &matrix)
     msgPointer->GetTrackingDataElement(0, tElem);
 
   tElem->SetMatrix(matrix);
-  
-  
-	//Pack message data
-	msgPointer->Pack();
+
+  msgPointer->Pack();
 }
 
+
+//-----------------------------------------------------------------------------
 void OIGTLTrackingDataMessage::getMatrix(igtl::Matrix4x4 &matrix)
 {
 	if (m_message.IsNull())
@@ -94,11 +93,12 @@ void OIGTLTrackingDataMessage::getMatrix(igtl::Matrix4x4 &matrix)
   msgPointer->GetTrackingDataElement(0, tElem);
   tElem->GetMatrix(matrix);
 
-	//Pack message data
 	msgPointer->Pack();
 
 }
 
+
+//-----------------------------------------------------------------------------
 QString OIGTLTrackingDataMessage::getMatrixAsString()
 {
   if (m_message.IsNull())
@@ -130,12 +130,13 @@ QString OIGTLTrackingDataMessage::getMatrixAsString()
 
   QString strMat = QString(sstr.str().c_str());
 
-  //Pack message data
   msgPointer->Pack();
 
   return strMat;
 }
 
+
+//-----------------------------------------------------------------------------
 void OIGTLTrackingDataMessage::setPosition(float p[3])
 {
 	if (m_message.IsNull())
@@ -158,11 +159,11 @@ void OIGTLTrackingDataMessage::setPosition(float p[3])
 
   tElem->SetPosition(p);
   
-
-	//Pack message data
 	msgPointer->Pack();
 }
 
+
+//-----------------------------------------------------------------------------
 void OIGTLTrackingDataMessage::getPosition(float p[3])
 {
 	if (m_message.IsNull())
@@ -179,10 +180,11 @@ void OIGTLTrackingDataMessage::getPosition(float p[3])
   msgPointer->GetTrackingDataElement(0, tElem);
   tElem->GetPosition(p);
 
-	//Pack message data
 	msgPointer->Pack();
 }
 
+
+//-----------------------------------------------------------------------------
 void OIGTLTrackingDataMessage::setPosition(float px, float py, float pz)
 {
 	if (m_message.IsNull())
@@ -205,11 +207,11 @@ void OIGTLTrackingDataMessage::setPosition(float px, float py, float pz)
 
   tElem->SetPosition(px, py, pz);
   
-
-	//Pack message data
 	msgPointer->Pack();
 }
 
+
+//-----------------------------------------------------------------------------
 void OIGTLTrackingDataMessage::getPosition(float &px, float &py, float &pz)
 {
 	if (m_message.IsNull())
@@ -226,10 +228,11 @@ void OIGTLTrackingDataMessage::getPosition(float &px, float &py, float &pz)
   msgPointer->GetTrackingDataElement(0, tElem);
   tElem->GetPosition(&px, &py, &pz);
 
-	//Pack message data
 	msgPointer->Pack();
 }
 
+
+//-----------------------------------------------------------------------------
 void OIGTLTrackingDataMessage::setTrackerToolName(QString name)
 {
   if (m_message.IsNull())
@@ -252,10 +255,11 @@ void OIGTLTrackingDataMessage::setTrackerToolName(QString name)
 
   tElem->SetName(name.toStdString().c_str());
 
-	//Pack message data
 	msgPointer->Pack();
 }
- 
+
+
+//-----------------------------------------------------------------------------
 QString OIGTLTrackingDataMessage::getTrackerToolName()
 {
   if (m_message.IsNull())
@@ -272,12 +276,13 @@ QString OIGTLTrackingDataMessage::getTrackerToolName()
   msgPointer->GetTrackingDataElement(0, tElem);
   QString str(tElem->GetName());
  
-	//Pack message data
 	msgPointer->Pack();
 
   return str;
 }
 
+
+//-----------------------------------------------------------------------------
 void OIGTLTrackingDataMessage::setTrackerToolType(igtlUint8 type)
 {
   if (m_message.IsNull())
@@ -300,10 +305,11 @@ void OIGTLTrackingDataMessage::setTrackerToolType(igtlUint8 type)
 
   tElem->SetType(type);
 
-	//Pack message data
 	msgPointer->Pack();
 }
 
+
+//-----------------------------------------------------------------------------
 igtlUint8 OIGTLTrackingDataMessage::getTrackerToolType()
 {
   if (m_message.IsNull())
@@ -320,12 +326,13 @@ igtlUint8 OIGTLTrackingDataMessage::getTrackerToolType()
   msgPointer->GetTrackingDataElement(0, tElem);
   igtlUint8 type = tElem->GetType();
  
-	//Pack message data
 	msgPointer->Pack();
 
   return type;
 }
 
+
+//-----------------------------------------------------------------------------
 void OIGTLTrackingDataMessage::initializeWithTestData(igtl::Matrix4x4& testMatrix)
 {
 	if (m_message.IsNull())
@@ -348,10 +355,11 @@ void OIGTLTrackingDataMessage::initializeWithTestData(igtl::Matrix4x4& testMatri
 
   tElem->SetMatrix(testMatrix);
 
-	//Pack message data
 	msgPointer->Pack();
 }
 
+
+//-----------------------------------------------------------------------------
 void OIGTLTrackingDataMessage::initializeWithRandomData(void)
 {
 	if (m_message.IsNull())
@@ -377,10 +385,11 @@ void OIGTLTrackingDataMessage::initializeWithRandomData(void)
 
   tElem->SetMatrix(localMatrix);
 
-	//Pack message data
 	msgPointer->Pack();
 }
 
+
+//-----------------------------------------------------------------------------
 void OIGTLTrackingDataMessage::Create_GET(OIGTLMessage::Pointer &msgToCreate)
 {
     msgToCreate.operator =(OIGTLMessage::Pointer(new OIGTLMessage()));
@@ -394,17 +403,16 @@ void OIGTLTrackingDataMessage::Create_GET(OIGTLMessage::Pointer &msgToCreate)
 
     QString lhn = getLocalHostAddress();
 
-    //Set parameters
     cmdMsg->SetTimeStamp(ts);
     cmdMsg->SetDeviceName(lhn.toStdString().c_str());
-
-    //Pack message data
     cmdMsg->Pack();
 
     msgToCreate->setMessagePointer((igtl::MessageBase::Pointer) cmdMsg);
     msgToCreate->changeMessageType("GET_TDATA");
 }
 
+
+//-----------------------------------------------------------------------------
 void OIGTLTrackingDataMessage::Create_STT(OIGTLMessage::Pointer &msgToCreate)
 {
     msgToCreate.operator =(OIGTLMessage::Pointer(new OIGTLMessage()));
@@ -418,17 +426,16 @@ void OIGTLTrackingDataMessage::Create_STT(OIGTLMessage::Pointer &msgToCreate)
 
     QString lhn = getLocalHostAddress();
 
-    //Set parameters
     cmdMsg->SetTimeStamp(ts);
     cmdMsg->SetDeviceName(lhn.toStdString().c_str());
-
-    //Pack message data
     cmdMsg->Pack();
 
     msgToCreate->setMessagePointer((igtl::MessageBase::Pointer) cmdMsg);
     msgToCreate->changeMessageType("STT_TDATA");
 }
 
+
+//-----------------------------------------------------------------------------
 void OIGTLTrackingDataMessage::Create_STP(OIGTLMessage::Pointer &msgToCreate)
 {
     msgToCreate.operator =(OIGTLMessage::Pointer(new OIGTLMessage()));
@@ -442,17 +449,16 @@ void OIGTLTrackingDataMessage::Create_STP(OIGTLMessage::Pointer &msgToCreate)
 
     QString lhn = getLocalHostAddress();
 
-    //Set parameters
     cmdMsg->SetTimeStamp(ts);
     cmdMsg->SetDeviceName(lhn.toStdString().c_str());
-
-    //Pack message data
     cmdMsg->Pack();
 
     msgToCreate->setMessagePointer((igtl::MessageBase::Pointer) cmdMsg);
     msgToCreate->changeMessageType("STP_TDATA");
 }
 
+
+//-----------------------------------------------------------------------------
 void OIGTLTrackingDataMessage::Create_RTS(OIGTLMessage::Pointer &msgToCreate)
 {
     msgToCreate.operator =(OIGTLMessage::Pointer(new OIGTLMessage()));
@@ -465,12 +471,8 @@ void OIGTLTrackingDataMessage::Create_RTS(OIGTLMessage::Pointer &msgToCreate)
     ts->GetTime();
 
     QString lhn = getLocalHostAddress();
-
-    //Set parameters
     cmdMsg->SetTimeStamp(ts);
     cmdMsg->SetDeviceName(lhn.toStdString().c_str());
-
-    //Pack message data
     cmdMsg->Pack();
 
     msgToCreate->setMessagePointer((igtl::MessageBase::Pointer) cmdMsg);

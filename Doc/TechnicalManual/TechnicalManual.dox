@@ -10,6 +10,7 @@
 \li \ref TechnicalManualSocket
 \li \ref TechnicalManualTimeSynch
 \li \ref TechnicalManualUseCases
+\li \ref TechnicalManualCodingStyle
 
 \section TechnicalManualIntro Introduction
 
@@ -165,4 +166,13 @@ socket->sendMessage(OIGTLMessage::Pointer message);
 The developer should additionally directly read the Unit Tests, as these provide an exact specification.
 Another way to understand the usage is to see the code in action, in either the NiftyView or NiftyGuide projects.
 
+\section TechnicalManualCodingStyle Coding Style
+
+The coding style is checked using KWStyle via ctest and hence available on the dashboard. 
+The definition of the style guidelines lives here
+\code
+NiftyLink/Utilities/KWStyle/NiftyLinkKWS.xml.in
+\endcode
+Developers should understand this file, reading it in conjunction with 
+<a href="http://public.kitware.com/KWStyle/features.htm">this documentation from Kitware</a>.
 */

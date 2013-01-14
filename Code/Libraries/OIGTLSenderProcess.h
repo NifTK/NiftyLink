@@ -1,23 +1,14 @@
 /*=============================================================================
+  NiftyLink:  A software library to facilitate communication over OpenIGTLink.
 
- NiftyLink:  A software library to facilitate communication over OpenIGTLink.
+  Copyright (c) University College London (UCL). All rights reserved.
 
-             http://cmic.cs.ucl.ac.uk/
-             http://www.ucl.ac.uk/
+  This software is distributed WITHOUT ANY WARRANTY; without even
+  the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR
+  PURPOSE.
 
- Copyright (c) UCL : See LICENSE.txt in the top level directory for details.
-
- Last Changed      : $Date: 2010-05-25 17:02:50 +0100 (Tue, 25 May 2010) $
- Revision          : $Revision: 3300 $
- Last modified by  : $Author: mjc $
-
- Original author   : m.clarkson@ucl.ac.uk
-
- This software is distributed WITHOUT ANY WARRANTY; without even
- the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR
- PURPOSE.  See the above copyright notices for more information.
-
- ============================================================================*/
+  See LICENSE.txt in the top level directory for details.
+=============================================================================*/
 
 #ifndef OIGTLSENDERPROCESS_H
 #define OIGTLSENDERPROCESS_H
@@ -30,11 +21,12 @@ class OIGTLSenderProcessTester;
  * \class OIGTLSenderProcess
  * \brief Class for sending messages to a remote host via OpenIGTLink socket in a separate Process.
  * 
- * OIGTLSenderProcess implements the fuctionality required to establish connection to a remote host and to transmit messages. 
- * It can be initialized with a combination of hostname and port or on a previously created socket pointer.
- * When initilized using hostname + port the Process will attempt to connect to the remote host and then enter an idle
- * loop waiting for messages. Data to be sent to the remote host are received via a QT slot in the form of an OIGTLMessage.
- * These messages are appended to the end of a message queue (FIFO).
+ * OIGTLSenderProcess implements the fuctionality required to establish connection to a
+ * remote host and to transmit messages.  It can be initialized with a combination of
+ * hostname and port or on a previously created socket pointer. When initilized using
+ * hostname + port the Process will attempt to connect to the remote host and then enter an idle
+ * loop waiting for messages. Data to be sent to the remote host are received via a QT slot
+ * in the form of an OIGTLMessage. These messages are appended to the end of a message queue (FIFO).
  */
 class NIFTYLINKCOMMON_WINEXPORT OIGTLSenderProcess : public OIGTLProcessBase
 {

@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="iso-8859-1"?>
+<Description>
+<Header>@CMAKE_SOURCE_DIR@/Utilities/KWStyle/NiftyLinkHeader.h,false,true</Header>
+<LineLength>80</LineLength>
+<SemicolonSpace>true</SemicolonSpace>
+<DeclarationOrder>0,1,2</DeclarationOrder>
+<EndOfFileNewLine>true</EndOfFileNewLine>
+<Tabs>true</Tabs>
+<Spaces>0</Spaces>
+<Indent>SPACE,2,true,true</Indent>
+<IfNDefDefine>__[NameOfClass]_[Extension]</IfNDefDefine>
+<NameOfClass>[NameOfClass]</NameOfClass>
+<Comments>/**, *, */,true,true,true</Comments>
+<EmptyLines>2</EmptyLines>
+<Template>[TNV]</Template>
+<Operator>true,true</Operator>
+<StatementPerLine>1,true</StatementPerLine>
+<VariablePerLine>1</VariablePerLine>
+<BadCharacters>true</BadCharacters>
+<Typedefs>[A-Z],false</Typedefs>
+<Struct>[a-z]</Struct>
+<InternalVariables>m_[A-Z],true</InternalVariables>
+<MemberFunctions>[A-Z],100</MemberFunctions>
+<Functions>[A-Z],100</Functions>
+</Description>
