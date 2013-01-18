@@ -128,7 +128,7 @@ void OIGTLSocketObject::initThreads()
   ok &= connect(m_sender, SIGNAL(disconnectedFromRemote(bool )), this, SLOT(disconnectedFromRemote(bool )));
   ok &= connect(m_sender, SIGNAL(sendingFinished()), this, SIGNAL(sendingFinished()));
   ok &= connect(m_sender, SIGNAL(messageSent(unsigned long long )), this, SIGNAL(messageSent(unsigned long long )));
-  ok &= connect(this, SIGNAL(messageToSend(OIGTLMessage::Pointer)), m_sender, SLOT(sendMsg(OIGTLMessage::Pointer)));
+  ok &= connect(this, SIGNAL(messageToSend(OIGTLMessage::Pointer)), m_sender, SLOT(sendMsg(OIGTLMessage::Pointer)), Qt::DirectConnection);
    
   ok &= connect(m_senderHostThread, SIGNAL(eventloopStarted()), m_sender, SLOT(startProcess()));
   ok &= connect(this, SIGNAL(shutdownSender()), m_sender, SLOT(stopProcess()));
@@ -138,7 +138,7 @@ void OIGTLSocketObject::initThreads()
 
   ok &= connect(m_listener, SIGNAL(clientConnected()), this, SLOT(clientConnected()));
   ok &= connect(m_listener, SIGNAL(clientDisconnected(bool )), this, SLOT(clientDisconnected(bool )));
-  ok &= connect(m_listener, SIGNAL(messageReceived(OIGTLMessage::Pointer)), this, SIGNAL(messageReceived(OIGTLMessage::Pointer)));
+  ok &= connect(m_listener, SIGNAL(messageReceived(OIGTLMessage::Pointer)), this, SIGNAL(messageReceived(OIGTLMessage::Pointer)), Qt::DirectConnection);
   
   ok &= connect(m_listenerHostThread, SIGNAL(eventloopStarted()), m_listener, SLOT(startProcess()));
   ok &= connect(this, SIGNAL(shutdownListener()), m_listener, SLOT(stopProcess()));
