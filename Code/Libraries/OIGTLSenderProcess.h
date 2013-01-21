@@ -99,13 +99,15 @@ private:
   virtual bool activate(void);
 
 private slots:
-  //void keepaliveTimeout(void);
+
+  void keepaliveTimeout(void);
 
 private:
   igtl::ClientSocket::Pointer m_clientSocket;
   std::string m_hostname;
   bool m_sendingOnSocket;
   int  m_connectTimeout;
+  int  m_KeepAliveTimeout;
 
   QList<OIGTLMessage::Pointer> m_sendQue;
   QMutex m_queueMutex;
