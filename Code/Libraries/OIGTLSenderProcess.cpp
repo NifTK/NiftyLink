@@ -29,6 +29,12 @@ OIGTLSenderProcess::~OIGTLSenderProcess(void)
 {
   m_extSocket.operator =(NULL);
   m_clientSocket.operator =(NULL);
+
+  if (m_timeouter != NULL)
+  {
+    delete m_timeouter;
+    m_timeouter = NULL;
+  }
 }
 
 
@@ -416,8 +422,11 @@ void OIGTLSenderProcess::doProcessing(void)
 
   QCoreApplication::processEvents();
 
-  // Stopping the Process execution here, will restart when new messages arrive
   m_running = false;
+  m_timeouter->stop();
+  delete m_timeouter;
+  m_timeouter = NULL;
+
   terminateProcess();
 }
 
