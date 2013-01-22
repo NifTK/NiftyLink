@@ -19,6 +19,7 @@ OIGTLSenderProcess::OIGTLSenderProcess(QObject *parent)
 {
   m_sendingOnSocket = false;
   m_connectTimeout = 5;
+  m_KeepAliveTimeout = 500;
   m_hostname.clear();
 }
 
@@ -28,6 +29,12 @@ OIGTLSenderProcess::~OIGTLSenderProcess(void)
 {
   m_extSocket.operator =(NULL);
   m_clientSocket.operator =(NULL);
+
+  if (m_timeouter != NULL)
+  {
+    delete m_timeouter;
+    m_timeouter = NULL;
+  }
 }
 
 
@@ -226,20 +233,80 @@ bool OIGTLSenderProcess::activate(void)
 
 
 //-----------------------------------------------------------------------------
+void OIGTLSenderProcess::keepaliveTimeout(void)
+{
+  int sleepInterval = m_KeepAliveTimeout/2;
+
+  QLOG_INFO() << objectName() <<": " << "keepaliveTimeout occured: " << m_KeepAliveTimeout << ", ms" ;
+
+  // ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+  // If the sendqueue is empty we're going to perform a keepalive - send 2 bytes through the socket
+  if (m_sendQue.isEmpty())
+  {
+    QThreadEx * p = NULL;
+    try
+    {
+      p = dynamic_cast<QThreadEx *>(QThread::currentThread());
+
+      QLOG_DEBUG() << objectName() << "Before keep alive check: Send queue to host " << QString::fromStdString(m_hostname) << ", port " << m_port << ", is empty, so sleeping for " << sleepInterval << " ms\n";
+      p->msleepEx(sleepInterval);
+    }
+    catch (std::exception &e)
+    {
+      qDebug() <<"Type cast error. Always run this process from QThreadEx. Exception: " <<e.what();
+    }
+
+
+    bool rval;
+    m_mutex->lock();
+    rval = m_extSocket->Poke();
+    m_mutex->unlock();
+
+    // If the poke() was unsuccessful or the sender got terminated
+    if (!rval && m_running == true)
+    {
+      QLOG_ERROR() << objectName() <<": " <<"Cannot send keep-alive message: Probably disconnected from remote host" <<"\n";
+
+      if (m_sendingOnSocket)
+        emit disconnectedFromRemote(false);
+      else
+        emit disconnectedFromRemote(true);
+
+      QCoreApplication::processEvents();
+      return;
+    }
+
+    QCoreApplication::processEvents();
+
+    if (p!=NULL)
+    {
+      QLOG_DEBUG() << objectName() <<": " <<"After keep alive check: Send queue to host " << QString::fromStdString(m_hostname) << ", port " << m_port << ", is empty, so sleeping for " << sleepInterval << " ms\n";
+      p->msleepEx(sleepInterval);
+    }
+  }
+}
+
+
+//-----------------------------------------------------------------------------
 void OIGTLSenderProcess::doProcessing(void)
 {
-  int sleepInterval = 250; // milliseconds
+  int sleepInterval = 25; // milliseconds. i.e. 50 fps.
+
+  if (m_timeouter != NULL)
+  {
+    delete m_timeouter;
+  }
+  m_timeouter = new QTimer(this);
+  m_timeouter->setInterval(m_KeepAliveTimeout);
+  connect(m_timeouter, SIGNAL(timeout()), this, SLOT(keepaliveTimeout()));
 
   // Try to connect to remote
   if (!m_sendingOnSocket && m_extSocket.IsNull())
   {
     int r = m_clientSocket->ConnectToServer(m_hostname.c_str(), m_port);
-    
-    //QCoreApplication::processEvents();
-
     if (r != 0)
     {
-      QLOG_ERROR() <<objectName() <<": " << "Cannot create a sender socket, could not connect to server: " <<m_hostname.c_str() << endl;
+      QLOG_ERROR() << objectName() <<": " << "Cannot create a sender socket, could not connect to server: " <<m_hostname.c_str() << endl;
 
       emit cannotConnectToRemote();
       QCoreApplication::processEvents();
@@ -254,6 +321,8 @@ void OIGTLSenderProcess::doProcessing(void)
       m_extSocket->SetTimeout(m_socketTimeout);
       m_sendingOnSocket = false;
 
+      m_timeouter->start();
+
       emit connectedToRemote();
       QCoreApplication::processEvents();
     }
@@ -262,111 +331,87 @@ void OIGTLSenderProcess::doProcessing(void)
   // Start processing the message queue
   while (m_running == true)
   {
-    // ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-    // If the sendqueue is empty we're going to perform a keepalive - send 2 bytes through the socket
     if (m_sendQue.isEmpty())
     { 
       QThreadEx * p = NULL;
       try
       {
+        QLOG_DEBUG() << objectName() <<": " << "Send queue to host " << QString::fromStdString(m_hostname) << ", port " << m_port << ", is empty, so sleeping for " << sleepInterval << " ms\n";
         p = dynamic_cast<QThreadEx *>(QThread::currentThread());
-
-        QLOG_DEBUG() << "Before keep alive check: Send queue to host " << QString::fromStdString(m_hostname) << ", port " << m_port << ", is empty, so sleeping for " << sleepInterval << " ms\n";
         p->msleepEx(sleepInterval);
       }
       catch (std::exception &e)
       {
         qDebug() <<"Type cast error. Always run this process from QThreadEx. Exception: " <<e.what();
       }
-      
-      // Poke the socket to see if its alive or not
-      bool rval;
-      m_mutex->lock();
-      rval = m_extSocket->Poke();
-      m_mutex->unlock();
-
-      // If the poke() was unsuccessful or the sender got terminated
-      if (!rval && m_running == true)
-      {
-        QLOG_ERROR() <<objectName() <<": " <<"Cannot send message: Disconnected from remote host" <<"\n";
-
-        if (m_sendingOnSocket)
-          emit disconnectedFromRemote(false);
-        else
-          emit disconnectedFromRemote(true);
-
-        QCoreApplication::processEvents();
-
-        break;
-      } 
 
       QCoreApplication::processEvents();
 
-      if (p!=NULL)
-      {
-        QLOG_DEBUG() << "After keep alive check: Send queue to host " << QString::fromStdString(m_hostname) << ", port " << m_port << ", is empty, so sleeping for " << sleepInterval << " ms\n";
-        p->msleepEx(sleepInterval);
-      }
-
-      continue;
-    }
-
-    // ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-    // Sendqueue has some messages, so let's start sending them through
-
-    // Take the oldest message in the queue and send it to the remote host
-    OIGTLMessage::Pointer msg;
-
-    m_queueMutex.lock();
-    msg.operator =(m_sendQue.takeFirst());
-    m_queueMutex.unlock();
-
-    igtl::MessageBase::Pointer igtMsg;
-    msg->getMessagePointer(igtMsg);
-
-    //QCoreApplication::processEvents();
-
-    if (!m_running) break;
-
-    if (igtMsg.IsNotNull())
-    {
-      int ret = 0;
-      
-      m_mutex->lock();
-      ret = m_extSocket->Send(igtMsg->GetPackPointer(), igtMsg->GetPackSize());
-      m_mutex->unlock();
-
-      if (ret <=0)
-      {
-        if (m_sendingOnSocket)
-          emit disconnectedFromRemote(false);
-        else
-          emit disconnectedFromRemote(true);
-
-        QCoreApplication::processEvents();
-
-        msg.reset();
-        QLOG_ERROR() <<objectName() <<": " <<"Cannot send message: Disconnected from remote host" <<"\n";
-        break;
-      }
-      
-      
-      igtl::TimeStamp::Pointer ts = igtl::TimeStamp::New();
-      m_extSocket->GetSendTimestamp(ts);
-
-      emit messageSent((unsigned long long)ts->GetTimeStampUint64());
-      m_messageCounter++;
-      
-      //QLOG_INFO() <<objectName() <<": " <<"Message Sent: " <<m_messageCounter <<endl;
     }
     else
-      QLOG_ERROR() <<objectName() <<": " <<"Cannot send message: igtMsg is NULL" <<"\n";
+    {
+      // Take the oldest message in the queue and send it to the remote host
+      OIGTLMessage::Pointer msg;
 
-    // Force delete
-    msg.reset();
+      m_queueMutex.lock();
+      msg.operator =(m_sendQue.takeFirst());
+      m_queueMutex.unlock();
+
+      igtl::MessageBase::Pointer igtMsg;
+      msg->getMessagePointer(igtMsg);
+
+      if (!m_running) break;
+
+      if (igtMsg.IsNotNull())
+      {
+        int ret = 0;
+
+        m_mutex->lock();
+        ret = m_extSocket->Send(igtMsg->GetPackPointer(), igtMsg->GetPackSize());
+        m_mutex->unlock();
+
+        if (ret <=0)
+        {
+          if (m_sendingOnSocket)
+            emit disconnectedFromRemote(false);
+          else
+            emit disconnectedFromRemote(true);
+
+          QCoreApplication::processEvents();
+
+          msg.reset();
+          QLOG_ERROR() <<objectName() <<": " <<"Cannot send message: Disconnected from remote host" <<"\n";
+          break;
+        }
+
+        igtlUint32 seconds;
+        igtlUint32 nanoseconds;
+        m_extSocket->GetSendTimestamp()->GetTimeStamp(&seconds, &nanoseconds);
+
+        igtl::TimeStamp::Pointer ts = igtl::TimeStamp::New();
+        ts->GetTime_TAI();
+        ts->SetTime(seconds, nanoseconds);
+        ts->toUTC();
+
+        QLOG_INFO() <<objectName() <<": " <<"Message " << m_messageCounter << ", created=" << GetTimeInNanoSeconds(msg->getTimeCreated()) << ", sent=" << GetTimeInNanoSeconds(ts) << ", lag=" << ((double)(GetTimeInNanoSeconds(ts)) - (double)(GetTimeInNanoSeconds(msg->getTimeCreated())))/1000000000.0 << "(secs)";
+
+        emit messageSent(GetTimeInNanoSeconds(ts));
+        m_messageCounter++;
+
+        // Reset the timer.
+        m_timeouter->start(m_KeepAliveTimeout);
+      }
+      else
+      {
+        QLOG_ERROR() <<objectName() <<": " <<"Cannot send message: igtMsg is NULL" <<"\n";
+      }
+
+      // Force delete
+      msg.reset();
+      
+      QCoreApplication::processEvents();
+    }
     
-    QCoreApplication::processEvents();
- 
   }  //end of while
 
   // ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -377,11 +422,11 @@ void OIGTLSenderProcess::doProcessing(void)
 
   QCoreApplication::processEvents();
 
-  // Stopping the Process execution here, will restart when new messages arrive
   m_running = false;
-  
-  //QLOG_INFO()  <<objectName() <<": " <<"Main send loop has finished." <<"\n";
-  
+  m_timeouter->stop();
+  delete m_timeouter;
+  m_timeouter = NULL;
+
   terminateProcess();
 }
 
