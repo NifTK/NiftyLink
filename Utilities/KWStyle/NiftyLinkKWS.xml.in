@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="iso-8859-1"?>
 <Description>
 <Header>@CMAKE_SOURCE_DIR@/Utilities/KWStyle/NiftyLinkHeader.h,false,true</Header>
-<LineLength>80</LineLength>
+<LineLength>160</LineLength>
 <SemicolonSpace>true</SemicolonSpace>
 <DeclarationOrder>0,1,2</DeclarationOrder>
 <EndOfFileNewLine>true</EndOfFileNewLine>
@@ -13,7 +13,10 @@
 <Comments>/**, *, */,true,true,true</Comments>
 <EmptyLines>2</EmptyLines>
 <Template>[TNV]</Template>
-<Operator>true,true</Operator>
+<Operator>
+  <spaceBefore>1</spaceBefore>
+  <spaceAfter>1</spaceAfter>
+</Operator>
 <StatementPerLine>1,true</StatementPerLine>
 <VariablePerLine>1</VariablePerLine>
 <BadCharacters>true</BadCharacters>

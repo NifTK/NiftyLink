@@ -1,13 +1,13 @@
 /*=============================================================================
-  NiftyLink:  A software library to facilitate communication over OpenIGTLink.
+NiftyLink: A software library to facilitate communication over OpenIGTLink.
 
-  Copyright (c) University College London (UCL). All rights reserved.
+Copyright (c) University College London (UCL). All rights reserved.
 
-  This software is distributed WITHOUT ANY WARRANTY; without even
-  the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR
-  PURPOSE.
+This software is distributed WITHOUT ANY WARRANTY; without even
+the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR
+PURPOSE.
 
-  See LICENSE.txt in the top level directory for details.
+See LICENSE.txt in the top level directory for details.
 =============================================================================*/
 
 #ifndef NIFTYLINKCOMMONUTILS_H
@@ -40,7 +40,7 @@
 #include "QsLog.h"
 #include "QsLogDest.h"
 
-enum MessageTypes 
+enum MessageTypes
 {
   NONDEFINED,
   BIND,
@@ -127,7 +127,7 @@ enum MessageTypes
 
 // Map to associate the strings with the enum values
 typedef std::map<std::string, MessageTypes> mapStrMsgType;
-static mapStrMsgType strMsgTypes; 
+static mapStrMsgType strMsgTypes;
 
 /// \brief Initialises the types map.
 extern "C" NIFTYLINKCOMMON_WINEXPORT void InitMessageTypes(mapStrMsgType &types);
@@ -141,7 +141,7 @@ extern "C++" NIFTYLINKCOMMON_WINEXPORT QString getLocalHostAddress(void);
 /// \brief This function resolves a given hostname to IP
 extern "C++" NIFTYLINKCOMMON_WINEXPORT QString resolveHostName(const QString &input);
 
-/// \brief This function creates a random 4x4 test matrix 
+/// \brief This function creates a random 4x4 test matrix
 extern "C++" NIFTYLINKCOMMON_WINEXPORT void CreateRandomTransformMatrix(igtl::Matrix4x4& matrix);
 
 /// \brief Returns the time as igtlUint64 in nanoseconds.
