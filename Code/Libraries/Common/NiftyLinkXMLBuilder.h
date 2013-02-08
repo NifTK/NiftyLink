@@ -10,8 +10,8 @@ PURPOSE.
 See LICENSE.txt in the top level directory for details.
 =============================================================================*/
 
-#ifndef NIFTYLINKXMLBUILDER_H
-#define NIFTYLINKXMLBUILDER_H
+#ifndef __NiftyLinkXMLBuilder_h
+#define __NiftyLinkXMLBuilder_h
 
 #include <QString>
 #include <QUrl>
@@ -40,8 +40,8 @@ See LICENSE.txt in the top level directory for details.
 * different XML descriptor builders.
 *
 * Usage: all the adjustable features are set via member functions as a string (QString)
-* then the XML is composed by calling getXMLAsString(), which returns the descriptor in
-* text format as QString. To parse an existing XML descriptor the setXMLString() method
+* then the XML is composed by calling GetXMLAsString(), which returns the descriptor in
+* text format as QString. To parse an existing XML descriptor the SetXMLString() method
 * can be used, which parses the XML descriptor and sets the member variables accordingly.
 * The values can then be queried by calling the get... member functions.
 */
@@ -73,19 +73,21 @@ public:
   }
 
   /// \brief Returns true if the message is valid
-  bool isMessageValid() { return m_MessageValid; }
+  bool IsMessageValid() { return m_MessageValid; }
 
-  /// \brief Pure virtual method: in the derived classes it composes an XML descriptor from the values of the builders member variables in a text format and returns it in a QString object
-  virtual QString getXMLAsString(void) = 0;
+  /// \brief Pure virtual method: in the derived classes it composes an XML descriptor
+  /// from the values of the builders member variables in a text format and returns it in a QString object
+  virtual QString GetXMLAsString(void) = 0;
 
-  /// \brief Pure virtual method: in the derived classes it sets the XML string, which is then parsed and the builder object's member variables are being set accordingly
-  virtual void setXMLString(QString desc) = 0;
+  /// \brief Pure virtual method: in the derived classes it sets the XML string,
+  /// which is then parsed and the builder object's member variables are being set accordingly
+  virtual void SetXMLString(QString desc) = 0;
 
   /// \brief Tells the descriptor type if it's a command / client / tracker, etc.
-  virtual QString getDescriptorType(void) { return m_DescriptorString; }
+  virtual QString GetDescriptorType(void) { return m_DescriptorString; }
 
   /// \brief Static function to parse the descriptor type of an XML text
-  static QString parseDescriptorType(QString xmlDoco);
+  static QString ParseDescriptorType(QString xmlDoco);
 
 protected:
   QString m_DescriptorString;
@@ -126,70 +128,70 @@ public:
   ClientDescriptorXMLBuilder & operator=(const ClientDescriptorXMLBuilder &other);
 
   /// \brief This method composes an XML descriptor from the values of the builders member variables in a text format and returns it in a QString object
-  QString getXMLAsString(void);
+  QString GetXMLAsString(void);
 
   /// \brief This method sets the XML string, which is then parsed and the builder object's member variables are being set accordingly
-  void setXMLString(QString desc);
+  void SetXMLString(QString desc);
 
   /// \brief This method is used to set the device name (for example "Polaris Vicra")
-  inline void setDeviceName(QString name)
+  inline void SetDeviceName(QString name)
   {
     m_DeviceName.clear();
     m_DeviceName.append(name);
   }
 
   /// \brief Returns the device name if it was set previously
-  inline QString getDeviceName(void) { return m_DeviceName; }
+  inline QString GetDeviceName(void) { return m_DeviceName; }
 
   /// \brief This method is used to set the device type (for example "Tracker", "Ultrasound Imager" etc.)
-  inline void setDeviceType(QString type)
+  inline void SetDeviceType(QString type)
   {
     m_DeviceType.clear();
     m_DeviceType.append(type);
   }
 
   /// \brief Returns the device type if it was set previously
-  inline QString getDeviceType(void) { return m_DeviceType; }
+  inline QString GetDeviceType(void) { return m_DeviceType; }
 
   /// \brief This method is used to set the device's communication type (for example "Serial", "Bluetooth" etc.)
-  inline void setCommunicationType(QString commtype)
+  inline void SetCommunicationType(QString commtype)
   {
     m_CommType.clear();
     m_CommType.append(commtype);
   }
 
   /// \brief Returns the device's communication type if it was set previously
-  inline QString getCommunicationType(void) { return m_CommType; }
+  inline QString GetCommunicationType(void) { return m_CommType; }
 
   /// \brief This method sets the port name which was used to connect the device to the PC
-  inline void setPortName(QString portName)
+  inline void SetPortName(QString portName)
   {
     m_PortName.clear();
     m_PortName.append(portName);
   }
 
   /// \brief Returns the name of the port which was used to connect the device to the PC
-  inline QString getPortName(void) { return m_PortName; }
+  inline QString GetPortName(void) { return m_PortName; }
 
   /// \brief This method sets the IP address of the client (usually the IP of the message's sender)
-  inline void setClientIP(QString ip)
+  inline void SetClientIP(QString ip)
   {
     m_ClientIP.clear();
     m_ClientIP.append(ip);
   }
 
   /// \brief Returns the client's IP address (usually the IP of the message's sender)
-  inline QString getClientIP(void) { return m_ClientIP; }
+  inline QString GetClientIP(void) { return m_ClientIP; }
 
   /// \brief This method sets the TCP port number of the client (usually the port on which the message is sent)
-  inline void setClientPort(QString port)
+  inline void SetClientPort(QString port)
   {
     m_ClientPort.clear();
     m_ClientPort.append(port);
   }
 
   /// \brief Returns the TCP port number of the client (usually the port on which the message was sent)
-  inline QString getClientPort(void) { return m_ClientPort;}
+  inline QString GetClientPort(void) { return m_ClientPort;}
 
 protected:
   QString m_DeviceName;
@@ -208,8 +210,8 @@ protected:
 *
 * In NiftyLink when custom commands are sent as igtl::StringMessage, which contains
 * an XML descriptor of the command and it's parameters. The command's name is set
-* via setCommandName(), then any number of parameters can be passed on by calling
-* addParameter(QString pName, QString pType, QString pVal). Both the command's name
+* via SetCommandName(), then any number of parameters can be passed on by calling
+* AddParameter(QString pName, QString pType, QString pVal). Both the command's name
 * and it's parameters are required in QString format.
 *
 */
@@ -235,48 +237,48 @@ public:
   CommandDescriptorXMLBuilder & operator=(const CommandDescriptorXMLBuilder &other);
 
   /// \brief This method composes an XML descriptor from the values of the builders member variables in a text format and returns it in a QString object
-  QString getXMLAsString(void);
+  QString GetXMLAsString(void);
 
   /// \brief This method sets the XML string, which is then parsed and the builder object's member variables are being set accordingly
-  void setXMLString(QString desc);
+  void SetXMLString(QString desc);
 
   /// \brief Sets the command's name
-  inline void setCommandName(QString name)
+  inline void SetCommandName(QString name)
   {
     m_CommandName.clear();
     m_CommandName.append(name);
   }
 
   /// \brief Returns the command's name
-  inline QString getCommandName(void) { return m_CommandName; }
+  inline QString GetCommandName(void) { return m_CommandName; }
 
   /// \brief Appends a command parameter to the parameter list. Required fields are the name of the parameter (pname),
   /// type of the parameter (ptype) and the value of the parameter, all as QStrings
-  void addParameter(QString pName, QString pType, QString pVal);
+  void AddParameter(QString pName, QString pType, QString pVal);
 
   /// \brief Returns the number of paramters which were previously assigned to the command
-  inline int getNumOfParameters(void) { return m_NumOfParameters; }
+  inline int GetNumOfParameters(void) { return m_NumOfParameters; }
 
   /// \brief Returns the name of the i-th parameter of the parameter list
-  QString getParameterName(int i);
+  QString GetParameterName(int i);
 
   /// \brief Returns the type of the i-th parameter of the parameter list
-  QString getParameterType(int i);
+  QString GetParameterType(int i);
 
   /// \brief Returns the value of the i-th parameter of the parameter list
-  QString getParameterValue(int i);
+  QString GetParameterValue(int i);
 
   /// \brief Returns all fields of the i-th parameter of the parameter list
-  void getParameterAllFields(int i, QString &pName, QString &pType, QString &pValue);
+  void GetParameterAllFields(int i, QString &pName, QString &pType, QString &pValue);
 
   /// \brief Returns the list of paramter names (as QStringList)
-  QStringList getParameterNames(void);
+  QStringList GetParameterNames(void);
 
   /// \brief Returns the list of paramter types (as QStringList)
-  QStringList getParameterTypes(void);
+  QStringList GetParameterTypes(void);
 
   /// \brief Returns the list of paramter values (as QStringList)
-  QStringList getParameterValues(void);
+  QStringList GetParameterValues(void);
 
 private:
   QString     m_CommandName;
@@ -313,16 +315,16 @@ public:
   TrackerClientDescriptor & operator=(const TrackerClientDescriptor &other);
 
   /// \brief This method composes an XML descriptor from the values of the builders member variables in a text format and returns it in a QString object
-  QString getXMLAsString(void);
+  QString GetXMLAsString(void);
 
   /// \brief This method sets the XML string, which is then parsed and the builder object's member variables are being set accordingly
-  void setXMLString(QString desc);
+  void SetXMLString(QString desc);
 
   /// \brief Appends a tracker tool to the descriptor
-  inline void addTrackerTool(QString toolName) { m_TrackerTools.append(toolName); }
+  inline void AddTrackerTool(QString toolName) { m_TrackerTools.append(toolName); }
 
   /// \brief Returns the list of tracker tools which were assigned to the tracker previously
-  inline QStringList getTrackerTools(void) { return m_TrackerTools; }
+  inline QStringList GetTrackerTools(void) { return m_TrackerTools; }
 
 private:
   QStringList m_TrackerTools;

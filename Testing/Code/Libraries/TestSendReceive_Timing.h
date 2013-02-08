@@ -30,8 +30,8 @@
 #include "QsLog.h"
 #include "QsLogDest.h"
 
-#include "OIGTLSocketObject.h"
-#include "OIGTLTransformMessage.h"
+#include "NiftyLinkSocketObject.h"
+#include "NiftyLinkTransformMessage.h"
 
 
 #include <cstdlib>
@@ -44,47 +44,46 @@ class TestSendReceive_Timing : public QObject
   Q_OBJECT
 
 signals:
-  void done();
+  void Done();
 
 public:
   TestSendReceive_Timing(void);
   ~TestSendReceive_Timing(void);
 
 public slots:
-  void setupTest();
-  void performTest();
-  void quitTest();
-  void quitTest2();
+  void SetupTest();
+  void PerformTest();
+  void QuitTest();
+  void QuitTest2();
 
-  void createMessage();
+  void CreateMessage();
 
-  void catchMessage(OIGTLMessage::Pointer);
-  void recordSendTimestamps(unsigned long long timestamp);
-  void sendResponse();
-  void streamResponse();
+  void CatchMessage(NiftyLinkMessage::Pointer);
+  void RecordSendTimestamps(unsigned long long timestamp);
+  void SendResponse();
+  void StreamResponse();
 
 private:
-  igtl::Matrix4x4 m_localMatrix;
+  igtl::Matrix4x4              m_LocalMatrix;
 
-  OIGTLMessage::Pointer m_msgToSend;
+  NiftyLinkMessage::Pointer        m_MsgToSend;
 
-  OIGTLSocketObject * m_socket1;
-  OIGTLSocketObject * m_socket2;
+  NiftyLinkSocketObject          * m_Socket1;
+  NiftyLinkSocketObject          * m_Socket2;
 
-  QList<ULONGLONG> m_socket1Timestamps;
-  QList<ULONGLONG> m_socket2Timestamps;
+  QList<ULONGLONG>             m_Socket1Timestamps;
+  QList<ULONGLONG>             m_Socket2Timestamps;
   
-  QList<OIGTLMessage::Pointer> m_socket1Messages;
-  QList<OIGTLMessage::Pointer> m_socket2Messages;
+  QList<NiftyLinkMessage::Pointer> m_Socket1Messages;
+  QList<NiftyLinkMessage::Pointer> m_Socket2Messages;
+  unsigned long long           m_TotalTimeDiff;
 
-  int m_numOfMsg;
-  int m_received;
-  int m_successCounter;
-  int m_testCounter;
+  int    m_NumOfMsg;
+  int    m_Received;
+  int    m_SuccessCounter;
+  int    m_TestCounter;
 
-  bool   m_doStream;
-  QTimer m_timeOut;
-
-  unsigned long long m_totalTimeDiff;
+  bool   m_DoStream;
+  QTimer m_TimeOut;
 };
 

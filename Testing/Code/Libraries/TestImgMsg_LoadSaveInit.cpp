@@ -21,8 +21,8 @@
 
 TestImgMsg_LoadSaveInit::TestImgMsg_LoadSaveInit(void)
 {
-  m_testCounter = 0;
-  m_successCounter = 0;
+  m_TestCounter = 0;
+  m_SuccessCounter = 0;
 }
 
 TestImgMsg_LoadSaveInit::~TestImgMsg_LoadSaveInit(void)
@@ -31,23 +31,23 @@ TestImgMsg_LoadSaveInit::~TestImgMsg_LoadSaveInit(void)
 }
 
 
-void TestImgMsg_LoadSaveInit::setupTest(int argc, char **argv)
+void TestImgMsg_LoadSaveInit::SetupTest(int argc, char **argv)
 {
-  m_argc = argc;
-  m_argv = argv;
+  m_Argc = argc;
+  m_Argv = argv;
 }
 
 
-void TestImgMsg_LoadSaveInit::performTest()
+void TestImgMsg_LoadSaveInit::PerformTest()
 {
   //Create image message and initialize with test data
-  std::cout <<++m_testCounter <<". Creating image message..";
-  OIGTLImageMessage::Pointer imageMsg;
+  std::cout <<++m_TestCounter <<". Creating image message..";
+  NiftyLinkImageMessage::Pointer imageMsg;
   imageMsg.reset();
-  imageMsg = (OIGTLImageMessage::Pointer(new OIGTLImageMessage()));
+  imageMsg = (NiftyLinkImageMessage::Pointer(new NiftyLinkImageMessage()));
   
   if (imageMsg.operator !=(NULL))
-    { std::cout <<" OK\n"; m_successCounter++; }
+    { std::cout <<" OK\n"; m_SuccessCounter++; }
   else
     std::cout <<" FAILED\n";
 
@@ -56,56 +56,56 @@ void TestImgMsg_LoadSaveInit::performTest()
   QImage img1, img2;
   img1.load(":/NiftyLink/UCL_LOGO.tif");
   
-  std::cout <<++m_testCounter <<". Testing set / get QImage..";
-  imageMsg->setQImage(img1);
-  imageMsg->getMessagePointer(p);
-  img2 = imageMsg->getQImage();
+  std::cout <<++m_TestCounter <<". Testing set / get QImage..";
+  imageMsg->SetQImage(img1);
+  imageMsg->GetMessagePointer(p);
+  img2 = imageMsg->GetQImage();
   if (p.IsNotNull() && !img2.isNull()  && img1.operator ==(img2))
-    { std::cout <<" OK\n"; m_successCounter++; }
+    { std::cout <<" OK\n"; m_SuccessCounter++; }
   else
      std::cout <<" FAILED\n";
   //***********************************************
-  std::cout <<++m_testCounter <<". Setting test image data..";
-  imageMsg->initializeWithTestData();
-  imageMsg->getMessagePointer(p);
-  img2 = imageMsg->getQImage();
+  std::cout <<++m_TestCounter <<". Setting test image data..";
+  imageMsg->InitializeWithTestData();
+  imageMsg->GetMessagePointer(p);
+  img2 = imageMsg->GetQImage();
   if (p.IsNotNull() && !img2.isNull()  && img1.operator ==(img2))
-    { std::cout <<" OK\n"; m_successCounter++; }
+    { std::cout <<" OK\n"; m_SuccessCounter++; }
   else
      std::cout <<" FAILED\n";
   //***********************************************
-  std::cout <<++m_testCounter <<". Setting random image data..";
-  imageMsg->initializeWithRandomData();
-  imageMsg->save(QString("some_random_filename.png"));
-  img2 = imageMsg->getQImage();
+  std::cout <<++m_TestCounter <<". Setting random image data..";
+  imageMsg->InitializeWithRandomData();
+  imageMsg->Save(QString("some_random_filename.png"));
+  img2 = imageMsg->GetQImage();
   if (p.IsNotNull() && !img2.isNull() && img1.operator !=(img2))
-    { std::cout <<" OK\n"; m_successCounter++; }
+    { std::cout <<" OK\n"; m_SuccessCounter++; }
   else
      std::cout <<" FAILED\n";
   //***********************************************
-  std::cout <<++m_testCounter <<". Saving and loading test image data..";
-  imageMsg->initializeWithTestData();
-  imageMsg->save(QString("some_random_filename.png"));
-  imageMsg->load(QString("some_random_filename.png"));
-  img2 = imageMsg->getQImage();
+  std::cout <<++m_TestCounter <<". Saving and loading test image data..";
+  imageMsg->InitializeWithTestData();
+  imageMsg->Save(QString("some_random_filename.png"));
+  imageMsg->Load(QString("some_random_filename.png"));
+  img2 = imageMsg->GetQImage();
   if (p.IsNotNull() && !img2.isNull() && img1.operator ==(img2))
-    { std::cout <<" OK\n"; m_successCounter++; }
+    { std::cout <<" OK\n"; m_SuccessCounter++; }
   else
      std::cout <<" FAILED\n";
   //***********************************************
-  std::cerr <<++m_testCounter <<". Testing specifically with supplied image file 1..";
-  QString imageFileName = m_argv[1];
+  std::cerr <<++m_TestCounter <<". Testing specifically with supplied image file 1..";
+  QString imageFileName = m_Argv[1];
   QImage inputImage(imageFileName);
 
   // NOTE: At the moment, we have to convert image to ARGB32.
   QImage convertedInputImage = inputImage.convertToFormat(QImage::Format_ARGB32);
 
-  imageMsg->setQImage(convertedInputImage);
-  QImage outputImage = imageMsg->getQImage();
+  imageMsg->SetQImage(convertedInputImage);
+  QImage outputImage = imageMsg->GetQImage();
 
   if (convertedInputImage == outputImage)
   {
-    std::cerr <<" OK\n"; m_successCounter++;
+    std::cerr <<" OK\n"; m_SuccessCounter++;
   }
   else
   {
@@ -113,20 +113,20 @@ void TestImgMsg_LoadSaveInit::performTest()
   }
 
   //***********************************************
-  std::cerr <<++m_testCounter <<". Testing specifically with supplied image file 1 " << m_argv[1] << ", ... and doing Format_Indexed8 .." << std::endl;
-  QString imageFileName2 = m_argv[1];
+  std::cerr <<++m_TestCounter <<". Testing specifically with supplied image file 1 " << m_Argv[1] << ", ... and doing Format_Indexed8 .." << std::endl;
+  QString imageFileName2 = m_Argv[1];
   QImage inputImage2(imageFileName2);
 
   std::cerr << "... Image format=" << inputImage2.format() << std::endl;
 
   convertedInputImage = inputImage2.convertToFormat(QImage::Format_Indexed8);
 
-  imageMsg->setQImage(convertedInputImage);
-  outputImage = imageMsg->getQImage();
+  imageMsg->SetQImage(convertedInputImage);
+  outputImage = imageMsg->GetQImage();
 
   if (convertedInputImage == outputImage)
   {
-    std::cerr <<" OK\n"; m_successCounter++;
+    std::cerr <<" OK\n"; m_SuccessCounter++;
   }
   else
   {
@@ -134,30 +134,30 @@ void TestImgMsg_LoadSaveInit::performTest()
   }
 
   //***********************************************
-  std::cout <<++m_testCounter <<". Deleting messages..";
+  std::cout <<++m_TestCounter <<". Deleting messages..";
   imageMsg.reset();
   imageMsg.operator =(NULL);
 
   if (imageMsg.operator !=(NULL))
     std::cout <<" FAILED\n";
   else
-    { std::cout <<" OK\n"; m_successCounter++; }
+    { std::cout <<" OK\n"; m_SuccessCounter++; }
 
   //***********************************************
 
-  quitTest();
+  QuitTest();
 }
 
-void TestImgMsg_LoadSaveInit::quitTest()
+void TestImgMsg_LoadSaveInit::QuitTest()
 {
-  emit done();
+  emit Done();
 
-  if (m_testCounter > m_successCounter)
+  if (m_TestCounter > m_SuccessCounter)
   {
     std::cout <<"\n\n\n";
     std::cout <<"****************************************************\n";
     std::cout <<"**************** TESTING FINISHED: *****************\n";
-    std::cout <<"***************** " <<(m_testCounter - m_successCounter) << " TEST(S) FAILED *****************\n";
+    std::cout <<"***************** " <<(m_TestCounter - m_SuccessCounter) << " TEST(S) FAILED *****************\n";
     std::cout <<"****************************************************\n";
     exit(-1);
   }

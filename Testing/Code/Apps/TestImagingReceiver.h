@@ -16,7 +16,7 @@
 #include <QObject>
 #include <QtGui/QImage>
 #include <igtlTimeStamp.h>
-#include "OIGTLSocketObject.h"
+#include "NiftyLinkSocketObject.h"
 
 class TestImagingReceiver : public QObject {
 
@@ -39,13 +39,13 @@ public slots:
 
 private slots:
 
-  void OnMessageReceived(OIGTLMessage::Pointer);
+  void OnMessageReceived(NiftyLinkMessage::Pointer);
 
 private:
 
   void FinishUp();
 
-  OIGTLSocketObject        m_Socket;
+  NiftyLinkSocketObject        m_Socket;
   const int                m_PortNumber;
   const int                m_NumberOfMessagesExpected;
   int                      m_CumulativeMessageCount;

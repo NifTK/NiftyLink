@@ -12,7 +12,7 @@ See LICENSE.txt in the top level directory for details.
 
 #include "NiftyLinkXMLBuilder.h"
 
-QString XMLBuilderBase::parseDescriptorType(QString xmlString)
+QString XMLBuilderBase::ParseDescriptorType(QString xmlString)
 {
   QDomDocument xmlDoco;
 
@@ -56,7 +56,7 @@ ClientDescriptorXMLBuilder& ClientDescriptorXMLBuilder::operator=(const ClientDe
 }
 
 
-QString ClientDescriptorXMLBuilder::getXMLAsString(void)
+QString ClientDescriptorXMLBuilder::GetXMLAsString(void)
 {
   QDomDocument domDocument("ClientDescriptor");
 
@@ -88,7 +88,7 @@ QString ClientDescriptorXMLBuilder::getXMLAsString(void)
     return QString();
 }
 
-void ClientDescriptorXMLBuilder::setXMLString(QString desc)
+void ClientDescriptorXMLBuilder::SetXMLString(QString desc)
 {
   m_DescriptorString.clear();
   m_DescriptorString.append(desc);
@@ -156,7 +156,7 @@ CommandDescriptorXMLBuilder::CommandDescriptorXMLBuilder(const CommandDescriptor
   m_ParameterValues = other.m_ParameterValues;
 }
 
-CommandDescriptorXMLBuilder & CommandDescriptorXMLBuilder::operator =(const CommandDescriptorXMLBuilder &other)
+CommandDescriptorXMLBuilder & CommandDescriptorXMLBuilder::operator=(const CommandDescriptorXMLBuilder &other)
 {
   XMLBuilderBase::operator =(other);
 
@@ -171,7 +171,7 @@ CommandDescriptorXMLBuilder & CommandDescriptorXMLBuilder::operator =(const Comm
 }
 
 
-void CommandDescriptorXMLBuilder::addParameter(QString pName, QString pType, QString pVal)
+void CommandDescriptorXMLBuilder::AddParameter(QString pName, QString pType, QString pVal)
 {
   m_ParameterNames.append(pName);
   m_ParameterTypes.append(pType);
@@ -179,7 +179,7 @@ void CommandDescriptorXMLBuilder::addParameter(QString pName, QString pType, QSt
   m_NumOfParameters++;
 }
 
-QString CommandDescriptorXMLBuilder::getXMLAsString(void)
+QString CommandDescriptorXMLBuilder::GetXMLAsString(void)
 {
   QDomDocument domDocument("CommandDescriptor");
 
@@ -214,7 +214,7 @@ QString CommandDescriptorXMLBuilder::getXMLAsString(void)
     return QString();
 }
 
-void CommandDescriptorXMLBuilder::setXMLString(QString desc)
+void CommandDescriptorXMLBuilder::SetXMLString(QString desc)
 {
   m_DescriptorString.clear();
   m_DescriptorString.append(desc);
@@ -261,7 +261,7 @@ void CommandDescriptorXMLBuilder::setXMLString(QString desc)
   }
 }
 
-QString CommandDescriptorXMLBuilder::getParameterName(int i)
+QString CommandDescriptorXMLBuilder::GetParameterName(int i)
 {
   if (i >= m_ParameterNames.count())
     return QString();
@@ -272,7 +272,7 @@ QString CommandDescriptorXMLBuilder::getParameterName(int i)
   else return pname;
 }
 
-QString CommandDescriptorXMLBuilder::getParameterType(int i)
+QString CommandDescriptorXMLBuilder::GetParameterType(int i)
 {
   if (i >= m_ParameterTypes.count())
     return QString();
@@ -283,7 +283,7 @@ QString CommandDescriptorXMLBuilder::getParameterType(int i)
   else return ptype;
 }
 
-QString CommandDescriptorXMLBuilder::getParameterValue(int i)
+QString CommandDescriptorXMLBuilder::GetParameterValue(int i)
 {
   if (i >= m_ParameterValues.count())
     return QString();
@@ -294,7 +294,7 @@ QString CommandDescriptorXMLBuilder::getParameterValue(int i)
   else return pval;
 }
 
-void CommandDescriptorXMLBuilder::getParameterAllFields(int i, QString &pName, QString &pType, QString &pValue)
+void CommandDescriptorXMLBuilder::GetParameterAllFields(int i, QString &pName, QString &pType, QString &pValue)
 {
   if (i >= m_ParameterValues.count())
     return;
@@ -317,17 +317,17 @@ void CommandDescriptorXMLBuilder::getParameterAllFields(int i, QString &pName, Q
 }
 
 
-QStringList CommandDescriptorXMLBuilder::getParameterNames(void)
+QStringList CommandDescriptorXMLBuilder::GetParameterNames(void)
 {
   return m_ParameterNames;
 }
 
-QStringList CommandDescriptorXMLBuilder::getParameterTypes(void)
+QStringList CommandDescriptorXMLBuilder::GetParameterTypes(void)
 {
   return m_ParameterTypes;
 }
 
-QStringList CommandDescriptorXMLBuilder::getParameterValues(void)
+QStringList CommandDescriptorXMLBuilder::GetParameterValues(void)
 {
   return m_ParameterValues;
 }
@@ -348,7 +348,7 @@ TrackerClientDescriptor & TrackerClientDescriptor::operator=(const TrackerClient
   return *this;
 }
 
-QString TrackerClientDescriptor::getXMLAsString(void)
+QString TrackerClientDescriptor::GetXMLAsString(void)
 {
   QDomDocument domDocument("TrackerClientDescriptor");
 
@@ -390,7 +390,7 @@ QString TrackerClientDescriptor::getXMLAsString(void)
     return QString();
 }
 
-void TrackerClientDescriptor::setXMLString(QString desc)
+void TrackerClientDescriptor::SetXMLString(QString desc)
 {
   m_DescriptorString.clear();
   m_DescriptorString.append(desc);
@@ -445,7 +445,5 @@ void TrackerClientDescriptor::setXMLString(QString desc)
         n = n.nextSibling();
       }
     }
-
   }
 }
-

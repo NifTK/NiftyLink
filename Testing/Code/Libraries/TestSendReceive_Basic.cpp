@@ -19,24 +19,24 @@
 
 TestSendReceive_Basic::TestSendReceive_Basic(void)
 {
-  m_socket1 = NULL;
-  m_socket2 = NULL;
+  m_Socket1 = NULL;
+  m_Socket2 = NULL;
 
-  m_successCounter = 0;
-  m_numOfMsg = 10;
-  m_received = 0;
+  m_SuccessCounter = 0;
+  m_NumOfMsg = 10;
+  m_Received = 0;
 
-  m_doStream    = false;
-  m_connectedTo = false;
-  m_connecting  = false;
+  m_DoStream    = false;
+  m_ConnectedTo = false;
+  m_Connecting  = false;
 
-  m_inShutdownTests = false;
+  m_InShutdownTests = false;
 
-  m_testCounter = 0;
-  m_successCounter = 0;
+  m_TestCounter = 0;
+  m_SuccessCounter = 0;
 
-  connect(&m_timeOut, SIGNAL(timeout()), this, SLOT(quitTest()) );
-  m_timeOut.start(60000);
+  connect(&m_TimeOut, SIGNAL(timeout()), this, SLOT(QuitTest()) );
+  m_TimeOut.start(60000);
 
 }
 
@@ -45,54 +45,54 @@ TestSendReceive_Basic::~TestSendReceive_Basic(void)
 }
 
 
-void TestSendReceive_Basic::startTest()
+void TestSendReceive_Basic::StartTest()
 {
 
   //***********************************************
   //Instanciate socket objects
-  std::cout <<++m_testCounter <<". Creating two socket object..";
-  m_socket1 = new OIGTLSocketObject();
-  m_socket2 = new OIGTLSocketObject();
+  std::cout <<++m_TestCounter <<". Creating two socket object..";
+  m_Socket1 = new NiftyLinkSocketObject();
+  m_Socket2 = new NiftyLinkSocketObject();
 
-  m_socket2->setObjectNames("Socket2");
-  m_socket1->setObjectNames("Socket1");
+  m_Socket2->SetObjectNames("Socket2");
+  m_Socket1->SetObjectNames("Socket1");
 
-  if (m_socket1 != NULL && m_socket2 != NULL)
-    { std::cout <<" OK\n"; m_successCounter++; }
+  if (m_Socket1 != NULL && m_Socket2 != NULL)
+    { std::cout <<" OK\n"; m_SuccessCounter++; }
   else
     std::cout <<" FAILED\n";
 
   //***********************************************
   //Instanciate socket objects
-  std::cout <<++m_testCounter <<". Connecting Signals and Slots..";
+  std::cout <<++m_TestCounter <<". Connecting Signals and Slots..";
   bool ok = true;
-  ok &= connect(m_socket1, SIGNAL(messageReceived(OIGTLMessage::Pointer)), this, SLOT(catchMessage(OIGTLMessage::Pointer )) );
-  //ok &= connect(m_socket1, SIGNAL(messageSent(unsigned long long )), this, SLOT(recordSendTimestamps(unsigned long long )) );
-  ok &= connect(m_socket1, SIGNAL(clientConnectedSignal()), this, SLOT(clientConnected()) ); 
+  ok &= connect(m_Socket1, SIGNAL(messageReceived(NiftyLinkMessage::Pointer)), this, SLOT(CatchMessage(NiftyLinkMessage::Pointer )) );
+  //ok &= connect(m_Socket1, SIGNAL(messageSent(unsigned long long )), this, SLOT(RecordSendTimestamps(unsigned long long )) );
+  ok &= connect(m_Socket1, SIGNAL(ClientConnectedSignal()), this, SLOT(ClientConnected()) ); 
 
-  ok &= connect(m_socket2, SIGNAL(messageReceived(OIGTLMessage::Pointer)), this, SLOT(catchMessage(OIGTLMessage::Pointer )) );
-  //ok &= connect(m_socket2, SIGNAL(messageSent(unsigned long long )), this, SLOT(recordSendTimestamps(unsigned long long )) );
-  ok &= connect(m_socket2, SIGNAL(connectedToRemoteSignal()), this, SLOT(connectedToRemote()) ); 
+  ok &= connect(m_Socket2, SIGNAL(messageReceived(NiftyLinkMessage::Pointer)), this, SLOT(CatchMessage(NiftyLinkMessage::Pointer )) );
+  //ok &= connect(m_Socket2, SIGNAL(messageSent(unsigned long long )), this, SLOT(RecordSendTimestamps(unsigned long long )) );
+  ok &= connect(m_Socket2, SIGNAL(ConnectedToRemoteSignal()), this, SLOT(ConnectedToRemote()) ); 
   if (ok)
-    { std::cout <<" OK\n"; m_successCounter++; }
+    { std::cout <<" OK\n"; m_SuccessCounter++; }
   else
     std::cout <<" FAILED\n";
 
   //This is required on Win to achieve accurate timings
   #if defined(_WIN32)
-    m_socket1->initializeWinTimers(); 
+    m_Socket1->InitializeWinTimers(); 
   #endif
 
   //***********************************************
   //Starting up listener thread 
 
-  std::cout <<++m_testCounter <<". Starting up the listener socket..";
+  std::cout <<++m_TestCounter <<". Starting up the listener socket..";
 
   //Start sender / listener
-  ok = m_socket1->listenOnPort(3200);
+  ok = m_Socket1->ListenOnPort(3200);
 
-  if (ok && m_socket1->isListening())
-    { std::cout <<" OK\n"; m_successCounter++; }
+  if (ok && m_Socket1->IsListening())
+    { std::cout <<" OK\n"; m_SuccessCounter++; }
   else
     std::cout <<" FAILED\n";
 
@@ -101,136 +101,136 @@ void TestSendReceive_Basic::startTest()
   //***********************************************
   //Starting up sender thread - false attempt
 
-  std::cout <<++m_testCounter <<". Starting up the sender socket - false url attempt..";
+  std::cout <<++m_TestCounter <<". Starting up the sender socket - false url attempt..";
 
   QUrl url;
   url.setHost(QString("non-existing-host"));
   url.setPort(3200);
 
-  m_socket2->connectToRemote(url);
+  m_Socket2->ConnectToRemote(url);
 
   igtl::Sleep(4000);
 
-  ok = m_socket2->isConnected();
+  ok = m_Socket2->IsConnected();
 
   if (!ok)
-    { std::cout <<" NOT POSSIBLE: OK\n"; m_successCounter++; }
+    { std::cout <<" NOT POSSIBLE: OK\n"; m_SuccessCounter++; }
   else
     std::cout <<" FAILED\n";
 
   //***********************************************
   //Starting up sender thread 
 
-  std::cout <<++m_testCounter <<". Starting up the sender socket..";
+  std::cout <<++m_TestCounter <<". Starting up the sender socket..";
 
   url.setHost(QString("localhost"));
   url.setPort(3200);
 
-  ok = m_socket2->connectToRemote(url);
+  ok = m_Socket2->ConnectToRemote(url);
 }
 
-void TestSendReceive_Basic::continueTest()
+void TestSendReceive_Basic::ContinueTest()
 {
-  if (m_socket2->isConnected())
-    { std::cout <<" OK\n"; m_successCounter++; }
+  if (m_Socket2->IsConnected())
+    { std::cout <<" OK\n"; m_SuccessCounter++; }
   else
     std::cout <<" FAILED\n";
 
   //***********************************************
   //Test if the two-way connection is alive
 
-  std::cout <<++m_testCounter <<". Testing the two-way channel..";
+  std::cout <<++m_TestCounter <<". Testing the two-way channel..";
 
-  bool a = m_socket1->isClientConnecting();
-  bool b = m_socket2->isConnected();
-  bool c = m_socket2->isAbleToSend();
+  bool a = m_Socket1->IsClientConnecting();
+  bool b = m_Socket2->IsConnected();
+  bool c = m_Socket2->IsAbleToSend();
 
   if(a && b && c)
-    { std::cout <<" OK\n"; m_successCounter++; }
+    { std::cout <<" OK\n"; m_SuccessCounter++; }
   else
     std::cout <<" FAILED\n";
 
-  if (m_inShutdownTests)
-    testCloseSocket2();
+  if (m_InShutdownTests)
+    TestCloseSocket2();
 
 
-  m_msgToSend.operator =(OIGTLTransformMessage::Pointer(new OIGTLTransformMessage()));
-  static_cast<OIGTLTransformMessage::Pointer>(m_msgToSend)->setMatrix(dummyTransformMatrix);
-  m_msgToSend->update(getLocalHostAddress());
+  m_MsgToSend.operator =(NiftyLinkTransformMessage::Pointer(new NiftyLinkTransformMessage()));
+  static_cast<NiftyLinkTransformMessage::Pointer>(m_MsgToSend)->SetMatrix(dummyTransformMatrix);
+  m_MsgToSend->Update(GetLocalHostAddress());
 
-  //m_msgToSend.operator =(OIGTLImageMessage::Pointer(new OIGTLImageMessage()));
-  //m_msgToSend->initializeWithTestData();
-  //m_msgToSend->update(getLocalHostAddress());
+  //m_MsgToSend.operator =(NiftyLinkImageMessage::Pointer(new NiftyLinkImageMessage()));
+  //m_MsgToSend->InitializeWithTestData();
+  //m_MsgToSend->Update(GetLocalHostAddress());
 
-  sendMessages();
+  SendMessages();
 
   //qDebug() <<"end of part 2";
 }
 
-void TestSendReceive_Basic::sendMessages()
+void TestSendReceive_Basic::SendMessages()
 {
-  std::cout <<++m_testCounter <<". Sending 10 messages from one socket to the other ..";
-  for (int i = 0; i< m_numOfMsg; i++)
+  std::cout <<++m_TestCounter <<". Sending 10 messages from one socket to the other ..";
+  for (int i = 0; i< m_NumOfMsg; i++)
   {
-    m_socket2->sendMessage(m_msgToSend);
+    m_Socket2->SendMessage(m_MsgToSend);
   }
 }
 
-void TestSendReceive_Basic::clientConnected()
+void TestSendReceive_Basic::ClientConnected()
 {
-  m_connecting = true;
+  m_Connecting = true;
 
-  //if (m_inShutdownTests)
+  //if (m_InShutdownTests)
   //  qDebug() <<"Successfully continued the tests after shutdown";
 
-  if (m_connecting && m_connectedTo)
-    continueTest();
+  if (m_Connecting && m_ConnectedTo)
+    ContinueTest();
 }
-void TestSendReceive_Basic::connectedToRemote()
+void TestSendReceive_Basic::ConnectedToRemote()
 {
-  m_connectedTo = true;
+  m_ConnectedTo = true;
 
-  //if (m_inShutdownTests)
+  //if (m_InShutdownTests)
   //  qDebug() <<"Successfully continued the tests after shutdown";
   
-  if (m_connecting && m_connectedTo)
-    continueTest();
+  if (m_Connecting && m_ConnectedTo)
+    ContinueTest();
 }
 
-void TestSendReceive_Basic::quitTest()
+void TestSendReceive_Basic::QuitTest()
 {
-  if (m_socket1 != NULL)
+  if (m_Socket1 != NULL)
   {
-    m_socket1->closeSocket();
+    m_Socket1->CloseSocket();
 
-    while (m_socket1->isActive())
+    while (m_Socket1->IsActive())
       igtl::Sleep(100);
 
-    delete m_socket1;
-    m_socket1 = NULL;
+    delete m_Socket1;
+    m_Socket1 = NULL;
   }
 
-  if (m_socket2 != NULL)
+  if (m_Socket2 != NULL)
   {
-    m_socket2->closeSocket();
+    m_Socket2->CloseSocket();
 
-    while (m_socket2->isActive())
+    while (m_Socket2->IsActive())
       igtl::Sleep(100);
 
-    delete m_socket2;
-    m_socket2 = NULL;
+    delete m_Socket2;
+    m_Socket2 = NULL;
   }
 
-  m_msgToSend.reset();
+  m_MsgToSend.reset();
 
-  emit done();
+  emit Done();
     
-  if (m_testCounter > m_successCounter)
+  if (m_TestCounter > m_SuccessCounter)
   {
     std::cout <<"\n\n\n";
     std::cout <<"****************************************************\n";
     std::cout <<"**************** TESTING FINISHED: *****************\n";
-    std::cout <<"***************** " <<(m_testCounter - m_successCounter) << " TEST(S) FAILED *****************\n";
+    std::cout <<"***************** " <<(m_TestCounter - m_SuccessCounter) << " TEST(S) FAILED *****************\n";
     std::cout <<"****************************************************\n";
     exit(-1);
   }
@@ -245,16 +245,16 @@ void TestSendReceive_Basic::quitTest()
   }
 }
 
-void TestSendReceive_Basic::catchMessage(OIGTLMessage::Pointer msg)
+void TestSendReceive_Basic::CatchMessage(NiftyLinkMessage::Pointer msg)
 {
   QString sender = QObject::sender()->objectName();
 
   if (msg.operator!=(NULL))
   {
-    //QLOG_INFO() <<m_received+1 <<"of" <<m_numOfMsg <<"message received: " <<msg->getHostName() <<":" <<msg->getPort() <<" " <<msg->getMessageType();
+    //QLOG_INFO() <<m_Received+1 <<"of" <<m_NumOfMsg <<"message received: " <<msg->GetHostName() <<":" <<msg->GetPort() <<" " <<msg->GetMessageType();
 
     igtl::MessageBase::Pointer message;
-    msg->getMessagePointer(message);
+    msg->GetMessagePointer(message);
     //QLOG_INFO() <<message->GetNameOfClass();
 
     if (strcmp(message->GetNameOfClass(), "igtl::TransformMessage") == 0)
@@ -269,9 +269,9 @@ void TestSendReceive_Basic::catchMessage(OIGTLMessage::Pointer msg)
       int r = memcmp((const void*)&receivedMatrix, (const void*)dummyTransformMatrix, sizeof(igtl::Matrix4x4));
 
       if (r == 0)
-        std::cout <<sender.toStdString().c_str() <<" received matrix " <<m_received+1 <<" of " <<m_numOfMsg*2 <<": OK" <<std::endl;
+        std::cout <<sender.toStdString().c_str() <<" received matrix " <<m_Received+1 <<" of " <<m_NumOfMsg*2 <<": OK" <<std::endl;
       else
-        std::cout <<sender.toStdString().c_str() <<" received matrix " <<m_received+1 <<" of " <<m_numOfMsg*2 <<": NOT-OK" <<std::endl;
+        std::cout <<sender.toStdString().c_str() <<" received matrix " <<m_Received+1 <<" of " <<m_NumOfMsg*2 <<": NOT-OK" <<std::endl;
 
       igtl::PrintMatrix(receivedMatrix);
 
@@ -280,47 +280,47 @@ void TestSendReceive_Basic::catchMessage(OIGTLMessage::Pointer msg)
       if (r != 0)
         QLOG_ERROR() <<"Shit happens";
 
-      m_received++;
+      m_Received++;
     }
-    else if (msg->getMessageType() == QString("IMAGE"))
+    else if (msg->GetMessageType() == QString("IMAGE"))
     {
-      m_received++;
-      OIGTLImageMessage::Pointer imgMsg;
-      imgMsg = static_cast<OIGTLImageMessage::Pointer>(msg);
+      m_Received++;
+      NiftyLinkImageMessage::Pointer imgMsg;
+      imgMsg = static_cast<NiftyLinkImageMessage::Pointer>(msg);
       QString fname("image_received_");
-      fname.append(QString::number(m_received));
+      fname.append(QString::number(m_Received));
       fname.append(".png");
-      imgMsg->save(fname);
+      imgMsg->Save(fname);
      }
   }
   
   if (QObject::sender()->objectName() == "Socket1")
-    m_socket1Messages.append(msg);
+    m_Socket1Messages.append(msg);
   else
-    m_socket2Messages.append(msg);
+    m_Socket2Messages.append(msg);
 
-  std::cerr <<"\nNum of messages received: " <<m_received <<std::endl;
+  std::cerr <<"\nNum of messages received: " <<m_Received <<std::endl;
 
-  //if (m_received >= m_numOfMsg)
-  if (m_received >= m_numOfMsg)
-    { std::cout <<" OK\n"; m_successCounter++; testCloseSocket1(); }
+  //if (m_Received >= m_NumOfMsg)
+  if (m_Received >= m_NumOfMsg)
+    { std::cout <<" OK\n"; m_SuccessCounter++; TestCloseSocket1(); }
 }
 
 
-void TestSendReceive_Basic::testCloseSocket1()
+void TestSendReceive_Basic::TestCloseSocket1()
 {
   //***********************************************
   //Test what happens if one socket shuts down
 
-  std::cout <<++m_testCounter <<". Testing client shutdown..";
+  std::cout <<++m_TestCounter <<". Testing client shutdown..";
 
-  m_socket2->closeSocket();
+  m_Socket2->CloseSocket();
 
   igtl::Sleep(200);
 
-  bool a = m_socket1->isClientConnecting();
-  bool b = m_socket2->isConnected();
-  bool c = m_socket2->isAbleToSend();
+  bool a = m_Socket1->IsClientConnecting();
+  bool b = m_Socket2->IsConnected();
+  bool c = m_Socket2->IsAbleToSend();
 
   unsigned int count  = 0;
 
@@ -328,9 +328,9 @@ void TestSendReceive_Basic::testCloseSocket1()
   {
     QCoreApplication::processEvents();
 
-    a = m_socket1->isClientConnecting();
-    b = m_socket2->isConnected();
-    c = m_socket2->isAbleToSend();
+    a = m_Socket1->IsClientConnecting();
+    b = m_Socket2->IsConnected();
+    c = m_Socket2->IsAbleToSend();
     
     igtl::Sleep(200);
     count += 200;
@@ -338,37 +338,37 @@ void TestSendReceive_Basic::testCloseSocket1()
 
   if (a || b || c)
     std::cout <<" FAILED\n";
-  else { std::cout <<" OK\n"; m_successCounter++; }
+  else { std::cout <<" OK\n"; m_SuccessCounter++; }
 
-  m_inShutdownTests = true;
-  m_connectedTo = false;
-  m_connecting = false;
+  m_InShutdownTests = true;
+  m_ConnectedTo = false;
+  m_Connecting = false;
 
   //***********************************************
   //Starting up sender thread 
 
-  std::cout <<++m_testCounter <<". Starting up the sender socket..";
+  std::cout <<++m_TestCounter <<". Starting up the sender socket..";
 
   QUrl url;
   url.setHost(QString("localhost"));
   url.setPort(3200);
 
-  m_socket2->connectToRemote(url);
+  m_Socket2->ConnectToRemote(url);
   //igtl::Sleep(1000);
 
 }
 
-void TestSendReceive_Basic::testCloseSocket2()
+void TestSendReceive_Basic::TestCloseSocket2()
 {
-  std::cout <<++m_testCounter <<". Testing server shutdown..";
+  std::cout <<++m_TestCounter <<". Testing server shutdown..";
 
-  m_socket1->closeSocket();
+  m_Socket1->CloseSocket();
 
   //igtl::Sleep(4000);
 
-  bool a = m_socket1->isListening();
-  bool b = m_socket2->isConnected();
-  bool c = m_socket2->isAbleToSend();
+  bool a = m_Socket1->IsListening();
+  bool b = m_Socket2->IsConnected();
+  bool c = m_Socket2->IsAbleToSend();
 
   unsigned int count  = 0;
 
@@ -376,9 +376,9 @@ void TestSendReceive_Basic::testCloseSocket2()
   {
     QCoreApplication::processEvents();
 
-    a = m_socket1->isClientConnecting();
-    b = m_socket2->isConnected();
-    c = m_socket2->isAbleToSend();
+    a = m_Socket1->IsClientConnecting();
+    b = m_Socket2->IsConnected();
+    c = m_Socket2->IsAbleToSend();
 
     igtl::Sleep(200);
     count += 200;
@@ -387,7 +387,7 @@ void TestSendReceive_Basic::testCloseSocket2()
   if(a || b || c)
     std::cout <<" FAILED\n";
   else
-    { std::cout <<" OK\n"; m_successCounter++; }
+    { std::cout <<" OK\n"; m_SuccessCounter++; }
 
-  quitTest();
+  QuitTest();
 }

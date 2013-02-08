@@ -15,15 +15,15 @@
 #include <QDebug>
 #include "NiftyLinkUtils.h"
 
-void UtilsTests::initTestCase()
+void UtilsTests::InitTestCase()
 {
 }
 
-void UtilsTests::cleanupTestCase()
+void UtilsTests::CleanupTestCase()
 {
 }
 
-void UtilsTests::timeStampSetGetDifferenceTest()
+void UtilsTests::TimeStampSetGetDifferenceTest()
 {
   igtlUint32 seconds, nanoseconds;
   igtlUint32 seconds2, nanoseconds2;

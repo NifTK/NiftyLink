@@ -30,9 +30,8 @@
 #include "QsLog.h"
 #include "QsLogDest.h"
 
-#include "OIGTLSocketObject.h"
-#include "OIGTLTransformMessage.h"
-
+#include "NiftyLinkSocketObject.h"
+#include "NiftyLinkTransformMessage.h"
 
 #include <cstdlib>
 #include <cstdio>
@@ -44,20 +43,20 @@ class TestMsgTypes_ConstrDestr : public QObject
   Q_OBJECT
 
 signals:
-  void done();
+  void Done();
 
 public:
   TestMsgTypes_ConstrDestr(void);
   ~TestMsgTypes_ConstrDestr(void);
 
 public slots:
-  void setupTest();
-  void performTest();
-  void quitTest();
+  void SetupTest();
+  void PerformTest();
+  void QuitTest();
 
 private:
-  QString m_localhostname;
-  int m_testCounter;
-  int m_successCounter;
+  QString m_LocalHostname;
+  int     m_TestCounter;
+  int     m_SuccessCounter;
 };
 

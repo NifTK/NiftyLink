@@ -14,7 +14,7 @@ See LICENSE.txt in the top level directory for details.
 #include <cmath>
 
 //-----------------------------------------------------------------------------
-bool validateIp(const QString &inputIP)
+bool ValidateIp(const QString &inputIP)
 {
   QStringList nums = inputIP.split(".");
 
@@ -35,9 +35,9 @@ bool validateIp(const QString &inputIP)
 
 
 //-----------------------------------------------------------------------------
-QString resolveHostName(const QString &input)
+QString ResolveHostName(const QString &input)
 {
-  if (validateIp(input))
+  if (ValidateIp(input))
     return input;
 
   QHostInfo info = QHostInfo::fromName(input);
@@ -45,7 +45,7 @@ QString resolveHostName(const QString &input)
 
   for (int i=0; i< addresses.count(); i++)
   {
-    if( validateIp(addresses.at(i).toString()) == true )
+    if( ValidateIp(addresses.at(i).toString()) == true )
     {
       return addresses.at(i).toString();
     }
@@ -57,7 +57,7 @@ QString resolveHostName(const QString &input)
 
 
 //-----------------------------------------------------------------------------
-QString getLocalHostAddress(void)
+QString GetLocalHostAddress(void)
 {
   QNetworkConfigurationManager mgr;
   QNetworkConfiguration nconfig = mgr.defaultConfiguration();
@@ -69,7 +69,7 @@ QString getLocalHostAddress(void)
   for ( QList<QNetworkAddressEntry> ::const_iterator it = laddr.begin(); it != laddr.end(); ++it )
   {
     QString ipstr = it->ip().toString();
-    if (validateIp(ipstr))
+    if (ValidateIp(ipstr))
     {
       // Need to return the one which is valid and not 'localhost'
       if (ipstr != QString("127.0.0.1"))
@@ -229,12 +229,9 @@ igtlUint64 GetDifferenceInNanoSeconds(igtl::TimeStamp* timeA, igtl::TimeStamp* t
   igtlUint64 b = GetTimeInNanoSeconds(timeB);
   igtlUint64 d;
 
-  if (a>b)
-    d = a-b;
-  else if (b>a)
-    d = b-a;
-  else
-    d = 0;
+  if (a > b)      { d = a-b; }
+  else if (b > a) { d = b-a; }
+  else            { d = 0; }
 
   return d;
 }

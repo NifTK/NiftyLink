@@ -20,8 +20,8 @@
 
 TestStatusMsg_General::TestStatusMsg_General(void)
 {
-  m_testCounter = 0;
-  m_successCounter = 0;
+  m_TestCounter = 0;
+  m_SuccessCounter = 0;
 }
 
 TestStatusMsg_General::~TestStatusMsg_General(void)
@@ -30,136 +30,136 @@ TestStatusMsg_General::~TestStatusMsg_General(void)
 }
 
 
-void TestStatusMsg_General::setupTest()
+void TestStatusMsg_General::SetupTest()
 {
   //Nothing to do right now
 }
 
 
-void TestStatusMsg_General::performTest()
+void TestStatusMsg_General::PerformTest()
 {
   //Create image message and initialize with test data
-  std::cout <<++m_testCounter <<". Creating status message..";
-  OIGTLStatusMessage::Pointer statusMsg;
+  std::cout <<++m_TestCounter <<". Creating status message..";
+  NiftyLinkStatusMessage::Pointer statusMsg;
   statusMsg.reset();
-  statusMsg = (OIGTLStatusMessage::Pointer(new OIGTLStatusMessage()));
+  statusMsg = (NiftyLinkStatusMessage::Pointer(new NiftyLinkStatusMessage()));
   
   if (statusMsg.operator !=(NULL))
-    { std::cout <<" OK\n"; m_successCounter++; }
+    { std::cout <<" OK\n"; m_SuccessCounter++; }
   else
     std::cout <<" FAILED\n";
 
   //***********************************************
-  std::cout <<++m_testCounter <<". Initializing with test data..";
-  statusMsg->initializeWithTestData();
+  std::cout <<++m_TestCounter <<". Initializing with test data..";
+  statusMsg->InitializeWithTestData();
 
-  if (statusMsg->getErrorCode() == igtl::StatusMessage::STATUS_OK &&
-    statusMsg->getErrorSubCode() == igtl::StatusMessage::STATUS_PANICK_MODE &&
-    statusMsg->getErrorName() == QString("ErrorName") &&
-    statusMsg->getStatusString() == QString("StatusString") )
-      { std::cout <<" OK\n"; m_successCounter++; }
+  if (statusMsg->GetErrorCode() == igtl::StatusMessage::STATUS_OK &&
+    statusMsg->GetErrorSubCode() == igtl::StatusMessage::STATUS_PANICK_MODE &&
+    statusMsg->GetErrorName() == QString("ErrorName") &&
+    statusMsg->GetStatusString() == QString("StatusString") )
+      { std::cout <<" OK\n"; m_SuccessCounter++; }
   else
     std::cout <<" FAILED\n";
 
-  statusMsg->setStatusString("LongLongLongErrorName");
+  statusMsg->SetStatusString("LongLongLongErrorName");
   
-  qDebug() <<statusMsg->getStatusString();
+  qDebug() <<statusMsg->GetStatusString();
 
-  statusMsg->setStatusString("LongLongLongErrorNameLongLongLongErrorName");
-  qDebug() <<statusMsg->getStatusString();
+  statusMsg->SetStatusString("LongLongLongErrorNameLongLongLongErrorName");
+  qDebug() <<statusMsg->GetStatusString();
     
     
   //***********************************************
-  std::cout <<++m_testCounter <<". Setting timestamp and sender ID..";
-  statusMsg->update(getLocalHostAddress());
+  std::cout <<++m_TestCounter <<". Setting timestamp and sender ID..";
+  statusMsg->Update(GetLocalHostAddress());
 
-  if (statusMsg->getHostName().isEmpty() || statusMsg->getTimeCreated().IsNull())
+  if (statusMsg->GetHostName().isEmpty() || statusMsg->GetTimeCreated().IsNull())
     std::cout <<" FAILED\n";
   else
-    { std::cout <<" OK\n"; m_successCounter++; }
+    { std::cout <<" OK\n"; m_SuccessCounter++; }
 
   //*********************************************** 
-  std::cout <<++m_testCounter <<". Setting message type tag..";
-  statusMsg->changeMessageType("Something");
-  if (statusMsg->getMessageType() != QString("Something"))
+  std::cout <<++m_TestCounter <<". Setting message type tag..";
+  statusMsg->ChangeMessageType("Something");
+  if (statusMsg->GetMessageType() != QString("Something"))
     std::cout <<" FAILED\n";
   else
-    { std::cout <<" OK\n"; m_successCounter++; }
+    { std::cout <<" OK\n"; m_SuccessCounter++; }
 
   //*********************************************** 
-  std::cout <<++m_testCounter <<". Setting port number..";
-  statusMsg->setPort(100);
-  if (statusMsg->getPort() != 100)
+  std::cout <<++m_TestCounter <<". Setting port number..";
+  statusMsg->SetPort(100);
+  if (statusMsg->GetPort() != 100)
     std::cout <<" FAILED\n";
   else
-    { std::cout <<" OK\n"; m_successCounter++; }
+    { std::cout <<" OK\n"; m_SuccessCounter++; }
 
   //*********************************************** 
-  std::cout <<++m_testCounter <<". Setting receive timestamp..";
+  std::cout <<++m_TestCounter <<". Setting receive timestamp..";
   igtl::TimeStamp::Pointer tsr = igtl::TimeStamp::New();
   igtl::TimeStamp::Pointer tss = igtl::TimeStamp::New();
   tsr->GetTime_TAI();
-  statusMsg->setTimeReceived(tsr);
-  tss = statusMsg->getTimeReceived();
+  statusMsg->SetTimeReceived(tsr);
+  tss = statusMsg->GetTimeReceived();
   if (tsr->GetTimeStampUint64() != tss->GetTimeStampUint64())
     std::cout <<" FAILED\n";
   else
-    { std::cout <<" OK\n"; m_successCounter++; }
+    { std::cout <<" OK\n"; m_SuccessCounter++; }
   
   //*********************************************** 
-  std::cout <<++m_testCounter <<". Checking create timestamp and id..";
+  std::cout <<++m_TestCounter <<". Checking create timestamp and id..";
   igtl::TimeStamp::Pointer tsc = igtl::TimeStamp::New();
   igtlUint64 id = 0;
 
-  tsc = statusMsg->getTimeCreated();
-  id = statusMsg->getId();
+  tsc = statusMsg->GetTimeCreated();
+  id = statusMsg->GetId();
   if (tsr->GetTimeStampUint64() < tsc->GetTimeStampUint64() || id <= 0)
     std::cout <<" FAILED\n";
   else
-    { std::cout <<" OK\n"; m_successCounter++; }
+    { std::cout <<" OK\n"; m_SuccessCounter++; }
 
   //*********************************************** 
-  std::cout <<++m_testCounter <<". Checking update function and hostname..";
-  statusMsg->update("Something");
-  QString hname = statusMsg->getHostName(); 
+  std::cout <<++m_TestCounter <<". Checking Update function and hostname..";
+  statusMsg->Update("Something");
+  QString hname = statusMsg->GetHostName(); 
   
-  statusMsg->changeHostName("Anything");
-  QString hname2 = statusMsg->getHostName();
+  statusMsg->ChangeHostName("Anything");
+  QString hname2 = statusMsg->GetHostName();
   if (hname2 != QString("Anything") || hname != QString("Something"))
     std::cout <<" FAILED\n";
   else
-    { std::cout <<" OK\n"; m_successCounter++; }
+    { std::cout <<" OK\n"; m_SuccessCounter++; }
 
   //*********************************************** 
-  std::cout <<++m_testCounter <<". Checking message pointer get / set..";
+  std::cout <<++m_TestCounter <<". Checking message pointer get / set..";
   igtl::MessageBase::Pointer mp = igtl::MessageBase::New();
   igtl::MessageBase::Pointer mp3;
    
-  statusMsg->setMessagePointer(mp);
-  statusMsg->getMessagePointer(mp3);
+  statusMsg->SetMessagePointer(mp);
+  statusMsg->GetMessagePointer(mp3);
   
   if (mp != mp3)
     std::cout <<" FAILED\n";
   else
-    { std::cout <<" OK\n"; m_successCounter++; }
+    { std::cout <<" OK\n"; m_SuccessCounter++; }
   
   //***********************************************
-  std::cout <<++m_testCounter <<". Set resolution settings..";
-  OIGTLMessage::Pointer sttStatus;
+  std::cout <<++m_TestCounter <<". Set resolution settings..";
+  NiftyLinkMessage::Pointer sttStatus;
   sttStatus.reset();
-  OIGTLStatusMessage::Create_STT(sttStatus);
-  sttStatus->setResolution(100);
+  NiftyLinkStatusMessage::Create_STT(sttStatus);
+  sttStatus->SetResolution(100);
  
   igtlUint64 res = 0;
-  sttStatus->getResolution(res);
+  sttStatus->GetResolution(res);
 
   if (res != 100)
     std::cout <<" FAILED\n";
   else
-    { std::cout <<" OK\n"; m_successCounter++; }
+    { std::cout <<" OK\n"; m_SuccessCounter++; }
 
   //***********************************************
-  std::cout <<++m_testCounter <<". Deleting messages..";
+  std::cout <<++m_TestCounter <<". Deleting messages..";
   statusMsg.reset();
   statusMsg.operator =(NULL);
   
@@ -169,23 +169,23 @@ void TestStatusMsg_General::performTest()
   if (sttStatus.operator !=(NULL) || statusMsg.operator !=(NULL))
     std::cout <<" FAILED\n";
   else
-    { std::cout <<" OK\n"; m_successCounter++; }
+    { std::cout <<" OK\n"; m_SuccessCounter++; }
 
   //***********************************************
 
-  quitTest();
+  QuitTest();
 }
 
-void TestStatusMsg_General::quitTest()
+void TestStatusMsg_General::QuitTest()
 {
-  emit done();
+  emit Done();
 
-  if (m_testCounter > m_successCounter)
+  if (m_TestCounter > m_SuccessCounter)
   {
     std::cout <<"\n\n\n";
     std::cout <<"****************************************************\n";
     std::cout <<"**************** TESTING FINISHED: *****************\n";
-    std::cout <<"***************** " <<(m_testCounter - m_successCounter) << " TEST(S) FAILED *****************\n";
+    std::cout <<"***************** " <<(m_TestCounter - m_SuccessCounter) << " TEST(S) FAILED *****************\n";
     std::cout <<"****************************************************\n";
     exit(-1);
   }

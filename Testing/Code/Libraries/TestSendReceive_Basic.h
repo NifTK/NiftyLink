@@ -30,8 +30,8 @@
 #include "QsLog.h"
 #include "QsLogDest.h"
 
-#include "OIGTLSocketObject.h"
-#include "OIGTLTransformMessage.h"
+#include "NiftyLinkSocketObject.h"
+#include "NiftyLinkTransformMessage.h"
 
 
 #include <cstdlib>
@@ -44,52 +44,52 @@ class TestSendReceive_Basic : public QObject
   Q_OBJECT
 
 signals:
-  void done();
+  void Done();
 
 public:
   TestSendReceive_Basic(void);
   ~TestSendReceive_Basic(void);
 
 public slots:
-  void startTest();
-  void quitTest();
+  void StartTest();
+  void QuitTest();
 
-  void catchMessage(OIGTLMessage::Pointer);
+  void CatchMessage(NiftyLinkMessage::Pointer);
 
 private slots:
-  void clientConnected();
-  void connectedToRemote();
-  void continueTest();
-  void testCloseSocket1();
-  void testCloseSocket2();
+  void ClientConnected();
+  void ConnectedToRemote();
+  void ContinueTest();
+  void TestCloseSocket1();
+  void TestCloseSocket2();
   
-  void sendMessages();
+  void SendMessages();
 
 private:
-  igtl::Matrix4x4 m_localMatrix;
+  igtl::Matrix4x4              m_LocalMatrix;
 
-  OIGTLMessage::Pointer m_msgToSend;
+  NiftyLinkMessage::Pointer        m_MsgToSend;
 
-  OIGTLSocketObject * m_socket1;
-  OIGTLSocketObject * m_socket2;
+  NiftyLinkSocketObject          * m_Socket1;
+  NiftyLinkSocketObject          * m_Socket2;
 
-  QList<ULONGLONG> m_socket1Timestamps;
-  QList<ULONGLONG> m_socket2Timestamps;
+  QList<ULONGLONG>             m_Socket1Timestamps;
+  QList<ULONGLONG>             m_Socket2Timestamps;
 
-  QList<OIGTLMessage::Pointer> m_socket1Messages;
-  QList<OIGTLMessage::Pointer> m_socket2Messages;
+  QList<NiftyLinkMessage::Pointer> m_Socket1Messages;
+  QList<NiftyLinkMessage::Pointer> m_Socket2Messages;
 
-  int m_numOfMsg;
-  int m_received;
+  int    m_NumOfMsg;
+  int    m_Received;
 
-  int m_testCounter;
-  int m_successCounter;
+  int    m_TestCounter;
+  int    m_SuccessCounter;
 
-  bool m_doStream;
-  bool m_inShutdownTests;
+  bool   m_DoStream;
+  bool   m_InShutdownTests;
 
-  bool   m_connectedTo;
-  bool   m_connecting;
-  QTimer m_timeOut;
+  bool   m_ConnectedTo;
+  bool   m_Connecting;
+  QTimer m_TimeOut;
 };
 

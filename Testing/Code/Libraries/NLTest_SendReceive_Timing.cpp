@@ -29,7 +29,7 @@
 #include "igtlTransformMessage.h"
 #include "igtlMath.h"
 
-#include "OIGTLSocketObject.h"
+#include "NiftyLinkSocketObject.h"
 #include "TestSendReceive_Timing.h"
 
 #include "QsLog.h"
@@ -50,12 +50,12 @@ int main(int argc, char **argv)
   logger.addDestination(fileDestination.get());
 
   TestSendReceive_Timing * test = new TestSendReceive_Timing;
-  QObject::connect(test, SIGNAL(done()), &app, SLOT(quit()),Qt::QueuedConnection);
-  test->setupTest();
+  QObject::connect(test, SIGNAL(Done()), &app, SLOT(quit()),Qt::QueuedConnection);
+  test->SetupTest();
   //test.setupTest2();
  
 
-  QTimer::singleShot(220, test, SLOT(performTest()));
+  QTimer::singleShot(220, test, SLOT(PerformTest()));
   //QTimer::singleShot(220, &test, SLOT(listen()));
   int ret = app.exec();
   delete test;

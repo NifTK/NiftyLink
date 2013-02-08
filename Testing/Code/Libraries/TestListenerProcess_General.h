@@ -31,7 +31,7 @@
 #include "QsLog.h"
 #include "QsLogDest.h"
 
-#include "OIGTLListenerProcess.h"
+#include "NiftyLinkListenerProcess.h"
 
 #include <cstdlib>
 #include <cstdio>
@@ -43,20 +43,20 @@ class TestListenerProcess_General : public QObject
   Q_OBJECT
 
 signals:
-  void done();
+  void Done();
 
 public:
   TestListenerProcess_General(void);
   ~TestListenerProcess_General(void);
 
 public slots:
-  void setupTest();
-  void performTest();
-  void quitTest();
+  void SetupTest();
+  void PerformTest();
+  void QuitTest();
 
 private:
-  QString m_localhostname;
-  int m_testCounter;
-  int m_successCounter;
+  QString m_LocalHostname;
+  int     m_TestCounter;
+  int     m_SuccessCounter;
 };
 

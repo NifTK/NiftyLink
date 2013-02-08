@@ -29,7 +29,7 @@
 #include "igtlTransformMessage.h"
 #include "igtlMath.h"
 
-#include "OIGTLSocketObject.h"
+#include "NiftyLinkSocketObject.h"
 #include "TestMsgTypes_ConstrDestr.h"
 
 #include "QsLog.h"
@@ -51,10 +51,10 @@ int main(int argc, char **argv)
 
   std::cout <<"Initializing MessageTypes Constructor / Destructor test..\n";
   TestMsgTypes_ConstrDestr * test = new TestMsgTypes_ConstrDestr;
-  QObject::connect(test, SIGNAL(done()), &app, SLOT(quit()),Qt::QueuedConnection);
-  test->setupTest();
+  QObject::connect(test, SIGNAL(Done()), &app, SLOT(quit()),Qt::QueuedConnection);
+  test->SetupTest();
 
-  QTimer::singleShot(220, test, SLOT(performTest()));
+  QTimer::singleShot(220, test, SLOT(PerformTest()));
   //QTimer::singleShot(220, &test, SLOT(listen()));
   int ret = app.exec();
   delete test;

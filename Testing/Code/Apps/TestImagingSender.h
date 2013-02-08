@@ -16,7 +16,7 @@
 #include <QObject>
 #include <QtGui/QImage>
 #include <igtlTimeStamp.h>
-#include "OIGTLSocketObject.h"
+#include "NiftyLinkSocketObject.h"
 
 class TestImagingSender : public QObject {
 
@@ -47,7 +47,7 @@ private:
   void SendData(const int& numberOfIterations);
   void FinishUp();
 
-  OIGTLSocketObject m_Socket;
+  NiftyLinkSocketObject m_Socket;
   const QImage*     m_Image;
   const QString     m_HostName;
   const int         m_PortNumber;

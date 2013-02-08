@@ -9,8 +9,11 @@
 <Spaces>0</Spaces>
 <Indent>SPACE,2,true,true</Indent>
 <IfNDefDefine>__[NameOfClass]_[Extension]</IfNDefDefine>
-<NameOfClass>[NameOfClass]</NameOfClass>
-<Comments>/**, *, */,true,true,true</Comments>
+<NameOfClass>
+  <name>[NameOfClass]</name>
+  <prefix>NiftyLink</prefix>
+</NameOfClass>
+<Comments>/**, *, */,true,false,false</Comments>
 <EmptyLines>2</EmptyLines>
 <Template>[TNV]</Template>
 <Operator>

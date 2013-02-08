@@ -132,7 +132,7 @@ IF (NOT BUILD_SHARED_LIBS)
 ENDIF()
 
 OPTION(BUILD_TESTING "Build Unit tests in NiftyLink/Testing/Code" ON)
-OPTION(NIFTYLINK_OIGTLINK_DEV "Build the development version of OpenIGTLink" ON)
+OPTION(NIFTYLINK_OPENIGTLINK_DEV "Build the development version of OpenIGTLink" ON)
 OPTION(NIFTYLINK_CHECK_COVERAGE "Enable/Disable code coverage checking." OFF)
 
 ######################################################################
@@ -188,13 +188,13 @@ MARK_AS_ADVANCED(UNAME)
 ######################################################################
 # Sort out which version of OpenIGTLink we are using
 ######################################################################
-IF(NIFTYLINK_OIGTLINK_DEV)
-  SET(OIGTL_OPTIONS
+IF(NIFTYLINK_NiftyLinkINK_DEV)
+  SET(NiftyLink_OPTIONS
     GIT_REPOSITORY ${NIFTYLINK_OPENIGTLINK_LOCATION_DEV}
     GIT_TAG development
   )
 ELSE()
-  SET(OIGTL_OPTIONS
+  SET(NiftyLink_OPTIONS
     URL ${NIFTYLINK_OPENIGTLINK_LOCATION}
     URL_MD5 ${NIFTYLINK_OPENIGTLINK_MD5}
   )
@@ -272,7 +272,7 @@ FIND_PACKAGE(OpenIGTLink REQUIRED)
 IF(OpenIGTLink_FOUND)
   MESSAGE("Found OpenIGTLink")    
   INCLUDE(${OpenIGTLink_USE_FILE}) 
-  IF(NIFTYLINK_OIGTLINK_DEV)
+  IF(NIFTYLINK_NiftyLinkINK_DEV)
     mitkFunctionGetVersion(${OpenIGTLink_SOURCE_DIR} OPENIGTLINK)
     MESSAGE("OpenIGTLink git version=${OPENIGTLINK_REVISION_ID}")   
   ELSE()

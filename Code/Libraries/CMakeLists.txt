@@ -32,16 +32,16 @@ Common/NiftyLinkXMLBuilder.cpp
 Common/QsDebugOutput.cpp
 Common/QsLog.cpp
 Common/QsLogDest.cpp
-OIGTLMessage.cpp
-OIGTLProcessBase.cpp
-OIGTLSenderProcess.cpp
-OIGTLListenerProcess.cpp
-OIGTLSocketObject.cpp
-OIGTLTransformMessage.cpp
-OIGTLImageMessage.cpp
-OIGTLStatusMessage.cpp
-OIGTLStringMessage.cpp
-OIGTLTrackingDataMessage.cpp
+NiftyLinkMessage.cpp
+NiftyLinkProcessBase.cpp
+NiftyLinkSenderProcess.cpp
+NiftyLinkListenerProcess.cpp
+NiftyLinkSocketObject.cpp
+NiftyLinkTransformMessage.cpp
+NiftyLinkImageMessage.cpp
+NiftyLinkStatusMessage.cpp
+NiftyLinkStringMessage.cpp
+NiftyLinkTrackingDataMessage.cpp
 )
 
 #########################
@@ -49,10 +49,10 @@ OIGTLTrackingDataMessage.cpp
 #########################
 SET(niftylink_MOC_HDRS
 Common/NiftyLinkXMLBuilder.h
-OIGTLProcessBase.h
-OIGTLSenderProcess.h
-OIGTLListenerProcess.h
-OIGTLSocketObject.h
+NiftyLinkProcessBase.h
+NiftyLinkSenderProcess.h
+NiftyLinkListenerProcess.h
+NiftyLinkSocketObject.h
 )
 
 #########################
@@ -64,12 +64,12 @@ Common/NiftyLinkCommonWin32ExportHeader.h
 Common/QsDebugOutput.h
 Common/QsLog.h
 Common/QsLogDest.h
-OIGTLMessage.h
-OIGTLTransformMessage.h
-OIGTLImageMessage.h
-OIGTLTrackingDataMessage.h
-OIGTLStringMessage.h
-OIGTLStatusMessage.h
+NiftyLinkMessage.h
+NiftyLinkTransformMessage.h
+NiftyLinkImageMessage.h
+NiftyLinkTrackingDataMessage.h
+NiftyLinkStringMessage.h
+NiftyLinkStatusMessage.h
 )
 
 #########################

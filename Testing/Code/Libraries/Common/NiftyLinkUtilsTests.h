@@ -20,7 +20,7 @@ class UtilsTests: public QObject
   Q_OBJECT
 
 private slots:
-     void initTestCase();
-     void cleanupTestCase();
-     void timeStampSetGetDifferenceTest();
+     void InitTestCase();
+     void CleanupTestCase();
+     void TimeStampSetGetDifferenceTest();
  };

@@ -30,9 +30,8 @@
 #include "QsLog.h"
 #include "QsLogDest.h"
 
-#include "OIGTLSocketObject.h"
-#include "OIGTLTransformMessage.h"
-
+#include "NiftyLinkSocketObject.h"
+#include "NiftyLinkTransformMessage.h"
 
 #include <cstdlib>
 #include <cstdio>
@@ -44,23 +43,23 @@ class TestImgMsg_LoadSaveInit : public QObject
   Q_OBJECT
 
 signals:
-  void done();
+  void Done();
 
 public:
   TestImgMsg_LoadSaveInit(void);
   ~TestImgMsg_LoadSaveInit(void);
 
 public slots:
-  void setupTest(int argc, char **argv);
-  void performTest();
-  void quitTest();
+  void SetupTest(int argc, char **argv);
+  void PerformTest();
+  void QuitTest();
 
 private:
-  QString m_localhostname;
-  int m_testCounter;
-  int m_successCounter;
-  int m_argc;
-  char **m_argv;
+  QString m_LocalHostname;
+  int     m_TestCounter;
+  int     m_SuccessCounter;
+  int     m_Argc;
+  char ** m_Argv;
 
 };
 
