@@ -48,15 +48,15 @@ NiftyLinkSocketObject::~NiftyLinkSocketObject(void)
   if (m_Sender != NULL)
   {
     // Disconnect signals off sender
-    disconnect(m_Sender, SIGNAL(ConnectedToRemote()), this, SLOT(ConnectedToRemote()) );
-    disconnect(m_Sender, SIGNAL(CannotConnectToRemote()), this, SLOT(CannotConnectToRemote()) );
-    disconnect(m_Sender, SIGNAL(DisconnectedFromRemote(bool )), this, SLOT(DisconnectedFromRemote(bool )) );
-    disconnect(m_Sender, SIGNAL(SendingFinished()), this, SIGNAL(SendingFinished()) );
-    disconnect(this, SIGNAL(MessageToSend(NiftyLinkMessage::Pointer)), m_Sender, SLOT(SendMsg(NiftyLinkMessage::Pointer)));
+    disconnect(m_Sender, SIGNAL(ConnectedToRemoteSignal()), this, SLOT(OnConnectedToRemote()) );
+    disconnect(m_Sender, SIGNAL(CannotConnectToRemoteSignal()), this, SLOT(OnCannotConnectToRemote()) );
+    disconnect(m_Sender, SIGNAL(DisconnectedFromRemoteSignal(bool )), this, SLOT(OnDisconnectedFromRemote(bool )) );
+    disconnect(m_Sender, SIGNAL(SendingFinishedSignal()), this, SIGNAL(SendingFinishedSignal()) );
+    disconnect(this, SIGNAL(MessageToSendSignal(NiftyLinkMessage::Pointer)), m_Sender, SLOT(AddMsgToSendQueue(NiftyLinkMessage::Pointer)));
 
     disconnect(m_SenderHostThread, SIGNAL(EventloopStarted()), m_Sender, SLOT(StartProcess()));
-    disconnect(this, SIGNAL(ShutdownSender()), m_Sender, SLOT(StopProcess()));
-    disconnect(m_Sender, SIGNAL(ShutdownHostThread()), m_SenderHostThread, SLOT(quit()));
+    disconnect(this, SIGNAL(ShutdownSenderSignal()), m_Sender, SLOT(StopProcess()));
+    disconnect(m_Sender, SIGNAL(ShutdownHostThreadSignal()), m_SenderHostThread, SLOT(quit()));
 
 
     // Delete sender
@@ -67,13 +67,13 @@ NiftyLinkSocketObject::~NiftyLinkSocketObject(void)
   if (m_Listener != NULL)
   {
     // Disconnect signals off listener
-    disconnect(m_Listener, SIGNAL(ClientConnected()), this, SLOT(ClientConnected()) );
-    disconnect(m_Listener, SIGNAL(ClientDisconnected(bool )), this, SLOT(ClientDisconnected(bool )) );
-    disconnect(m_Listener, SIGNAL(MessageReceived(NiftyLinkMessage::Pointer)), this, SIGNAL(MessageReceived(NiftyLinkMessage::Pointer)) );
+    disconnect(m_Listener, SIGNAL(ClientConnectedSignal()), this, SLOT(OnClientConnected()) );
+    disconnect(m_Listener, SIGNAL(ClientDisconnectedSignal(bool )), this, SLOT(OnClientDisconnected(bool )) );
+    disconnect(m_Listener, SIGNAL(MessageReceivedSignal(NiftyLinkMessage::Pointer)), this, SIGNAL(MessageReceivedSignal(NiftyLinkMessage::Pointer)) );
 
     disconnect(m_ListenerHostThread, SIGNAL(EventloopStarted()), m_Listener, SLOT(StartProcess()));
-    disconnect(this, SIGNAL(ShutdownListener()), m_Listener, SLOT(StopProcess()));
-    disconnect(m_Listener, SIGNAL(ShutdownHostThread()), m_ListenerHostThread, SLOT(quit()));
+    disconnect(this, SIGNAL(ShutdownListenerSignal()), m_Listener, SLOT(StopProcess()));
+    disconnect(m_Listener, SIGNAL(ShutdownHostThreadSignal()), m_ListenerHostThread, SLOT(quit()));
 
     // Delete listener
     delete m_Listener;
@@ -123,26 +123,27 @@ void NiftyLinkSocketObject::InitThreads()
   bool ok;
 
   // Connect signals to slots
-  ok = connect(m_Sender, SIGNAL(ConnectedToRemote()), this, SLOT(ConnectedToRemote()));
-  ok &= connect(m_Sender, SIGNAL(CannotConnectToRemote()), this, SLOT(CannotConnectToRemote()));
-  ok &= connect(m_Sender, SIGNAL(DisconnectedFromRemote(bool )), this, SLOT(DisconnectedFromRemote(bool )));
-  ok &= connect(m_Sender, SIGNAL(SendingFinished()), this, SIGNAL(SendingFinished()));
-  ok &= connect(m_Sender, SIGNAL(MessageSent(unsigned long long )), this, SIGNAL(MessageSent(unsigned long long )));
-  ok &= connect(this, SIGNAL(MessageToSend(NiftyLinkMessage::Pointer)), m_Sender, SLOT(SendMsg(NiftyLinkMessage::Pointer)), Qt::DirectConnection);
+  ok = connect(m_Sender, SIGNAL(ConnectedToRemoteSignal()), this, SLOT(OnConnectedToRemote()));
+  ok &= connect(m_Sender, SIGNAL(CannotConnectToRemoteSignal()), this, SLOT(OnCannotConnectToRemote()));
+  ok &= connect(m_Sender, SIGNAL(DisconnectedFromRemoteSignal(bool )), this, SLOT(OnDisconnectedFromRemote(bool )));
+  ok &= connect(m_Sender, SIGNAL(SendingFinishedSignal()), this, SIGNAL(SendingFinishedSignal()));
+  ok &= connect(m_Sender, SIGNAL(MessageSentSignal(unsigned long long )), this, SIGNAL(MessageSentSignal(unsigned long long )));
+  ok &= connect(this, SIGNAL(MessageToSendSignal(NiftyLinkMessage::Pointer)), m_Sender, SLOT(AddMsgToSendQueue(NiftyLinkMessage::Pointer)), Qt::DirectConnection);
 
   ok &= connect(m_SenderHostThread, SIGNAL(EventloopStarted()), m_Sender, SLOT(StartProcess()));
-  ok &= connect(this, SIGNAL(ShutdownSender()), m_Sender, SLOT(StopProcess()));
-  ok &= connect(m_Sender, SIGNAL(ShutdownHostThread()), m_SenderHostThread, SLOT(quit()));
+  ok &= connect(this, SIGNAL(ShutdownSenderSignal()), m_Sender, SLOT(StopProcess()));
+  ok &= connect(m_Sender, SIGNAL(ShutdownHostThreadSignal()), m_SenderHostThread, SLOT(quit()));
 
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-  ok &= connect(m_Listener, SIGNAL(ClientConnected()), this, SLOT(ClientConnected()));
-  ok &= connect(m_Listener, SIGNAL(ClientDisconnected(bool )), this, SLOT(ClientDisconnected(bool )));
-  ok &= connect(m_Listener, SIGNAL(MessageReceived(NiftyLinkMessage::Pointer)), this, SIGNAL(MessageReceived(NiftyLinkMessage::Pointer)), Qt::DirectConnection);
+  ok &= connect(m_Listener, SIGNAL(ClientConnectedSignal()), this, SLOT(OnClientConnected()));
+  ok &= connect(m_Listener, SIGNAL(ClientDisconnectedSignal(bool )), this, SLOT(OnClientDisconnected(bool )));
+  ok &= connect(m_Listener, SIGNAL(MessageReceivedSignal(NiftyLinkMessage::Pointer)), 
+                this, SIGNAL(MessageReceivedSignal(NiftyLinkMessage::Pointer)), Qt::DirectConnection);
 
   ok &= connect(m_ListenerHostThread, SIGNAL(EventloopStarted()), m_Listener, SLOT(StartProcess()));
-  ok &= connect(this, SIGNAL(ShutdownListener()), m_Listener, SLOT(StopProcess()));
-  ok &= connect(m_Listener, SIGNAL(ShutdownHostThread()), m_ListenerHostThread, SLOT(quit()));
+  ok &= connect(this, SIGNAL(ShutdownListenerSignal()), m_Listener, SLOT(StopProcess()));
+  ok &= connect(m_Listener, SIGNAL(ShutdownHostThreadSignal()), m_ListenerHostThread, SLOT(quit()));
 
   // Set the flag
   if (m_Mutex != NULL && m_Sender != NULL && m_Listener != NULL && ok)
@@ -290,7 +291,7 @@ void NiftyLinkSocketObject::CloseSocket(void)
   // Shuts down the sender thread
   if (m_Sender != NULL)
   {
-    emit ShutdownSender();
+    emit ShutdownSenderSignal();
     QCoreApplication::processEvents();
 
     while (m_Sender->IsActive())
@@ -300,7 +301,7 @@ void NiftyLinkSocketObject::CloseSocket(void)
   // Shut down the listener thread
   if (m_Listener != NULL)
   {
-    emit ShutdownListener();
+    emit ShutdownListenerSignal();
     QCoreApplication::processEvents();
 
     while (m_Listener->IsActive())
@@ -366,7 +367,8 @@ void NiftyLinkSocketObject::SendMessage(NiftyLinkMessage::Pointer msg)
   // (otherwise messages will pile up and use up memory)
   if (m_Sender != NULL && msg.operator !=(NULL) && (m_ClientConnected || m_ConnectedToRemote) )
   {
-    emit MessageToSend(msg);
+    //m_Sender->AddMsgToSendQueue(msg);
+    emit MessageToSendSignal(msg);
     QCoreApplication::processEvents();
   }
 }
@@ -377,7 +379,7 @@ void NiftyLinkSocketObject::SendMessage(NiftyLinkMessage::Pointer msg)
 
 
 //-----------------------------------------------------------------------------
-void NiftyLinkSocketObject::ConnectedToRemote(void)
+void NiftyLinkSocketObject::OnConnectedToRemote(void)
 {
   //Sender established connection to remote host, need to set up listener on socket
   if (m_Sender != NULL && m_Sender->IsInitialized())
@@ -399,7 +401,7 @@ void NiftyLinkSocketObject::ConnectedToRemote(void)
 
 
 //-----------------------------------------------------------------------------
-void NiftyLinkSocketObject::CannotConnectToRemote(void)
+void NiftyLinkSocketObject::OnCannotConnectToRemote(void)
 {
   //Could not establish connection to remote host
   m_ConnectedToRemote = false;
@@ -413,7 +415,7 @@ void NiftyLinkSocketObject::CannotConnectToRemote(void)
 
 
 //-----------------------------------------------------------------------------
-void NiftyLinkSocketObject::DisconnectedFromRemote(bool onPort)
+void NiftyLinkSocketObject::OnDisconnectedFromRemote(bool onPort)
 {
   // We were successfully connected to a remote host (onPort = true) but the the connection lost
   // Need to stop the sender thread, and also the listener which was listening on the same socket
@@ -421,10 +423,10 @@ void NiftyLinkSocketObject::DisconnectedFromRemote(bool onPort)
   if (onPort)
   {
     if (m_Sender != NULL)
-      emit ShutdownSender();
+      emit ShutdownSenderSignal();
 
     if (m_Listener != NULL)
-      emit ShutdownListener();
+      emit ShutdownListenerSignal();
 
     emit LostConnectionToRemoteSignal();
 
@@ -434,7 +436,7 @@ void NiftyLinkSocketObject::DisconnectedFromRemote(bool onPort)
   else
   {
     if (m_Sender != NULL)
-      emit ShutdownSender();
+      emit ShutdownSenderSignal();
 
     QCoreApplication::processEvents();
   }
@@ -445,7 +447,7 @@ void NiftyLinkSocketObject::DisconnectedFromRemote(bool onPort)
 
 
 //-----------------------------------------------------------------------------
-void NiftyLinkSocketObject::ClientConnected(void)
+void NiftyLinkSocketObject::OnClientConnected(void)
 {
   // A new client has connected to the local listener
   if (m_Listener != NULL && m_Listener->IsInitialized())
@@ -469,13 +471,13 @@ void NiftyLinkSocketObject::ClientConnected(void)
 
 
 //-----------------------------------------------------------------------------
-void NiftyLinkSocketObject::ClientDisconnected(bool onPort)
+void NiftyLinkSocketObject::OnClientDisconnected(bool onPort)
 {
   if (onPort)
   {
     if (m_Sender != NULL)
     {
-      emit ShutdownSender();
+      emit ShutdownSenderSignal();
       QCoreApplication::processEvents();
     }
 
@@ -495,7 +497,7 @@ void NiftyLinkSocketObject::CatchMsgSignal(NiftyLinkMessage::Pointer msg)
   //QLOG_INFO() <<objectName() <<": " <<"Message signal received";
   if (msg.operator !=(NULL))
   {
-    emit MessageReceived(msg);
+    emit MessageReceivedSignal(msg);
   }
 }
 

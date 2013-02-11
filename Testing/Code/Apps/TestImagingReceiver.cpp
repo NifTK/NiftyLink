@@ -28,7 +28,7 @@ TestImagingReceiver::TestImagingReceiver(const int& portNumber, const int& numbe
 {
   connect(&m_Socket, SIGNAL(ClientConnectedSignal()), this, SLOT(OnClientConnected()));
   connect(&m_Socket, SIGNAL(ClientDisconnectedSignal()), this, SLOT(OnClientDisconnected()));
-  connect(&m_Socket, SIGNAL(MessageReceived(NiftyLinkMessage::Pointer)), this, SLOT(OnMessageReceived(NiftyLinkMessage::Pointer)));
+  connect(&m_Socket, SIGNAL(MessageReceivedSignal(NiftyLinkMessage::Pointer)), this, SLOT(OnMessageReceived(NiftyLinkMessage::Pointer)));
 }
 
 

@@ -37,19 +37,19 @@ class NIFTYLINKCOMMON_WINEXPORT NiftyLinkSenderProcess : public NiftyLinkProcess
 signals:
 
   /// \brief This signal is emitted when successfully connected to a remote host.
-  void ConnectedToRemote(void);
+  void ConnectedToRemoteSignal(void);
 
   /// \brief This signal is emitted when the connection to the remote host cannot be established.
-  void CannotConnectToRemote();
+  void CannotConnectToRemoteSignal(void);
 
   /// \brief This signal is emitted when the client gets disconnected from the local host.
-  void DisconnectedFromRemote(bool onPort);
+  void DisconnectedFromRemoteSignal(bool onPort);
 
   /// \brief This signal is emitted when the client has sent all messages from the message queue.
-  void SendingFinished(void);
+  void SendingFinishedSignal(void);
 
   /// \brief This signal is emitted when the client has sent all messages from the message queue.
-  void MessageSent(unsigned long long timestamp);
+  void MessageSentSignal(unsigned long long timestamp);
 
 protected:
 
@@ -74,7 +74,7 @@ protected:
 protected slots:
 
   /// \brief This slot catches the Qt signal with the messages to be sent, appends the message to the message queue and starts the Process by calling start().
-  virtual void SendMsg(NiftyLinkMessage::Pointer);
+  virtual void AddMsgToSendQueue(NiftyLinkMessage::Pointer);
 
   /// \brief This slot catches the start request signal, checks if the Process was initialized, and it starts the main processing loop if it was.
   virtual void StartProcess();
@@ -99,7 +99,7 @@ private:
   virtual bool Activate(void);
 
 private slots:
-  void KeepAliveTimeout(void);
+  void OnKeepAliveTimeout(void);
 
 private:
   igtl::ClientSocket::Pointer      m_ClientSocket;

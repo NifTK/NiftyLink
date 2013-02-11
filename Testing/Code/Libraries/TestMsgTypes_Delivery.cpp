@@ -66,13 +66,13 @@ void TestMsgTypes_Delivery::StartTest()
   //Instanciate socket objects
   std::cout <<++m_TestCounter <<". Connecting Signals and Slots..";
   bool ok = true;
-  ok &= connect(m_Socket1, SIGNAL(messageReceived(NiftyLinkMessage::Pointer)), this, SLOT(CatchMessage(NiftyLinkMessage::Pointer )) );
+  ok &= connect(m_Socket1, SIGNAL(MessageReceivedSignal(NiftyLinkMessage::Pointer)), this, SLOT(CatchMessage(NiftyLinkMessage::Pointer )) );
   //ok &= connect(m_Socket1, SIGNAL(messageSent(unsigned long long )), this, SLOT(RecordSendTimestamps(unsigned long long )) );
   ok &= connect(m_Socket1, SIGNAL(ClientConnectedSignal()), this, SLOT(ClientConnected()) ); 
 
-  ok &= connect(m_Socket2, SIGNAL(messageReceived(NiftyLinkMessage::Pointer)), this, SLOT(CatchMessage(NiftyLinkMessage::Pointer )) );
+  ok &= connect(m_Socket2, SIGNAL(MessageReceivedSignal(NiftyLinkMessage::Pointer)), this, SLOT(CatchMessage(NiftyLinkMessage::Pointer )) );
   //ok &= connect(m_Socket2, SIGNAL(messageSent(unsigned long long )), this, SLOT(RecordSendTimestamps(unsigned long long )) );
-  ok &= connect(m_Socket2, SIGNAL(connectedToRemoteSignal()), this, SLOT(ConnectedToRemote()) ); 
+  ok &= connect(m_Socket2, SIGNAL(ConnectedToRemoteSignal()), this, SLOT(ConnectedToRemote()) ); 
   if (ok)
     { std::cout <<" OK\n"; m_SuccessCounter++; }
   else

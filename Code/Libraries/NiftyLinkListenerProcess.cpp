@@ -113,8 +113,8 @@ void NiftyLinkListenerProcess::StartProcess()
     QLOG_INFO() <<objectName() <<": " <<"Started listening on socket" <<"\n";
 
   // Trigger the execution of the main processing loop
-  connect(this, SIGNAL(StartWorking()), this, SLOT(DoProcessing()));
-  emit StartWorking();
+  connect(this, SIGNAL(StartWorkingSignal()), this, SLOT(DoProcessing()));
+  emit StartWorkingSignal();
   QCoreApplication::processEvents();
 }
 
@@ -198,7 +198,7 @@ void NiftyLinkListenerProcess::TerminateProcess()
   else
     QLOG_INFO() <<objectName() <<"CloseServerSocket succeeded: " <<err_s;
 
-  disconnect(this, SIGNAL(StartWorking()), this, SLOT(DoProcessing()));
+  disconnect(this, SIGNAL(StartWorkingSignal()), this, SLOT(DoProcessing()));
 
   m_ListeningOnPort = false;
   m_Port = -1;
@@ -206,7 +206,7 @@ void NiftyLinkListenerProcess::TerminateProcess()
   m_Active = false;
 
   //exit(0);
-  emit ShutdownHostThread();
+  emit ShutdownHostThreadSignal();
 }
 
 
@@ -249,7 +249,7 @@ bool NiftyLinkListenerProcess::Activate(void)
 void NiftyLinkListenerProcess::DoProcessing(void)
 {
   m_TimeOuter = new QTimer();
-  connect(m_TimeOuter, SIGNAL(timeout()), this, SLOT(SocketTimeout()));
+  connect(m_TimeOuter, SIGNAL(timeout()), this, SLOT(OnSocketTimeout()));
 
   //QCoreApplication::processEvents();
 
@@ -286,7 +286,6 @@ void NiftyLinkListenerProcess::ListenOnSocket(void)
     {
       try
       {
-        QLOG_DEBUG() << "NiftyLinkListenerProcess listening with socket on port " << m_Port << ", but waiting for " << sleepInterval << " ms\n";
         dynamic_cast<QThreadEx *>(QThread::currentThread())->MsleepEx(sleepInterval);
       }
       catch (std::exception &e)
@@ -299,6 +298,7 @@ void NiftyLinkListenerProcess::ListenOnSocket(void)
     else
       ReceiveMessage();
   }
+
 }
 
 
@@ -334,7 +334,7 @@ void NiftyLinkListenerProcess::ListenOnPort(void)
 
         //qDebug() <<m_TimeOuter->isActive();
 
-        emit ClientConnected();
+        emit ClientConnectedSignal();
         QCoreApplication::processEvents();
         m_ClientConnected = true;
       }
@@ -352,7 +352,6 @@ void NiftyLinkListenerProcess::ListenOnPort(void)
         {
           try
           {
-            QLOG_DEBUG() << "NiftyLinkListenerProcess listening on port " << m_Port << ", but waiting for " << sleepInterval << " ms\n";
             dynamic_cast<QThreadEx *>(QThread::currentThread())->MsleepEx(sleepInterval);
           }
           catch (std::exception &e)
@@ -361,9 +360,9 @@ void NiftyLinkListenerProcess::ListenOnPort(void)
           }
         }
         else if (bytesPending == 2)
-          m_TimeOuter->start(2000); //Keepalive operation, let's reset the timeout clock
+          m_TimeOuter->start(2000);  //Keepalive operation, let's reset the timeout clock
         else
-          ReceiveMessage(); //Message arrived, need to copy it from the socket
+          ReceiveMessage();         //Message arrived, need to copy it from the socket
       }
     }
   }
@@ -716,7 +715,7 @@ bool NiftyLinkListenerProcess::ReceiveMessage()
   //QLOG_INFO() <<objectName() <<": " << "Message successfully recieved: " <<msg->GetMessageType();
   m_MessageCounter++;
 
-  emit MessageReceived(msg);
+  emit MessageReceivedSignal(msg);
   QCoreApplication::processEvents();
 
   return true;
@@ -738,14 +737,14 @@ int NiftyLinkListenerProcess::GetListenInterval(void)
 
 
 //-----------------------------------------------------------------------------
-void NiftyLinkListenerProcess::SocketTimeout(void)
+void NiftyLinkListenerProcess::OnSocketTimeout(void)
 {
   QLOG_INFO() <<objectName() <<": " <<"Client disconnected.. terminating socket." <<"\n";
 
   if (m_ListeningOnPort)
-    emit ClientConnected(true);
+    emit ClientDisconnectedSignal(true);
   else
-    emit ClientConnected(false);
+    emit ClientDisconnectedSignal(false);
 
   QCoreApplication::processEvents();
 

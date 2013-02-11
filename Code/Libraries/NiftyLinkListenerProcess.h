@@ -45,13 +45,13 @@ class NIFTYLINKCOMMON_WINEXPORT NiftyLinkListenerProcess : public NiftyLinkProce
 signals:
 
   /// \brief This signal is emitted when a client connects to the local server.
-  void ClientConnected(void);
+  void ClientConnectedSignal(void);
 
   /// \brief This signal is emitted when a client disconnects from the local server.
-  void ClientConnected(bool onPort);
+  void ClientDisconnectedSignal(bool onPort);
 
   /// \brief This signal is emitted when a new message is received from the remote peer.
-  void MessageReceived(NiftyLinkMessage::Pointer msg);
+  void MessageReceivedSignal(NiftyLinkMessage::Pointer msg);
 
 protected:
 
@@ -110,7 +110,7 @@ private:
 private slots:
 
   /// \brief This slot is triggered when the socket timeouts: eg there was no activity for the set period of time (m_socketTimeout)
-  virtual void SocketTimeout(void);
+  virtual void OnSocketTimeout(void);
   //void debugTimeoutSignal() { qDebug() <<"Timer timout signal received "; }
 
 private:

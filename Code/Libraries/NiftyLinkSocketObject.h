@@ -51,16 +51,16 @@ class NIFTYLINKCOMMON_WINEXPORT NiftyLinkSocketObject : public QObject
 signals:
 
   /// \brief This signal is emitted when new data has arrived from the remote peer, caught by the listener thread.
-  void MessageReceived(NiftyLinkMessage::Pointer);
+  void MessageReceivedSignal(NiftyLinkMessage::Pointer);
 
   /// \brief This signal is emitted when a message needs to be sent through the sender thread.
-  void MessageToSend(NiftyLinkMessage::Pointer);
+  void MessageToSendSignal(NiftyLinkMessage::Pointer);
 
   /// \brief This signal is emitted when all messages were sent by the sender thread (message queue is empty).
-  void SendingFinished();
+  void SendingFinishedSignal();
 
   /// \brief This signal is emitted when the sender finished sending the last message, the parameter is the send timestamp
-  void MessageSent(unsigned long long timestamp);
+  void MessageSentSignal(unsigned long long timestamp);
 
   // These signals are to Update the outside world about the current connection status
 
@@ -80,10 +80,10 @@ signals:
   void ClientDisconnectedSignal(void);
 
   /// \brief This signal is emmitted when the CloseSocket method has successfully closed down the listener thread.
-  void ShutdownListener();
+  void ShutdownListenerSignal();
 
   /// \brief This signal is emmitted when the CloseSocket method has successfully closed down the sender thread.
-  void ShutdownSender();
+  void ShutdownSenderSignal();
 
 public:
 
@@ -161,19 +161,19 @@ private:
 private slots:
 
   /// \brief This slot is triggered when the sender connects to a remote host
-  void ConnectedToRemote(void);
+  void OnConnectedToRemote(void);
 
   /// \brief This slot is triggered when the connection to a remote host cannot be established
-  void CannotConnectToRemote(void);
+  void OnCannotConnectToRemote(void);
 
   /// \brief This slot is triggered when the remote host terminates the connection
-  void DisconnectedFromRemote(bool onPort);
+  void OnDisconnectedFromRemote(bool onPort);
 
   /// \brief This slot is triggered when a client connects to the local listener
-  void ClientConnected(void);
+  void OnClientConnected(void);
 
   /// \brief This slot is triggered when a client disconnects from the local server
-  void ClientDisconnected(bool onPort);
+  void OnClientDisconnected(bool onPort);
 
 private:
 

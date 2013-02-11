@@ -54,16 +54,16 @@ class NiftyLinkProcessBase : public QObject
 signals:
 
   /// \brief This signal is emitted when there was some acitivty on the socket, so the timeout timer needs to be reset
-  void RestartTimer(int msec);
+  void RestartTimerSignal(int msec);
 
   /// \brief This signal is to stop the timeout timer (used on shutdown)
-  void StopTimer(void);
+  void StopTimerSignal(void);
 
   /// \brief This internal signal is to start the main processing loop after startProcess() finished initializing
-  void StartWorking(void);
+  void StartWorkingSignal(void);
 
   /// \brief This signal is emitted when the process has fully terminated, so it is OK to terminate the hosting thread as well
-  void ShutdownHostThread(void);
+  void ShutdownHostThreadSignal(void);
 
 public:
 
@@ -83,8 +83,8 @@ protected:
   /// and parameters are correctly initialized. Process specific functionalty are defined in the derived classes.
   virtual bool Activate(void) { return false; }
 
-  /// \brief Function base to send a message. Only implemented in NiftyLinkSenderProcess.
-  virtual void SendMsg(NiftyLinkMessage::Pointer) {}
+  /// \brief Function base to add a message to the send queue. Only implemented in NiftyLinkSenderProcess.
+  virtual void AddMsgToSendQueue(NiftyLinkMessage::Pointer) {}
 
   /// \brief This function returns the actual socket pointer. This is necessary in order to set up a two communication chanel:
   /// to initiate a sender Process on a socket created by a listener Process and vica versa.

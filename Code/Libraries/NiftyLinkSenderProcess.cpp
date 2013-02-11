@@ -123,8 +123,8 @@ void NiftyLinkSenderProcess::StartProcess(void)
   m_Active  = true;  //sets the indicator to active
 
   // Trigger the execution of the main processing loop
-  connect(this, SIGNAL(StartWorking()), this, SLOT(DoProcessing()));
-  emit StartWorking();
+  connect(this, SIGNAL(StartWorkingSignal()), this, SLOT(DoProcessing()));
+  emit StartWorkingSignal();
   QCoreApplication::processEvents();
 }
 
@@ -178,7 +178,7 @@ void NiftyLinkSenderProcess::TerminateProcess()
   m_SendingOnSocket = false;
   m_SendQue.clear();
 
-  disconnect(this, SIGNAL(StartWorking()), this, SLOT(DoProcessing()));
+  disconnect(this, SIGNAL(StartWorkingSignal()), this, SLOT(DoProcessing()));
 
   m_Port = -1;
   m_Hostname.clear();
@@ -187,7 +187,7 @@ void NiftyLinkSenderProcess::TerminateProcess()
 
   m_Active = false;    //sets the active flag to false as the process has fully stopped
 
-  emit ShutdownHostThread();
+  emit ShutdownHostThreadSignal();
 }
 
 
@@ -233,7 +233,7 @@ bool NiftyLinkSenderProcess::Activate(void)
 
 
 //-----------------------------------------------------------------------------
-void NiftyLinkSenderProcess::KeepAliveTimeout(void)
+void NiftyLinkSenderProcess::OnKeepAliveTimeout(void)
 {
   int sleepInterval = m_KeepAliveTimeout/2;
 
@@ -270,9 +270,9 @@ void NiftyLinkSenderProcess::KeepAliveTimeout(void)
       QLOG_ERROR() << objectName() <<": " <<"Cannot send keep-alive message: Probably disconnected from remote host" <<"\n";
 
       if (m_SendingOnSocket)
-        emit DisconnectedFromRemote(false);
+        emit DisconnectedFromRemoteSignal(false);
       else
-        emit DisconnectedFromRemote(true);
+        emit DisconnectedFromRemoteSignal(true);
 
       QCoreApplication::processEvents();
       return;
@@ -299,11 +299,13 @@ void NiftyLinkSenderProcess::DoProcessing(void)
 
   if (m_TimeOuter != NULL)
   {
+    disconnect(m_TimeOuter, SIGNAL(timeout()), this, SLOT(OnKeepAliveTimeout()));
     delete m_TimeOuter;
   }
+
   m_TimeOuter = new QTimer(this);
   m_TimeOuter->setInterval(m_KeepAliveTimeout);
-  connect(m_TimeOuter, SIGNAL(timeout()), this, SLOT(KeepAliveTimeout()));
+  connect(m_TimeOuter, SIGNAL(timeout()), this, SLOT(OnKeepAliveTimeout()));
 
   // Try to connect to remote
   if (!m_SendingOnSocket && m_ExtSocket.IsNull())
@@ -313,7 +315,7 @@ void NiftyLinkSenderProcess::DoProcessing(void)
     {
       QLOG_ERROR() << objectName() <<": " << "Cannot create a sender socket, could not connect to server: " <<m_Hostname.c_str() << endl;
 
-      emit CannotConnectToRemote();
+      emit CannotConnectToRemoteSignal();
       QCoreApplication::processEvents();
 
       m_Running = false;
@@ -328,7 +330,7 @@ void NiftyLinkSenderProcess::DoProcessing(void)
 
       m_TimeOuter->start();
 
-      emit ConnectedToRemote();
+      emit ConnectedToRemoteSignal();
       QCoreApplication::processEvents();
     }
   }
@@ -336,6 +338,7 @@ void NiftyLinkSenderProcess::DoProcessing(void)
   // Start processing the message queue
   while (m_Running == true)
   {
+    // Check the queue status and act accordingly
     if (m_SendQue.isEmpty())
     {
       QThreadEx * p = NULL;
@@ -381,9 +384,9 @@ void NiftyLinkSenderProcess::DoProcessing(void)
         if (ret <=0)
         {
           if (m_SendingOnSocket)
-            emit DisconnectedFromRemote(false);
+            emit DisconnectedFromRemoteSignal(false);
           else
-            emit DisconnectedFromRemote(true);
+            emit DisconnectedFromRemoteSignal(true);
 
           QCoreApplication::processEvents();
 
@@ -405,10 +408,10 @@ void NiftyLinkSenderProcess::DoProcessing(void)
                     << ", created=" << GetTimeInNanoSeconds(msg->GetTimeCreated()) << ", sent=" << GetTimeInNanoSeconds(ts) << ", lag="
                     << ((double)(GetTimeInNanoSeconds(ts)) - (double)(GetTimeInNanoSeconds(msg->GetTimeCreated())))/1000000000.0 << "(secs)";
 
-        emit MessageSent(GetTimeInNanoSeconds(ts));
+        emit MessageSentSignal(GetTimeInNanoSeconds(ts));
         m_MessageCounter++;
 
-        // Reset the timer.
+        // Reset the timer - no need for keepalive as we successfully sent a message.
         m_TimeOuter->start(m_KeepAliveTimeout);
       }
       else
@@ -428,12 +431,13 @@ void NiftyLinkSenderProcess::DoProcessing(void)
 
   // All messages were sent
   if (m_SendQue.isEmpty())
-    emit SendingFinished();
+    emit SendingFinishedSignal();
 
   QCoreApplication::processEvents();
 
   m_Running = false;
   m_TimeOuter->stop();
+  disconnect(m_TimeOuter, SIGNAL(timeout()), this, SLOT(OnKeepAliveTimeout()));
   delete m_TimeOuter;
   m_TimeOuter = NULL;
 
@@ -442,7 +446,7 @@ void NiftyLinkSenderProcess::DoProcessing(void)
 
 
 //-----------------------------------------------------------------------------
-void NiftyLinkSenderProcess::SendMsg(NiftyLinkMessage::Pointer msg)
+void NiftyLinkSenderProcess::AddMsgToSendQueue(NiftyLinkMessage::Pointer msg)
 {
   // Append message to the sendqueue
   m_QueueMutex.lock();

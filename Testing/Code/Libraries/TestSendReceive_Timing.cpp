@@ -51,10 +51,10 @@ void TestSendReceive_Timing::SetupTest()
   m_Socket2 = new NiftyLinkSocketObject();
   m_Socket2->setObjectName("Socket2");
 
-  connect(m_Socket1, SIGNAL(messageReceived(NiftyLinkMessage::Pointer)), this, SLOT(CatchMessage(NiftyLinkMessage::Pointer )) );
-  connect(m_Socket1, SIGNAL(messageSent(unsigned long long )), this, SLOT(RecordSendTimestamps(unsigned long long )) );
-  connect(m_Socket2, SIGNAL(messageReceived(NiftyLinkMessage::Pointer)), this, SLOT(CatchMessage(NiftyLinkMessage::Pointer )) );
-  connect(m_Socket2, SIGNAL(messageSent(unsigned long long )), this, SLOT(RecordSendTimestamps(unsigned long long )) );
+  connect(m_Socket1, SIGNAL(MessageReceivedSignal(NiftyLinkMessage::Pointer)), this, SLOT(CatchMessage(NiftyLinkMessage::Pointer )) );
+  connect(m_Socket1, SIGNAL(MessageSentSignal(unsigned long long )), this, SLOT(RecordSendTimestamps(unsigned long long )) );
+  connect(m_Socket2, SIGNAL(MessageReceivedSignal(NiftyLinkMessage::Pointer)), this, SLOT(CatchMessage(NiftyLinkMessage::Pointer )) );
+  connect(m_Socket2, SIGNAL(MessageSentSignal(unsigned long long )), this, SLOT(RecordSendTimestamps(unsigned long long )) );
 
   #if defined(WIN32) || defined(_WIN32) || defined(_WIN64)
     m_Socket1->InitializeWinTimers();
@@ -340,7 +340,7 @@ void TestSendReceive_Timing::CatchMessage(NiftyLinkMessage::Pointer msg)
 
   if (msg.operator!=(NULL))
   {
-    //QLOG_INFO() <<m_Received+1 <<"of" <<m_NumOfMsg <<"message received: " <<msg->GetHostName() <<":" <<msg->GetPort() <<" " <<msg->GetMessageType();
+    QLOG_INFO() <<m_Received+1 <<"of" <<m_NumOfMsg <<"message received: " <<msg->GetHostName() <<":" <<msg->GetPort() <<" " <<msg->GetMessageType();
 
     igtl::MessageBase::Pointer message;
     msg->GetMessagePointer(message);
@@ -409,7 +409,7 @@ void TestSendReceive_Timing::CatchMessage(NiftyLinkMessage::Pointer msg)
   else
     m_Socket2Messages.append(msg);
 
-  //std::cerr <<"\nNum of messages received: " <<m_Received <<std::endl;
+  std::cerr <<"\nNum of messages received: " <<m_Received <<std::endl;
 
   //if (m_Received >= m_NumOfMsg)
   if (m_Received >= 2*m_NumOfMsg)
@@ -433,6 +433,7 @@ void TestSendReceive_Timing::SendResponse()
   for (int i = 0; i< m_NumOfMsg; i++)
   {
     m_Socket1->SendMessage(m_MsgToSend);
+   std::cout <<"Sending response message " <<m_NumOfMsg <<std::endl;
     //igtl::Sleep(250);
   }
 }

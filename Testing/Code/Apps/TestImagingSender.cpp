@@ -35,10 +35,10 @@ TestImagingSender::TestImagingSender(const QImage* image,
   m_TimePackingMessage = 0;
   m_NumberSent = 0;
 
-  connect(&m_Socket, SIGNAL(MessageSent(unsigned long long)), this, SLOT(OnMessageSent(unsigned long long)));
+  connect(&m_Socket, SIGNAL(MessageSentSignal(unsigned long long)), this, SLOT(OnMessageSent(unsigned long long)));
   connect(&m_Socket, SIGNAL(ConnectedToRemoteSignal()), this, SLOT(OnConnectToRemote()));
   connect(&m_Socket, SIGNAL(LostConnectionToRemoteSignal()), this, SLOT(OnLostConnectionToRemote()));
-  connect(&m_Socket, SIGNAL(ShutdownSender()), this, SLOT(OnShutdownSender()));
+  connect(&m_Socket, SIGNAL(ShutdownSenderSignal()), this, SLOT(OnShutdownSender()));
 }
 
 
