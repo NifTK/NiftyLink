@@ -274,29 +274,43 @@ void NiftyLinkListenerProcess::DoProcessing(void)
 //-----------------------------------------------------------------------------
 void NiftyLinkListenerProcess::ListenOnSocket(void)
 {
-  int sleepInterval = 100; // milliseconds
+  int sleepInterval = 20; // milliseconds
 
   while (m_Running == true && m_ClientConnected == true)
   {
     QCoreApplication::processEvents();
 
+    m_Mutex->lock();
     int bytesPending = m_ExtSocket->CheckPendingData();
+    m_Mutex->unlock();
+    //QLOG_INFO() <<objectName() <<"Bytes received: " <<bytesPending;
 
-    if (bytesPending <= 0)
+    // Either there's nothing to read or it's a keepalive
+    if (bytesPending <= 2)
     {
+      // Handle keepalive - restart the timout clock
+      if (bytesPending == 2)
+      {
+        QLOG_DEBUG() <<objectName() <<"Keepalive received, restarting the timeouter\n";
+        m_TimeOuter->start(2000);
+      }
+
+      // Sleep for a bit to let some more data arrive to the socket
       try
       {
+        QLOG_DEBUG() <<objectName() <<" listening with socket on port " << m_Port << ", but waiting for " << sleepInterval << " ms\n";
         dynamic_cast<QThreadEx *>(QThread::currentThread())->MsleepEx(sleepInterval);
       }
       catch (std::exception &e)
       {
         qDebug() <<"Type cast error.Always run this process from QThreadEx. Exception: " <<e.what();
       }
+
+      continue;
     }
-    else if (bytesPending == 2)
-      m_TimeOuter->start(2000);
-    else
-      ReceiveMessage();
+
+    // There's a lot of data, so let's read it out
+    ReceiveMessage();
   }
 
 }
@@ -305,7 +319,7 @@ void NiftyLinkListenerProcess::ListenOnSocket(void)
 //-----------------------------------------------------------------------------
 void NiftyLinkListenerProcess::ListenOnPort(void)
 {
-  int sleepInterval = 100; // milliseconds
+  int sleepInterval = 20; // milliseconds
   igtl::Socket::Pointer socket;
 
   while (m_Running == true)
@@ -348,21 +362,35 @@ void NiftyLinkListenerProcess::ListenOnPort(void)
         int bytesPending = m_ExtSocket->CheckPendingData();
         m_Mutex->unlock();
 
-        if (bytesPending <= 0)
+        //QLOG_INFO() <<objectName() <<"Bytes received: " <<bytesPending;
+
+        // Either there's nothing to read or it's a keepalive
+        if (bytesPending <= 2)
         {
+          // Handle keepalive - restart the timout clock
+          if (bytesPending == 2)
+          {
+            QLOG_DEBUG() <<objectName() <<"Keepalive received, restarting the timeouter\n";
+            m_TimeOuter->start(2000);
+          }
+
+          // Sleep for a bit to let some more data arrive to the socket
           try
           {
+            QLOG_DEBUG() <<objectName() <<" listening with socket on port " << m_Port << ", but waiting for " << sleepInterval << " ms\n";
             dynamic_cast<QThreadEx *>(QThread::currentThread())->MsleepEx(sleepInterval);
           }
           catch (std::exception &e)
           {
             qDebug() <<"Type cast error.Always run this process from QThreadEx. Exception: " <<e.what();
           }
+
+          continue;
         }
-        else if (bytesPending == 2)
-          m_TimeOuter->start(2000);  //Keepalive operation, let's reset the timeout clock
-        else
-          ReceiveMessage();         //Message arrived, need to copy it from the socket
+
+        // There's a lot of data, so let's read it out
+        ReceiveMessage();
+
       }
     }
   }

@@ -338,6 +338,10 @@ void NiftyLinkSenderProcess::DoProcessing(void)
   // Start processing the message queue
   while (m_Running == true)
   {
+    // Need to make sure that we started the timer when sending on Socket
+    if (!m_TimeOuter->isActive())
+      m_TimeOuter->start();
+
     // Check the queue status and act accordingly
     if (m_SendQue.isEmpty())
     {
