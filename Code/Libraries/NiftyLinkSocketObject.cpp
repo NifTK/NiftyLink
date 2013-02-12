@@ -52,7 +52,8 @@ NiftyLinkSocketObject::~NiftyLinkSocketObject(void)
     disconnect(m_Sender, SIGNAL(CannotConnectToRemoteSignal()), this, SLOT(OnCannotConnectToRemote()) );
     disconnect(m_Sender, SIGNAL(DisconnectedFromRemoteSignal(bool )), this, SLOT(OnDisconnectedFromRemote(bool )) );
     disconnect(m_Sender, SIGNAL(SendingFinishedSignal()), this, SIGNAL(SendingFinishedSignal()) );
-    //disconnect(this, SIGNAL(MessageToSendSignal(NiftyLinkMessage::Pointer)), m_Sender, SLOT(AddMsgToSendQueue(NiftyLinkMessage::Pointer)));
+    disconnect(m_Sender, SIGNAL(MessageSentSignal(unsigned long long )), this, SIGNAL(MessageSentSignal(unsigned long long )));
+    disconnect(this, SIGNAL(MessageToSendSignal(NiftyLinkMessage::Pointer)), m_Sender, SLOT(AddMsgToSendQueue(NiftyLinkMessage::Pointer)));
 
     disconnect(m_SenderHostThread, SIGNAL(EventloopStarted()), m_Sender, SLOT(StartProcess()));
     disconnect(this, SIGNAL(ShutdownSenderSignal()), m_Sender, SLOT(StopProcess()));
@@ -128,7 +129,8 @@ void NiftyLinkSocketObject::InitThreads()
   ok &= connect(m_Sender, SIGNAL(DisconnectedFromRemoteSignal(bool )), this, SLOT(OnDisconnectedFromRemote(bool )));
   ok &= connect(m_Sender, SIGNAL(SendingFinishedSignal()), this, SIGNAL(SendingFinishedSignal()));
   ok &= connect(m_Sender, SIGNAL(MessageSentSignal(unsigned long long )), this, SIGNAL(MessageSentSignal(unsigned long long )));
-  //ok &= connect(this, SIGNAL(MessageToSendSignal(NiftyLinkMessage::Pointer)), m_Sender, SLOT(AddMsgToSendQueue(NiftyLinkMessage::Pointer)), Qt::DirectConnection);
+  ok &= connect(this, SIGNAL(MessageToSendSignal(NiftyLinkMessage::Pointer)), 
+                m_Sender, SLOT(AddMsgToSendQueue(NiftyLinkMessage::Pointer)), Qt::DirectConnection);
 
   ok &= connect(m_SenderHostThread, SIGNAL(EventloopStarted()), m_Sender, SLOT(StartProcess()));
   ok &= connect(this, SIGNAL(ShutdownSenderSignal()), m_Sender, SLOT(StopProcess()));
@@ -138,7 +140,7 @@ void NiftyLinkSocketObject::InitThreads()
 
   ok &= connect(m_Listener, SIGNAL(ClientConnectedSignal()), this, SLOT(OnClientConnected()));
   ok &= connect(m_Listener, SIGNAL(ClientDisconnectedSignal(bool )), this, SLOT(OnClientDisconnected(bool )));
-  ok &= connect(m_Listener, SIGNAL(MessageReceivedSignal(NiftyLinkMessage::Pointer)), 
+  ok &= connect(m_Listener, SIGNAL(MessageReceivedSignal(NiftyLinkMessage::Pointer)),
                 this, SIGNAL(MessageReceivedSignal(NiftyLinkMessage::Pointer)), Qt::DirectConnection);
 
   ok &= connect(m_ListenerHostThread, SIGNAL(EventloopStarted()), m_Listener, SLOT(StartProcess()));
@@ -367,9 +369,9 @@ void NiftyLinkSocketObject::SendMessage(NiftyLinkMessage::Pointer msg)
   // (otherwise messages will pile up and use up memory)
   if (m_Sender != NULL && msg.operator !=(NULL) && (m_ClientConnected || m_ConnectedToRemote) )
   {
-    m_Sender->AddMsgToSendQueue(msg);
-    //emit MessageToSendSignal(msg);
-    //QCoreApplication::processEvents();
+    //m_Sender->AddMsgToSendQueue(msg);
+    emit MessageToSendSignal(msg);
+    QCoreApplication::processEvents();
   }
 }
 

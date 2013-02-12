@@ -31,7 +31,7 @@ void UtilsTests::TimeStampSetGetDifferenceTest()
   igtlUint64 totalTimeInNanoseconds2;
 
   igtl::TimeStamp::Pointer timeStamp = igtl::TimeStamp::New();
-  timeStamp->GetTimeStamp(&seconds, &nanoseconds);
+  timeStamp->GetTime(&seconds, &nanoseconds);
 
   totalTimeInNanoseconds = GetTimeInNanoSeconds(timeStamp);
   totalTimeInNanoseconds2 = (igtlUint64)((igtlUint64)seconds*(igtlUint64)1000000000 + (igtlUint64)nanoseconds);
@@ -43,7 +43,7 @@ void UtilsTests::TimeStampSetGetDifferenceTest()
 
   QVERIFY(totalTimeInNanoseconds == totalTimeInNanoseconds2);
 
-  timeStamp->GetTimeStamp(&seconds2, &nanoseconds2);
+  timeStamp->GetTime(&seconds2, &nanoseconds2);
 
   QVERIFY(seconds == seconds2);
   QVERIFY(nanoseconds == nanoseconds2);

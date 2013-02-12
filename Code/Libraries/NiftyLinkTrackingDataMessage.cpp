@@ -399,7 +399,7 @@ void NiftyLinkTrackingDataMessage::Create_GET(NiftyLinkMessage::Pointer &msgToCr
 
   igtl::TimeStamp::Pointer ts;
   ts = igtl::TimeStamp::New();
-  ts->GetTime();
+  ts->Update();
 
   QString lhn = GetLocalHostAddress();
 
@@ -422,7 +422,7 @@ void NiftyLinkTrackingDataMessage::Create_STT(NiftyLinkMessage::Pointer &msgToCr
 
   igtl::TimeStamp::Pointer ts;
   ts = igtl::TimeStamp::New();
-  ts->GetTime();
+  ts->Update();
 
   QString lhn = GetLocalHostAddress();
 
@@ -445,7 +445,7 @@ void NiftyLinkTrackingDataMessage::Create_STP(NiftyLinkMessage::Pointer &msgToCr
 
   igtl::TimeStamp::Pointer ts;
   ts = igtl::TimeStamp::New();
-  ts->GetTime();
+  ts->Update();
 
   QString lhn = GetLocalHostAddress();
 
@@ -468,7 +468,7 @@ void NiftyLinkTrackingDataMessage::Create_RTS(NiftyLinkMessage::Pointer &msgToCr
 
   igtl::TimeStamp::Pointer ts;
   ts = igtl::TimeStamp::New();
-  ts->GetTime();
+  ts->Update();
 
   QString lhn = GetLocalHostAddress();
   cmdMsg->SetTimeStamp(ts);

@@ -117,7 +117,7 @@ void TestImagingSender::Run()
     }
 
     igtl::TimeStamp::Pointer startTime = igtl::TimeStamp::New();
-    startTime->GetTime();
+    startTime->Update();
 
 
     // Throw data at the socket.
@@ -130,7 +130,7 @@ void TestImagingSender::Run()
 
     // Finish
     igtl::TimeStamp::Pointer endTime = igtl::TimeStamp::New();
-    endTime->GetTime();
+    endTime->Update();
 
     // Calculate results
     igtlUint64 result = GetDifferenceInNanoSeconds(endTime, startTime);
@@ -164,12 +164,12 @@ void TestImagingSender::SendData(const int& numberOfIterations)
     msg->SetMatrix(matrix);
 
     igtl::TimeStamp::Pointer endPacking = igtl::TimeStamp::New();
-    endPacking->GetTime();
+    endPacking->Update();
 
     m_Socket.SendMessage(msg);
 
     igtl::TimeStamp::Pointer endSending = igtl::TimeStamp::New();
-    endSending->GetTime();
+    endSending->Update();
 
     igtlUint64 nanos = GetDifferenceInNanoSeconds(endPacking, startIteration);
     m_TimePackingMessage += nanos;

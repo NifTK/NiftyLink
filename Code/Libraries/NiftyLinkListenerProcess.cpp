@@ -274,7 +274,7 @@ void NiftyLinkListenerProcess::DoProcessing(void)
 //-----------------------------------------------------------------------------
 void NiftyLinkListenerProcess::ListenOnSocket(void)
 {
-  int sleepInterval = 20; // milliseconds
+  int sleepInterval = 1; // milliseconds
 
   while (m_Running == true && m_ClientConnected == true)
   {
@@ -299,7 +299,7 @@ void NiftyLinkListenerProcess::ListenOnSocket(void)
       try
       {
         QLOG_DEBUG() <<objectName() <<" listening with socket on port " << m_Port << ", but waiting for " << sleepInterval << " ms\n";
-        dynamic_cast<QThreadEx *>(QThread::currentThread())->MsleepEx(sleepInterval);
+        //dynamic_cast<QThreadEx *>(QThread::currentThread())->MsleepEx(sleepInterval);
       }
       catch (std::exception &e)
       {
@@ -319,7 +319,7 @@ void NiftyLinkListenerProcess::ListenOnSocket(void)
 //-----------------------------------------------------------------------------
 void NiftyLinkListenerProcess::ListenOnPort(void)
 {
-  int sleepInterval = 20; // milliseconds
+  int sleepInterval = 1; // milliseconds
   igtl::Socket::Pointer socket;
 
   while (m_Running == true)
@@ -378,7 +378,7 @@ void NiftyLinkListenerProcess::ListenOnPort(void)
           try
           {
             QLOG_DEBUG() <<objectName() <<" listening with socket on port " << m_Port << ", but waiting for " << sleepInterval << " ms\n";
-            dynamic_cast<QThreadEx *>(QThread::currentThread())->MsleepEx(sleepInterval);
+            //dynamic_cast<QThreadEx *>(QThread::currentThread())->MsleepEx(sleepInterval);
           }
           catch (std::exception &e)
           {

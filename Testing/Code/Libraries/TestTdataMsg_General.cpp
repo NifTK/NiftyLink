@@ -181,10 +181,10 @@ void TestTdataMsg_General::PerformTest()
   std::cout <<++m_TestCounter <<". Setting receive timestamp..";
   igtl::TimeStamp::Pointer tsr = igtl::TimeStamp::New();
   igtl::TimeStamp::Pointer tss = igtl::TimeStamp::New();
-  tsr->GetTime_TAI();
+  tsr->Update();
   tdataMsg->SetTimeReceived(tsr);
   tss = tdataMsg->GetTimeReceived();
-  if (tsr->GetTimeStampUint64() != tss->GetTimeStampUint64())
+  if (tsr->GetTimeUint64() != tss->GetTimeUint64())
     std::cout <<" FAILED\n";
   else
     { std::cout <<" OK\n"; m_SuccessCounter++; }
@@ -196,7 +196,7 @@ void TestTdataMsg_General::PerformTest()
 
   tsc = tdataMsg->GetTimeCreated();
   id = tdataMsg->GetId();
-  if (tsr->GetTimeStampUint64() < tsc->GetTimeStampUint64() || id <= 0)
+  if (tsr->GetTimeUint64() < tsc->GetTimeUint64() || id <= 0)
     std::cout <<" FAILED\n";
   else
     { std::cout <<" OK\n"; m_SuccessCounter++; }

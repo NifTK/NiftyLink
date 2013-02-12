@@ -295,7 +295,7 @@ void NiftyLinkSenderProcess::OnKeepAliveTimeout(void)
 //-----------------------------------------------------------------------------
 void NiftyLinkSenderProcess::DoProcessing(void)
 {
-  int sleepInterval = 25; // milliseconds. i.e. 50 fps.
+  int sleepInterval = 1; // milliseconds. i.e. 50 fps.
 
   if (m_TimeOuter != NULL)
   {
@@ -353,7 +353,7 @@ void NiftyLinkSenderProcess::DoProcessing(void)
                      << sleepInterval << " ms\n";
         
         p = dynamic_cast<QThreadEx *>(QThread::currentThread());
-        p->MsleepEx(sleepInterval);
+        //p->MsleepEx(sleepInterval);
       }
       catch (std::exception &e)
       {
@@ -401,12 +401,10 @@ void NiftyLinkSenderProcess::DoProcessing(void)
 
         igtlUint32 seconds;
         igtlUint32 nanoseconds;
-        m_ExtSocket->GetSendTimestamp()->GetTimeStamp(&seconds, &nanoseconds);
+        m_ExtSocket->GetSendTimestamp()->GetTime(&seconds, &nanoseconds);
 
         igtl::TimeStamp::Pointer ts = igtl::TimeStamp::New();
-        ts->GetTime_TAI();
         ts->SetTime(seconds, nanoseconds);
-        ts->toUTC();
 
         QLOG_INFO() <<objectName() <<": " <<"Message " << m_MessageCounter
                     << ", created=" << GetTimeInNanoSeconds(msg->GetTimeCreated()) << ", sent=" << GetTimeInNanoSeconds(ts) << ", lag="

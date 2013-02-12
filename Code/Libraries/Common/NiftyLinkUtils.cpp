@@ -203,7 +203,7 @@ void InitMessageTypes(mapStrMsgType &types)
 igtlUint64 GetTimeInNanoSeconds(igtl::TimeStamp* time)
 {
   igtlUint32 seconds, nanoseconds;
-  time->GetTimeStamp(&seconds, &nanoseconds);
+  time->GetTime(&seconds, &nanoseconds);
 
   igtlUint64 result = (igtlUint64)seconds * 1000000000 + (igtlUint64)nanoseconds;
   return result;

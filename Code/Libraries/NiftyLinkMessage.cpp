@@ -20,7 +20,7 @@ See LICENSE.txt in the top level directory for details.
 NiftyLinkMessage::NiftyLinkMessage(void)
 {
   m_TimeCreated = igtl::TimeStamp::New();
-  m_TimeCreated->GetTime();
+  m_TimeCreated->Update();
   m_SenderPort = -1;
 
   m_SenderHostName = QString("localhost");
@@ -334,7 +334,7 @@ void NiftyLinkMessage::Update(QString hostname)
 
   igtl::TimeStamp::Pointer ts;
   ts = igtl::TimeStamp::New();
-  ts->GetTime();
+  ts->Update();
 
   m_TimeCreated.operator =(ts);
   m_SenderHostName = hostname;

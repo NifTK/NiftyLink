@@ -188,10 +188,10 @@ void TestImgMsg_General::PerformTest()
   std::cout <<++m_TestCounter <<". Setting receive timestamp..";
   igtl::TimeStamp::Pointer tsr = igtl::TimeStamp::New();
   igtl::TimeStamp::Pointer tss = igtl::TimeStamp::New();
-  tsr->GetTime_TAI();
+  tsr->Update();
   imageMsg->SetTimeReceived(tsr);
   tss = imageMsg->GetTimeReceived();
-  if (tsr->GetTimeStampUint64() != tss->GetTimeStampUint64())
+  if (tsr->GetTimeUint64() != tss->GetTimeUint64())
     std::cout <<" FAILED\n";
   else
     { std::cout <<" OK\n"; m_SuccessCounter++; }
@@ -203,7 +203,7 @@ void TestImgMsg_General::PerformTest()
 
   tsc = imageMsg->GetTimeCreated();
   id = imageMsg->GetId();
-  if (tsr->GetTimeStampUint64() < tsc->GetTimeStampUint64() || id <= 0)
+  if (tsr->GetTimeUint64() < tsc->GetTimeUint64() || id <= 0)
     std::cout <<" FAILED\n";
   else
     { std::cout <<" OK\n"; m_SuccessCounter++; }

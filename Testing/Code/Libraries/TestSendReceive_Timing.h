@@ -53,7 +53,6 @@ public:
 public slots:
   void SetupTest();
   void PerformTest();
-  void QuitTest();
   void QuitTest2();
 
   void CreateMessage();

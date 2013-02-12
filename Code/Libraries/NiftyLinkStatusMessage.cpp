@@ -194,7 +194,7 @@ void NiftyLinkStatusMessage::Create_GET(NiftyLinkMessage::Pointer &msgToCreate)
 
   igtl::TimeStamp::Pointer ts;
   ts = igtl::TimeStamp::New();
-  ts->GetTime();
+  ts->Update();
 
   QString lhn = GetLocalHostAddress();
 
@@ -217,7 +217,7 @@ void NiftyLinkStatusMessage::Create_STT(NiftyLinkMessage::Pointer &msgToCreate)
 
   igtl::TimeStamp::Pointer ts;
   ts = igtl::TimeStamp::New();
-  ts->GetTime();
+  ts->Update();
 
   QString lhn = GetLocalHostAddress();
 
@@ -240,7 +240,7 @@ void NiftyLinkStatusMessage::Create_STP(NiftyLinkMessage::Pointer &msgToCreate)
 
   igtl::TimeStamp::Pointer ts;
   ts = igtl::TimeStamp::New();
-  ts->GetTime();
+  ts->Update();
 
   QString lhn = GetLocalHostAddress();
 
@@ -263,7 +263,7 @@ void NiftyLinkStatusMessage::Create_RTS(NiftyLinkMessage::Pointer &msgToCreate)
 
   igtl::TimeStamp::Pointer ts;
   ts = igtl::TimeStamp::New();
-  ts->GetTime();
+  ts->Update();
 
   QString lhn = GetLocalHostAddress();
 
