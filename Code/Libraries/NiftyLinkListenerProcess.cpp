@@ -274,7 +274,7 @@ void NiftyLinkListenerProcess::DoProcessing(void)
 //-----------------------------------------------------------------------------
 void NiftyLinkListenerProcess::ListenOnSocket(void)
 {
-  int sleepInterval = 1; // milliseconds
+  //int sleepInterval = 1; // milliseconds
 
   while (m_Running == true && m_ClientConnected == true)
   {
@@ -294,7 +294,7 @@ void NiftyLinkListenerProcess::ListenOnSocket(void)
         QLOG_DEBUG() <<objectName() <<"Keepalive received, restarting the timeouter\n";
         m_TimeOuter->start(2000);
       }
-
+/*
       // Sleep for a bit to let some more data arrive to the socket
       try
       {
@@ -305,7 +305,7 @@ void NiftyLinkListenerProcess::ListenOnSocket(void)
       {
         qDebug() <<"Type cast error.Always run this process from QThreadEx. Exception: " <<e.what();
       }
-
+*/
       continue;
     }
 
@@ -319,7 +319,7 @@ void NiftyLinkListenerProcess::ListenOnSocket(void)
 //-----------------------------------------------------------------------------
 void NiftyLinkListenerProcess::ListenOnPort(void)
 {
-  int sleepInterval = 1; // milliseconds
+  //int sleepInterval = 1; // milliseconds
   igtl::Socket::Pointer socket;
 
   while (m_Running == true)
@@ -373,7 +373,7 @@ void NiftyLinkListenerProcess::ListenOnPort(void)
             QLOG_DEBUG() <<objectName() <<"Keepalive received, restarting the timeouter\n";
             m_TimeOuter->start(2000);
           }
-
+/*
           // Sleep for a bit to let some more data arrive to the socket
           try
           {
@@ -384,7 +384,7 @@ void NiftyLinkListenerProcess::ListenOnPort(void)
           {
             qDebug() <<"Type cast error.Always run this process from QThreadEx. Exception: " <<e.what();
           }
-
+*/
           continue;
         }
 
@@ -431,8 +431,6 @@ bool NiftyLinkListenerProcess::ReceiveMessage()
   //Double check if message types are mapped or not
   if (strMsgTypes.size() == 0)
     InitMessageTypes(strMsgTypes);
-
-  //ULONGLONG time1 = gethectonanotime_first();
 
   // Interpret message and instanciate the appropriate NiftyLink message wrapper type
   switch(strMsgTypes[msgHeader->GetDeviceType()])
@@ -714,8 +712,6 @@ bool NiftyLinkListenerProcess::ReceiveMessage()
       msgHeader.operator =(NULL);
       return true;
     }
-
-  //ULONGLONG time2 = gethectonanotime_first();
 
   message->SetMessageHeader(msgHeader);
   message->AllocatePack();

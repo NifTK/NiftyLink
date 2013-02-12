@@ -81,7 +81,7 @@ bool NiftyLinkSenderProcess::Initialize(std::string &hostname, int port)
     QLOG_ERROR() <<objectName() <<": " << "Sender already in use!" << endl;
     return false;
   }
-  
+
   // Try to create a new client socket and if it is successful, set its parameters.
   m_ClientSocket = igtl::ClientSocket::New();
   if (m_ClientSocket.IsNotNull())
@@ -153,7 +153,7 @@ void NiftyLinkSenderProcess::TerminateProcess()
   if (m_ExtSocket.IsNotNull())
   {
     err |= m_ExtSocket->CloseSocket();
-    
+
     m_ExtSocket.operator =(NULL);
   }
   m_Mutex->unlock();
@@ -199,7 +199,7 @@ bool NiftyLinkSenderProcess::Activate(void)
     QLOG_INFO() <<objectName() <<": " <<"Cannot Activate sender, mutex not set" <<endl;
     return false;
   }
-  
+
   if ( (!m_SendingOnSocket && m_Port <= 0) || (!m_SendingOnSocket && m_Hostname.empty()) )
   {
     QLOG_INFO() <<objectName() <<": " <<"Cannot Activate sender, hostname or port is invalid" <<endl;
@@ -248,9 +248,9 @@ void NiftyLinkSenderProcess::OnKeepAliveTimeout(void)
     {
       p = dynamic_cast<QThreadEx *>(QThread::currentThread());
 
-      QLOG_DEBUG() << objectName() << "Before keep alive check: Send queue to host "
-                   << QString::fromStdString(m_Hostname) << ", port " << m_Port << ", is empty, so sleeping for "
-                   << sleepInterval << " ms\n";
+//      QLOG_DEBUG() << objectName() << "Before keep alive check: Send queue to host "
+//                   << QString::fromStdString(m_Hostname) << ", port " << m_Port << ", is empty, so sleeping for "
+//                   << sleepInterval << " ms\n";
 
       p->MsleepEx(sleepInterval);
     }
@@ -282,10 +282,10 @@ void NiftyLinkSenderProcess::OnKeepAliveTimeout(void)
 
     if (p!=NULL)
     {
-      QLOG_DEBUG() << objectName() <<": " <<"After keep alive check: Send queue to host "
-                   << QString::fromStdString(m_Hostname) << ", port " << m_Port << ", is empty, so sleeping for "
-                   << sleepInterval << " ms\n";
-      
+//      QLOG_DEBUG() << objectName() <<": " <<"After keep alive check: Send queue to host "
+//                   << QString::fromStdString(m_Hostname) << ", port " << m_Port << ", is empty, so sleeping for "
+//                   << sleepInterval << " ms\n";
+
       p->MsleepEx(sleepInterval);
     }
   }
@@ -295,7 +295,7 @@ void NiftyLinkSenderProcess::OnKeepAliveTimeout(void)
 //-----------------------------------------------------------------------------
 void NiftyLinkSenderProcess::DoProcessing(void)
 {
-  int sleepInterval = 1; // milliseconds. i.e. 50 fps.
+  //int sleepInterval = 1; // milliseconds. i.e. 50 fps.
 
   if (m_TimeOuter != NULL)
   {
@@ -345,20 +345,20 @@ void NiftyLinkSenderProcess::DoProcessing(void)
     // Check the queue status and act accordingly
     if (m_SendQue.isEmpty())
     {
-      QThreadEx * p = NULL;
+      /*QThreadEx * p = NULL;
       try
       {
         QLOG_DEBUG() << objectName() <<": " << "Send queue to host "
                      << QString::fromStdString(m_Hostname) << ", port " << m_Port << ", is empty, so sleeping for "
                      << sleepInterval << " ms\n";
-        
+
         p = dynamic_cast<QThreadEx *>(QThread::currentThread());
         //p->MsleepEx(sleepInterval);
       }
       catch (std::exception &e)
       {
         qDebug() <<"Type cast error. Always run this process from QThreadEx. Exception: " <<e.what();
-      }
+      }*/
 
       QCoreApplication::processEvents();
 
@@ -423,10 +423,10 @@ void NiftyLinkSenderProcess::DoProcessing(void)
 
       // Force delete
       msg.reset();
-      
+
       QCoreApplication::processEvents();
     }
-    
+
   }  //end of while
 
   // ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~

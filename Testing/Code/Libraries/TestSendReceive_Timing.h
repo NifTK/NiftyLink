@@ -55,10 +55,7 @@ public slots:
   void PerformTest();
   void QuitTest2();
 
-  void CreateMessage();
-
   void CatchMessage(NiftyLinkMessage::Pointer);
-  void RecordSendTimestamps(unsigned long long timestamp);
   void SendResponse();
   void StreamResponse();
 
@@ -72,7 +69,7 @@ private:
 
   QList<ULONGLONG>             m_Socket1Timestamps;
   QList<ULONGLONG>             m_Socket2Timestamps;
-  
+
   QList<NiftyLinkMessage::Pointer> m_Socket1Messages;
   QList<NiftyLinkMessage::Pointer> m_Socket2Messages;
   unsigned long long           m_TotalTimeDiff;
