@@ -19,8 +19,8 @@
 
 TestMsgTypes_ConstrDestr::TestMsgTypes_ConstrDestr(void)
 {
-  m_testCounter = 0;
-  m_successCounter = 0;
+  m_TestCounter = 0;
+  m_SuccessCounter = 0;
 }
 
 TestMsgTypes_ConstrDestr::~TestMsgTypes_ConstrDestr(void)
@@ -29,79 +29,79 @@ TestMsgTypes_ConstrDestr::~TestMsgTypes_ConstrDestr(void)
 }
 
 
-void TestMsgTypes_ConstrDestr::setupTest()
+void TestMsgTypes_ConstrDestr::SetupTest()
 {
   //Nothing to do right now
 }
 
 
-void TestMsgTypes_ConstrDestr::performTest()
+void TestMsgTypes_ConstrDestr::PerformTest()
 {
   //Create a basic message
-  std::cout <<++m_testCounter <<". Creating basic message..";
-  OIGTLMessage::Pointer basicMsg;
+  std::cout <<++m_TestCounter <<". Creating basic message..";
+  NiftyLinkMessage::Pointer basicMsg;
   basicMsg.reset(); //Ensure that the pointer is NULL
-  basicMsg = (OIGTLMessage::Pointer(new OIGTLMessage()));
+  basicMsg = (NiftyLinkMessage::Pointer(new NiftyLinkMessage()));
   if (basicMsg.operator !=(NULL))
-    { std::cout <<" OK\n"; m_successCounter++; }
+    { std::cout <<" OK\n"; m_SuccessCounter++; }
   else
     std::cout <<" FAILED\n";
 
   //***********************************************
-  std::cout <<++m_testCounter <<". Testing delete..";
+  std::cout <<++m_TestCounter <<". Testing delete..";
   basicMsg.reset();
   basicMsg.operator =(NULL);
 
   if (basicMsg.operator !=(NULL))
           std::cout <<" FAILED\n";
   else
-    { std::cout <<" OK\n"; m_successCounter++; }
+    { std::cout <<" OK\n"; m_SuccessCounter++; }
 
  //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
   //***********************************************
   //Create image message and initialize with test data
-  std::cout <<++m_testCounter <<". Creating image message..";
-  OIGTLImageMessage::Pointer imageMsg;
+  std::cout <<++m_TestCounter <<". Creating image message..";
+  NiftyLinkImageMessage::Pointer imageMsg;
   imageMsg.reset();
-  imageMsg = (OIGTLImageMessage::Pointer(new OIGTLImageMessage()));
+  imageMsg = (NiftyLinkImageMessage::Pointer(new NiftyLinkImageMessage()));
   if (imageMsg.operator !=(NULL))
-    { std::cout <<" OK\n"; m_successCounter++; }
+    { std::cout <<" OK\n"; m_SuccessCounter++; }
   else
     std::cout <<" FAILED\n";
   
   //***********************************************
-  std::cout <<++m_testCounter <<". Setting test image data..";
-  imageMsg->initializeWithTestData();
+  std::cout <<++m_TestCounter <<". Setting test image data..";
+  imageMsg->InitializeWithTestData();
   igtl::MessageBase::Pointer p;
-  imageMsg->getMessagePointer(p);
+  imageMsg->GetMessagePointer(p);
   if (p.IsNotNull())
-    { std::cout <<" OK\n"; m_successCounter++; }
+    { std::cout <<" OK\n"; m_SuccessCounter++; }
   else
      std::cout <<" FAILED\n";
   
   //***********************************************
-  std::cout <<++m_testCounter <<". Setting timestamp and sender ID..";
-  imageMsg->update(getLocalHostAddress());
-  if (imageMsg->getHostName().isEmpty() || imageMsg->getTimeCreated().IsNull())
+  std::cout <<++m_TestCounter <<". Setting timestamp and sender ID..";
+  imageMsg->Update(GetLocalHostAddress());
+  if (imageMsg->GetHostName().isEmpty() || imageMsg->GetTimeCreated().IsNull())
     std::cout <<" FAILED\n";
   else
-    { std::cout <<" OK\n"; m_successCounter++; }
+    { std::cout <<" OK\n"; m_SuccessCounter++; }
 
   //***********************************************
-  std::cout <<++m_testCounter <<". Testing copy constructor..";
-  OIGTLImageMessage::Pointer imageMsg2;
+  std::cout <<++m_TestCounter <<". Testing copy constructor..";
+  NiftyLinkImageMessage::Pointer imageMsg2;
   imageMsg2.reset();
-  imageMsg2 = (OIGTLImageMessage::Pointer(new OIGTLImageMessage(*imageMsg)));
+  imageMsg2 = (NiftyLinkImageMessage::Pointer(new NiftyLinkImageMessage(*imageMsg)));
 
-  if ((imageMsg->getHostName() != imageMsg2->getHostName()) ||
-      (imageMsg->getQImage()   != imageMsg2->getQImage()))
+  if ((imageMsg->GetHostName() != imageMsg2->GetHostName()) ||
+      (imageMsg->GetQImage()   != imageMsg2->GetQImage()))
           std::cout <<" FAILED\n";
   else
-    { std::cout <<" OK\n"; m_successCounter++; }
+    { std::cout <<" OK\n"; m_SuccessCounter++; }
 
   //***********************************************
-  std::cout <<++m_testCounter <<". Testing delete..";
+  std::cout <<++m_TestCounter <<". Testing delete..";
   imageMsg2.reset();
   imageMsg2.operator =(NULL);
 
@@ -112,51 +112,51 @@ void TestMsgTypes_ConstrDestr::performTest()
      imageMsg2.operator !=(NULL) )
           std::cout <<" FAILED\n";
   else
-    { std::cout <<" OK\n"; m_successCounter++; }
+    { std::cout <<" OK\n"; m_SuccessCounter++; }
 
   //***********************************************
 
   //***********************************************
   //Create GET_IMAGE
-  std::cout <<++m_testCounter <<". Creating GET_IMAGE message..";
-  OIGTLMessage::Pointer getImg;
+  std::cout <<++m_TestCounter <<". Creating GET_IMAGE message..";
+  NiftyLinkMessage::Pointer getImg;
   getImg.reset();
-  OIGTLImageMessage::Create_GET(getImg);
+  NiftyLinkImageMessage::Create_GET(getImg);
   if (getImg.operator !=(NULL))
-    { std::cout <<" OK\n"; m_successCounter++; }
+    { std::cout <<" OK\n"; m_SuccessCounter++; }
   else
     std::cout <<" FAILED\n";
 
   //***********************************************
   //Create STT_IMAGE
-  std::cout <<++m_testCounter <<". Creating STT_IMAGE message..";
-  OIGTLMessage::Pointer sttImg;
+  std::cout <<++m_TestCounter <<". Creating STT_IMAGE message..";
+  NiftyLinkMessage::Pointer sttImg;
   sttImg.reset();
-  OIGTLImageMessage::Create_STT(sttImg);
+  NiftyLinkImageMessage::Create_STT(sttImg);
   if (sttImg.operator !=(NULL))
-    { std::cout <<" OK\n"; m_successCounter++; }
+    { std::cout <<" OK\n"; m_SuccessCounter++; }
   else
     std::cout <<" FAILED\n";
 
   //***********************************************
   //Create STP_IMAGE
-  std::cout <<++m_testCounter <<". Creating STP_IMAGE message..";
-  OIGTLMessage::Pointer stpImg;
+  std::cout <<++m_TestCounter <<". Creating STP_IMAGE message..";
+  NiftyLinkMessage::Pointer stpImg;
   stpImg.reset();
-  OIGTLImageMessage::Create_STP(stpImg);
+  NiftyLinkImageMessage::Create_STP(stpImg);
   if (stpImg.operator !=(NULL))
-    { std::cout <<" OK\n"; m_successCounter++; }
+    { std::cout <<" OK\n"; m_SuccessCounter++; }
   else
     std::cout <<" FAILED\n";
 
   //***********************************************
   //Create RTS_IMAGE
-  std::cout <<++m_testCounter <<". Creating RTS_IMAGE message..";
-  OIGTLMessage::Pointer rtsImg;
+  std::cout <<++m_TestCounter <<". Creating RTS_IMAGE message..";
+  NiftyLinkMessage::Pointer rtsImg;
   rtsImg.reset();
-  OIGTLImageMessage::Create_RTS(rtsImg);
+  NiftyLinkImageMessage::Create_RTS(rtsImg);
   if (rtsImg.operator !=(NULL))
-    { std::cout <<" OK\n"; m_successCounter++; }
+    { std::cout <<" OK\n"; m_SuccessCounter++; }
   else
     std::cout <<" FAILED\n";
 
@@ -164,46 +164,46 @@ void TestMsgTypes_ConstrDestr::performTest()
 
   //***********************************************    
   //Create transform message and initialize with test data
-  std::cout <<++m_testCounter <<". Creating transform message..";
-  OIGTLTransformMessage::Pointer transMsg;
+  std::cout <<++m_TestCounter <<". Creating transform message..";
+  NiftyLinkTransformMessage::Pointer transMsg;
   transMsg.reset();
-  transMsg = (OIGTLTransformMessage::Pointer(new OIGTLTransformMessage()));
+  transMsg = (NiftyLinkTransformMessage::Pointer(new NiftyLinkTransformMessage()));
   if (transMsg.operator !=(NULL))
-    { std::cout <<" OK\n"; m_successCounter++; }
+    { std::cout <<" OK\n"; m_SuccessCounter++; }
   else
     std::cout <<" FAILED\n";
 
   //***********************************************
-  std::cout <<++m_testCounter <<". Setting test transform data..";
-  transMsg->initializeWithTestData(dummyTransformMatrix);
+  std::cout <<++m_TestCounter <<". Setting test transform data..";
+  transMsg->InitializeWithTestData(dummyTransformMatrix);
   igtl::MessageBase::Pointer q;
-  transMsg->getMessagePointer(q);
+  transMsg->GetMessagePointer(q);
   if (q.IsNotNull())
-    { std::cout <<" OK\n"; m_successCounter++; }
+    { std::cout <<" OK\n"; m_SuccessCounter++; }
   else
      std::cout <<" FAILED\n";
   
   //***********************************************
-  std::cout <<++m_testCounter <<". Setting timestamp and sender ID..";
-  transMsg->update(getLocalHostAddress());
-  if (transMsg->getHostName().isEmpty() || transMsg->getTimeCreated().IsNull())
+  std::cout <<++m_TestCounter <<". Setting timestamp and sender ID..";
+  transMsg->Update(GetLocalHostAddress());
+  if (transMsg->GetHostName().isEmpty() || transMsg->GetTimeCreated().IsNull())
     std::cout <<" FAILED\n";
   else
-    { std::cout <<" OK\n"; m_successCounter++; }
+    { std::cout <<" OK\n"; m_SuccessCounter++; }
   
   //***********************************************
-  std::cout <<++m_testCounter <<". Testing copy constructor..";
-  OIGTLTransformMessage::Pointer transMsg2;
+  std::cout <<++m_TestCounter <<". Testing copy constructor..";
+  NiftyLinkTransformMessage::Pointer transMsg2;
   transMsg2.reset();
-  transMsg2 = (OIGTLTransformMessage::Pointer(new OIGTLTransformMessage(*transMsg)));
+  transMsg2 = (NiftyLinkTransformMessage::Pointer(new NiftyLinkTransformMessage(*transMsg)));
 
   igtl::Matrix4x4 mat1;
-  transMsg->getMatrix(mat1);
+  transMsg->GetMatrix(mat1);
   igtl::Matrix4x4 mat2;
-  transMsg2->getMatrix(mat2);
+  transMsg2->GetMatrix(mat2);
 
   bool ba, bb;
-  if (transMsg->getHostName() == transMsg2->getHostName())
+  if (transMsg->GetHostName() == transMsg2->GetHostName())
     ba = true;
   else ba = false;
   
@@ -212,12 +212,12 @@ void TestMsgTypes_ConstrDestr::performTest()
   else bb = false;
 
   if (ba && bb)
-    { std::cout <<" OK\n"; m_successCounter++; }
+    { std::cout <<" OK\n"; m_SuccessCounter++; }
   else
     std::cout <<" FAILED\n";
   
   //***********************************************
-  std::cout <<++m_testCounter <<". Testing delete..";
+  std::cout <<++m_TestCounter <<". Testing delete..";
   transMsg2.reset();
   transMsg2.operator =(NULL);
 
@@ -228,51 +228,51 @@ void TestMsgTypes_ConstrDestr::performTest()
      transMsg2.operator !=(NULL) )
           std::cout <<" FAILED\n";
   else
-    { std::cout <<" OK\n"; m_successCounter++; }
+    { std::cout <<" OK\n"; m_SuccessCounter++; }
 
   //***********************************************
 
   //***********************************************
   //Create GET_TRANS
-  std::cout <<++m_testCounter <<". Creating GET_TRANS message..";
-  OIGTLMessage::Pointer getTrs;
+  std::cout <<++m_TestCounter <<". Creating GET_TRANS message..";
+  NiftyLinkMessage::Pointer getTrs;
   getTrs.reset();
-  OIGTLTransformMessage::Create_GET(getTrs);
+  NiftyLinkTransformMessage::Create_GET(getTrs);
   if (getTrs.operator !=(NULL))
-    { std::cout <<" OK\n"; m_successCounter++; }
+    { std::cout <<" OK\n"; m_SuccessCounter++; }
   else
     std::cout <<" FAILED\n";
 
   //***********************************************
   //Create STT_TRANS
-  std::cout <<++m_testCounter <<". Creating STT_TRANS message..";
-  OIGTLMessage::Pointer sttTrs;
+  std::cout <<++m_TestCounter <<". Creating STT_TRANS message..";
+  NiftyLinkMessage::Pointer sttTrs;
   sttTrs.reset();
-  OIGTLTransformMessage::Create_STT(sttTrs);
+  NiftyLinkTransformMessage::Create_STT(sttTrs);
   if (sttTrs.operator !=(NULL))
-    { std::cout <<" OK\n"; m_successCounter++; }
+    { std::cout <<" OK\n"; m_SuccessCounter++; }
   else
     std::cout <<" FAILED\n";
 
   //***********************************************
   //Create STP_TRANS
-  std::cout <<++m_testCounter <<". Creating STT_TRANS message..";
-  OIGTLMessage::Pointer stpTrs;
+  std::cout <<++m_TestCounter <<". Creating STT_TRANS message..";
+  NiftyLinkMessage::Pointer stpTrs;
   stpTrs.reset();
-  OIGTLTransformMessage::Create_STP(stpTrs);
+  NiftyLinkTransformMessage::Create_STP(stpTrs);
   if (stpTrs.operator !=(NULL))
-    { std::cout <<" OK\n"; m_successCounter++; }
+    { std::cout <<" OK\n"; m_SuccessCounter++; }
   else
     std::cout <<" FAILED\n";
 
   //***********************************************
   //Create RTS_TRANS
-  std::cout <<++m_testCounter <<". Creating RTS_TRANS message..";
-  OIGTLMessage::Pointer rtsTrs;
+  std::cout <<++m_TestCounter <<". Creating RTS_TRANS message..";
+  NiftyLinkMessage::Pointer rtsTrs;
   rtsTrs.reset();
-  OIGTLTransformMessage::Create_RTS(rtsTrs);
+  NiftyLinkTransformMessage::Create_RTS(rtsTrs);
   if (rtsTrs.operator !=(NULL))
-    { std::cout <<" OK\n"; m_successCounter++; }
+    { std::cout <<" OK\n"; m_SuccessCounter++; }
   else
     std::cout <<" FAILED\n";
 
@@ -280,49 +280,49 @@ void TestMsgTypes_ConstrDestr::performTest()
 
   //***********************************************    
   //Create status message and initialize with test data
-  std::cout <<++m_testCounter <<". Creating status message..";
-  OIGTLStatusMessage::Pointer statusMsg;
+  std::cout <<++m_TestCounter <<". Creating status message..";
+  NiftyLinkStatusMessage::Pointer statusMsg;
   statusMsg.reset();
-  statusMsg = (OIGTLStatusMessage::Pointer(new OIGTLStatusMessage()));
+  statusMsg = (NiftyLinkStatusMessage::Pointer(new NiftyLinkStatusMessage()));
   if (statusMsg.operator !=(NULL))
-    { std::cout <<" OK\n"; m_successCounter++; }
+    { std::cout <<" OK\n"; m_SuccessCounter++; }
   else
     std::cout <<" FAILED\n";
 
   //***********************************************
-  std::cout <<++m_testCounter <<". Setting test status info..";
-  statusMsg->initializeWithTestData();
+  std::cout <<++m_TestCounter <<". Setting test status info..";
+  statusMsg->InitializeWithTestData();
   igtl::MessageBase::Pointer r;
-  statusMsg->getMessagePointer(r);
+  statusMsg->GetMessagePointer(r);
   if (r.IsNotNull())
-    { std::cout <<" OK\n"; m_successCounter++; }
+    { std::cout <<" OK\n"; m_SuccessCounter++; }
   else
      std::cout <<" FAILED\n";
   
   //***********************************************
-  std::cout <<++m_testCounter <<". Setting timestamp and sender ID..";
-  statusMsg->update(getLocalHostAddress());
-  if (statusMsg->getHostName().isEmpty() || statusMsg->getTimeCreated().IsNull())
+  std::cout <<++m_TestCounter <<". Setting timestamp and sender ID..";
+  statusMsg->Update(GetLocalHostAddress());
+  if (statusMsg->GetHostName().isEmpty() || statusMsg->GetTimeCreated().IsNull())
     std::cout <<" FAILED\n";
   else
-    { std::cout <<" OK\n"; m_successCounter++; }
+    { std::cout <<" OK\n"; m_SuccessCounter++; }
 
   //***********************************************
-  std::cout <<++m_testCounter <<". Testing copy constructor..";
-  OIGTLStatusMessage::Pointer statusMsg2;
+  std::cout <<++m_TestCounter <<". Testing copy constructor..";
+  NiftyLinkStatusMessage::Pointer statusMsg2;
   statusMsg2.reset();
-  statusMsg2 = (OIGTLStatusMessage::Pointer(new OIGTLStatusMessage(*statusMsg)));
+  statusMsg2 = (NiftyLinkStatusMessage::Pointer(new NiftyLinkStatusMessage(*statusMsg)));
 
-  if (statusMsg->getErrorCode()    == statusMsg2->getErrorCode() &&
-      statusMsg->getErrorSubCode() == statusMsg2->getErrorSubCode() &&
-      statusMsg->getErrorName()    == statusMsg2->getErrorName() &&
-      statusMsg->getStatusString() == statusMsg2->getStatusString())
-        { std::cout <<" OK\n"; m_successCounter++; }
+  if (statusMsg->GetErrorCode()    == statusMsg2->GetErrorCode() &&
+      statusMsg->GetErrorSubCode() == statusMsg2->GetErrorSubCode() &&
+      statusMsg->GetErrorName()    == statusMsg2->GetErrorName() &&
+      statusMsg->GetStatusString() == statusMsg2->GetStatusString())
+        { std::cout <<" OK\n"; m_SuccessCounter++; }
   else
     std::cout <<" FAILED\n";
 
   //***********************************************
-  std::cout <<++m_testCounter <<". Testing delete..";
+  std::cout <<++m_TestCounter <<". Testing delete..";
   statusMsg2.reset();
   statusMsg2.operator =(NULL);
 
@@ -333,51 +333,51 @@ void TestMsgTypes_ConstrDestr::performTest()
      statusMsg2.operator !=(NULL) )
           std::cout <<" FAILED\n";
   else
-    { std::cout <<" OK\n"; m_successCounter++; }
+    { std::cout <<" OK\n"; m_SuccessCounter++; }
 
   //***********************************************
 
   //***********************************************
   //Create GET_TRANS
-  std::cout <<++m_testCounter <<". Creating GET_STATUS message..";
-  OIGTLMessage::Pointer getSta;
+  std::cout <<++m_TestCounter <<". Creating GET_STATUS message..";
+  NiftyLinkMessage::Pointer getSta;
   getSta.reset();
-  OIGTLStatusMessage::Create_GET(getSta);
+  NiftyLinkStatusMessage::Create_GET(getSta);
   if (getSta.operator !=(NULL))
-    { std::cout <<" OK\n"; m_successCounter++; }
+    { std::cout <<" OK\n"; m_SuccessCounter++; }
   else
     std::cout <<" FAILED\n";
 
   //***********************************************
   //Create STT_TRANS
-  std::cout <<++m_testCounter <<". Creating STT_STATUS message..";
-  OIGTLMessage::Pointer sttSta;
+  std::cout <<++m_TestCounter <<". Creating STT_STATUS message..";
+  NiftyLinkMessage::Pointer sttSta;
   sttSta.reset();
-  OIGTLStatusMessage::Create_STT(sttSta);
+  NiftyLinkStatusMessage::Create_STT(sttSta);
   if (sttSta.operator !=(NULL))
-    { std::cout <<" OK\n"; m_successCounter++; }
+    { std::cout <<" OK\n"; m_SuccessCounter++; }
   else
     std::cout <<" FAILED\n";
 
   //***********************************************
   //Create STP_TRANS
-  std::cout <<++m_testCounter <<". Creating STT_STATUS message..";
-  OIGTLMessage::Pointer stpSta;
+  std::cout <<++m_TestCounter <<". Creating STT_STATUS message..";
+  NiftyLinkMessage::Pointer stpSta;
   stpSta.reset();
-  OIGTLStatusMessage::Create_STP(stpSta);
+  NiftyLinkStatusMessage::Create_STP(stpSta);
   if (stpSta.operator !=(NULL))
-    { std::cout <<" OK\n"; m_successCounter++; }
+    { std::cout <<" OK\n"; m_SuccessCounter++; }
   else
     std::cout <<" FAILED\n";
 
   //***********************************************
   //Create RTS_TRANS
-  std::cout <<++m_testCounter <<". Creating RTS_STATUS message..";
-  OIGTLMessage::Pointer rtsSta;
+  std::cout <<++m_TestCounter <<". Creating RTS_STATUS message..";
+  NiftyLinkMessage::Pointer rtsSta;
   rtsSta.reset();
-  OIGTLStatusMessage::Create_RTS(rtsSta);
+  NiftyLinkStatusMessage::Create_RTS(rtsSta);
   if (rtsSta.operator !=(NULL))
-    { std::cout <<" OK\n"; m_successCounter++; }
+    { std::cout <<" OK\n"; m_SuccessCounter++; }
   else
     std::cout <<" FAILED\n";
 
@@ -385,47 +385,47 @@ void TestMsgTypes_ConstrDestr::performTest()
   
   //***********************************************    
   //Create string message and initialize with test data
-  std::cout <<++m_testCounter <<". Creating string message..";
-  OIGTLStringMessage::Pointer stringMsg;
+  std::cout <<++m_TestCounter <<". Creating string message..";
+  NiftyLinkStringMessage::Pointer stringMsg;
   stringMsg.reset();
-  stringMsg = (OIGTLStringMessage::Pointer(new OIGTLStringMessage()));
+  stringMsg = (NiftyLinkStringMessage::Pointer(new NiftyLinkStringMessage()));
   if (stringMsg.operator !=(NULL))
-    { std::cout <<" OK\n"; m_successCounter++; }
+    { std::cout <<" OK\n"; m_SuccessCounter++; }
   else
     std::cout <<" FAILED\n";
 
   //***********************************************
-  std::cout <<++m_testCounter <<". Setting test string data..";
-  stringMsg->initializeWithTestData();
+  std::cout <<++m_TestCounter <<". Setting test string data..";
+  stringMsg->InitializeWithTestData();
   igtl::MessageBase::Pointer s;
-  stringMsg->getMessagePointer(s);
+  stringMsg->GetMessagePointer(s);
   if (s.IsNotNull())
-    { std::cout <<" OK\n"; m_successCounter++; }
+    { std::cout <<" OK\n"; m_SuccessCounter++; }
   else
      std::cout <<" FAILED\n";
   
   //***********************************************
-  std::cout <<++m_testCounter <<". Setting timestamp and sender ID..";
-  stringMsg->update(getLocalHostAddress());
-  if (stringMsg->getHostName().isEmpty() || stringMsg->getTimeCreated().IsNull())
+  std::cout <<++m_TestCounter <<". Setting timestamp and sender ID..";
+  stringMsg->Update(GetLocalHostAddress());
+  if (stringMsg->GetHostName().isEmpty() || stringMsg->GetTimeCreated().IsNull())
     std::cout <<" FAILED\n";
   else
-    { std::cout <<" OK\n"; m_successCounter++; }
+    { std::cout <<" OK\n"; m_SuccessCounter++; }
 
   //***********************************************
-  std::cout <<++m_testCounter <<". Testing copy constructor..";
-  OIGTLStringMessage::Pointer stringMsg2;
+  std::cout <<++m_TestCounter <<". Testing copy constructor..";
+  NiftyLinkStringMessage::Pointer stringMsg2;
   stringMsg2.reset();
-  stringMsg2 = (OIGTLStringMessage::Pointer(new OIGTLStringMessage(*stringMsg)));
+  stringMsg2 = (NiftyLinkStringMessage::Pointer(new NiftyLinkStringMessage(*stringMsg)));
 
-  if (stringMsg->getHostName() == stringMsg2->getHostName() &&
-      stringMsg->getString() == stringMsg2->getString() )
-        { std::cout <<" OK\n"; m_successCounter++; }
+  if (stringMsg->GetHostName() == stringMsg2->GetHostName() &&
+      stringMsg->GetString() == stringMsg2->GetString() )
+        { std::cout <<" OK\n"; m_SuccessCounter++; }
   else
     std::cout <<" FAILED\n";
 
   //***********************************************
-  std::cout <<++m_testCounter <<". Testing delete..";
+  std::cout <<++m_TestCounter <<". Testing delete..";
   stringMsg2.reset();
   stringMsg2.operator =(NULL);
 
@@ -436,51 +436,51 @@ void TestMsgTypes_ConstrDestr::performTest()
      stringMsg2.operator !=(NULL) )
           std::cout <<" FAILED\n";
   else
-    { std::cout <<" OK\n"; m_successCounter++; }
+    { std::cout <<" OK\n"; m_SuccessCounter++; }
 
   //***********************************************
 
   //***********************************************
   //Create GET_TRANS
-  std::cout <<++m_testCounter <<". Creating GET_STRING message..";
-  OIGTLMessage::Pointer getStr;
+  std::cout <<++m_TestCounter <<". Creating GET_STRING message..";
+  NiftyLinkMessage::Pointer getStr;
   getStr.reset();
-  OIGTLStringMessage::Create_GET(getStr);
+  NiftyLinkStringMessage::Create_GET(getStr);
   if (getStr.operator !=(NULL))
-    { std::cout <<" OK\n"; m_successCounter++; }
+    { std::cout <<" OK\n"; m_SuccessCounter++; }
   else
     std::cout <<" FAILED\n";
 
   //***********************************************
   //Create STT_TRANS
-  std::cout <<++m_testCounter <<". Creating STT_STRING message..";
-  OIGTLMessage::Pointer sttStr;
+  std::cout <<++m_TestCounter <<". Creating STT_STRING message..";
+  NiftyLinkMessage::Pointer sttStr;
   sttStr.reset();
-  OIGTLStringMessage::Create_STT(sttStr);
+  NiftyLinkStringMessage::Create_STT(sttStr);
   if (sttStr.operator !=(NULL))
-    { std::cout <<" OK\n"; m_successCounter++; }
+    { std::cout <<" OK\n"; m_SuccessCounter++; }
   else
     std::cout <<" FAILED\n";
 
   //***********************************************
   //Create STP_TRANS
-  std::cout <<++m_testCounter <<". Creating STT_STRING message..";
-  OIGTLMessage::Pointer stpStr;
+  std::cout <<++m_TestCounter <<". Creating STT_STRING message..";
+  NiftyLinkMessage::Pointer stpStr;
   stpStr.reset();
-  OIGTLStringMessage::Create_STP(stpStr);
+  NiftyLinkStringMessage::Create_STP(stpStr);
   if (stpStr.operator !=(NULL))
-    { std::cout <<" OK\n"; m_successCounter++; }
+    { std::cout <<" OK\n"; m_SuccessCounter++; }
   else
     std::cout <<" FAILED\n";
 
   //***********************************************
   //Create RTS_TRANS
-  std::cout <<++m_testCounter <<". Creating RTS_STRING message..";
-  OIGTLMessage::Pointer rtsStr;
+  std::cout <<++m_TestCounter <<". Creating RTS_STRING message..";
+  NiftyLinkMessage::Pointer rtsStr;
   rtsStr.reset();
-  OIGTLStringMessage::Create_RTS(rtsStr);
+  NiftyLinkStringMessage::Create_RTS(rtsStr);
   if (rtsStr.operator !=(NULL))
-    { std::cout <<" OK\n"; m_successCounter++; }
+    { std::cout <<" OK\n"; m_SuccessCounter++; }
   else
     std::cout <<" FAILED\n";
 
@@ -488,53 +488,53 @@ void TestMsgTypes_ConstrDestr::performTest()
   
   //***********************************************    
   //Create tdata message and initialize with test data
-  std::cout <<++m_testCounter <<". Creating tdata message..";
-  OIGTLTrackingDataMessage::Pointer tdataMsg;
+  std::cout <<++m_TestCounter <<". Creating tdata message..";
+  NiftyLinkTrackingDataMessage::Pointer tdataMsg;
   tdataMsg.reset();
-  tdataMsg = (OIGTLTrackingDataMessage::Pointer(new OIGTLTrackingDataMessage()));
+  tdataMsg = (NiftyLinkTrackingDataMessage::Pointer(new NiftyLinkTrackingDataMessage()));
   if (tdataMsg.operator !=(NULL))
-    { std::cout <<" OK\n"; m_successCounter++; }
+    { std::cout <<" OK\n"; m_SuccessCounter++; }
   else
     std::cout <<" FAILED\n";
 
   //***********************************************
-  std::cout <<++m_testCounter <<". Setting test tracking data..";
-  tdataMsg->initializeWithTestData(dummyTransformMatrix);
+  std::cout <<++m_TestCounter <<". Setting test tracking data..";
+  tdataMsg->InitializeWithTestData(dummyTransformMatrix);
   igtl::MessageBase::Pointer t;
-  tdataMsg->getMessagePointer(t);
+  tdataMsg->GetMessagePointer(t);
   if (t.IsNotNull())
-    { std::cout <<" OK\n"; m_successCounter++; }
+    { std::cout <<" OK\n"; m_SuccessCounter++; }
   else
      std::cout <<" FAILED\n";
   
   //***********************************************
-  std::cout <<++m_testCounter <<". Setting timestamp and sender ID..";
-  tdataMsg->update(getLocalHostAddress());
-  if (tdataMsg->getHostName().isEmpty() || tdataMsg->getTimeCreated().IsNull())
+  std::cout <<++m_TestCounter <<". Setting timestamp and sender ID..";
+  tdataMsg->Update(GetLocalHostAddress());
+  if (tdataMsg->GetHostName().isEmpty() || tdataMsg->GetTimeCreated().IsNull())
     std::cout <<" FAILED\n";
   else
-    { std::cout <<" OK\n"; m_successCounter++; }
+    { std::cout <<" OK\n"; m_SuccessCounter++; }
 
   //***********************************************
-  std::cout <<++m_testCounter <<". Testing copy constructor..";
-  OIGTLTrackingDataMessage::Pointer tdataMsg2;
+  std::cout <<++m_TestCounter <<". Testing copy constructor..";
+  NiftyLinkTrackingDataMessage::Pointer tdataMsg2;
   tdataMsg2.reset();
-  tdataMsg2 = (OIGTLTrackingDataMessage::Pointer(new OIGTLTrackingDataMessage(*tdataMsg)));
+  tdataMsg2 = (NiftyLinkTrackingDataMessage::Pointer(new NiftyLinkTrackingDataMessage(*tdataMsg)));
 
-  tdataMsg->getMatrix(mat1);
-  tdataMsg2->getMatrix(mat2);
+  tdataMsg->GetMatrix(mat1);
+  tdataMsg2->GetMatrix(mat2);
   
   if (memcmp(&mat1, &mat2, sizeof(float)*4*4) == 0)
     bb = true;
   else bb = false;
 
-  if (tdataMsg->getHostName() == tdataMsg2->getHostName() && bb)
-        { std::cout <<" OK\n"; m_successCounter++; }
+  if (tdataMsg->GetHostName() == tdataMsg2->GetHostName() && bb)
+        { std::cout <<" OK\n"; m_SuccessCounter++; }
   else
     std::cout <<" FAILED\n";
 
   //***********************************************
-  std::cout <<++m_testCounter <<". Testing delete..";
+  std::cout <<++m_TestCounter <<". Testing delete..";
   tdataMsg2.reset();
   tdataMsg2.operator =(NULL);
 
@@ -545,67 +545,67 @@ void TestMsgTypes_ConstrDestr::performTest()
      tdataMsg2.operator !=(NULL) )
           std::cout <<" FAILED\n";
   else
-    { std::cout <<" OK\n"; m_successCounter++; }
+    { std::cout <<" OK\n"; m_SuccessCounter++; }
 
   //***********************************************
 
   //***********************************************
   //Create GET_TRANS
-  std::cout <<++m_testCounter <<". Creating GET_TDATA message..";
-  OIGTLMessage::Pointer getTdata;
+  std::cout <<++m_TestCounter <<". Creating GET_TDATA message..";
+  NiftyLinkMessage::Pointer getTdata;
   getTdata.reset();
-  OIGTLTrackingDataMessage::Create_GET(getTdata);
+  NiftyLinkTrackingDataMessage::Create_GET(getTdata);
   if (getTdata.operator !=(NULL))
-    { std::cout <<" OK\n"; m_successCounter++; }
+    { std::cout <<" OK\n"; m_SuccessCounter++; }
   else
     std::cout <<" FAILED\n";
 
   //***********************************************
   //Create STT_TRANS
-  std::cout <<++m_testCounter <<". Creating STT_TDATA message..";
-  OIGTLMessage::Pointer sttTdata;
+  std::cout <<++m_TestCounter <<". Creating STT_TDATA message..";
+  NiftyLinkMessage::Pointer sttTdata;
   sttTdata.reset();
-  OIGTLTrackingDataMessage::Create_STT(sttTdata);
+  NiftyLinkTrackingDataMessage::Create_STT(sttTdata);
   if (sttTdata.operator !=(NULL))
-    { std::cout <<" OK\n"; m_successCounter++; }
+    { std::cout <<" OK\n"; m_SuccessCounter++; }
   else
     std::cout <<" FAILED\n";
 
   //***********************************************
   //Create STP_TRANS
-  std::cout <<++m_testCounter <<". Creating STT_TDATA message..";
-  OIGTLMessage::Pointer stpTdata;
+  std::cout <<++m_TestCounter <<". Creating STT_TDATA message..";
+  NiftyLinkMessage::Pointer stpTdata;
   stpTdata.reset();
-  OIGTLTrackingDataMessage::Create_STP(stpTdata);
+  NiftyLinkTrackingDataMessage::Create_STP(stpTdata);
   if (stpTdata.operator !=(NULL))
-    { std::cout <<" OK\n"; m_successCounter++; }
+    { std::cout <<" OK\n"; m_SuccessCounter++; }
   else
     std::cout <<" FAILED\n";
 
   //***********************************************
   //Create RTS_TRANS
-  std::cout <<++m_testCounter <<". Creating RTS_TDATA message..";
-  OIGTLMessage::Pointer rtsTdata;
+  std::cout <<++m_TestCounter <<". Creating RTS_TDATA message..";
+  NiftyLinkMessage::Pointer rtsTdata;
   rtsTdata.reset();
-  OIGTLTrackingDataMessage::Create_RTS(rtsTdata);
+  NiftyLinkTrackingDataMessage::Create_RTS(rtsTdata);
   if (rtsTdata.operator !=(NULL))
-    { std::cout <<" OK\n"; m_successCounter++; }
+    { std::cout <<" OK\n"; m_SuccessCounter++; }
   else
     std::cout <<" FAILED\n";
 
-  quitTest();
+  QuitTest();
 }
 
-void TestMsgTypes_ConstrDestr::quitTest()
+void TestMsgTypes_ConstrDestr::QuitTest()
 {
-  emit done();
+  emit Done();
 
-  if (m_testCounter > m_successCounter)
+  if (m_TestCounter > m_SuccessCounter)
   {
     std::cout <<"\n\n\n";
     std::cout <<"****************************************************\n";
     std::cout <<"**************** TESTING FINISHED: *****************\n";
-    std::cout <<"***************** " <<(m_testCounter - m_successCounter) << " TEST(S) FAILED *****************\n";
+    std::cout <<"***************** " <<(m_TestCounter - m_SuccessCounter) << " TEST(S) FAILED *****************\n";
     std::cout <<"****************************************************\n";
     exit(-1);
   }

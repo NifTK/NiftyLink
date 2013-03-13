@@ -29,7 +29,7 @@
 #include "igtlTransformMessage.h"
 #include "igtlMath.h"
 
-#include "OIGTLSocketObject.h"
+#include "NiftyLinkSocketObject.h"
 #include "TestImgMsg_LoadSaveInit.h"
 
 #include "QsLog.h"
@@ -50,10 +50,10 @@ int main(int argc, char **argv)
   logger.addDestination(fileDestination.get());
 
   TestImgMsg_LoadSaveInit * test = new TestImgMsg_LoadSaveInit;
-  QObject::connect(test, SIGNAL(done()), &app, SLOT(quit()),Qt::QueuedConnection);
-  test->setupTest(argc, argv);
+  QObject::connect(test, SIGNAL(Done()), &app, SLOT(quit()),Qt::QueuedConnection);
+  test->SetupTest(argc, argv);
 
-  QTimer::singleShot(220, test, SLOT(performTest()));
+  QTimer::singleShot(220, test, SLOT(PerformTest()));
   //QTimer::singleShot(220, &test, SLOT(listen()));
   int ret = app.exec();
   delete test;

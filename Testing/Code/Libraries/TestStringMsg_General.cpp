@@ -20,8 +20,8 @@
 
 TestStringMsg_General::TestStringMsg_General(void)
 {
-  m_testCounter = 0;
-  m_successCounter = 0;
+  m_TestCounter = 0;
+  m_SuccessCounter = 0;
 }
 
 TestStringMsg_General::~TestStringMsg_General(void)
@@ -30,144 +30,144 @@ TestStringMsg_General::~TestStringMsg_General(void)
 }
 
 
-void TestStringMsg_General::setupTest()
+void TestStringMsg_General::SetupTest()
 {
   //Nothing to do right now
 }
 
 
-void TestStringMsg_General::performTest()
+void TestStringMsg_General::PerformTest()
 {
   //Create image message and initialize with test data
-  std::cout <<++m_testCounter <<". Creating string message..";
-  OIGTLStringMessage::Pointer stringMsg;
+  std::cout <<++m_TestCounter <<". Creating string message..";
+  NiftyLinkStringMessage::Pointer stringMsg;
   stringMsg.reset();
-  stringMsg = (OIGTLStringMessage::Pointer(new OIGTLStringMessage()));
+  stringMsg = (NiftyLinkStringMessage::Pointer(new NiftyLinkStringMessage()));
   
   if (stringMsg.operator !=(NULL))
-    { std::cout <<" OK\n"; m_successCounter++; }
+    { std::cout <<" OK\n"; m_SuccessCounter++; }
   else
     std::cout <<" FAILED\n";
 
   //***********************************************
-  std::cout <<++m_testCounter <<". Initializing with test data..";
-  stringMsg->initializeWithTestData();
+  std::cout <<++m_TestCounter <<". Initializing with test data..";
+  stringMsg->InitializeWithTestData();
 
-  if (stringMsg->getString() == QString("This is a test string"))
-      { std::cout <<" OK\n"; m_successCounter++; }
+  if (stringMsg->GetString() == QString("This is a test string"))
+      { std::cout <<" OK\n"; m_SuccessCounter++; }
   else
     std::cout <<" FAILED\n";
   
   //***********************************************
-  std::cout <<++m_testCounter <<". Setting string..";
-  stringMsg->setString("This is a random string which meant to crash the OIGTL lib");
+  std::cout <<++m_TestCounter <<". Setting string..";
+  stringMsg->SetString("This is a random string which meant to crash the NiftyLink lib");
 
-  if (stringMsg->getString() != QString("This is a random string which meant to crash the OIGTL lib"))
+  if (stringMsg->GetString() != QString("This is a random string which meant to crash the NiftyLink lib"))
     std::cout <<" FAILED\n";
   else
-    { std::cout <<" OK\n"; m_successCounter++; }
+    { std::cout <<" OK\n"; m_SuccessCounter++; }
 
   //***********************************************
-  std::cout <<++m_testCounter <<". Setting encoding..";
-  stringMsg->setEncoding(3);
+  std::cout <<++m_TestCounter <<". Setting encoding..";
+  stringMsg->SetEncoding(3);
 
-  if (stringMsg->getEncoding() != 3)
+  if (stringMsg->GetEncoding() != 3)
     std::cout <<" FAILED\n";
   else
-    { std::cout <<" OK\n"; m_successCounter++; }
+    { std::cout <<" OK\n"; m_SuccessCounter++; }
     
     
   //***********************************************
-  std::cout <<++m_testCounter <<". Setting timestamp and sender ID..";
-  stringMsg->update(getLocalHostAddress());
+  std::cout <<++m_TestCounter <<". Setting timestamp and sender ID..";
+  stringMsg->Update(GetLocalHostAddress());
 
-  if (stringMsg->getHostName().isEmpty() || stringMsg->getTimeCreated().IsNull())
+  if (stringMsg->GetHostName().isEmpty() || stringMsg->GetTimeCreated().IsNull())
     std::cout <<" FAILED\n";
   else
-    { std::cout <<" OK\n"; m_successCounter++; }
+    { std::cout <<" OK\n"; m_SuccessCounter++; }
 
   //*********************************************** 
-  std::cout <<++m_testCounter <<". Setting message type tag..";
-  stringMsg->changeMessageType("Something");
-  if (stringMsg->getMessageType() != QString("Something"))
+  std::cout <<++m_TestCounter <<". Setting message type tag..";
+  stringMsg->ChangeMessageType("Something");
+  if (stringMsg->GetMessageType() != QString("Something"))
     std::cout <<" FAILED\n";
   else
-    { std::cout <<" OK\n"; m_successCounter++; }
+    { std::cout <<" OK\n"; m_SuccessCounter++; }
 
   //*********************************************** 
-  std::cout <<++m_testCounter <<". Setting port number..";
-  stringMsg->setPort(100);
-  if (stringMsg->getPort() != 100)
+  std::cout <<++m_TestCounter <<". Setting port number..";
+  stringMsg->SetPort(100);
+  if (stringMsg->GetPort() != 100)
     std::cout <<" FAILED\n";
   else
-    { std::cout <<" OK\n"; m_successCounter++; }
+    { std::cout <<" OK\n"; m_SuccessCounter++; }
 
   //*********************************************** 
-  std::cout <<++m_testCounter <<". Setting receive timestamp..";
+  std::cout <<++m_TestCounter <<". Setting receive timestamp..";
   igtl::TimeStamp::Pointer tsr = igtl::TimeStamp::New();
   igtl::TimeStamp::Pointer tss = igtl::TimeStamp::New();
-  tsr->GetTime_TAI();
-  stringMsg->setTimeReceived(tsr);
-  tss = stringMsg->getTimeReceived();
-  if (tsr->GetTimeStampUint64() != tss->GetTimeStampUint64())
+  tsr->Update();
+  stringMsg->SetTimeReceived(tsr);
+  tss = stringMsg->GetTimeReceived();
+  if (tsr->GetTimeUint64() != tss->GetTimeUint64())
     std::cout <<" FAILED\n";
   else
-    { std::cout <<" OK\n"; m_successCounter++; }
+    { std::cout <<" OK\n"; m_SuccessCounter++; }
   
   //*********************************************** 
-  std::cout <<++m_testCounter <<". Checking create timestamp and id..";
+  std::cout <<++m_TestCounter <<". Checking create timestamp and id..";
   igtl::TimeStamp::Pointer tsc = igtl::TimeStamp::New();
   igtlUint64 id = 0;
 
-  tsc = stringMsg->getTimeCreated();
-  id = stringMsg->getId();
-  if (tsr->GetTimeStampUint64() < tsc->GetTimeStampUint64() || id <= 0)
+  tsc = stringMsg->GetTimeCreated();
+  id = stringMsg->GetId();
+  if (tsr->GetTimeUint64() < tsc->GetTimeUint64() || id <= 0)
     std::cout <<" FAILED\n";
   else
-    { std::cout <<" OK\n"; m_successCounter++; }
+    { std::cout <<" OK\n"; m_SuccessCounter++; }
 
   //*********************************************** 
-  std::cout <<++m_testCounter <<". Checking update function and hostname..";
-  stringMsg->update("Something");
-  QString hname = stringMsg->getHostName(); 
+  std::cout <<++m_TestCounter <<". Checking Update function and hostname..";
+  stringMsg->Update("Something");
+  QString hname = stringMsg->GetHostName(); 
   
-  stringMsg->changeHostName("Anything");
-  QString hname2 = stringMsg->getHostName();
+  stringMsg->ChangeHostName("Anything");
+  QString hname2 = stringMsg->GetHostName();
   if (hname2 != QString("Anything") || hname != QString("Something"))
     std::cout <<" FAILED\n";
   else
-    { std::cout <<" OK\n"; m_successCounter++; }
+    { std::cout <<" OK\n"; m_SuccessCounter++; }
 
   //*********************************************** 
-  std::cout <<++m_testCounter <<". Checking message pointer get / set..";
+  std::cout <<++m_TestCounter <<". Checking message pointer get / set..";
   igtl::MessageBase::Pointer mp = igtl::MessageBase::New();
   igtl::MessageBase::Pointer mp3;
    
-  stringMsg->setMessagePointer(mp);
-  stringMsg->getMessagePointer(mp3);
+  stringMsg->SetMessagePointer(mp);
+  stringMsg->GetMessagePointer(mp3);
   
   if (mp != mp3)
     std::cout <<" FAILED\n";
   else
-    { std::cout <<" OK\n"; m_successCounter++; }
+    { std::cout <<" OK\n"; m_SuccessCounter++; }
   
   //***********************************************
-  std::cout <<++m_testCounter <<". Set resolution settings..";
-  OIGTLMessage::Pointer sttString;
+  std::cout <<++m_TestCounter <<". Set resolution settings..";
+  NiftyLinkMessage::Pointer sttString;
   sttString.reset();
-  OIGTLStringMessage::Create_STT(sttString);
-  sttString->setResolution(100);
+  NiftyLinkStringMessage::Create_STT(sttString);
+  sttString->SetResolution(100);
  
   igtlUint64 res = 0;
-  sttString->getResolution(res);
+  sttString->GetResolution(res);
 
   if (res != 100)
     std::cout <<" FAILED\n";
   else
-    { std::cout <<" OK\n"; m_successCounter++; }
+    { std::cout <<" OK\n"; m_SuccessCounter++; }
 
   //***********************************************
-  std::cout <<++m_testCounter <<". Deleting messages..";
+  std::cout <<++m_TestCounter <<". Deleting messages..";
   stringMsg.reset();
   stringMsg.operator =(NULL);
   
@@ -177,23 +177,23 @@ void TestStringMsg_General::performTest()
   if (sttString.operator !=(NULL) || stringMsg.operator !=(NULL))
     std::cout <<" FAILED\n";
   else
-    { std::cout <<" OK\n"; m_successCounter++; }
+    { std::cout <<" OK\n"; m_SuccessCounter++; }
 
   //***********************************************
 
-  quitTest();
+  QuitTest();
 }
 
-void TestStringMsg_General::quitTest()
+void TestStringMsg_General::QuitTest()
 {
-  emit done();
+  emit Done();
 
-  if (m_testCounter > m_successCounter)
+  if (m_TestCounter > m_SuccessCounter)
   {
     std::cout <<"\n\n\n";
     std::cout <<"****************************************************\n";
     std::cout <<"**************** TESTING FINISHED: *****************\n";
-    std::cout <<"***************** " <<(m_testCounter - m_successCounter) << " TEST(S) FAILED *****************\n";
+    std::cout <<"***************** " <<(m_TestCounter - m_SuccessCounter) << " TEST(S) FAILED *****************\n";
     std::cout <<"****************************************************\n";
     exit(-1);
   }

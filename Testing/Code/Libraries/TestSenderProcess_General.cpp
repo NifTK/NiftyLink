@@ -20,8 +20,8 @@
 
 TestSenderProcess_General::TestSenderProcess_General(void)
 {
-  m_testCounter = 0;
-  m_successCounter = 0;
+  m_TestCounter = 0;
+  m_SuccessCounter = 0;
 }
 
 TestSenderProcess_General::~TestSenderProcess_General(void)
@@ -30,136 +30,136 @@ TestSenderProcess_General::~TestSenderProcess_General(void)
 }
 
 
-void TestSenderProcess_General::setupTest()
+void TestSenderProcess_General::SetupTest()
 {
   //Nothing to do right now
 }
 
 
-void TestSenderProcess_General::performTest()
+void TestSenderProcess_General::PerformTest()
 {
 
   //Instanciate sender Process
-  std::cout <<++m_testCounter <<". Creating a SenderProcess object..";
-  OIGTLSenderProcessTester * senderProcess = NULL;
-  senderProcess = new OIGTLSenderProcessTester();
+  std::cout <<++m_TestCounter <<". Creating a SenderProcess object..";
+  NiftyLinkSenderProcessTester * senderProcess = NULL;
+  senderProcess = new NiftyLinkSenderProcessTester();
   if (senderProcess != NULL)
-    { std::cout <<" OK\n"; m_successCounter++; }
+    { std::cout <<" OK\n"; m_SuccessCounter++; }
   else
     std::cout <<" FAILED\n";
 
   //***********************************************
   //Instanciate sender Process
-  std::cout <<++m_testCounter <<". Creating a SenderProcess object w/ parent..";
+  std::cout <<++m_TestCounter <<". Creating a SenderProcess object w/ parent..";
   delete senderProcess;
   senderProcess = NULL;
-  senderProcess = new OIGTLSenderProcessTester(this);
+  senderProcess = new NiftyLinkSenderProcessTester(this);
   if (senderProcess != NULL)
-    { std::cout <<" OK\n"; m_successCounter++; }
+    { std::cout <<" OK\n"; m_SuccessCounter++; }
   else
     std::cout <<" FAILED\n";
 
   //***********************************************
   //Instanciate sender Process
-  std::cout <<++m_testCounter <<". Trying to initialize sender w/out mutex..";
+  std::cout <<++m_TestCounter <<". Trying to initialize sender w/out mutex..";
   std::string hname;
   hname.append("localhost");
-  bool ok = senderProcess->initialize(hname, 3200);
-  if (!ok && !senderProcess->isInitialized())
-  { std::cout <<" NOT POSSIBLE: OK\n"; m_successCounter++; }
+  bool ok = senderProcess->Initialize(hname, 3200);
+  if (!ok && !senderProcess->IsInitialized())
+  { std::cout <<" NOT POSSIBLE: OK\n"; m_SuccessCounter++; }
   else
     std::cout <<" FAILED\n";
 
   //***********************************************
   //Instanciate sender Process
-  std::cout <<++m_testCounter <<". Trying to initialize sender w/ random hostname..";
+  std::cout <<++m_TestCounter <<". Trying to initialize sender w/ random hostname..";
   QMutex mutex;
-  senderProcess->setMutex(&mutex);
+  senderProcess->SetMutex(&mutex);
   hname.clear();
   hname.append("randomhostname");
-  ok = senderProcess->initialize(hname, 3200);
-  if (!ok && !senderProcess->isInitialized())
-  { std::cout <<" NOT POSSIBLE: OK\n"; m_successCounter++; }
+  ok = senderProcess->Initialize(hname, 3200);
+  if (!ok && !senderProcess->IsInitialized())
+  { std::cout <<" NOT POSSIBLE: OK\n"; m_SuccessCounter++; }
   else
     std::cout <<" FAILED\n";
 
   //***********************************************
   //Instanciate sender Process - final
-  std::cout <<++m_testCounter <<". Trying to initialize sender correctly..";
+  std::cout <<++m_TestCounter <<". Trying to initialize sender correctly..";
   delete senderProcess;
   senderProcess = NULL;
-  senderProcess = new OIGTLSenderProcessTester(this);
-  senderProcess->setMutex(&mutex);
+  senderProcess = new NiftyLinkSenderProcessTester(this);
+  senderProcess->SetMutex(&mutex);
   hname.clear();
   hname.append("localhost");
-  ok = senderProcess->initialize(hname, 3200);
-  if (ok && senderProcess->isInitialized())
-  { std::cout <<" OK\n"; m_successCounter++; }
+  ok = senderProcess->Initialize(hname, 3200);
+  if (ok && senderProcess->IsInitialized())
+  { std::cout <<" OK\n"; m_SuccessCounter++; }
   else
     std::cout <<" FAILED\n";
 
   //***********************************************
-  //Test if getPort() works
-  std::cout <<++m_testCounter <<". Testing port settings..";
-  if (senderProcess->getPort() == 3200)
-  { std::cout <<" OK\n"; m_successCounter++; }
+  //Test if GetPort() works
+  std::cout <<++m_TestCounter <<". Testing port settings..";
+  if (senderProcess->GetPort() == 3200)
+  { std::cout <<" OK\n"; m_SuccessCounter++; }
   else
     std::cout <<" FAILED\n";
 
   //***********************************************
   //Try to init with fake external socket pointer
-  std::cout <<++m_testCounter <<". Trying to init with fake external socket pointer..";
+  std::cout <<++m_TestCounter <<". Trying to init with fake external socket pointer..";
   delete senderProcess;
   senderProcess = NULL;
-  senderProcess = new OIGTLSenderProcessTester(this);
-  senderProcess->setMutex(&mutex);
+  senderProcess = new NiftyLinkSenderProcessTester(this);
+  senderProcess->SetMutex(&mutex);
   igtl::Socket::Pointer socket = igtl::Socket::New();
-  ok = senderProcess->initialize(socket, 3200);
-  if (!ok && !senderProcess->isInitialized())
-  { std::cout <<" NOT POSSIBLE: OK\n"; m_successCounter++; }
+  ok = senderProcess->Initialize(socket, 3200);
+  if (!ok && !senderProcess->IsInitialized())
+  { std::cout <<" NOT POSSIBLE: OK\n"; m_SuccessCounter++; }
   else
     std::cout <<" FAILED\n";
 
   //***********************************************
   //Try if startProcess works (should not)
-  std::cout <<++m_testCounter <<". Trying to start Process..";
-  senderProcess->startProcess();
-  if (!senderProcess->isActive())
-  { std::cout <<" NOT POSSIBLE: OK\n"; m_successCounter++; }
+  std::cout <<++m_TestCounter <<". Trying to start Process..";
+  senderProcess->StartProcess();
+  if (!senderProcess->IsActive())
+  { std::cout <<" NOT POSSIBLE: OK\n"; m_SuccessCounter++; }
   else
     std::cout <<" FAILED\n";
 
   //***********************************************
   //Test connection timeout settings
-  std::cout <<++m_testCounter <<". Testing connection timeout settings..";
-  senderProcess->setConnectTimeOut(3);
-  if (senderProcess->getConnectTimeOut() == 3)
-  { std::cout <<" OK\n"; m_successCounter++; }
+  std::cout <<++m_TestCounter <<". Testing connection timeout settings..";
+  senderProcess->SetConnectTimeOut(3);
+  if (senderProcess->GetConnectTimeOut() == 3)
+  { std::cout <<" OK\n"; m_SuccessCounter++; }
   else
     std::cout <<" FAILED\n";
 
   //***********************************************
   //Test socket timeout settings
-  std::cout <<++m_testCounter <<". Testing socket-op timeout settings..";
-  senderProcess->setSocketTimeOut(4);
-  if (senderProcess->getSocketTimeOut() == 4)
-  { std::cout <<" OK\n"; m_successCounter++; }
+  std::cout <<++m_TestCounter <<". Testing socket-op timeout settings..";
+  senderProcess->SetSocketTimeOut(4);
+  if (senderProcess->GetSocketTimeOut() == 4)
+  { std::cout <<" OK\n"; m_SuccessCounter++; }
   else
     std::cout <<" FAILED\n";
 
-  quitTest();
+  QuitTest();
 }
 
-void TestSenderProcess_General::quitTest()
+void TestSenderProcess_General::QuitTest()
 {
-  emit done();
+  emit Done();
 
-  if (m_testCounter > m_successCounter)
+  if (m_TestCounter > m_SuccessCounter)
   {
     std::cout <<"\n\n\n";
     std::cout <<"****************************************************\n";
     std::cout <<"**************** TESTING FINISHED: *****************\n";
-    std::cout <<"***************** " <<(m_testCounter - m_successCounter) << " TEST(S) FAILED *****************\n";
+    std::cout <<"***************** " <<(m_TestCounter - m_SuccessCounter) << " TEST(S) FAILED *****************\n";
     std::cout <<"****************************************************\n";
     exit(-1);
   }

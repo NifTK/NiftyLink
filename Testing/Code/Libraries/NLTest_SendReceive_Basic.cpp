@@ -29,7 +29,7 @@
 #include "igtlTransformMessage.h"
 #include "igtlMath.h"
 
-#include "OIGTLSocketObject.h"
+#include "NiftyLinkSocketObject.h"
 #include "TestSendReceive_Basic.h"
 
 #include "QsLog.h"
@@ -52,8 +52,8 @@ int main(int argc, char **argv)
   int ret = 0;
 
   TestSendReceive_Basic * test = new TestSendReceive_Basic;
-  QObject::connect(test, SIGNAL(done()), &app, SLOT(quit()),Qt::QueuedConnection);
-  QTimer::singleShot(0, test, SLOT(startTest()));
+  QObject::connect(test, SIGNAL(Done()), &app, SLOT(quit()),Qt::QueuedConnection);
+  QTimer::singleShot(0, test, SLOT(StartTest()));
   //QTimer::singleShot(220, &test, SLOT(listen()));
   ret = app.exec();
   

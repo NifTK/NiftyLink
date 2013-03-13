@@ -19,25 +19,25 @@
 
 TestMsgTypes_Delivery::TestMsgTypes_Delivery(void)
 {
-  m_socket1 = NULL;
-  m_socket2 = NULL;
+  m_Socket1 = NULL;
+  m_Socket2 = NULL;
 
-  m_successCounter = 0;
-  m_numOfMsg = 10;
-  m_received = 0;
-  m_sent     = 0;
+  m_SuccessCounter = 0;
+  m_NumOfMsg = 10;
+  m_Received = 0;
+  m_Sent     = 0;
 
-  m_doStream    = false;
-  m_connectedTo = false;
-  m_connecting  = false;
+  m_DoStream    = false;
+  m_ConnectedTo = false;
+  m_Connecting  = false;
 
-  m_inShutdownTests = false;
+  m_InShutdownTests = false;
 
-  m_testCounter = 0;
-  m_successCounter = 0;
+  m_TestCounter = 0;
+  m_SuccessCounter = 0;
 
-  connect(&m_timeOut, SIGNAL(timeout()), this, SLOT(quitTest()) );
-  m_timeOut.start(60000);
+  connect(&m_TimeOut, SIGNAL(timeout()), this, SLOT(QuitTest()) );
+  m_TimeOut.start(60000);
 
 }
 
@@ -46,53 +46,53 @@ TestMsgTypes_Delivery::~TestMsgTypes_Delivery(void)
 }
 
 
-void TestMsgTypes_Delivery::startTest()
+void TestMsgTypes_Delivery::StartTest()
 {
 
   //***********************************************
   //Instanciate socket objects
-  std::cout <<++m_testCounter <<". Creating two socket object..";
-  m_socket1 = new OIGTLSocketObject();
-  m_socket1->setObjectName("Socket1");
-  m_socket2 = new OIGTLSocketObject();
-  m_socket2->setObjectName("Socket2");
+  std::cout <<++m_TestCounter <<". Creating two socket object..";
+  m_Socket1 = new NiftyLinkSocketObject();
+  m_Socket1->setObjectName("Socket1");
+  m_Socket2 = new NiftyLinkSocketObject();
+  m_Socket2->setObjectName("Socket2");
 
-  if (m_socket1 != NULL && m_socket2 != NULL)
-    { std::cout <<" OK\n"; m_successCounter++; }
+  if (m_Socket1 != NULL && m_Socket2 != NULL)
+    { std::cout <<" OK\n"; m_SuccessCounter++; }
   else
     std::cout <<" FAILED\n";
 
   //***********************************************
   //Instanciate socket objects
-  std::cout <<++m_testCounter <<". Connecting Signals and Slots..";
+  std::cout <<++m_TestCounter <<". Connecting Signals and Slots..";
   bool ok = true;
-  ok &= connect(m_socket1, SIGNAL(messageReceived(OIGTLMessage::Pointer)), this, SLOT(catchMessage(OIGTLMessage::Pointer )) );
-  //ok &= connect(m_socket1, SIGNAL(messageSent(unsigned long long )), this, SLOT(recordSendTimestamps(unsigned long long )) );
-  ok &= connect(m_socket1, SIGNAL(clientConnectedSignal()), this, SLOT(clientConnected()) ); 
+  ok &= connect(m_Socket1, SIGNAL(MessageReceivedSignal(NiftyLinkMessage::Pointer)), this, SLOT(CatchMessage(NiftyLinkMessage::Pointer )) );
+  //ok &= connect(m_Socket1, SIGNAL(messageSent(unsigned long long )), this, SLOT(RecordSendTimestamps(unsigned long long )) );
+  ok &= connect(m_Socket1, SIGNAL(ClientConnectedSignal()), this, SLOT(ClientConnected()) ); 
 
-  ok &= connect(m_socket2, SIGNAL(messageReceived(OIGTLMessage::Pointer)), this, SLOT(catchMessage(OIGTLMessage::Pointer )) );
-  //ok &= connect(m_socket2, SIGNAL(messageSent(unsigned long long )), this, SLOT(recordSendTimestamps(unsigned long long )) );
-  ok &= connect(m_socket2, SIGNAL(connectedToRemoteSignal()), this, SLOT(connectedToRemote()) ); 
+  ok &= connect(m_Socket2, SIGNAL(MessageReceivedSignal(NiftyLinkMessage::Pointer)), this, SLOT(CatchMessage(NiftyLinkMessage::Pointer )) );
+  //ok &= connect(m_Socket2, SIGNAL(messageSent(unsigned long long )), this, SLOT(RecordSendTimestamps(unsigned long long )) );
+  ok &= connect(m_Socket2, SIGNAL(ConnectedToRemoteSignal()), this, SLOT(ConnectedToRemote()) ); 
   if (ok)
-    { std::cout <<" OK\n"; m_successCounter++; }
+    { std::cout <<" OK\n"; m_SuccessCounter++; }
   else
     std::cout <<" FAILED\n";
 
   //This is required on Win to achieve accurate timings
   #if defined(_WIN32)
-    m_socket1->initializeWinTimers(); 
+    m_Socket1->InitializeWinTimers(); 
   #endif
 
   //***********************************************
   //Starting up listener thread 
 
-  std::cout <<++m_testCounter <<". Starting up the listener socket..";
+  std::cout <<++m_TestCounter <<". Starting up the listener socket..";
 
   //Start sender / listener
-  ok = m_socket1->listenOnPort(3200);
+  ok = m_Socket1->ListenOnPort(3200);
 
-  if (ok && m_socket1->isListening())
-    { std::cout <<" OK\n"; m_successCounter++; }
+  if (ok && m_Socket1->IsListening())
+    { std::cout <<" OK\n"; m_SuccessCounter++; }
   else
     std::cout <<" FAILED\n";
 
@@ -101,267 +101,267 @@ void TestMsgTypes_Delivery::startTest()
   //***********************************************
   //Starting up sender thread 
 
-  std::cout <<++m_testCounter <<". Starting up the sender socket..";
+  std::cout <<++m_TestCounter <<". Starting up the sender socket..";
 
   QUrl url;
   url.setHost(QString("localhost"));
   url.setPort(3200);
 
-  ok = m_socket2->connectToRemote(url);
+  ok = m_Socket2->ConnectToRemote(url);
 }
 
-void TestMsgTypes_Delivery::continueTest()
+void TestMsgTypes_Delivery::ContinueTest()
 {
-  if (m_socket2->isConnected())
-    { std::cout <<" OK\n"; m_successCounter++; }
+  if (m_Socket2->IsConnected())
+    { std::cout <<" OK\n"; m_SuccessCounter++; }
   else
     std::cout <<" FAILED\n";
 
   //***********************************************
   //Test if the two-way connection is alive
 
-  std::cout <<++m_testCounter <<". Testing the two-way channel..";
+  std::cout <<++m_TestCounter <<". Testing the two-way channel..";
 
-  bool a = m_socket1->isClientConnecting();
-  bool b = m_socket2->isConnected();
-  bool c = m_socket2->isAbleToSend();
+  bool a = m_Socket1->IsClientConnecting();
+  bool b = m_Socket2->IsConnected();
+  bool c = m_Socket2->IsAbleToSend();
 
   if(a && b && c)
-    { std::cout <<" OK\n"; m_successCounter++; }
+    { std::cout <<" OK\n"; m_SuccessCounter++; }
   else
     std::cout <<" FAILED\n";
 
   //***********************************************
   //Test message delivery
 
-  std::cout <<++m_testCounter <<". Testing message delivery..";
+  std::cout <<++m_TestCounter <<". Testing message delivery..";
 
-  m_msgToSend.operator =(OIGTLImageMessage::Pointer(new OIGTLImageMessage()));
-  static_cast<OIGTLImageMessage::Pointer>(m_msgToSend)->initializeWithTestData();
-  m_msgToSend->update(getLocalHostAddress());
+  m_MsgToSend.operator =(NiftyLinkImageMessage::Pointer(new NiftyLinkImageMessage()));
+  static_cast<NiftyLinkImageMessage::Pointer>(m_MsgToSend)->InitializeWithTestData();
+  m_MsgToSend->Update(GetLocalHostAddress());
 
-  m_socket2->sendMessage(m_msgToSend);
-  m_sent++;
-  m_msgToSend.reset();
+  m_Socket2->SendMessage(m_MsgToSend);
+  m_Sent++;
+  m_MsgToSend.reset();
 
-  OIGTLImageMessage::Create_GET(m_msgToSend);
-  m_msgToSend->update(getLocalHostAddress());
-  m_socket2->sendMessage(m_msgToSend);
-  m_sent++;
-  m_msgToSend.reset();
+  NiftyLinkImageMessage::Create_GET(m_MsgToSend);
+  m_MsgToSend->Update(GetLocalHostAddress());
+  m_Socket2->SendMessage(m_MsgToSend);
+  m_Sent++;
+  m_MsgToSend.reset();
 
-  OIGTLImageMessage::Create_STT(m_msgToSend);
-  m_msgToSend->update(getLocalHostAddress());
-  m_socket2->sendMessage(m_msgToSend);
-  m_sent++;
-  m_msgToSend.reset();
+  NiftyLinkImageMessage::Create_STT(m_MsgToSend);
+  m_MsgToSend->Update(GetLocalHostAddress());
+  m_Socket2->SendMessage(m_MsgToSend);
+  m_Sent++;
+  m_MsgToSend.reset();
 
-  OIGTLImageMessage::Create_STP(m_msgToSend);
-  m_msgToSend->update(getLocalHostAddress());
-  m_socket2->sendMessage(m_msgToSend);
-  m_sent++;
-  m_msgToSend.reset();
+  NiftyLinkImageMessage::Create_STP(m_MsgToSend);
+  m_MsgToSend->Update(GetLocalHostAddress());
+  m_Socket2->SendMessage(m_MsgToSend);
+  m_Sent++;
+  m_MsgToSend.reset();
 
-  OIGTLImageMessage::Create_RTS(m_msgToSend);
-  m_msgToSend->update(getLocalHostAddress());
-  m_socket2->sendMessage(m_msgToSend);
-  m_sent++;
-  m_msgToSend.reset();
-
-  //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-
-  m_msgToSend.operator =(OIGTLStatusMessage::Pointer(new OIGTLStatusMessage()));
-  static_cast<OIGTLStatusMessage::Pointer>(m_msgToSend)->initializeWithTestData();
-  m_msgToSend->update(getLocalHostAddress());
-
-  m_socket2->sendMessage(m_msgToSend);
-  m_sent++;
-  m_msgToSend.reset();
-
-  OIGTLStatusMessage::Create_GET(m_msgToSend);
-  m_msgToSend->update(getLocalHostAddress());
-  m_socket2->sendMessage(m_msgToSend);
-  m_sent++;
-  m_msgToSend.reset();
-
-  OIGTLStatusMessage::Create_STT(m_msgToSend);
-  m_msgToSend->update(getLocalHostAddress());
-  m_socket2->sendMessage(m_msgToSend);
-  m_sent++;
-  m_msgToSend.reset();
-
-  OIGTLStatusMessage::Create_STP(m_msgToSend);
-  m_msgToSend->update(getLocalHostAddress());
-  m_socket2->sendMessage(m_msgToSend);
-  m_sent++;
-  m_msgToSend.reset();
-
-  OIGTLStatusMessage::Create_RTS(m_msgToSend);
-  m_msgToSend->update(getLocalHostAddress());
-  m_socket2->sendMessage(m_msgToSend);
-  m_sent++;
-  m_msgToSend.reset();
+  NiftyLinkImageMessage::Create_RTS(m_MsgToSend);
+  m_MsgToSend->Update(GetLocalHostAddress());
+  m_Socket2->SendMessage(m_MsgToSend);
+  m_Sent++;
+  m_MsgToSend.reset();
 
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-  m_msgToSend.operator =(OIGTLStringMessage::Pointer(new OIGTLStringMessage()));
-  static_cast<OIGTLStringMessage::Pointer>(m_msgToSend)->initializeWithTestData();
-  m_msgToSend->update(getLocalHostAddress());
+  m_MsgToSend.operator =(NiftyLinkStatusMessage::Pointer(new NiftyLinkStatusMessage()));
+  static_cast<NiftyLinkStatusMessage::Pointer>(m_MsgToSend)->InitializeWithTestData();
+  m_MsgToSend->Update(GetLocalHostAddress());
 
-  m_socket2->sendMessage(m_msgToSend);
-  m_sent++;
-  m_msgToSend.reset();
+  m_Socket2->SendMessage(m_MsgToSend);
+  m_Sent++;
+  m_MsgToSend.reset();
 
-  OIGTLStringMessage::Create_GET(m_msgToSend);
-  m_msgToSend->update(getLocalHostAddress());
-  m_socket2->sendMessage(m_msgToSend);
-  m_sent++;
-  m_msgToSend.reset();
+  NiftyLinkStatusMessage::Create_GET(m_MsgToSend);
+  m_MsgToSend->Update(GetLocalHostAddress());
+  m_Socket2->SendMessage(m_MsgToSend);
+  m_Sent++;
+  m_MsgToSend.reset();
 
-  OIGTLStringMessage::Create_STT(m_msgToSend);
-  m_msgToSend->update(getLocalHostAddress());
-  m_socket2->sendMessage(m_msgToSend);
-  m_sent++;
-  m_msgToSend.reset();
+  NiftyLinkStatusMessage::Create_STT(m_MsgToSend);
+  m_MsgToSend->Update(GetLocalHostAddress());
+  m_Socket2->SendMessage(m_MsgToSend);
+  m_Sent++;
+  m_MsgToSend.reset();
 
-  OIGTLStringMessage::Create_STP(m_msgToSend);
-  m_msgToSend->update(getLocalHostAddress());
-  m_socket2->sendMessage(m_msgToSend);
-  m_sent++;
-  m_msgToSend.reset();
+  NiftyLinkStatusMessage::Create_STP(m_MsgToSend);
+  m_MsgToSend->Update(GetLocalHostAddress());
+  m_Socket2->SendMessage(m_MsgToSend);
+  m_Sent++;
+  m_MsgToSend.reset();
 
-  OIGTLStringMessage::Create_RTS(m_msgToSend);
-  m_msgToSend->update(getLocalHostAddress());
-  m_socket2->sendMessage(m_msgToSend);
-  m_sent++;
-  m_msgToSend.reset();
-
-  //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-
-  m_msgToSend.operator =(OIGTLTrackingDataMessage::Pointer(new OIGTLTrackingDataMessage()));
-  static_cast<OIGTLTrackingDataMessage::Pointer>(m_msgToSend)->initializeWithTestData(dummyTransformMatrix);
-  m_msgToSend->update(getLocalHostAddress());
-
-  m_socket2->sendMessage(m_msgToSend);
-  m_sent++;
-  m_msgToSend.reset();
-
-  OIGTLTrackingDataMessage::Create_GET(m_msgToSend);
-  m_msgToSend->update(getLocalHostAddress());
-  m_socket2->sendMessage(m_msgToSend);
-  m_sent++;
-  m_msgToSend.reset();
-
-  OIGTLTrackingDataMessage::Create_STT(m_msgToSend);
-  m_msgToSend->update(getLocalHostAddress());
-  m_socket2->sendMessage(m_msgToSend);
-  m_sent++;
-  m_msgToSend.reset();
-
-  OIGTLTrackingDataMessage::Create_STP(m_msgToSend);
-  m_msgToSend->update(getLocalHostAddress());
-  m_socket2->sendMessage(m_msgToSend);
-  m_sent++;
-  m_msgToSend.reset();
-
-  OIGTLTrackingDataMessage::Create_RTS(m_msgToSend);
-  m_msgToSend->update(getLocalHostAddress());
-  m_socket2->sendMessage(m_msgToSend);
-  m_sent++;
-  m_msgToSend.reset();
+  NiftyLinkStatusMessage::Create_RTS(m_MsgToSend);
+  m_MsgToSend->Update(GetLocalHostAddress());
+  m_Socket2->SendMessage(m_MsgToSend);
+  m_Sent++;
+  m_MsgToSend.reset();
 
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-  m_msgToSend.operator =(OIGTLTransformMessage::Pointer(new OIGTLTransformMessage()));
-  static_cast<OIGTLTransformMessage::Pointer>(m_msgToSend)->initializeWithTestData(dummyTransformMatrix);
-  m_msgToSend->update(getLocalHostAddress());
+  m_MsgToSend.operator =(NiftyLinkStringMessage::Pointer(new NiftyLinkStringMessage()));
+  static_cast<NiftyLinkStringMessage::Pointer>(m_MsgToSend)->InitializeWithTestData();
+  m_MsgToSend->Update(GetLocalHostAddress());
 
-  m_socket2->sendMessage(m_msgToSend);
-  m_sent++;
-  m_msgToSend.reset();
+  m_Socket2->SendMessage(m_MsgToSend);
+  m_Sent++;
+  m_MsgToSend.reset();
 
-  OIGTLTransformMessage::Create_GET(m_msgToSend);
-  m_msgToSend->update(getLocalHostAddress());
-  m_socket2->sendMessage(m_msgToSend);
-  m_sent++;
-  m_msgToSend.reset();
+  NiftyLinkStringMessage::Create_GET(m_MsgToSend);
+  m_MsgToSend->Update(GetLocalHostAddress());
+  m_Socket2->SendMessage(m_MsgToSend);
+  m_Sent++;
+  m_MsgToSend.reset();
 
-  OIGTLTransformMessage::Create_STT(m_msgToSend);
-  m_msgToSend->update(getLocalHostAddress());
-  m_socket2->sendMessage(m_msgToSend);
-  m_sent++;
-  m_msgToSend.reset();
+  NiftyLinkStringMessage::Create_STT(m_MsgToSend);
+  m_MsgToSend->Update(GetLocalHostAddress());
+  m_Socket2->SendMessage(m_MsgToSend);
+  m_Sent++;
+  m_MsgToSend.reset();
 
-  OIGTLTransformMessage::Create_STP(m_msgToSend);
-  m_msgToSend->update(getLocalHostAddress());
-  m_socket2->sendMessage(m_msgToSend);
-  m_sent++;
-  m_msgToSend.reset();
+  NiftyLinkStringMessage::Create_STP(m_MsgToSend);
+  m_MsgToSend->Update(GetLocalHostAddress());
+  m_Socket2->SendMessage(m_MsgToSend);
+  m_Sent++;
+  m_MsgToSend.reset();
 
-  OIGTLTransformMessage::Create_RTS(m_msgToSend);
-  m_msgToSend->update(getLocalHostAddress());
-  m_socket2->sendMessage(m_msgToSend);
-  m_sent++;
-  m_msgToSend.reset();
+  NiftyLinkStringMessage::Create_RTS(m_MsgToSend);
+  m_MsgToSend->Update(GetLocalHostAddress());
+  m_Socket2->SendMessage(m_MsgToSend);
+  m_Sent++;
+  m_MsgToSend.reset();
 
-  std::cout <<"\nTotal number of messages sent: " <<m_sent;
+  //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+  m_MsgToSend.operator =(NiftyLinkTrackingDataMessage::Pointer(new NiftyLinkTrackingDataMessage()));
+  static_cast<NiftyLinkTrackingDataMessage::Pointer>(m_MsgToSend)->InitializeWithTestData(dummyTransformMatrix);
+  m_MsgToSend->Update(GetLocalHostAddress());
+
+  m_Socket2->SendMessage(m_MsgToSend);
+  m_Sent++;
+  m_MsgToSend.reset();
+
+  NiftyLinkTrackingDataMessage::Create_GET(m_MsgToSend);
+  m_MsgToSend->Update(GetLocalHostAddress());
+  m_Socket2->SendMessage(m_MsgToSend);
+  m_Sent++;
+  m_MsgToSend.reset();
+
+  NiftyLinkTrackingDataMessage::Create_STT(m_MsgToSend);
+  m_MsgToSend->Update(GetLocalHostAddress());
+  m_Socket2->SendMessage(m_MsgToSend);
+  m_Sent++;
+  m_MsgToSend.reset();
+
+  NiftyLinkTrackingDataMessage::Create_STP(m_MsgToSend);
+  m_MsgToSend->Update(GetLocalHostAddress());
+  m_Socket2->SendMessage(m_MsgToSend);
+  m_Sent++;
+  m_MsgToSend.reset();
+
+  NiftyLinkTrackingDataMessage::Create_RTS(m_MsgToSend);
+  m_MsgToSend->Update(GetLocalHostAddress());
+  m_Socket2->SendMessage(m_MsgToSend);
+  m_Sent++;
+  m_MsgToSend.reset();
+
+  //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+  m_MsgToSend.operator =(NiftyLinkTransformMessage::Pointer(new NiftyLinkTransformMessage()));
+  static_cast<NiftyLinkTransformMessage::Pointer>(m_MsgToSend)->InitializeWithTestData(dummyTransformMatrix);
+  m_MsgToSend->Update(GetLocalHostAddress());
+
+  m_Socket2->SendMessage(m_MsgToSend);
+  m_Sent++;
+  m_MsgToSend.reset();
+
+  NiftyLinkTransformMessage::Create_GET(m_MsgToSend);
+  m_MsgToSend->Update(GetLocalHostAddress());
+  m_Socket2->SendMessage(m_MsgToSend);
+  m_Sent++;
+  m_MsgToSend.reset();
+
+  NiftyLinkTransformMessage::Create_STT(m_MsgToSend);
+  m_MsgToSend->Update(GetLocalHostAddress());
+  m_Socket2->SendMessage(m_MsgToSend);
+  m_Sent++;
+  m_MsgToSend.reset();
+
+  NiftyLinkTransformMessage::Create_STP(m_MsgToSend);
+  m_MsgToSend->Update(GetLocalHostAddress());
+  m_Socket2->SendMessage(m_MsgToSend);
+  m_Sent++;
+  m_MsgToSend.reset();
+
+  NiftyLinkTransformMessage::Create_RTS(m_MsgToSend);
+  m_MsgToSend->Update(GetLocalHostAddress());
+  m_Socket2->SendMessage(m_MsgToSend);
+  m_Sent++;
+  m_MsgToSend.reset();
+
+  std::cout <<"\nTotal number of messages sent: " <<m_Sent;
 }
 
-void TestMsgTypes_Delivery::clientConnected()
+void TestMsgTypes_Delivery::ClientConnected()
 {
-  m_connecting = true;
+  m_Connecting = true;
 
-  if (m_connecting && m_connectedTo)
-    continueTest();
+  if (m_Connecting && m_ConnectedTo)
+    ContinueTest();
 }
-void TestMsgTypes_Delivery::connectedToRemote()
+void TestMsgTypes_Delivery::ConnectedToRemote()
 {
-  m_connectedTo = true;
+  m_ConnectedTo = true;
 
-  if (m_connecting && m_connectedTo)
-    continueTest();
+  if (m_Connecting && m_ConnectedTo)
+    ContinueTest();
 }
 
-void TestMsgTypes_Delivery::quitTest()
+void TestMsgTypes_Delivery::QuitTest()
 {
-  if(m_sent == m_received)
-    { std::cout <<" OK\n"; m_successCounter++; }
+  if(m_Sent == m_Received)
+    { std::cout <<" OK\n"; m_SuccessCounter++; }
   else
     std::cout <<" FAILED\n";
 
 
-  if (m_socket1 != NULL)
+  if (m_Socket1 != NULL)
   {
-    m_socket1->closeSocket();
+    m_Socket1->CloseSocket();
 
-    while (m_socket1->isActive())
+    while (m_Socket1->IsActive())
       igtl::Sleep(100);
 
-    delete m_socket1;
-    m_socket1 = NULL;
+    delete m_Socket1;
+    m_Socket1 = NULL;
   }
 
-  if (m_socket2 != NULL)
+  if (m_Socket2 != NULL)
   {
-    m_socket2->closeSocket();
+    m_Socket2->CloseSocket();
 
-    while (m_socket2->isActive())
+    while (m_Socket2->IsActive())
       igtl::Sleep(100);
 
-    delete m_socket2;
-    m_socket2 = NULL;
+    delete m_Socket2;
+    m_Socket2 = NULL;
   }
 
-  m_msgToSend.reset();
+  m_MsgToSend.reset();
 
-  emit done();
+  emit Done();
     
-  if (m_testCounter > m_successCounter)
+  if (m_TestCounter > m_SuccessCounter)
   {
     std::cout <<"\n\n\n";
     std::cout <<"****************************************************\n";
     std::cout <<"**************** TESTING FINISHED: *****************\n";
-    std::cout <<"***************** " <<(m_testCounter - m_successCounter) << " TEST(S) FAILED *****************\n";
+    std::cout <<"***************** " <<(m_TestCounter - m_SuccessCounter) << " TEST(S) FAILED *****************\n";
     std::cout <<"****************************************************\n";
     exit(-1);
   }
@@ -376,70 +376,70 @@ void TestMsgTypes_Delivery::quitTest()
   }
 }
 
-void TestMsgTypes_Delivery::catchMessage(OIGTLMessage::Pointer msg)
+void TestMsgTypes_Delivery::CatchMessage(NiftyLinkMessage::Pointer msg)
 {
   QString sender = QObject::sender()->objectName();
 
   if (msg.operator!=(NULL))
   {
-    //QLOG_INFO() <<m_received+1 <<"of" <<m_numOfMsg <<"message received: " <<msg->getHostName() <<":" <<msg->getPort() <<" " <<msg->getMessageType();
+    //QLOG_INFO() <<m_Received+1 <<"of" <<m_NumOfMsg <<"message received: " <<msg->GetHostName() <<":" <<msg->GetPort() <<" " <<msg->GetMessageType();
 
     igtl::MessageBase::Pointer message;
-    msg->getMessagePointer(message);
+    msg->GetMessagePointer(message);
 
     if (strcmp(message->GetNameOfClass(), "igtl::ImageMessage") == 0)
-      m_received++;
+      m_Received++;
     else if (strcmp(message->GetNameOfClass(), "igtl::GetImageMessage") == 0)
-      m_received++;
+      m_Received++;
     else if (strcmp(message->GetNameOfClass(), "igtl::StartImageMessage") == 0)
-      m_received++;
+      m_Received++;
     else if (strcmp(message->GetNameOfClass(), "igtl::StopImageMessage") == 0)
-      m_received++;
+      m_Received++;
     else if (strcmp(message->GetNameOfClass(), "igtl::RTSImageMessage") == 0)
-      m_received++;
+      m_Received++;
     else if (strcmp(message->GetNameOfClass(), "igtl::StatusMessage") == 0)
-      m_received++;
+      m_Received++;
     else if (strcmp(message->GetNameOfClass(), "igtl::GetStatusMessage") == 0)
-      m_received++;
+      m_Received++;
     else if (strcmp(message->GetNameOfClass(), "igtl::StartStatusMessage") == 0)
-      m_received++;
+      m_Received++;
     else if (strcmp(message->GetNameOfClass(), "igtl::StopStatusMessage") == 0)
-      m_received++;
+      m_Received++;
     else if (strcmp(message->GetNameOfClass(), "igtl::RTSStatusMessage") == 0)
-      m_received++;
+      m_Received++;
     else if (strcmp(message->GetNameOfClass(), "igtl::StringMessage") == 0)
-      m_received++;
+      m_Received++;
     else if (strcmp(message->GetNameOfClass(), "igtl::GetStringMessage") == 0)
-      m_received++;
+      m_Received++;
     else if (strcmp(message->GetNameOfClass(), "igtl::StartStringMessage") == 0)
-      m_received++;
+      m_Received++;
     else if (strcmp(message->GetNameOfClass(), "igtl::StopStringMessage") == 0)
-      m_received++;
+      m_Received++;
     else if (strcmp(message->GetNameOfClass(), "igtl::RTSStringMessage") == 0)
-      m_received++;
+      m_Received++;
     else if (strcmp(message->GetNameOfClass(), "igtl::TrackingDataMessage") == 0)
-      m_received++;
+      m_Received++;
     else if (strcmp(message->GetNameOfClass(), "igtl::GetTrackingDataMessage") == 0)
-      m_received++;
+      m_Received++;
     else if (strcmp(message->GetNameOfClass(), "igtl::StartTrackingDataMessage") == 0)
-      m_received++;
+      m_Received++;
     else if (strcmp(message->GetNameOfClass(), "igtl::StopTrackingDataMessage") == 0)
-      m_received++;
+      m_Received++;
     else if (strcmp(message->GetNameOfClass(), "igtl::RTSTrackingDataMessage") == 0)
-      m_received++;
+      m_Received++;
     else if (strcmp(message->GetNameOfClass(), "igtl::TransformMessage") == 0)
-      m_received++;
+      m_Received++;
     else if (strcmp(message->GetNameOfClass(), "igtl::GetTransformMessage") == 0)
-      m_received++;
+      m_Received++;
     else if (strcmp(message->GetNameOfClass(), "igtl::StartTransformMessage") == 0)
-      m_received++;
+      m_Received++;
     else if (strcmp(message->GetNameOfClass(), "igtl::StopTransformMessage") == 0)
-      m_received++;
+      m_Received++;
     else if (strcmp(message->GetNameOfClass(), "igtl::RTSTransformMessage") == 0)
-      m_received++;
+      m_Received++;
 
-    if (m_received >= 25)
-      quitTest();
+    if (m_Received >= 25)
+      QuitTest();
 
   }
 }

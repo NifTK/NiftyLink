@@ -17,8 +17,8 @@
 #include <QTest>
 #include <iostream>
 #include <igtlTimeStamp.h>
-#include "OIGTLSocketObject.h"
-#include "OIGTLImageMessage.h"
+#include "NiftyLinkSocketObject.h"
+#include "NiftyLinkImageMessage.h"
 #include "TestImagingReceiver.h"
 
 //-----------------------------------------------------------------------------
@@ -26,9 +26,9 @@ TestImagingReceiver::TestImagingReceiver(const int& portNumber, const int& numbe
   : m_PortNumber(portNumber)
 , m_NumberOfMessagesExpected(numberOfMessagesExpected)
 {
-  connect(&m_Socket, SIGNAL(clientConnectedSignal()), this, SLOT(OnClientConnected()));
-  connect(&m_Socket, SIGNAL(clientDisconnectedSignal()), this, SLOT(OnClientDisconnected()));
-  connect(&m_Socket, SIGNAL(messageReceived(OIGTLMessage::Pointer)), this, SLOT(OnMessageReceived(OIGTLMessage::Pointer)));
+  connect(&m_Socket, SIGNAL(ClientConnectedSignal()), this, SLOT(OnClientConnected()));
+  connect(&m_Socket, SIGNAL(ClientDisconnectedSignal()), this, SLOT(OnClientDisconnected()));
+  connect(&m_Socket, SIGNAL(MessageReceivedSignal(NiftyLinkMessage::Pointer)), this, SLOT(OnMessageReceived(NiftyLinkMessage::Pointer)));
 }
 
 
@@ -58,9 +58,9 @@ void TestImagingReceiver::OnClientDisconnected()
 //-----------------------------------------------------------------------------
 void TestImagingReceiver::FinishUp()
 {
-  if (m_Socket.isConnected())
+  if (m_Socket.IsConnected())
   {
-    m_Socket.closeSocket();
+    m_Socket.CloseSocket();
   }
 }
 
@@ -68,12 +68,12 @@ void TestImagingReceiver::FinishUp()
 //-----------------------------------------------------------------------------
 void TestImagingReceiver::Setup()
 {
-  m_Socket.setConnectTimeOut(60); // keep it alive to avoid instantly exiting.
+  m_Socket.SetConnectTimeOut(60); // keep it alive to avoid instantly exiting.
 
   m_CumulativeTime = 0;
   m_CumulativeMessageCount = 0;
 
-  bool connectionResult = m_Socket.listenOnPort(m_PortNumber);
+  bool connectionResult = m_Socket.ListenOnPort(m_PortNumber);
 
   if (!connectionResult)
   {
@@ -84,7 +84,7 @@ void TestImagingReceiver::Setup()
 
 
 //-----------------------------------------------------------------------------
-void TestImagingReceiver::OnMessageReceived(OIGTLMessage::Pointer)
+void TestImagingReceiver::OnMessageReceived(NiftyLinkMessage::Pointer)
 {
   igtl::TimeStamp::Pointer beforeTime = igtl::TimeStamp::New();
 

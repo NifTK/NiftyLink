@@ -30,8 +30,8 @@
 #include "QsLog.h"
 #include "QsLogDest.h"
 
-#include "OIGTLSocketObject.h"
-#include "OIGTLTrackingDataMessage.h"
+#include "NiftyLinkSocketObject.h"
+#include "NiftyLinkTrackingDataMessage.h"
 
 
 #include <cstdlib>
@@ -44,20 +44,20 @@ class TestTdataMsg_General : public QObject
   Q_OBJECT
 
 signals:
-  void done();
+  void Done();
 
 public:
   TestTdataMsg_General(void);
   ~TestTdataMsg_General(void);
 
 public slots:
-  void setupTest();
-  void performTest();
-  void quitTest();
+  void SetupTest();
+  void PerformTest();
+  void QuitTest();
 
 private:
-  QString m_localhostname;
-  int m_testCounter;
-  int m_successCounter;
+  QString m_LocalHostname;
+  int     m_TestCounter;
+  int     m_SuccessCounter;
 };
 

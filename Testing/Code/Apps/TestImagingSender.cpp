@@ -17,8 +17,8 @@
 #include <QTest>
 #include <iostream>
 #include <igtlTimeStamp.h>
-#include "OIGTLSocketObject.h"
-#include "OIGTLImageMessage.h"
+#include "NiftyLinkSocketObject.h"
+#include "NiftyLinkImageMessage.h"
 #include "TestImagingSender.h"
 
 //-----------------------------------------------------------------------------
@@ -35,10 +35,10 @@ TestImagingSender::TestImagingSender(const QImage* image,
   m_TimePackingMessage = 0;
   m_NumberSent = 0;
 
-  connect(&m_Socket, SIGNAL(messageSent(unsigned long long)), this, SLOT(OnMessageSent(unsigned long long)));
-  connect(&m_Socket, SIGNAL(connectedToRemoteSignal()), this, SLOT(OnConnectToRemote()));
-  connect(&m_Socket, SIGNAL(lostConnectionToRemoteSignal()), this, SLOT(OnLostConnectionToRemote()));
-  connect(&m_Socket, SIGNAL(shutdownSender()), this, SLOT(OnShutdownSender()));
+  connect(&m_Socket, SIGNAL(MessageSentSignal(unsigned long long)), this, SLOT(OnMessageSent(unsigned long long)));
+  connect(&m_Socket, SIGNAL(ConnectedToRemoteSignal()), this, SLOT(OnConnectToRemote()));
+  connect(&m_Socket, SIGNAL(LostConnectionToRemoteSignal()), this, SLOT(OnLostConnectionToRemote()));
+  connect(&m_Socket, SIGNAL(ShutdownSenderSignal()), this, SLOT(OnShutdownSender()));
 }
 
 
@@ -66,9 +66,9 @@ void TestImagingSender::OnLostConnectionToRemote()
 //-----------------------------------------------------------------------------
 void TestImagingSender::FinishUp()
 {
-  if (m_Socket.isConnected())
+  if (m_Socket.IsConnected())
   {
-    m_Socket.closeSocket();
+    m_Socket.CloseSocket();
   }
 }
 
@@ -95,7 +95,7 @@ bool TestImagingSender::Setup()
   url.setHost(m_HostName);
   url.setPort(m_PortNumber);
 
-  bool connectionResult = m_Socket.connectToRemote(url);
+  bool connectionResult = m_Socket.ConnectToRemote(url);
 
   if (!connectionResult)
   {
@@ -111,13 +111,13 @@ void TestImagingSender::Run()
 {
   if(this->Setup())
   {
-    while(!m_Socket.isConnected())
+    while(!m_Socket.IsConnected())
     {
       QTest::qWait(250);
     }
 
     igtl::TimeStamp::Pointer startTime = igtl::TimeStamp::New();
-    startTime->GetTime();
+    startTime->Update();
 
 
     // Throw data at the socket.
@@ -130,7 +130,7 @@ void TestImagingSender::Run()
 
     // Finish
     igtl::TimeStamp::Pointer endTime = igtl::TimeStamp::New();
-    endTime->GetTime();
+    endTime->Update();
 
     // Calculate results
     igtlUint64 result = GetDifferenceInNanoSeconds(endTime, startTime);
@@ -159,17 +159,17 @@ void TestImagingSender::SendData(const int& numberOfIterations)
     igtl::TimeStamp::Pointer startIteration = igtl::TimeStamp::New();
 
     igtl::Matrix4x4 matrix;
-    OIGTLImageMessage::Pointer msg(new OIGTLImageMessage());
-    msg->setQImage(*m_Image);
-    msg->setMatrix(matrix);
+    NiftyLinkImageMessage::Pointer msg(new NiftyLinkImageMessage());
+    msg->SetQImage(*m_Image);
+    msg->SetMatrix(matrix);
 
     igtl::TimeStamp::Pointer endPacking = igtl::TimeStamp::New();
-    endPacking->GetTime();
+    endPacking->Update();
 
-    m_Socket.sendMessage(msg);
+    m_Socket.SendMessage(msg);
 
     igtl::TimeStamp::Pointer endSending = igtl::TimeStamp::New();
-    endSending->GetTime();
+    endSending->Update();
 
     igtlUint64 nanos = GetDifferenceInNanoSeconds(endPacking, startIteration);
     m_TimePackingMessage += nanos;

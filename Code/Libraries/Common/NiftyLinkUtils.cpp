@@ -1,83 +1,83 @@
 /*=============================================================================
-  NiftyLink:  A software library to facilitate communication over OpenIGTLink.
+NiftyLink: A software library to facilitate communication over OpenIGTLink.
 
-  Copyright (c) University College London (UCL). All rights reserved.
+Copyright (c) University College London (UCL). All rights reserved.
 
-  This software is distributed WITHOUT ANY WARRANTY; without even
-  the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR
-  PURPOSE.
+This software is distributed WITHOUT ANY WARRANTY; without even
+the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR
+PURPOSE.
 
-  See LICENSE.txt in the top level directory for details.
+See LICENSE.txt in the top level directory for details.
 =============================================================================*/
 
 #include "NiftyLinkUtils.h"
 #include <cmath>
 
 //-----------------------------------------------------------------------------
-bool validateIp(const QString &inputIP)
+bool ValidateIp(const QString &inputIP)
 {
-	QStringList nums = inputIP.split(".");
+  QStringList nums = inputIP.split(".");
 
-	if (nums.count() !=4)
-		return false;
+  if (nums.count() != 4)
+    return false;
 
-	for (int i = 0; i < 4; i++)
-	{
-		bool ok = false;
-		int frag = nums.at(i).toInt(&ok, 10);
-		
-		if (!ok) return false;
-		else if (frag < 0 || frag > 255) return false;
-	}
-	
-	return true;
+  for (int i = 0; i < 4; i++)
+  {
+    bool ok = false;
+    int frag = nums.at(i).toInt(&ok, 10);
+
+    if (!ok) return false;
+    else if (frag < 0 || frag > 255) return false;
+  }
+
+  return true;
 }
 
 
 //-----------------------------------------------------------------------------
-QString resolveHostName(const QString &input)
+QString ResolveHostName(const QString &input)
 {
-	if (validateIp(input))
-		return input;
+  if (ValidateIp(input))
+    return input;
 
-	QHostInfo info = QHostInfo::fromName(input);
-	QList<QHostAddress> addresses = info.addresses();
+  QHostInfo info = QHostInfo::fromName(input);
+  QList<QHostAddress> addresses = info.addresses();
 
-	for (int i=0; i< addresses.count(); i++)
-	{
-		if( validateIp(addresses.at(i).toString()) == true )
-		{
-			return addresses.at(i).toString();
-		}
-	}
-	
-	return QString("UNKNOWN");
-
-}
-
-
-//-----------------------------------------------------------------------------
-QString getLocalHostAddress(void)
-{
-    QNetworkConfigurationManager mgr;
-    QNetworkConfiguration nconfig = mgr.defaultConfiguration();
-    QNetworkSession session ( nconfig );
-    QNetworkInterface ninter = session.interface();
-
-    // this provides more than one ip addresses
-    QList<QNetworkAddressEntry> laddr = ninter.addressEntries();
-    for ( QList<QNetworkAddressEntry> ::const_iterator it = laddr.begin(); it != laddr.end(); ++it )
+  for (int i=0; i< addresses.count(); i++)
+  {
+    if( ValidateIp(addresses.at(i).toString()) == true )
     {
-        QString ipstr = it->ip().toString();
-        if (validateIp(ipstr))
-        {
-            // Need to return the one which is valid and not 'localhost'
-            if (ipstr != QString("127.0.0.1"))
-                return ipstr;
-        }
+      return addresses.at(i).toString();
     }
+  }
 
-    return QString("UNKNOWN");
+  return QString("UNKNOWN");
+
+}
+
+
+//-----------------------------------------------------------------------------
+QString GetLocalHostAddress(void)
+{
+  QNetworkConfigurationManager mgr;
+  QNetworkConfiguration nconfig = mgr.defaultConfiguration();
+  QNetworkSession session ( nconfig );
+  QNetworkInterface ninter = session.interface();
+
+  // this provides more than one ip addresses
+  QList<QNetworkAddressEntry> laddr = ninter.addressEntries();
+  for ( QList<QNetworkAddressEntry> ::const_iterator it = laddr.begin(); it != laddr.end(); ++it )
+  {
+    QString ipstr = it->ip().toString();
+    if (ValidateIp(ipstr))
+    {
+      // Need to return the one which is valid and not 'localhost'
+      if (ipstr != QString("127.0.0.1"))
+        return ipstr;
+    }
+  }
+
+  return QString("UNKNOWN");
 }
 
 
@@ -108,7 +108,7 @@ void CreateRandomTransformMatrix(igtl::Matrix4x4& matrix)
   matrix[0][3] = position[0];
   matrix[1][3] = position[1];
   matrix[2][3] = position[2];
-  
+
   //igtl::PrintMatrix(matrix);
 }
 
@@ -203,7 +203,7 @@ void InitMessageTypes(mapStrMsgType &types)
 igtlUint64 GetTimeInNanoSeconds(igtl::TimeStamp* time)
 {
   igtlUint32 seconds, nanoseconds;
-  time->GetTimeStamp(&seconds, &nanoseconds);
+  time->GetTime(&seconds, &nanoseconds);
 
   igtlUint64 result = (igtlUint64)seconds * 1000000000 + (igtlUint64)nanoseconds;
   return result;
@@ -229,17 +229,9 @@ igtlUint64 GetDifferenceInNanoSeconds(igtl::TimeStamp* timeA, igtl::TimeStamp* t
   igtlUint64 b = GetTimeInNanoSeconds(timeB);
   igtlUint64 d;
 
-  if (a>b)
-  {
-    d = a-b;
-  }
-  else if (b>a)
-  {
-    d = b-a;
-  }
-  else
-  {
-    d = 0;
-  }
+  if (a > b)      { d = a-b; }
+  else if (b > a) { d = b-a; }
+  else            { d = 0; }
+
   return d;
 }

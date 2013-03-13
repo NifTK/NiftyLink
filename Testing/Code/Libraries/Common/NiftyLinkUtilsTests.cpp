@@ -15,15 +15,15 @@
 #include <QDebug>
 #include "NiftyLinkUtils.h"
 
-void UtilsTests::initTestCase()
+void UtilsTests::InitTestCase()
 {
 }
 
-void UtilsTests::cleanupTestCase()
+void UtilsTests::CleanupTestCase()
 {
 }
 
-void UtilsTests::timeStampSetGetDifferenceTest()
+void UtilsTests::TimeStampSetGetDifferenceTest()
 {
   igtlUint32 seconds, nanoseconds;
   igtlUint32 seconds2, nanoseconds2;
@@ -31,7 +31,7 @@ void UtilsTests::timeStampSetGetDifferenceTest()
   igtlUint64 totalTimeInNanoseconds2;
 
   igtl::TimeStamp::Pointer timeStamp = igtl::TimeStamp::New();
-  timeStamp->GetTimeStamp(&seconds, &nanoseconds);
+  timeStamp->GetTime(&seconds, &nanoseconds);
 
   totalTimeInNanoseconds = GetTimeInNanoSeconds(timeStamp);
   totalTimeInNanoseconds2 = (igtlUint64)((igtlUint64)seconds*(igtlUint64)1000000000 + (igtlUint64)nanoseconds);
@@ -43,7 +43,7 @@ void UtilsTests::timeStampSetGetDifferenceTest()
 
   QVERIFY(totalTimeInNanoseconds == totalTimeInNanoseconds2);
 
-  timeStamp->GetTimeStamp(&seconds2, &nanoseconds2);
+  timeStamp->GetTime(&seconds2, &nanoseconds2);
 
   QVERIFY(seconds == seconds2);
   QVERIFY(nanoseconds == nanoseconds2);

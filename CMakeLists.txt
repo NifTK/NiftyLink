@@ -132,7 +132,7 @@ IF (NOT BUILD_SHARED_LIBS)
 ENDIF()
 
 OPTION(BUILD_TESTING "Build Unit tests in NiftyLink/Testing/Code" ON)
-OPTION(NIFTYLINK_OIGTLINK_DEV "Build the development version of OpenIGTLink" ON)
+OPTION(NIFTYLINK_OPENIGTLINK_DEV "Build the development version of OpenIGTLink" ON)
 OPTION(NIFTYLINK_CHECK_COVERAGE "Enable/Disable code coverage checking." OFF)
 
 ######################################################################
@@ -153,8 +153,8 @@ SET(NIFTYLINK_USER_CONTACT "https://www.mailinglists.ucl.ac.uk/mailman/listinfo/
 SET(NIFTYLINK_DEVELOPER_CONTACT "https://www.mailinglists.ucl.ac.uk/mailman/listinfo/niftk-developers" CACHE STRING "Contact address for developers." FORCE )
 SET(NIFTYLINK_VERSION_STRING "${NIFTYLINK_VERSION_MAJOR}.${NIFTYLINK_VERSION_MINOR}.${NIFTYLINK_VERSION_PATCH}" CACHE STRING "String to describe fully named version" FORCE)
 SET(NIFTYLINK_DEPLOY_NAME "${NIFTYLINK_NAME}-${NIFTYLINK_VERSION_STRING}" CACHE STRING "String to describe deployed name" FORCE)
-SET(NIFTYLINK_OPENIGTLINK_VERSION "20fbf0c24a"  CACHE STRING "OpenIGTLink version" FORCE )
-SET(NIFTYLINK_OPENIGTLINK_MD5 "5ed1347e57358f34266e4e03979a9975" CACHE STRING "OpenIGTLink MD5" FORCE )
+SET(NIFTYLINK_OPENIGTLINK_VERSION "97ee57a397"  CACHE STRING "OpenIGTLink version" FORCE )
+SET(NIFTYLINK_OPENIGTLINK_MD5 "673594416ddbbb2cf1a2f245f4963473" CACHE STRING "OpenIGTLink MD5" FORCE )
 SET(NIFTYLINK_OPENIGTLINK_LOCATION "http://cmic.cs.ucl.ac.uk/platform/dependencies/NifTK-OpenIGTLink-${NIFTYLINK_OPENIGTLINK_VERSION}.tar.gz" CACHE STRING "Location of OpenIGTLink .tar.gz" FORCE )
 SET(NIFTYLINK_OPENIGTLINK_LOCATION_DEV "git://github.com/NifTK/OpenIGTLink.git" CACHE STRING "Development version of OpenIGTLink." )
 SET(NIFTYLINK_OPENIGTLINK_LOCATION_URL "https://github.com/NifTK/OpenIGTLink" CACHE STRING "OpenIGTLink on Github" FORCE )
@@ -188,13 +188,13 @@ MARK_AS_ADVANCED(UNAME)
 ######################################################################
 # Sort out which version of OpenIGTLink we are using
 ######################################################################
-IF(NIFTYLINK_OIGTLINK_DEV)
-  SET(OIGTL_OPTIONS
+IF(NIFTYLINK_NiftyLinkINK_DEV)
+  SET(NiftyLink_OPTIONS
     GIT_REPOSITORY ${NIFTYLINK_OPENIGTLINK_LOCATION_DEV}
     GIT_TAG development
   )
 ELSE()
-  SET(OIGTL_OPTIONS
+  SET(NiftyLink_OPTIONS
     URL ${NIFTYLINK_OPENIGTLINK_LOCATION}
     URL_MD5 ${NIFTYLINK_OPENIGTLINK_MD5}
   )
@@ -272,7 +272,7 @@ FIND_PACKAGE(OpenIGTLink REQUIRED)
 IF(OpenIGTLink_FOUND)
   MESSAGE("Found OpenIGTLink")    
   INCLUDE(${OpenIGTLink_USE_FILE}) 
-  IF(NIFTYLINK_OIGTLINK_DEV)
+  IF(NIFTYLINK_NiftyLinkINK_DEV)
     mitkFunctionGetVersion(${OpenIGTLink_SOURCE_DIR} OPENIGTLINK)
     MESSAGE("OpenIGTLink git version=${OPENIGTLINK_REVISION_ID}")   
   ELSE()
