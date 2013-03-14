@@ -294,7 +294,7 @@ void NiftyLinkListenerProcess::ListenOnSocket(void)
         QLOG_DEBUG() <<objectName() <<"Keepalive received, restarting the timeouter\n";
         m_TimeOuter->start(2000);
       }
-/*
+      /*
       // Sleep for a bit to let some more data arrive to the socket
       try
       {
@@ -305,7 +305,7 @@ void NiftyLinkListenerProcess::ListenOnSocket(void)
       {
         qDebug() <<"Type cast error.Always run this process from QThreadEx. Exception: " <<e.what();
       }
-*/
+      */
       continue;
     }
 
