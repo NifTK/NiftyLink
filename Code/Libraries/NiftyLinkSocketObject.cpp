@@ -129,7 +129,7 @@ void NiftyLinkSocketObject::InitThreads()
   ok &= connect(m_Sender, SIGNAL(DisconnectedFromRemoteSignal(bool )), this, SLOT(OnDisconnectedFromRemote(bool )));
   ok &= connect(m_Sender, SIGNAL(SendingFinishedSignal()), this, SIGNAL(SendingFinishedSignal()));
   ok &= connect(m_Sender, SIGNAL(MessageSentSignal(unsigned long long )), this, SIGNAL(MessageSentSignal(unsigned long long )));
-  ok &= connect(this, SIGNAL(MessageToSendSignal(NiftyLinkMessage::Pointer)), 
+  ok &= connect(this, SIGNAL(MessageToSendSignal(NiftyLinkMessage::Pointer)),
                 m_Sender, SLOT(AddMsgToSendQueue(NiftyLinkMessage::Pointer)), Qt::DirectConnection);
 
   ok &= connect(m_SenderHostThread, SIGNAL(EventloopStarted()), m_Sender, SLOT(StartProcess()));
