@@ -31,7 +31,8 @@ set(CTEST_CUSTOM_COVERAGE_EXCLUDE
 
 # The following tests should not be run under valgrind
 set(CTEST_CUSTOM_MEMCHECK_IGNORE
-  
+  TestNL_SendReceive_Basic
+  TestNL_SendReceive_Timing  
   )
 
 set(CTEST_CUSTOM_ERROR_MATCH
