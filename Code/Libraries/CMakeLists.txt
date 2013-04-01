@@ -27,21 +27,21 @@ INCLUDE(${QT_USE_FILE})
 # Sources
 
 SET(niftylink_SRCS
-Common/NiftyLinkUtils.cpp
-Common/NiftyLinkXMLBuilder.cpp
-Common/QsDebugOutput.cpp
-Common/QsLog.cpp
-Common/QsLogDest.cpp
-NiftyLinkMessage.cpp
-NiftyLinkProcessBase.cpp
-NiftyLinkSenderProcess.cpp
-NiftyLinkListenerProcess.cpp
-NiftyLinkSocketObject.cpp
-NiftyLinkTransformMessage.cpp
-NiftyLinkImageMessage.cpp
-NiftyLinkStatusMessage.cpp
-NiftyLinkStringMessage.cpp
-NiftyLinkTrackingDataMessage.cpp
+Common/NiftyLinkUtils.cxx
+Common/NiftyLinkXMLBuilder.cxx
+Common/QsDebugOutput.cxx
+Common/QsLog.cxx
+Common/QsLogDest.cxx
+NiftyLinkMessage.cxx
+NiftyLinkProcessBase.cxx
+NiftyLinkSenderProcess.cxx
+NiftyLinkListenerProcess.cxx
+NiftyLinkSocketObject.cxx
+NiftyLinkTransformMessage.cxx
+NiftyLinkImageMessage.cxx
+NiftyLinkStatusMessage.cxx
+NiftyLinkStringMessage.cxx
+NiftyLinkTrackingDataMessage.cxx
 )
 
 #########################

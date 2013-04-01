@@ -16,7 +16,7 @@
 # Sources
 
 SET(TestNL_Utils_SRCS
-Common/NiftyLinkUtilsTests.cpp
+Common/NiftyLinkUtilsTests.cxx
 )
 
 SET(TestNL_Utils_HDRS
@@ -36,8 +36,8 @@ ADD_TEST(TestNL_Utils ${EXECUTABLE_OUTPUT_PATH}/TestNL_Utils )
 ###########################################################################
 
 SET(MsgType_ConstrDestr_SRCS
-NLTest_MsgTypes_ConstrDestr.cpp
-TestMsgTypes_ConstrDestr.cpp
+NLTest_MsgTypes_ConstrDestr.cxx
+TestMsgTypes_ConstrDestr.cxx
 )
 
 SET(MsgType_ConstrDestr_HDRS
@@ -58,8 +58,8 @@ ADD_TEST(TestNL_MsgTypes_ConstrDestr ${EXECUTABLE_OUTPUT_PATH}/TestNL_MsgTypes_C
 ###########################################################################
 
 SET(MsgTypes_Delivery_SRCS
-NLTest_MsgTypes_Delivery.cpp
-TestMsgTypes_Delivery.cpp
+NLTest_MsgTypes_Delivery.cxx
+TestMsgTypes_Delivery.cxx
 )
 
 SET(MsgTypes_Delivery_HDRS
@@ -80,8 +80,8 @@ ADD_TEST(TestNL_MsgTypes_Delivery ${EXECUTABLE_OUTPUT_PATH}/TestNL_MsgTypes_Deli
 ###########################################################################
 
 SET(ImgMsgType_General_SRCS
-NLTest_ImgMsg_General.cpp
-TestImgMsg_General.cpp
+NLTest_ImgMsg_General.cxx
+TestImgMsg_General.cxx
 )
 
 SET(ImgMsgType_General_HDRS
@@ -102,8 +102,8 @@ ADD_TEST(TestNL_ImgMsg_General ${EXECUTABLE_OUTPUT_PATH}/TestNL_ImgMsg_General )
 ###########################################################################
 
 SET(ImgMsgType_LoadSaveInit_SRCS
-NLTest_ImgMsg_LoadSaveInit.cpp
-TestImgMsg_LoadSaveInit.cpp
+NLTest_ImgMsg_LoadSaveInit.cxx
+TestImgMsg_LoadSaveInit.cxx
 )
 
 SET(ImgMsgType_LoadSaveInit_HDRS
@@ -124,8 +124,8 @@ ADD_TEST(TestNL_ImgMsg_LoadSaveInit ${EXECUTABLE_OUTPUT_PATH}/TestNL_ImgMsg_Load
 ###########################################################################
 
 SET(TransMsgType_General_SRCS
-NLTest_TransMsg_General.cpp
-TestTransMsg_General.cpp
+NLTest_TransMsg_General.cxx
+TestTransMsg_General.cxx
 )
 
 SET(TransMsgType_General_HDRS
@@ -146,8 +146,8 @@ ADD_TEST(TestNL_TransMsg_General ${EXECUTABLE_OUTPUT_PATH}/TestNL_TransMsg_Gener
 ###########################################################################
 
 SET(TdataMsgType_General_SRCS
-NLTest_TdataMsg_General.cpp
-TestTdataMsg_General.cpp
+NLTest_TdataMsg_General.cxx
+TestTdataMsg_General.cxx
 )
 
 SET(TdataMsgType_General_HDRS
@@ -168,8 +168,8 @@ ADD_TEST(TestNL_TdataMsg_General ${EXECUTABLE_OUTPUT_PATH}/TestNL_TdataMsg_Gener
 ###########################################################################
 
 SET(StatusMsgType_General_SRCS
-NLTest_StatusMsg_General.cpp
-TestStatusMsg_General.cpp
+NLTest_StatusMsg_General.cxx
+TestStatusMsg_General.cxx
 )
 
 SET(StatusMsgType_General_HDRS
@@ -190,8 +190,8 @@ ADD_TEST(TestNL_StatusMsg_General ${EXECUTABLE_OUTPUT_PATH}/TestNL_StatusMsg_Gen
 ###########################################################################
 
 SET(StringMsgType_General_SRCS
-NLTest_StringMsg_General.cpp
-TestStringMsg_General.cpp
+NLTest_StringMsg_General.cxx
+TestStringMsg_General.cxx
 )
 
 SET(StringMsgType_General_HDRS
@@ -212,8 +212,8 @@ ADD_TEST(TestNL_StringMsg_General ${EXECUTABLE_OUTPUT_PATH}/TestNL_StringMsg_Gen
 ###########################################################################
 
 SET(SenderProcess_General_SRCS
-NLTest_SenderProcess_General.cpp
-TestSenderProcess_General.cpp
+NLTest_SenderProcess_General.cxx
+TestSenderProcess_General.cxx
 )
 
 SET(SenderProcess_General_HDRS
@@ -234,8 +234,8 @@ ADD_TEST(TestNL_SenderProcess_General ${EXECUTABLE_OUTPUT_PATH}/TestNL_SenderPro
 ###########################################################################
 
 SET(ListenerProcess_General_SRCS
-NLTest_ListenerProcess_General.cpp
-TestListenerProcess_General.cpp
+NLTest_ListenerProcess_General.cxx
+TestListenerProcess_General.cxx
 )
 
 SET(ListenerProcess_General_HDRS
@@ -256,8 +256,8 @@ ADD_TEST(TestNL_ListenerProcess_General ${EXECUTABLE_OUTPUT_PATH}/TestNL_Listene
 ###########################################################################
 
 SET(SendReceive_Basic_SRCS
-NLTest_SendReceive_Basic.cpp
-TestSendReceive_Basic.cpp
+NLTest_SendReceive_Basic.cxx
+TestSendReceive_Basic.cxx
 )
 
 SET(SendReceive_Basic_HDRS
@@ -278,8 +278,8 @@ ADD_TEST(TestNL_SendReceive_Basic ${EXECUTABLE_OUTPUT_PATH}/TestNL_SendReceive_B
 ###########################################################################
 
 SET(SendReceiveTiming_SRCS
-NLTest_SendReceive_Timing.cpp
-TestSendReceive_Timing.cpp
+NLTest_SendReceive_Timing.cxx
+TestSendReceive_Timing.cxx
 )
 
 SET(SendReceiveTiming_HDRS
@@ -300,8 +300,8 @@ ADD_TEST(TestNL_SendReceive_Timing ${EXECUTABLE_OUTPUT_PATH}/TestNL_SendReceive_
 ###########################################################################
 
 #SET(PTPSendReceive_Basic_SRCS
-#NLTest_PTPSendReceive_Basic.cpp
-#TestPTPSendReceive_Basic.cpp
+#NLTest_PTPSendReceive_Basic.cxx
+#TestPTPSendReceive_Basic.cxx
 #)
 
 #SET(PTPSendReceive_Basic_HDRS
