@@ -70,7 +70,7 @@ The code structure is currently a single library:
 NiftyLink/Code/Libraries/Common
 NiftyLink/Code/Libraries/TimeSync
 NiftyLink/Code/Libraries/*.h
-NiftyLink/Code/Libraries/*.cpp
+NiftyLink/Code/Libraries/*.cxx
 NiftyLink/Code/Libraries/CMakeLists.txt
 \endverbatim
 
