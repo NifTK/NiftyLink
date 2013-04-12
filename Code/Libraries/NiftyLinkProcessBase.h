@@ -71,7 +71,7 @@ public:
   NiftyLinkProcessBase(QObject *parent = 0);
 
   /// \brief Basic destructor
-  ~NiftyLinkProcessBase(void);
+  virtual ~NiftyLinkProcessBase(void);
 
 protected:
 

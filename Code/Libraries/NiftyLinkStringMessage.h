@@ -38,7 +38,7 @@ public:
   NiftyLinkStringMessage(void);
 
   /// \brief Basic destructor
-  ~NiftyLinkStringMessage(void);
+  virtual ~NiftyLinkStringMessage(void);
 
   /// \brief Basic copy constructor required for this data type
   NiftyLinkStringMessage(const NiftyLinkStringMessage &other);

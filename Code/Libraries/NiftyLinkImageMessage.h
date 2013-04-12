@@ -43,7 +43,7 @@ public:
   NiftyLinkImageMessage(void);
 
   /// \brief Basic destructor
-  ~NiftyLinkImageMessage(void);
+  virtual ~NiftyLinkImageMessage(void);
 
   /// \brief Basic copy constructor required for this data type
   NiftyLinkImageMessage(const NiftyLinkImageMessage &other);

@@ -91,7 +91,7 @@ public:
   NiftyLinkSocketObject(QObject *parent = 0);
 
   /// \brief A simple destructor which disconnects signals and ensures that they are deleted.
-  ~NiftyLinkSocketObject(void);
+  virtual ~NiftyLinkSocketObject(void);
 
   /// \brief This function sets the local listening port and starts the listener thread.
   bool ListenOnPort(int port);

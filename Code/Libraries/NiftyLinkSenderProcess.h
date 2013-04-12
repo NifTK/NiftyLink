@@ -57,7 +57,7 @@ protected:
   NiftyLinkSenderProcess(QObject *parent = 0);
 
   /// \brief A simple destructor which ensures that smartpointers will be deleted.
-  ~NiftyLinkSenderProcess(void);
+  virtual ~NiftyLinkSenderProcess(void);
 
   /// \brief Initialize the Process on a given, externally created OpenIGTLink socket (igtl::Socket), while specifying the related port.
   virtual bool Initialize(igtl::Socket::Pointer socket = 0, int port = -1);

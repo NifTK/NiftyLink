@@ -50,7 +50,7 @@ public:
   NiftyLinkTrackingDataMessage(void);
 
   /// \brief Basic destructor
-  ~NiftyLinkTrackingDataMessage(void);
+  virtual ~NiftyLinkTrackingDataMessage(void);
 
   /// \brief Basic copy constructor required for this data type
   NiftyLinkTrackingDataMessage(const NiftyLinkTrackingDataMessage &other);

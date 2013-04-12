@@ -39,7 +39,7 @@ public:
   NiftyLinkStatusMessage(void);
 
   /// \brief Basic destructor
-  ~NiftyLinkStatusMessage(void);
+  virtual ~NiftyLinkStatusMessage(void);
 
   /// \brief Basic copy constructor required for this data type
   NiftyLinkStatusMessage(const NiftyLinkStatusMessage &other);
