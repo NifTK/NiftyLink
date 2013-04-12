@@ -10,8 +10,8 @@ PURPOSE.
 See LICENSE.txt in the top level directory for details.
 =============================================================================*/
 
-#ifndef __NiftyLinkListenerProcess_h
-#define __NiftyLinkListenerProcess_h
+#ifndef NiftyLinkListenerProcess_h
+#define NiftyLinkListenerProcess_h
 
 #include "NiftyLinkProcessBase.h"
 
@@ -59,7 +59,7 @@ protected:
   NiftyLinkListenerProcess(QObject *parent = 0);
 
   /// \brief A simple destructor which ensures that smartpointers will be deleted.
-  ~NiftyLinkListenerProcess(void);
+  virtual ~NiftyLinkListenerProcess(void);
 
   /// \brief Initialize the process on a given externally created OpenIGTLink socket (igtl::Socket), while specifying the related port.
   virtual bool Initialize(igtl::Socket::Pointer socket = 0, int port = -1);
@@ -135,5 +135,4 @@ class NIFTYLINKCOMMON_WINEXPORT NiftyLinkListenerProcessTester : public NiftyLin
     : NiftyLinkListenerProcess(parent) {}
 };
 
-
-#endif
+#endif // NiftyLinkListenerProcess_h

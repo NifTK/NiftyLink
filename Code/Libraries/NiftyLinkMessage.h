@@ -10,8 +10,8 @@ PURPOSE.
 See LICENSE.txt in the top level directory for details.
 =============================================================================*/
 
-#ifndef __NiftyLinkMessage_h
-#define __NiftyLinkMessage_h
+#ifndef NiftyLinkMessage_h
+#define NiftyLinkMessage_h
 
 // Qt related issues
 #include <QtCore>
@@ -66,7 +66,7 @@ public:
   NiftyLinkMessage(void);
 
   /// \brief Basic destructor
-  ~NiftyLinkMessage(void);
+  virtual ~NiftyLinkMessage(void);
 
   /// \brief Basic copy constructor required for this data type
   NiftyLinkMessage(const NiftyLinkMessage &other);
@@ -127,16 +127,25 @@ public:
   void Update(QString hostname);
 
   /// \brief Function set message processed and to check status
-  inline void SetProcessed(bool p) { m_Processed = p; }
+  inline void SetProcessed(bool p)
+  {
+    m_Processed = p;
+  }
 
   /// \brief Function to check if a message was processed
-  bool GetProcessed() { return m_Processed; }
+  bool GetProcessed()
+  {
+    return m_Processed;
+  }
 
   /// \brief Set the name of the owner class as the message is passed back and forth
   void SetOwnerName(QString str);
 
   /// \brief Method to check who owns the message at the moment
-  QString GetOwnerName(void) { return m_OwnerName; }
+  QString GetOwnerName(void)
+  {
+    return m_OwnerName;
+  }
 
 protected:
 
@@ -157,4 +166,4 @@ protected:
 
 Q_DECLARE_METATYPE(NiftyLinkMessage::Pointer);
 
-#endif
+#endif // NiftyLinkMessage_h

@@ -20,7 +20,7 @@ NiftyLinkTransformMessage::NiftyLinkTransformMessage(void)
   : NiftyLinkMessage()
 {
   m_MessageType = "TRANSFORM";
-  m_Message.operator =(NULL);
+  m_Message.operator = (NULL);
 }
 
 
@@ -45,7 +45,9 @@ NiftyLinkTransformMessage::NiftyLinkTransformMessage(const NiftyLinkTransformMes
 void NiftyLinkTransformMessage::SetMatrix(igtl::Matrix4x4 &matrix)
 {
   if (m_Message.IsNull())
-    m_Message.operator =(igtl::TransformMessage::New());
+  {
+    m_Message.operator = (igtl::TransformMessage::New());
+  }
 
   igtl::TransformMessage::Pointer msgPointer;
   msgPointer = static_cast<igtl::TransformMessage *>(m_Message.GetPointer());
@@ -60,7 +62,9 @@ void NiftyLinkTransformMessage::SetMatrix(igtl::Matrix4x4 &matrix)
 void NiftyLinkTransformMessage::GetMatrix(igtl::Matrix4x4 &matrix)
 {
   if (m_Message.IsNull())
+  {
     return;
+  }
 
   igtl::TransformMessage::Pointer msgPointer;
   msgPointer = static_cast<igtl::TransformMessage *>(m_Message.GetPointer());
@@ -75,7 +79,9 @@ void NiftyLinkTransformMessage::GetMatrix(igtl::Matrix4x4 &matrix)
 QString NiftyLinkTransformMessage::GetMatrixAsString()
 {
   if (m_Message.IsNull())
+  {
     return QString();
+  }
 
   igtl::TransformMessage::Pointer msgPointer;
   msgPointer = static_cast<igtl::TransformMessage *>(m_Message.GetPointer());
@@ -95,7 +101,9 @@ QString NiftyLinkTransformMessage::GetMatrixAsString()
 void NiftyLinkTransformMessage::SetPosition(float p[3])
 {
   if (m_Message.IsNull())
-    m_Message.operator =(igtl::TransformMessage::New());
+  {
+    m_Message.operator = (igtl::TransformMessage::New());
+  }
 
   igtl::TransformMessage::Pointer msgPointer;
   msgPointer = static_cast<igtl::TransformMessage *>(m_Message.GetPointer());
@@ -110,7 +118,9 @@ void NiftyLinkTransformMessage::SetPosition(float p[3])
 void NiftyLinkTransformMessage::GetPosition(float p[3])
 {
   if (m_Message.IsNull())
+  {
     return;
+  }
 
   igtl::TransformMessage::Pointer msgPointer;
   msgPointer = static_cast<igtl::TransformMessage *>(m_Message.GetPointer());
@@ -125,7 +135,9 @@ void NiftyLinkTransformMessage::GetPosition(float p[3])
 void NiftyLinkTransformMessage::SetPosition(float px, float py, float pz)
 {
   if (m_Message.IsNull())
-    m_Message.operator =(igtl::TransformMessage::New());
+  {
+    m_Message.operator = (igtl::TransformMessage::New());
+  }
 
   igtl::TransformMessage::Pointer msgPointer;
   msgPointer = static_cast<igtl::TransformMessage *>(m_Message.GetPointer());
@@ -140,7 +152,9 @@ void NiftyLinkTransformMessage::SetPosition(float px, float py, float pz)
 void NiftyLinkTransformMessage::GetPosition(float &px, float &py, float &pz)
 {
   if (m_Message.IsNull())
+  {
     return;
+  }
 
   igtl::TransformMessage::Pointer msgPointer;
   msgPointer = static_cast<igtl::TransformMessage *>(m_Message.GetPointer());
@@ -155,7 +169,9 @@ void NiftyLinkTransformMessage::GetPosition(float &px, float &py, float &pz)
 void NiftyLinkTransformMessage::SetNormals(float o[3][3])
 {
   if (m_Message.IsNull())
-    m_Message.operator =(igtl::TransformMessage::New());
+  {
+    m_Message.operator = (igtl::TransformMessage::New());
+  }
 
   igtl::TransformMessage::Pointer msgPointer;
   msgPointer = static_cast<igtl::TransformMessage *>(m_Message.GetPointer());
@@ -170,7 +186,9 @@ void NiftyLinkTransformMessage::SetNormals(float o[3][3])
 void NiftyLinkTransformMessage::GetNormals(float o[3][3])
 {
   if (m_Message.IsNull())
+  {
     return;
+  }
 
   igtl::TransformMessage::Pointer msgPointer;
   msgPointer = static_cast<igtl::TransformMessage *>(m_Message.GetPointer());
@@ -185,7 +203,9 @@ void NiftyLinkTransformMessage::GetNormals(float o[3][3])
 void NiftyLinkTransformMessage::SetNormals(float t[3], float s[3], float n[3])
 {
   if (m_Message.IsNull())
-    m_Message.operator =(igtl::TransformMessage::New());
+  {
+    m_Message.operator = (igtl::TransformMessage::New());
+  }
 
   igtl::TransformMessage::Pointer msgPointer;
   msgPointer = static_cast<igtl::TransformMessage *>(m_Message.GetPointer());
@@ -200,7 +220,9 @@ void NiftyLinkTransformMessage::SetNormals(float t[3], float s[3], float n[3])
 void NiftyLinkTransformMessage::GetNormals(float t[3], float s[3], float n[3])
 {
   if (m_Message.IsNull())
+  {
     return;
+  }
 
   igtl::TransformMessage::Pointer msgPointer;
   msgPointer = static_cast<igtl::TransformMessage *>(m_Message.GetPointer());
@@ -215,7 +237,9 @@ void NiftyLinkTransformMessage::GetNormals(float t[3], float s[3], float n[3])
 void NiftyLinkTransformMessage::InitializeWithTestData(igtl::Matrix4x4& testMatrix)
 {
   if (m_Message.IsNull())
-    m_Message.operator =(igtl::TransformMessage::New());
+  {
+    m_Message.operator = (igtl::TransformMessage::New());
+  }
 
   igtl::TransformMessage::Pointer msgPointer;
   msgPointer = static_cast<igtl::TransformMessage *>(m_Message.GetPointer());
@@ -230,7 +254,9 @@ void NiftyLinkTransformMessage::InitializeWithTestData(igtl::Matrix4x4& testMatr
 void NiftyLinkTransformMessage::InitializeWithRandomData(void)
 {
   if (m_Message.IsNull())
-    m_Message.operator =(igtl::TransformMessage::New());
+  {
+    m_Message.operator = (igtl::TransformMessage::New());
+  }
 
   igtl::TransformMessage::Pointer msgPointer;
   msgPointer = static_cast<igtl::TransformMessage *>(m_Message.GetPointer());
@@ -248,10 +274,10 @@ void NiftyLinkTransformMessage::InitializeWithRandomData(void)
 //-----------------------------------------------------------------------------
 void NiftyLinkTransformMessage::Create_GET(NiftyLinkMessage::Pointer &msgToCreate)
 {
-  msgToCreate.operator =(NiftyLinkMessage::Pointer(new NiftyLinkMessage()));
+  msgToCreate.operator = (NiftyLinkMessage::Pointer(new NiftyLinkMessage()));
 
   igtl::GetTransformMessage::Pointer cmdMsg;
-  cmdMsg.operator =(igtl::GetTransformMessage::New());
+  cmdMsg.operator = (igtl::GetTransformMessage::New());
 
   igtl::TimeStamp::Pointer ts;
   ts = igtl::TimeStamp::New();
@@ -271,10 +297,10 @@ void NiftyLinkTransformMessage::Create_GET(NiftyLinkMessage::Pointer &msgToCreat
 //-----------------------------------------------------------------------------
 void NiftyLinkTransformMessage::Create_STT(NiftyLinkMessage::Pointer &msgToCreate)
 {
-  msgToCreate.operator =(NiftyLinkMessage::Pointer(new NiftyLinkMessage()));
+  msgToCreate.operator = (NiftyLinkMessage::Pointer(new NiftyLinkMessage()));
 
   igtl::StartTransformMessage::Pointer cmdMsg;
-  cmdMsg.operator =(igtl::StartTransformMessage::New());
+  cmdMsg.operator = (igtl::StartTransformMessage::New());
 
   igtl::TimeStamp::Pointer ts;
   ts = igtl::TimeStamp::New();
@@ -294,10 +320,10 @@ void NiftyLinkTransformMessage::Create_STT(NiftyLinkMessage::Pointer &msgToCreat
 //-----------------------------------------------------------------------------
 void NiftyLinkTransformMessage::Create_STP(NiftyLinkMessage::Pointer &msgToCreate)
 {
-  msgToCreate.operator =(NiftyLinkMessage::Pointer(new NiftyLinkMessage()));
+  msgToCreate.operator = (NiftyLinkMessage::Pointer(new NiftyLinkMessage()));
 
   igtl::StopTransformMessage::Pointer cmdMsg;
-  cmdMsg.operator =(igtl::StopTransformMessage::New());
+  cmdMsg.operator = (igtl::StopTransformMessage::New());
 
   igtl::TimeStamp::Pointer ts;
   ts = igtl::TimeStamp::New();
@@ -317,10 +343,10 @@ void NiftyLinkTransformMessage::Create_STP(NiftyLinkMessage::Pointer &msgToCreat
 //-----------------------------------------------------------------------------
 void NiftyLinkTransformMessage::Create_RTS(NiftyLinkMessage::Pointer &msgToCreate)
 {
-  msgToCreate.operator =(NiftyLinkMessage::Pointer(new NiftyLinkMessage()));
+  msgToCreate.operator = (NiftyLinkMessage::Pointer(new NiftyLinkMessage()));
 
   igtl::RTSTransformMessage::Pointer cmdMsg;
-  cmdMsg.operator =(igtl::RTSTransformMessage::New());
+  cmdMsg.operator = (igtl::RTSTransformMessage::New());
 
   igtl::TimeStamp::Pointer ts;
   ts = igtl::TimeStamp::New();

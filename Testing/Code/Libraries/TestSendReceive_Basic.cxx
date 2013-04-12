@@ -50,7 +50,7 @@ void TestSendReceive_Basic::StartTest()
 
   //***********************************************
   //Instanciate socket objects
-  std::cout <<++m_TestCounter <<". Creating two socket object..";
+  std::cout << ++m_TestCounter << ". Creating two socket object..";
   m_Socket1 = new NiftyLinkSocketObject();
   m_Socket2 = new NiftyLinkSocketObject();
 
@@ -58,50 +58,65 @@ void TestSendReceive_Basic::StartTest()
   m_Socket1->SetObjectNames("Socket1");
 
   if (m_Socket1 != NULL && m_Socket2 != NULL)
-    { std::cout <<" OK\n"; m_SuccessCounter++; }
+  {
+    std::cout << " OK\n";
+    m_SuccessCounter++;
+  }
   else
-    std::cout <<" FAILED\n";
+  {
+    std::cout << " FAILED\n";
+  }
 
   //***********************************************
   //Instanciate socket objects
-  std::cout <<++m_TestCounter <<". Connecting Signals and Slots..";
+  std::cout << ++m_TestCounter << ". Connecting Signals and Slots..";
   bool ok = true;
   ok &= connect(m_Socket1, SIGNAL(MessageReceivedSignal(NiftyLinkMessage::Pointer)), this, SLOT(CatchMessage(NiftyLinkMessage::Pointer )) );
   //ok &= connect(m_Socket1, SIGNAL(messageSent(unsigned long long )), this, SLOT(RecordSendTimestamps(unsigned long long )) );
-  ok &= connect(m_Socket1, SIGNAL(ClientConnectedSignal()), this, SLOT(ClientConnected()) ); 
+  ok &= connect(m_Socket1, SIGNAL(ClientConnectedSignal()), this, SLOT(ClientConnected()) );
 
   ok &= connect(m_Socket2, SIGNAL(MessageReceivedSignal(NiftyLinkMessage::Pointer)), this, SLOT(CatchMessage(NiftyLinkMessage::Pointer )) );
   //ok &= connect(m_Socket2, SIGNAL(messageSent(unsigned long long )), this, SLOT(RecordSendTimestamps(unsigned long long )) );
-  ok &= connect(m_Socket2, SIGNAL(ConnectedToRemoteSignal()), this, SLOT(ConnectedToRemote()) ); 
+  ok &= connect(m_Socket2, SIGNAL(ConnectedToRemoteSignal()), this, SLOT(ConnectedToRemote()) );
   if (ok)
-    { std::cout <<" OK\n"; m_SuccessCounter++; }
+  {
+    std::cout << " OK\n";
+    m_SuccessCounter++;
+  }
   else
-    std::cout <<" FAILED\n";
+  {
+    std::cout << " FAILED\n";
+  }
 
   //This is required on Win to achieve accurate timings
-  #if defined(_WIN32)
-    m_Socket1->InitializeWinTimers(); 
-  #endif
+#if defined(_WIN32)
+  m_Socket1->InitializeWinTimers();
+#endif
 
   //***********************************************
-  //Starting up listener thread 
+  //Starting up listener thread
 
-  std::cout <<++m_TestCounter <<". Starting up the listener socket..";
+  std::cout << ++m_TestCounter << ". Starting up the listener socket..";
 
   //Start sender / listener
   ok = m_Socket1->ListenOnPort(3200);
 
   if (ok && m_Socket1->IsListening())
-    { std::cout <<" OK\n"; m_SuccessCounter++; }
+  {
+    std::cout << " OK\n";
+    m_SuccessCounter++;
+  }
   else
-    std::cout <<" FAILED\n";
+  {
+    std::cout << " FAILED\n";
+  }
 
   igtl::Sleep(500);
 
   //***********************************************
   //Starting up sender thread - false attempt
 
-  std::cout <<++m_TestCounter <<". Starting up the sender socket - false url attempt..";
+  std::cout << ++m_TestCounter << ". Starting up the sender socket - false url attempt..";
 
   QUrl url;
   url.setHost(QString("non-existing-host"));
@@ -114,14 +129,19 @@ void TestSendReceive_Basic::StartTest()
   ok = m_Socket2->IsConnected();
 
   if (!ok)
-    { std::cout <<" NOT POSSIBLE: OK\n"; m_SuccessCounter++; }
+  {
+    std::cout << " NOT POSSIBLE: OK\n";
+    m_SuccessCounter++;
+  }
   else
-    std::cout <<" FAILED\n";
+  {
+    std::cout << " FAILED\n";
+  }
 
   //***********************************************
-  //Starting up sender thread 
+  //Starting up sender thread
 
-  std::cout <<++m_TestCounter <<". Starting up the sender socket..";
+  std::cout << ++m_TestCounter << ". Starting up the sender socket..";
 
   url.setHost(QString("localhost"));
   url.setPort(3200);
@@ -132,29 +152,41 @@ void TestSendReceive_Basic::StartTest()
 void TestSendReceive_Basic::ContinueTest()
 {
   if (m_Socket2->IsConnected())
-    { std::cout <<" OK\n"; m_SuccessCounter++; }
+  {
+    std::cout << " OK\n";
+    m_SuccessCounter++;
+  }
   else
-    std::cout <<" FAILED\n";
+  {
+    std::cout << " FAILED\n";
+  }
 
   //***********************************************
   //Test if the two-way connection is alive
 
-  std::cout <<++m_TestCounter <<". Testing the two-way channel..";
+  std::cout << ++m_TestCounter << ". Testing the two-way channel..";
 
   bool a = m_Socket1->IsClientConnecting();
   bool b = m_Socket2->IsConnected();
   bool c = m_Socket2->IsAbleToSend();
 
-  if(a && b && c)
-    { std::cout <<" OK\n"; m_SuccessCounter++; }
+  if (a && b && c)
+  {
+    std::cout << " OK\n";
+    m_SuccessCounter++;
+  }
   else
-    std::cout <<" FAILED\n";
+  {
+    std::cout << " FAILED\n";
+  }
 
   if (m_InShutdownTests)
+  {
     TestCloseSocket2();
+  }
 
 
-  m_MsgToSend.operator =(NiftyLinkTransformMessage::Pointer(new NiftyLinkTransformMessage()));
+  m_MsgToSend.operator = (NiftyLinkTransformMessage::Pointer(new NiftyLinkTransformMessage()));
   static_cast<NiftyLinkTransformMessage::Pointer>(m_MsgToSend)->SetMatrix(dummyTransformMatrix);
   m_MsgToSend->Update(GetLocalHostAddress());
 
@@ -169,8 +201,8 @@ void TestSendReceive_Basic::ContinueTest()
 
 void TestSendReceive_Basic::SendMessages()
 {
-  std::cout <<++m_TestCounter <<". Sending 10 messages from one socket to the other ..";
-  for (int i = 0; i< m_NumOfMsg; i++)
+  std::cout << ++m_TestCounter << ". Sending 10 messages from one socket to the other ..";
+  for (int i = 0; i < m_NumOfMsg; i++)
   {
     m_Socket2->SendMessage(m_MsgToSend);
   }
@@ -184,7 +216,9 @@ void TestSendReceive_Basic::ClientConnected()
   //  qDebug() <<"Successfully continued the tests after shutdown";
 
   if (m_Connecting && m_ConnectedTo)
+  {
     ContinueTest();
+  }
 }
 void TestSendReceive_Basic::ConnectedToRemote()
 {
@@ -192,9 +226,11 @@ void TestSendReceive_Basic::ConnectedToRemote()
 
   //if (m_InShutdownTests)
   //  qDebug() <<"Successfully continued the tests after shutdown";
-  
+
   if (m_Connecting && m_ConnectedTo)
+  {
     ContinueTest();
+  }
 }
 
 void TestSendReceive_Basic::QuitTest()
@@ -204,7 +240,9 @@ void TestSendReceive_Basic::QuitTest()
     m_Socket1->CloseSocket();
 
     while (m_Socket1->IsActive())
+    {
       igtl::Sleep(100);
+    }
 
     delete m_Socket1;
     m_Socket1 = NULL;
@@ -215,7 +253,9 @@ void TestSendReceive_Basic::QuitTest()
     m_Socket2->CloseSocket();
 
     while (m_Socket2->IsActive())
+    {
       igtl::Sleep(100);
+    }
 
     delete m_Socket2;
     m_Socket2 = NULL;
@@ -224,23 +264,23 @@ void TestSendReceive_Basic::QuitTest()
   m_MsgToSend.reset();
 
   emit Done();
-    
+
   if (m_TestCounter > m_SuccessCounter)
   {
-    std::cout <<"\n\n\n";
-    std::cout <<"****************************************************\n";
-    std::cout <<"**************** TESTING FINISHED: *****************\n";
-    std::cout <<"***************** " <<(m_TestCounter - m_SuccessCounter) << " TEST(S) FAILED *****************\n";
-    std::cout <<"****************************************************\n";
+    std::cout << "\n\n\n";
+    std::cout << "****************************************************\n";
+    std::cout << "**************** TESTING FINISHED: *****************\n";
+    std::cout << "***************** " << (m_TestCounter - m_SuccessCounter) << " TEST(S) FAILED *****************\n";
+    std::cout << "****************************************************\n";
     exit(-1);
   }
   else
   {
-    std::cout <<"\n\n\n";
-    std::cout <<"****************************************************\n";
-    std::cout <<"**************** TESTING FINISHED: *****************\n";
-    std::cout <<"********* ALL TESTS COMPLETED SUCCESSFULLY *********\n";
-    std::cout <<"****************************************************\n";
+    std::cout << "\n\n\n";
+    std::cout << "****************************************************\n";
+    std::cout << "**************** TESTING FINISHED: *****************\n";
+    std::cout << "********* ALL TESTS COMPLETED SUCCESSFULLY *********\n";
+    std::cout << "****************************************************\n";
     exit(0);
   }
 }
@@ -249,7 +289,7 @@ void TestSendReceive_Basic::CatchMessage(NiftyLinkMessage::Pointer msg)
 {
   QString sender = QObject::sender()->objectName();
 
-  if (msg.operator!=(NULL))
+  if (msg.operator != (NULL))
   {
     //QLOG_INFO() <<m_Received+1 <<"of" <<m_NumOfMsg <<"message received: " <<msg->GetHostName() <<":" <<msg->GetPort() <<" " <<msg->GetMessageType();
 
@@ -269,16 +309,22 @@ void TestSendReceive_Basic::CatchMessage(NiftyLinkMessage::Pointer msg)
       int r = memcmp((const void*)&receivedMatrix, (const void*)dummyTransformMatrix, sizeof(igtl::Matrix4x4));
 
       if (r == 0)
-        std::cout <<sender.toStdString().c_str() <<" received matrix " <<m_Received+1 <<" of " <<m_NumOfMsg*2 <<": OK" <<std::endl;
+      {
+        std::cout << sender.toStdString().c_str() << " received matrix " << m_Received + 1 << " of " << m_NumOfMsg * 2 << ": OK" << std::endl;
+      }
       else
-        std::cout <<sender.toStdString().c_str() <<" received matrix " <<m_Received+1 <<" of " <<m_NumOfMsg*2 <<": NOT-OK" <<std::endl;
+      {
+        std::cout << sender.toStdString().c_str() << " received matrix " << m_Received + 1 << " of " << m_NumOfMsg * 2 << ": NOT-OK" << std::endl;
+      }
 
       igtl::PrintMatrix(receivedMatrix);
 
-      std::cout <<std::endl;
+      std::cout << std::endl;
 
       if (r != 0)
-        QLOG_ERROR() <<"Shit happens";
+      {
+        QLOG_ERROR() << "Shit happens";
+      }
 
       m_Received++;
     }
@@ -291,19 +337,27 @@ void TestSendReceive_Basic::CatchMessage(NiftyLinkMessage::Pointer msg)
       fname.append(QString::number(m_Received));
       fname.append(".png");
       imgMsg->Save(fname);
-     }
+    }
   }
-  
-  if (QObject::sender()->objectName() == "Socket1")
-    m_Socket1Messages.append(msg);
-  else
-    m_Socket2Messages.append(msg);
 
-  std::cerr <<"\nNum of messages received: " <<m_Received <<std::endl;
+  if (QObject::sender()->objectName() == "Socket1")
+  {
+    m_Socket1Messages.append(msg);
+  }
+  else
+  {
+    m_Socket2Messages.append(msg);
+  }
+
+  std::cerr << "\nNum of messages received: " << m_Received << std::endl;
 
   //if (m_Received >= m_NumOfMsg)
   if (m_Received >= m_NumOfMsg)
-    { std::cout <<" OK\n"; m_SuccessCounter++; TestCloseSocket1(); }
+  {
+    std::cout << " OK\n";
+    m_SuccessCounter++;
+    TestCloseSocket1();
+  }
 }
 
 
@@ -312,7 +366,7 @@ void TestSendReceive_Basic::TestCloseSocket1()
   //***********************************************
   //Test what happens if one socket shuts down
 
-  std::cout <<++m_TestCounter <<". Testing client shutdown..";
+  std::cout << ++m_TestCounter << ". Testing client shutdown..";
 
   m_Socket2->CloseSocket();
 
@@ -331,23 +385,29 @@ void TestSendReceive_Basic::TestCloseSocket1()
     a = m_Socket1->IsClientConnecting();
     b = m_Socket2->IsConnected();
     c = m_Socket2->IsAbleToSend();
-    
+
     igtl::Sleep(200);
     count += 200;
   }
 
   if (a || b || c)
-    std::cout <<" FAILED\n";
-  else { std::cout <<" OK\n"; m_SuccessCounter++; }
+  {
+    std::cout << " FAILED\n";
+  }
+  else
+  {
+    std::cout << " OK\n";
+    m_SuccessCounter++;
+  }
 
   m_InShutdownTests = true;
   m_ConnectedTo = false;
   m_Connecting = false;
 
   //***********************************************
-  //Starting up sender thread 
+  //Starting up sender thread
 
-  std::cout <<++m_TestCounter <<". Starting up the sender socket..";
+  std::cout << ++m_TestCounter << ". Starting up the sender socket..";
 
   QUrl url;
   url.setHost(QString("localhost"));
@@ -360,7 +420,7 @@ void TestSendReceive_Basic::TestCloseSocket1()
 
 void TestSendReceive_Basic::TestCloseSocket2()
 {
-  std::cout <<++m_TestCounter <<". Testing server shutdown..";
+  std::cout << ++m_TestCounter << ". Testing server shutdown..";
 
   m_Socket1->CloseSocket();
 
@@ -384,10 +444,15 @@ void TestSendReceive_Basic::TestCloseSocket2()
     count += 200;
   }
 
-  if(a || b || c)
-    std::cout <<" FAILED\n";
+  if (a || b || c)
+  {
+    std::cout << " FAILED\n";
+  }
   else
-    { std::cout <<" OK\n"; m_SuccessCounter++; }
+  {
+    std::cout << " OK\n";
+    m_SuccessCounter++;
+  }
 
   QuitTest();
 }

@@ -10,8 +10,8 @@ PURPOSE.
 See LICENSE.txt in the top level directory for details.
 =============================================================================*/
 
-#ifndef __NiftyLinkTransformMessage_h
-#define __NiftyLinkTransformMessage_h
+#ifndef NiftyLinkTransformMessage_h
+#define NiftyLinkTransformMessage_h
 
 #include "NiftyLinkMessage.h"
 #include "NiftyLinkUtils.h"
@@ -39,7 +39,7 @@ public:
   NiftyLinkTransformMessage(void);
 
   /// \brief Basic destructor
-  ~NiftyLinkTransformMessage(void);
+  virtual ~NiftyLinkTransformMessage(void);
 
   /// \brief Basic copy constructor required for this data type
   NiftyLinkTransformMessage(const NiftyLinkTransformMessage &other);
@@ -99,4 +99,4 @@ private:
   float m_p[3];
 };
 
-#endif
+#endif // NiftyLinkTransformMessage_h

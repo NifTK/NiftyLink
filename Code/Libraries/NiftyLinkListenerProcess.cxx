@@ -25,8 +25,8 @@ NiftyLinkListenerProcess::NiftyLinkListenerProcess(QObject *parent)
 //-----------------------------------------------------------------------------
 NiftyLinkListenerProcess::~NiftyLinkListenerProcess(void)
 {
-  m_ServerSocket.operator =(NULL);
-  m_ExtSocket.operator =(NULL);
+  m_ServerSocket.operator = (NULL);
+  m_ExtSocket.operator = (NULL);
 }
 
 
@@ -35,24 +35,26 @@ bool NiftyLinkListenerProcess::Initialize(igtl::Socket::Pointer socket, int port
 {
   if (socket.IsNull() || (socket.IsNotNull() && !socket->IsValid()) )
   {
-    QLOG_ERROR() <<objectName() <<": " << "Cannot create a listener socket, invalid external socket specified" << endl;
+    QLOG_ERROR() << objectName() << ": " << "Cannot create a listener socket, invalid external socket specified" << endl;
     return false;
   }
 
   if (m_Initialized == true)
   {
-    QLOG_ERROR() <<objectName() <<": " << "Listener already in use!" << endl;
+    QLOG_ERROR() << objectName() << ": " << "Listener already in use!" << endl;
     return false;
   }
 
-  m_ExtSocket.operator =(socket);
+  m_ExtSocket.operator = (socket);
   m_ExtSocket->SetTimeout(m_SocketTimeout);
 
   m_ListeningOnPort = false;
   m_Port = port;
 
   if (!Activate())
+  {
     return false;
+  }
 
   return true;
 }
@@ -65,13 +67,13 @@ bool NiftyLinkListenerProcess::Initialize(int port)
 
   if (port <= 0)
   {
-    QLOG_ERROR() <<objectName() <<": " << "Cannot create a listener socket, invalid socket or port specified" << endl;
+    QLOG_ERROR() << objectName() << ": " << "Cannot create a listener socket, invalid socket or port specified" << endl;
     return false;
   }
 
   if (m_Initialized == true)
   {
-    QLOG_ERROR() <<objectName() <<": " << "Listener already in use!" << endl;
+    QLOG_ERROR() << objectName() << ": " << "Listener already in use!" << endl;
     return false;
   }
 
@@ -81,18 +83,20 @@ bool NiftyLinkListenerProcess::Initialize(int port)
 
   if (err < 0)
   {
-    QLOG_ERROR() <<objectName() <<": " << "Error creating listener socket." << endl;
+    QLOG_ERROR() << objectName() << ": " << "Error creating listener socket." << endl;
     m_Port = -1;
     return false;
   }
 
   m_Port = port;
-  m_ServerSocket.operator =(ssock);
+  m_ServerSocket.operator = (ssock);
   m_ServerSocket->SetTimeout(m_SocketTimeout);
   m_ListeningOnPort = true;
 
   if (!Activate())
+  {
     return false;
+  }
 
   return true;
 }
@@ -102,15 +106,21 @@ bool NiftyLinkListenerProcess::Initialize(int port)
 void NiftyLinkListenerProcess::StartProcess()
 {
   if (m_Initialized == false || m_Running == true)
+  {
     return;
+  }
 
   m_Running = true; //sets the process into running state
   m_Active = true; //sets the flag
 
   if (m_ListeningOnPort)
-    QLOG_INFO() <<objectName() <<": " <<"Started listening at: " <<m_Port <<"\n";
+  {
+    QLOG_INFO() << objectName() << ": " << "Started listening at: " << m_Port << "\n";
+  }
   else
-    QLOG_INFO() <<objectName() <<": " <<"Started listening on socket" <<"\n";
+  {
+    QLOG_INFO() << objectName() << ": " << "Started listening on socket" << "\n";
+  }
 
   // Trigger the execution of the main processing loop
   connect(this, SIGNAL(StartWorkingSignal()), this, SLOT(DoProcessing()));
@@ -123,7 +133,7 @@ void NiftyLinkListenerProcess::StartProcess()
 void NiftyLinkListenerProcess::StopProcess()
 {
   // Stopping Process
-  QLOG_INFO() <<objectName() <<": " << "Stopping listener process... \n";
+  QLOG_INFO() << objectName() << ": " << "Stopping listener process... \n";
 
   m_Running = false;
 
@@ -139,13 +149,13 @@ void NiftyLinkListenerProcess::TerminateProcess()
   m_Running = false; //Just in case...
 
   // Quitting Process
-  QLOG_INFO() <<objectName() <<": " << "Terminating the listener process... \n";
-  QLOG_INFO() <<objectName() <<": " << "Total number of messages recieved: " <<m_MessageCounter;
+  QLOG_INFO() << objectName() << ": " << "Terminating the listener process... \n";
+  QLOG_INFO() << objectName() << ": " << "Total number of messages recieved: " << m_MessageCounter;
 
   int err_p = 0;
   int err_s = 0;
 
-  QLOG_INFO() <<objectName() <<": " << "Closing socket... \n";
+  QLOG_INFO() << objectName() << ": " << "Closing socket... \n";
 
   m_Mutex->lock();
   if (m_ListeningOnPort && m_ExtSocket.IsNotNull())
@@ -159,20 +169,24 @@ void NiftyLinkListenerProcess::TerminateProcess()
     }
     catch (std::exception &e)
     {
-      qDebug() <<"Type cast error.Always run this process from QThreadEx. Exception: " <<e.what();
+      qDebug() << "Type cast error.Always run this process from QThreadEx. Exception: " << e.what();
     }
 
 
-    m_ExtSocket.operator =(NULL);
+    m_ExtSocket.operator = (NULL);
   }
   m_Mutex->unlock();
 
   if (err_p != 0)
-    QLOG_ERROR() <<objectName() <<"CloseSocket returned with error: " <<err_p;
+  {
+    QLOG_ERROR() << objectName() << "CloseSocket returned with error: " << err_p;
+  }
   else
-    QLOG_INFO() <<objectName() <<"CloseSocket succeded: " <<err_p;
+  {
+    QLOG_INFO() << objectName() << "CloseSocket succeded: " << err_p;
+  }
 
-  QLOG_INFO() <<objectName() <<": " << "Closing socket... \n";
+  QLOG_INFO() << objectName() << ": " << "Closing socket... \n";
 
   m_Mutex->lock();
   if (m_ServerSocket.IsNotNull())
@@ -186,17 +200,21 @@ void NiftyLinkListenerProcess::TerminateProcess()
     }
     catch (std::exception &e)
     {
-      qDebug() <<"Type cast error.Always run this process from QThreadEx. Exception: " <<e.what();
+      qDebug() << "Type cast error.Always run this process from QThreadEx. Exception: " << e.what();
     }
 
-    m_ServerSocket.operator =(NULL);
+    m_ServerSocket.operator = (NULL);
   }
   m_Mutex->unlock();
 
   if (err_s != 0)
-    QLOG_ERROR() <<objectName() <<"CloseServerSocket returned with error: " <<err_s;
+  {
+    QLOG_ERROR() << objectName() << "CloseServerSocket returned with error: " << err_s;
+  }
   else
-    QLOG_INFO() <<objectName() <<"CloseServerSocket succeeded: " <<err_s;
+  {
+    QLOG_INFO() << objectName() << "CloseServerSocket succeeded: " << err_s;
+  }
 
   disconnect(this, SIGNAL(StartWorkingSignal()), this, SLOT(DoProcessing()));
 
@@ -215,31 +233,31 @@ bool NiftyLinkListenerProcess::Activate(void)
 {
   if (m_Mutex == NULL)
   {
-    QLOG_INFO() <<objectName() <<": " <<"Cannot activate listener, mutex not set" <<endl;
+    QLOG_INFO() << objectName() << ": " << "Cannot activate listener, mutex not set" << endl;
     return false;
   }
 
   if (m_ListeningOnPort && m_Port <= 0)
   {
-    QLOG_INFO() <<objectName() <<": " <<"Cannot activate listener, port is invalid" <<endl;
+    QLOG_INFO() << objectName() << ": " << "Cannot activate listener, port is invalid" << endl;
     return false;
   }
 
   if ( (m_ListeningOnPort && m_ServerSocket.IsNull()) )
   {
-    QLOG_INFO() <<objectName() <<": " <<"Cannot activate listener, server socket is invalid" <<endl;
+    QLOG_INFO() << objectName() << ": " << "Cannot activate listener, server socket is invalid" << endl;
     return false;
   }
 
   if ( (!m_ListeningOnPort && m_ExtSocket.IsNull()) || (!m_ListeningOnPort && m_ServerSocket.IsNotNull() && !m_ExtSocket->IsValid()) )
   {
-    QLOG_INFO() <<objectName() <<": " <<"Cannot activate listener, external socket is invalid" <<endl;
+    QLOG_INFO() << objectName() << ": " << "Cannot activate listener, external socket is invalid" << endl;
     return false;
   }
 
   m_Initialized = true;
 
-  QLOG_INFO() <<objectName() <<": " <<"Listener successfully activated" <<endl;
+  QLOG_INFO() << objectName() << ": " << "Listener successfully activated" << endl;
 
   return true;
 }
@@ -261,7 +279,9 @@ void NiftyLinkListenerProcess::DoProcessing(void)
     ListenOnSocket();
   }
   else if (m_ListeningOnPort && m_Initialized)
+  {
     ListenOnPort();
+  }
 
   m_TimeOuter->stop();
   delete m_TimeOuter;
@@ -291,7 +311,7 @@ void NiftyLinkListenerProcess::ListenOnSocket(void)
       // Handle keepalive - restart the timout clock
       if (bytesPending == 2)
       {
-        QLOG_DEBUG() <<objectName() <<"Keepalive received, restarting the timeouter\n";
+        QLOG_DEBUG() << objectName() << "Keepalive received, restarting the timeouter\n";
         m_TimeOuter->start(2000);
       }
       /*
@@ -336,13 +356,13 @@ void NiftyLinkListenerProcess::ListenOnPort(void)
 
       if (!socket->IsValid())
       {
-        QLOG_INFO() <<objectName() <<": " << "No client connecting\n";
+        QLOG_INFO() << objectName() << ": " << "No client connecting\n";
         continue;
       }
       else
       {
         // Client connected, need to set socket parameters
-        m_ExtSocket.operator =(socket);
+        m_ExtSocket.operator = (socket);
         m_ExtSocket->SetTimeout(m_SocketTimeout);
         m_TimeOuter->start(2000);
 
@@ -370,21 +390,21 @@ void NiftyLinkListenerProcess::ListenOnPort(void)
           // Handle keepalive - restart the timout clock
           if (bytesPending == 2)
           {
-            QLOG_DEBUG() <<objectName() <<"Keepalive received, restarting the timeouter\n";
+            QLOG_DEBUG() << objectName() << "Keepalive received, restarting the timeouter\n";
             m_TimeOuter->start(2000);
           }
-/*
-          // Sleep for a bit to let some more data arrive to the socket
-          try
-          {
-            QLOG_DEBUG() <<objectName() <<" listening with socket on port " << m_Port << ", but waiting for " << sleepInterval << " ms\n";
-            //dynamic_cast<QThreadEx *>(QThread::currentThread())->MsleepEx(sleepInterval);
-          }
-          catch (std::exception &e)
-          {
-            qDebug() <<"Type cast error.Always run this process from QThreadEx. Exception: " <<e.what();
-          }
-*/
+          /*
+                    // Sleep for a bit to let some more data arrive to the socket
+                    try
+                    {
+                      QLOG_DEBUG() <<objectName() <<" listening with socket on port " << m_Port << ", but waiting for " << sleepInterval << " ms\n";
+                      //dynamic_cast<QThreadEx *>(QThread::currentThread())->MsleepEx(sleepInterval);
+                    }
+                    catch (std::exception &e)
+                    {
+                      qDebug() <<"Type cast error.Always run this process from QThreadEx. Exception: " <<e.what();
+                    }
+          */
           continue;
         }
 
@@ -419,7 +439,7 @@ bool NiftyLinkListenerProcess::ReceiveMessage()
 
   if (r <= 0)
   {
-    msgHeader.operator =(NULL);
+    msgHeader.operator = (NULL);
     return false;
   }
 
@@ -430,10 +450,12 @@ bool NiftyLinkListenerProcess::ReceiveMessage()
 
   //Double check if message types are mapped or not
   if (strMsgTypes.size() == 0)
+  {
     InitMessageTypes(strMsgTypes);
+  }
 
   // Interpret message and instanciate the appropriate NiftyLink message wrapper type
-  switch(strMsgTypes[msgHeader->GetDeviceType()])
+  switch (strMsgTypes[msgHeader->GetDeviceType()])
   {
     case BIND:
       message = igtl::BindMessage::New();
@@ -467,7 +489,7 @@ bool NiftyLinkListenerProcess::ReceiveMessage()
       break;
     case IMAGE:
       message = igtl::ImageMessage::New();
-      msg.operator =(NiftyLinkImageMessage::Pointer(new NiftyLinkImageMessage()));
+      msg.operator = (NiftyLinkImageMessage::Pointer(new NiftyLinkImageMessage()));
       //QLOG_INFO() <<objectName() <<": " << "Message successfully recieved" <<msgHeader->GetDeviceType();
       break;
     case GET_IMAGE:
@@ -608,7 +630,7 @@ bool NiftyLinkListenerProcess::ReceiveMessage()
       break;
     case STATUS:
       message = igtl::StatusMessage::New();
-      msg.operator =(NiftyLinkStatusMessage::Pointer(new NiftyLinkStatusMessage()));
+      msg.operator = (NiftyLinkStatusMessage::Pointer(new NiftyLinkStatusMessage()));
       break;
     case GET_STATUS:
       message = igtl::GetStatusMessage::New();
@@ -628,7 +650,7 @@ bool NiftyLinkListenerProcess::ReceiveMessage()
       break;
     case STRING:
       message = igtl::StringMessage::New();
-      msg.operator =(NiftyLinkStringMessage::Pointer(new NiftyLinkStringMessage()));
+      msg.operator = (NiftyLinkStringMessage::Pointer(new NiftyLinkStringMessage()));
       break;
     case GET_STRING:
       message = igtl::GetStringMessage::New();
@@ -648,7 +670,7 @@ bool NiftyLinkListenerProcess::ReceiveMessage()
       break;
     case TDATA:
       message = igtl::TrackingDataMessage::New();
-      msg.operator =(NiftyLinkTrackingDataMessage::Pointer(new NiftyLinkTrackingDataMessage()));
+      msg.operator = (NiftyLinkTrackingDataMessage::Pointer(new NiftyLinkTrackingDataMessage()));
       break;
     case GET_TDATA:
       message = igtl::GetTrackingDataMessage::New();
@@ -683,7 +705,7 @@ bool NiftyLinkListenerProcess::ReceiveMessage()
       break;
     case TRANSFORM:
       message = igtl::TransformMessage::New();
-      msg.operator =(NiftyLinkTransformMessage::Pointer(new NiftyLinkTransformMessage()));
+      msg.operator = (NiftyLinkTransformMessage::Pointer(new NiftyLinkTransformMessage()));
       break;
     case GET_TRANS:
       message = igtl::GetTransformMessage::New();
@@ -703,15 +725,15 @@ bool NiftyLinkListenerProcess::ReceiveMessage()
       break;
     default:
       // if the data type is unknown, skip reading.
-      QLOG_INFO() <<objectName() <<": " << "Unknown message recieved: " << msgHeader->GetDeviceType() << endl;
+      QLOG_INFO() << objectName() << ": " << "Unknown message recieved: " << msgHeader->GetDeviceType() << endl;
 
       m_Mutex->lock();
       m_ExtSocket->Skip(msgHeader->GetBodySizeToRead(), 0);
       m_Mutex->unlock();
 
-      msgHeader.operator =(NULL);
+      msgHeader.operator = (NULL);
       return true;
-    }
+  }
 
   message->SetMessageHeader(msgHeader);
   message->AllocatePack();
@@ -726,9 +748,13 @@ bool NiftyLinkListenerProcess::ReceiveMessage()
     //QLOG_INFO() <<objectName() <<"Total message bytes received: " <<r;
 
     if (r < 0)
+    {
       return false;
+    }
     else
+    {
       m_TimeOuter->start(2000);
+    }
   }
 
   // Get the receive timestamp from the socket
@@ -763,12 +789,16 @@ int NiftyLinkListenerProcess::GetListenInterval(void)
 //-----------------------------------------------------------------------------
 void NiftyLinkListenerProcess::OnSocketTimeout(void)
 {
-  QLOG_INFO() <<objectName() <<": " <<"Client disconnected.. terminating socket." <<"\n";
+  QLOG_INFO() << objectName() << ": " << "Client disconnected.. terminating socket." << "\n";
 
   if (m_ListeningOnPort)
+  {
     emit ClientDisconnectedSignal(true);
+  }
   else
+  {
     emit ClientDisconnectedSignal(false);
+  }
 
   QCoreApplication::processEvents();
 

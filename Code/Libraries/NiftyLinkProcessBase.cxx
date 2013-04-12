@@ -14,7 +14,7 @@
 
 //-----------------------------------------------------------------------------
 NiftyLinkProcessBase::NiftyLinkProcessBase(QObject *parent)
-: QObject(parent)
+  : QObject(parent)
 {
   m_Port           = -1;
   m_SocketTimeout  = 50;

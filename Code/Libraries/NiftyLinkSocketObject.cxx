@@ -40,7 +40,7 @@ NiftyLinkSocketObject::NiftyLinkSocketObject(QObject *parent)
 //-----------------------------------------------------------------------------
 NiftyLinkSocketObject::~NiftyLinkSocketObject(void)
 {
-  QLOG_INFO() <<"Destructing" <<objectName();
+  QLOG_INFO() << "Destructing" << objectName();
 
   // Call CloseSocket, just in case
   this->CloseSocket();
@@ -149,7 +149,9 @@ void NiftyLinkSocketObject::InitThreads()
 
   // Set the flag
   if (m_Mutex != NULL && m_Sender != NULL && m_Listener != NULL && ok)
+  {
     m_Initialized = true;
+  }
 
 }
 
@@ -163,19 +165,27 @@ void NiftyLinkSocketObject::SetObjectNames(QString name)
   this->setObjectName(name);
 
   if (m_Sender != NULL)
+  {
     m_Sender->setObjectName(tmp.append("_S"));
+  }
 
   if (m_SenderHostThread != NULL)
+  {
     m_SenderHostThread->setObjectName(tmp.append("H"));
+  }
 
   tmp.clear();
   tmp.append(name);
 
   if (m_Listener != NULL)
+  {
     m_Listener->setObjectName(tmp.append("_L"));
+  }
 
   if (m_ListenerHostThread != NULL)
+  {
     m_ListenerHostThread->setObjectName(tmp.append("H"));
+  }
 }
 
 
@@ -183,7 +193,9 @@ void NiftyLinkSocketObject::SetObjectNames(QString name)
 bool NiftyLinkSocketObject::ListenOnPort(int port)
 {
   if (!m_Initialized)
+  {
     return false;
+  }
 
   if (m_Listener != NULL && m_Initialized)
   {
@@ -211,16 +223,22 @@ bool NiftyLinkSocketObject::ListenOnPort(int port)
         QCoreApplication::processEvents();
       }
 
-      QLOG_INFO() <<objectName() <<": " <<"Threads successfully initialized";
+      QLOG_INFO() << objectName() << ": " << "Threads successfully initialized";
 
       // Set flag to indicate that the socket is busy
       m_Active = true;
 
       return true;
     }
-    else return false;
+    else
+    {
+      return false;
+    }
   }
-  else return false;
+  else
+  {
+    return false;
+  }
 }
 
 
@@ -228,7 +246,9 @@ bool NiftyLinkSocketObject::ListenOnPort(int port)
 bool NiftyLinkSocketObject::ConnectToRemote(QUrl url)
 {
   if (!m_Initialized)
+  {
     return false;
+  }
 
   if (m_Sender != NULL && m_Initialized)
   {
@@ -247,9 +267,13 @@ bool NiftyLinkSocketObject::ConnectToRemote(QUrl url)
       QString ip = ResolveHostName(url.host());
 
       if (ValidateIp(ip))
+      {
         address_str = ip.toStdString();
+      }
       else
+      {
         return false;
+      }
     }
 
     int port = url.port();
@@ -272,18 +296,24 @@ bool NiftyLinkSocketObject::ConnectToRemote(QUrl url)
         QCoreApplication::processEvents();
       }
 
-      QLOG_INFO() <<objectName() <<": " <<"Threads successfully initialized";
-      QLOG_INFO() <<objectName() <<": " <<"Connecting to: " <<address_str.c_str() <<" : " <<port <<endl;
+      QLOG_INFO() << objectName() << ": " << "Threads successfully initialized";
+      QLOG_INFO() << objectName() << ": " << "Connecting to: " << address_str.c_str() << " : " << port << endl;
 
       // Set flag to indicate that the socket is busy
       m_Active = true;
 
       return true;
     }
-    else return false;
+    else
+    {
+      return false;
+    }
 
   }
-  else return false;
+  else
+  {
+    return false;
+  }
 }
 
 
@@ -297,7 +327,9 @@ void NiftyLinkSocketObject::CloseSocket(void)
     QCoreApplication::processEvents();
 
     while (m_Sender->IsActive())
+    {
       m_SenderHostThread->MsleepEx(250);
+    }
   }
 
   // Shut down the listener thread
@@ -307,7 +339,9 @@ void NiftyLinkSocketObject::CloseSocket(void)
     QCoreApplication::processEvents();
 
     while (m_Listener->IsActive())
+    {
       m_ListenerHostThread->MsleepEx(250);
+    }
   }
 
   if (m_SenderHostThread != NULL)
@@ -318,7 +352,9 @@ void NiftyLinkSocketObject::CloseSocket(void)
 
     //If it is still running (like usually on cmicdev) then forcibly terminate
     if (m_SenderHostThread->isRunning())
+    {
       m_SenderHostThread->terminate();
+    }
   }
 
   if (m_ListenerHostThread != NULL)
@@ -329,7 +365,9 @@ void NiftyLinkSocketObject::CloseSocket(void)
 
     //If it is still running (like usually on cmicdev) then forcibly terminate
     if (m_ListenerHostThread->isRunning())
+    {
       m_ListenerHostThread->terminate();
+    }
   }
 
   m_Port = -1;
@@ -346,19 +384,23 @@ void NiftyLinkSocketObject::CloseSocket(void)
   if (m_SenderHostThread != NULL)
   {
     senderOn = m_SenderHostThread->isRunning();
-    QLOG_INFO() <<objectName() <<": " <<"Sender host thread running: " <<m_SenderHostThread->isRunning();
+    QLOG_INFO() << objectName() << ": " << "Sender host thread running: " << m_SenderHostThread->isRunning();
   }
 
   if (m_ListenerHostThread != NULL)
   {
     listenerOn = m_ListenerHostThread->isRunning();
-    QLOG_INFO() <<objectName() <<": " <<"Listener host thread running: " <<m_ListenerHostThread->isRunning();
+    QLOG_INFO() << objectName() << ": " << "Listener host thread running: " << m_ListenerHostThread->isRunning();
   }
 
   if (!senderOn && !listenerOn)
-    QLOG_INFO() <<objectName() <<": " <<"Closing socket, threads terminated.";
+  {
+    QLOG_INFO() << objectName() << ": " << "Closing socket, threads terminated.";
+  }
   else
-    QLOG_ERROR() <<objectName() <<": " <<"Threads DID NOT terminate when closing socket!";
+  {
+    QLOG_ERROR() << objectName() << ": " << "Threads DID NOT terminate when closing socket!";
+  }
 }
 
 
@@ -367,7 +409,7 @@ void NiftyLinkSocketObject::SendMessage(NiftyLinkMessage::Pointer msg)
 {
   // Do not add the message to the message queue if the socket is not connected
   // (otherwise messages will pile up and use up memory)
-  if (m_Sender != NULL && msg.operator !=(NULL) && (m_ClientConnected || m_ConnectedToRemote) )
+  if (m_Sender != NULL && msg.operator != (NULL) && (m_ClientConnected || m_ConnectedToRemote) )
   {
     //m_Sender->AddMsgToSendQueue(msg);
     emit MessageToSendSignal(msg);
@@ -393,8 +435,13 @@ void NiftyLinkSocketObject::OnConnectedToRemote(void)
 
     // Time to set up a listener on the socket
     if (m_Listener->Initialize(m_Sender->GetSocketPointer(), m_Port) == true)
+    {
       m_ListenerHostThread->start();
-    else return;
+    }
+    else
+    {
+      return;
+    }
 
     emit ConnectedToRemoteSignal();
     QCoreApplication::processEvents();
@@ -425,10 +472,14 @@ void NiftyLinkSocketObject::OnDisconnectedFromRemote(bool onPort)
   if (onPort)
   {
     if (m_Sender != NULL)
+    {
       emit ShutdownSenderSignal();
+    }
 
     if (m_Listener != NULL)
+    {
       emit ShutdownListenerSignal();
+    }
 
     emit LostConnectionToRemoteSignal();
 
@@ -438,7 +489,9 @@ void NiftyLinkSocketObject::OnDisconnectedFromRemote(bool onPort)
   else
   {
     if (m_Sender != NULL)
+    {
       emit ShutdownSenderSignal();
+    }
 
     QCoreApplication::processEvents();
   }
@@ -462,7 +515,10 @@ void NiftyLinkSocketObject::OnClientConnected(void)
       m_AbleToSend = true;
       m_SenderHostThread->start();
     }
-    else return;
+    else
+    {
+      return;
+    }
 
     m_ClientConnected = true;
     emit ClientConnectedSignal();
@@ -497,7 +553,7 @@ void NiftyLinkSocketObject::OnClientDisconnected(bool onPort)
 void NiftyLinkSocketObject::CatchMsgSignal(NiftyLinkMessage::Pointer msg)
 {
   //QLOG_INFO() <<objectName() <<": " <<"Message signal received";
-  if (msg.operator !=(NULL))
+  if (msg.operator != (NULL))
   {
     emit MessageReceivedSignal(msg);
   }
@@ -511,7 +567,9 @@ void NiftyLinkSocketObject::CatchMsgSignal(NiftyLinkMessage::Pointer msg)
 void NiftyLinkSocketObject::SetConnectTimeOut(int sec)
 {
   if (m_Sender != NULL)
+  {
     m_Sender->SetConnectTimeOut(sec);
+  }
 }
 
 
@@ -519,8 +577,13 @@ void NiftyLinkSocketObject::SetConnectTimeOut(int sec)
 int NiftyLinkSocketObject::GetConnectTimeOut(void)
 {
   if (m_Sender != NULL)
+  {
     return m_Sender->GetConnectTimeOut();
-  else return -1;
+  }
+  else
+  {
+    return -1;
+  }
 }
 
 
@@ -528,7 +591,9 @@ int NiftyLinkSocketObject::GetConnectTimeOut(void)
 void NiftyLinkSocketObject::SetListenInterval(int msec)
 {
   if (m_Listener != NULL)
+  {
     m_Listener->SetListenInterval(msec);
+  }
 }
 
 
@@ -536,8 +601,13 @@ void NiftyLinkSocketObject::SetListenInterval(int msec)
 int NiftyLinkSocketObject::GetListenInterval(void)
 {
   if (m_Listener != NULL)
+  {
     return m_Listener->GetListenInterval();
-  else return -1;
+  }
+  else
+  {
+    return -1;
+  }
 }
 
 
@@ -545,10 +615,14 @@ int NiftyLinkSocketObject::GetListenInterval(void)
 void NiftyLinkSocketObject::SetSocketTimeOut(int msec)
 {
   if (m_Listener != NULL)
+  {
     m_Listener->SetSocketTimeOut(msec);
+  }
 
   if (m_Sender != NULL)
+  {
     m_Sender->SetSocketTimeOut(msec);
+  }
 }
 
 
@@ -556,8 +630,13 @@ void NiftyLinkSocketObject::SetSocketTimeOut(int msec)
 int NiftyLinkSocketObject::GetSocketTimeOut(void)
 {
   if (m_Listener != NULL)
+  {
     return m_Listener->GetSocketTimeOut();
-  else return -1;
+  }
+  else
+  {
+    return -1;
+  }
 }
 
 //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -582,7 +661,7 @@ void NiftyLinkSocketObject::InitializeWinTimers()
     if (_NtSetTimerResolution)
     {
       uint DesiredResolution = 5000;
-      bool SetResolution= true;
+      bool SetResolution = true;
       ULONG MinResolution = 0;
       ULONG MaxResolution = 0;
       ULONG CurrentResolution = 0;

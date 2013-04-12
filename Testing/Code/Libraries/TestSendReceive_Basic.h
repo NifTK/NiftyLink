@@ -62,7 +62,7 @@ private slots:
   void ContinueTest();
   void TestCloseSocket1();
   void TestCloseSocket2();
-  
+
   void SendMessages();
 
 private:

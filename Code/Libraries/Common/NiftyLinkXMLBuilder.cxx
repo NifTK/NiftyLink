@@ -25,7 +25,10 @@ QString XMLBuilderBase::ParseDescriptorType(QString xmlString)
 
     return root.tagName();
   }
-  else return QString();
+  else
+  {
+    return QString();
+  }
 }
 
 //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -83,9 +86,13 @@ QString ClientDescriptorXMLBuilder::GetXMLAsString(void)
   m_MessageValid = xmlDoco.setContent(m_DescriptorString);
 
   if (m_MessageValid)
+  {
     return m_DescriptorString;
+  }
   else
+  {
     return QString();
+  }
 }
 
 void ClientDescriptorXMLBuilder::SetXMLString(QString desc)
@@ -209,9 +216,13 @@ QString CommandDescriptorXMLBuilder::GetXMLAsString(void)
   m_MessageValid = xmlDoco.setContent(m_DescriptorString);
 
   if (m_MessageValid)
+  {
     return m_DescriptorString;
+  }
   else
+  {
     return QString();
+  }
 }
 
 void CommandDescriptorXMLBuilder::SetXMLString(QString desc)
@@ -264,55 +275,93 @@ void CommandDescriptorXMLBuilder::SetXMLString(QString desc)
 QString CommandDescriptorXMLBuilder::GetParameterName(int i)
 {
   if (i >= m_ParameterNames.count())
+  {
     return QString();
+  }
 
   QString pname = m_ParameterNames.at(i);
   if (pname.isNull() || pname.isEmpty())
+  {
     return QString();
-  else return pname;
+  }
+  else
+  {
+    return pname;
+  }
 }
 
 QString CommandDescriptorXMLBuilder::GetParameterType(int i)
 {
   if (i >= m_ParameterTypes.count())
+  {
     return QString();
+  }
 
   QString ptype = m_ParameterTypes.at(i);
   if (ptype.isNull() || ptype.isEmpty())
+  {
     return QString();
-  else return ptype;
+  }
+  else
+  {
+    return ptype;
+  }
 }
 
 QString CommandDescriptorXMLBuilder::GetParameterValue(int i)
 {
   if (i >= m_ParameterValues.count())
+  {
     return QString();
+  }
 
   QString pval = m_ParameterValues.at(i);
   if (pval.isNull() || pval.isEmpty())
+  {
     return QString();
-  else return pval;
+  }
+  else
+  {
+    return pval;
+  }
 }
 
 void CommandDescriptorXMLBuilder::GetParameterAllFields(int i, QString &pName, QString &pType, QString &pValue)
 {
   if (i >= m_ParameterValues.count())
+  {
     return;
+  }
 
   QString temp = m_ParameterNames.at(i);
   if (temp.isNull() || temp.isEmpty())
+  {
     pName = temp;
-  else return;
+  }
+  else
+  {
+    return;
+  }
 
   temp = m_ParameterTypes.at(i);
   if (temp.isNull() || temp.isEmpty())
+  {
     pType = temp;
-  else return;
+  }
+  else
+  {
+    return;
+  }
 
   temp = m_ParameterValues.at(i);
   if (temp.isNull() || temp.isEmpty())
+  {
     pValue = temp;
-  else return;
+  }
+  else
+  {
+    return;
+  }
 
 }
 
@@ -385,9 +434,13 @@ QString TrackerClientDescriptor::GetXMLAsString(void)
   m_MessageValid = xmlDoco.setContent(m_DescriptorString);
 
   if (m_MessageValid)
+  {
     return m_DescriptorString;
+  }
   else
+  {
     return QString();
+  }
 }
 
 void TrackerClientDescriptor::SetXMLString(QString desc)

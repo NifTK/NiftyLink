@@ -10,8 +10,8 @@ PURPOSE.
 See LICENSE.txt in the top level directory for details.
 =============================================================================*/
 
-#ifndef __NiftyLinkTrackingDataMessage_h
-#define __NiftyLinkTrackingDataMessage_h
+#ifndef NiftyLinkTrackingDataMessage_h
+#define NiftyLinkTrackingDataMessage_h
 
 #include "NiftyLinkMessage.h"
 #include "NiftyLinkUtils.h"
@@ -50,7 +50,7 @@ public:
   NiftyLinkTrackingDataMessage(void);
 
   /// \brief Basic destructor
-  ~NiftyLinkTrackingDataMessage(void);
+  virtual ~NiftyLinkTrackingDataMessage(void);
 
   /// \brief Basic copy constructor required for this data type
   NiftyLinkTrackingDataMessage(const NiftyLinkTrackingDataMessage &other);
@@ -110,4 +110,4 @@ private:
   float m_p[3];
 };
 
-#endif
+#endif // NiftyLinkTrackingDataMessage_h

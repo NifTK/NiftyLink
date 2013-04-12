@@ -24,7 +24,7 @@
 //-----------------------------------------------------------------------------
 TestImagingReceiver::TestImagingReceiver(const int& portNumber, const int& numberOfMessagesExpected)
   : m_PortNumber(portNumber)
-, m_NumberOfMessagesExpected(numberOfMessagesExpected)
+  , m_NumberOfMessagesExpected(numberOfMessagesExpected)
 {
   connect(&m_Socket, SIGNAL(ClientConnectedSignal()), this, SLOT(OnClientConnected()));
   connect(&m_Socket, SIGNAL(ClientDisconnectedSignal()), this, SLOT(OnClientDisconnected()));
@@ -109,7 +109,7 @@ void TestImagingReceiver::OnMessageReceived(NiftyLinkMessage::Pointer)
     igtlUint64 totalTime = GetDifferenceInNanoSeconds(m_EndTime, m_StartTime);
     std::cout << "Timing: for " << m_NumberOfMessagesExpected << " iterations:" << std::endl;
     std::cout << "       total time=" << totalTime / (double)1000000000.0 << "(s)" << std::endl;
-    std::cout << "              fps=" << 1.0/((double)totalTime/(double)m_NumberOfMessagesExpected/1000000000.0) << std::endl;
+    std::cout << "              fps=" << 1.0 / ((double)totalTime / (double)m_NumberOfMessagesExpected / 1000000000.0) << std::endl;
 
   }
 }
@@ -123,13 +123,13 @@ int main(int argc, char** argv)
   // Parse Arguments
 
   if (argc != 3) // check number of arguments
-    {
+  {
     // If not correct, print usage
     std::cerr << "Usage: " << argv[0] << " <port> <iters>"    << std::endl;
     std::cerr << "    <port>     : Port #"                    << std::endl;
     std::cerr << "    <iters>    : Number of images expected" << std::endl;
     exit(0);
-    }
+  }
 
   int    port       = atoi(argv[1]);
   int    iters      = atoi(argv[2]);
@@ -140,7 +140,7 @@ int main(int argc, char** argv)
 
   TestImagingReceiver receiver(port, iters);
 
-  QApplication app(argc,argv);
+  QApplication app(argc, argv);
   QObject::connect(&receiver, SIGNAL(Done()), &app, SLOT(quit()), Qt::QueuedConnection);
 
   QTimer::singleShot(220, &receiver, SLOT(Setup()));

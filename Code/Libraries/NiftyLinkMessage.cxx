@@ -38,9 +38,9 @@ NiftyLinkMessage::~NiftyLinkMessage(void)
 {
   //QLOG_INFO() <<"Message destructor (Base class): "<<m_OwnerName <<m_Id;
 
-  m_Message.operator =(NULL);
-  m_TimeReceived.operator =(NULL);
-  m_TimeCreated.operator =(NULL);
+  m_Message.operator = (NULL);
+  m_TimeReceived.operator = (NULL);
+  m_TimeCreated.operator = (NULL);
 }
 
 
@@ -49,8 +49,8 @@ NiftyLinkMessage::NiftyLinkMessage(const NiftyLinkMessage &other)
   : QSharedData(other)
 {
   // Copy constructor
-  m_Message.operator =(other.m_Message);
-  m_TimeReceived.operator=(other.m_TimeReceived);
+  m_Message.operator = (other.m_Message);
+  m_TimeReceived.operator = (other.m_TimeReceived);
 
   m_SenderHostName = other.m_SenderHostName;
   m_MessageType = other.m_MessageType;
@@ -67,7 +67,7 @@ NiftyLinkMessage::NiftyLinkMessage(const NiftyLinkMessage &other)
 void NiftyLinkMessage::SetMessagePointer(igtl::MessageBase::Pointer mp)
 {
   // Embeds the OpenIGTLink message pointer into the message
-  m_Message.operator =(mp);
+  m_Message.operator = (mp);
   m_MessageType = QString(m_Message->GetDeviceType());
   m_Message->GetTimeStamp(m_TimeCreated);
   m_SenderHostName = QString(m_Message->GetDeviceName());
@@ -84,7 +84,7 @@ void NiftyLinkMessage::GetMessagePointer(igtl::MessageBase::Pointer &mp)
 //-----------------------------------------------------------------------------
 void NiftyLinkMessage::SetTimeReceived(igtl::TimeStamp::Pointer ts)
 {
-  m_TimeReceived.operator=(ts);
+  m_TimeReceived.operator = (ts);
 }
 
 
@@ -113,7 +113,9 @@ igtlUint64 NiftyLinkMessage::GetId(void)
 void NiftyLinkMessage::ChangeHostName(QString hname)
 {
   if (m_Message.IsNull())
+  {
     return;
+  }
 
   m_SenderHostName = hname;
 
@@ -127,7 +129,9 @@ void NiftyLinkMessage::ChangeHostName(QString hname)
 QString NiftyLinkMessage::GetHostName(void)
 {
   if (m_Message.IsNull())
+  {
     return QString();
+  }
 
   m_Message->Unpack();
   m_SenderHostName = m_Message->GetDeviceName();
@@ -172,12 +176,16 @@ void NiftyLinkMessage::SetResolution(igtlUint64 res)
   m_Resolution = res;
 
   if (m_Message.IsNull())
+  {
     return;
+  }
 
   QString className(m_Message->GetNameOfClass());
 
   if (!className.contains("Start"))
+  {
     return;
+  }
 
   m_Message->Unpack();
 
@@ -240,12 +248,16 @@ void NiftyLinkMessage::SetResolution(igtlUint64 res)
 void NiftyLinkMessage::GetResolution(igtlUint64 &res)
 {
   if (m_Message.IsNull())
+  {
     return;
+  }
 
   QString className(m_Message->GetNameOfClass());
 
   if (!className.contains("Start"))
+  {
     return;
+  }
 
   m_Message->Unpack();
 
@@ -312,9 +324,11 @@ void NiftyLinkMessage::Update(QString hostname, igtl::TimeStamp::Pointer ts)
   // Updates timestamp and hostname
 
   if (m_Message.IsNull())
+  {
     return;
+  }
 
-  m_TimeCreated.operator =(ts);
+  m_TimeCreated.operator = (ts);
   m_SenderHostName = hostname;
 
   m_Message->Unpack();
@@ -330,13 +344,15 @@ void NiftyLinkMessage::Update(QString hostname)
   // Updates timestamp and hostname
 
   if (m_Message.IsNull())
+  {
     return;
+  }
 
   igtl::TimeStamp::Pointer ts;
   ts = igtl::TimeStamp::New();
   ts->Update();
 
-  m_TimeCreated.operator =(ts);
+  m_TimeCreated.operator = (ts);
   m_SenderHostName = hostname;
 
   m_Id = GetTimeInNanoSeconds(ts);
@@ -351,6 +367,8 @@ void NiftyLinkMessage::Update(QString hostname)
 void NiftyLinkMessage::SetOwnerName(QString str)
 {
   if (!m_OwnerName.isEmpty() && !m_OwnerName.isNull())
+  {
     m_OwnerName.clear();
+  }
   m_OwnerName.append(str);
 }

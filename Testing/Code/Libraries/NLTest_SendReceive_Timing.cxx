@@ -38,7 +38,7 @@
 
 int main(int argc, char **argv)
 {
-  QCoreApplication app(argc,argv);
+  QCoreApplication app(argc, argv);
 
   // init the logging mechanism
   QsLogging::Logger& logger = QsLogging::Logger::instance();
@@ -50,16 +50,16 @@ int main(int argc, char **argv)
   logger.addDestination(fileDestination.get());
 
   TestSendReceive_Timing * test = new TestSendReceive_Timing;
-  QObject::connect(test, SIGNAL(Done()), &app, SLOT(quit()),Qt::QueuedConnection);
+  QObject::connect(test, SIGNAL(Done()), &app, SLOT(quit()), Qt::QueuedConnection);
   test->SetupTest();
   //test.setupTest2();
- 
+
 
   QTimer::singleShot(220, test, SLOT(PerformTest()));
   //QTimer::singleShot(220, &test, SLOT(listen()));
   int ret = app.exec();
   delete test;
 
-  std::cerr <<"TestSendReceive_Timing Deleted";
+  std::cerr << "TestSendReceive_Timing Deleted";
   return ret;
 }

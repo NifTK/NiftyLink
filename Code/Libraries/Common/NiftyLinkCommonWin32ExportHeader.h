@@ -15,14 +15,14 @@
 #include "NiftyLinkConfig.h"
 
 #if (defined(_WIN32) || defined(WIN32)) && !defined(LINK_STATIC)
-  #ifdef NIFTYLINKCOMMON_WINDOWS_EXPORT
-    #define NIFTYLINKCOMMON_WINEXPORT __declspec(dllexport)
-  #else
-    #define NIFTYLINKCOMMON_WINEXPORT __declspec(dllimport)
-  #endif  /* NIFTYLINKCOMMON_WINEXPORT */
+#ifdef NIFTYLINKCOMMON_WINDOWS_EXPORT
+#define NIFTYLINKCOMMON_WINEXPORT __declspec(dllexport)
+#else
+#define NIFTYLINKCOMMON_WINEXPORT __declspec(dllimport)
+#endif  /* NIFTYLINKCOMMON_WINEXPORT */
 #else
 /* linux/mac needs nothing */
-  #define NIFTYLINKCOMMON_WINEXPORT
+#define NIFTYLINKCOMMON_WINEXPORT
 #endif
 
 

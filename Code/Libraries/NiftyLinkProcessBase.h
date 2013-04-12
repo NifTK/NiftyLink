@@ -10,8 +10,8 @@ PURPOSE.
 See LICENSE.txt in the top level directory for details.
 =============================================================================*/
 
-#ifndef __NiftyLinkProcessBase_h
-#define __NiftyLinkProcessBase_h
+#ifndef NiftyLinkProcessBase_h
+#define NiftyLinkProcessBase_h
 
 //Qt related includes
 #include <QtCore>
@@ -71,35 +71,50 @@ public:
   NiftyLinkProcessBase(QObject *parent = 0);
 
   /// \brief Basic destructor
-  ~NiftyLinkProcessBase(void);
+  virtual ~NiftyLinkProcessBase(void);
 
 protected:
 
   /// \brief Initialize the Process on a given, externally created OpenIGTLink socket (igtl::Socket),
   /// while specifying the related port. Process specific functionalty are defined in the derived classes.
-  virtual bool Initialize(igtl::Socket::Pointer socket = 0, int port = -1) { return false; }
+  virtual bool Initialize(igtl::Socket::Pointer socket = 0, int port = -1)
+  {
+    return false;
+  }
 
   /// \brief Attempt to activate the Process: do an overall sanity check to see if all required objects
   /// and parameters are correctly initialized. Process specific functionalty are defined in the derived classes.
-  virtual bool Activate(void) { return false; }
+  virtual bool Activate(void)
+  {
+    return false;
+  }
 
   /// \brief Function base to add a message to the send queue. Only implemented in NiftyLinkSenderProcess.
   virtual void AddMsgToSendQueue(NiftyLinkMessage::Pointer) {}
 
   /// \brief This function returns the actual socket pointer. This is necessary in order to set up a two communication chanel:
   /// to initiate a sender Process on a socket created by a listener Process and vica versa.
-  virtual igtl::Socket::Pointer GetSocketPointer(void) { return m_ExtSocket; }
+  virtual igtl::Socket::Pointer GetSocketPointer(void)
+  {
+    return m_ExtSocket;
+  }
 
   /// \brief This method sets the mutex, this way enables two independent Process
   /// (e.g. sender / listener operating on the same socket) to use the same mutex object.
-  inline void SetMutex(QMutex * mutex) { m_Mutex = mutex; }
+  inline void SetMutex(QMutex * mutex)
+  {
+    m_Mutex = mutex;
+  }
 
   /// \brief Function base for setting connection timeout in seconds when connecting to a remote peer.
   /// Only implemented in NiftyLinkSenderProcess.
   virtual void SetConnectTimeOut(int sec) {}
 
   /// \brief Function base getting the currently applied connection timeout in seconds. Only implemented in NiftyLinkSenderProcess.
-  virtual int GetConnectTimeOut(void) { return -1; }
+  virtual int GetConnectTimeOut(void)
+  {
+    return -1;
+  }
 
   /// \brief Function base for setting the delay between to "Listen" events on the local server socket.
   /// This is to detect the connection of a client and to create a specific socket handler. The timeout is in msec.
@@ -107,22 +122,40 @@ protected:
   virtual void SetListenInterval(int msec) {}
 
   /// \brief Function base for getting the currently applied listen interval.
-  virtual int GetListenInterval(void) { return -1; }
+  virtual int GetListenInterval(void)
+  {
+    return -1;
+  }
 
   /// \brief This function sets the general timeout interval of all operations on the socket, in msec.
-  inline void SetSocketTimeOut(int msec) { m_SocketTimeout = msec; }
+  inline void SetSocketTimeOut(int msec)
+  {
+    m_SocketTimeout = msec;
+  }
 
   /// \brief This function returns the general timeout interval currently applied to the socket, in msec.
-  inline int GetSocketTimeOut(void) { return m_SocketTimeout; }
+  inline int GetSocketTimeOut(void)
+  {
+    return m_SocketTimeout;
+  }
 
   /// \brief This functions tells if the current is in the state of execution or idle.
-  inline bool IsActive() { return m_Active; }
+  inline bool IsActive()
+  {
+    return m_Active;
+  }
 
   /// \brief This functions tells if the current Process is currently initialized or not.
-  inline bool IsInitialized() { return m_Initialized; }
+  inline bool IsInitialized()
+  {
+    return m_Initialized;
+  }
 
   /// \brief This functions returns the current port number associated with the socket.
-  inline int GetPort(void) {return m_Port; }
+  inline int GetPort(void)
+  {
+    return m_Port;
+  }
 
 protected slots:
 
@@ -147,7 +180,7 @@ protected:
 
   //this bool is to control the running state of the process
   bool                  m_Running;
-  
+
   //this bool is to indicate to the outside world if the process is running or not
   //m_active is false by default, true when the process is running, and gets false again only if the process has fully stopped
   bool                  m_Active;
@@ -182,13 +215,22 @@ private:
 
 public:
   /// \brief Simple constructor
-  inline QThreadEx() : QThread() { m_IsEventloopRunning = false; }
+  inline QThreadEx() : QThread()
+  {
+    m_IsEventloopRunning = false;
+  }
 
   /// \brief Member function to put the thread into sleep
-  inline void MsleepEx(int msec) { this->msleep(msec); }
+  inline void MsleepEx(int msec)
+  {
+    this->msleep(msec);
+  }
 
   /// \brief Member function to check if the eventloop has started
-  inline bool IsEventloopRunning(void) { return m_IsEventloopRunning; }
+  inline bool IsEventloopRunning(void)
+  {
+    return m_IsEventloopRunning;
+  }
 
 private slots:
 
@@ -213,4 +255,4 @@ protected:
   }
 };
 
-#endif
+#endif // NiftyLinkProcessBase_h

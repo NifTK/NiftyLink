@@ -38,7 +38,7 @@
 
 int main(int argc, char **argv)
 {
-  QCoreApplication app(argc,argv);
+  QCoreApplication app(argc, argv);
 
   // init the logging mechanism
   QsLogging::Logger& logger = QsLogging::Logger::instance();
@@ -52,15 +52,15 @@ int main(int argc, char **argv)
   int ret = 0;
 
   TestMsgTypes_Delivery * test = new TestMsgTypes_Delivery;
-  QObject::connect(test, SIGNAL(Done()), &app, SLOT(quit()),Qt::QueuedConnection);
+  QObject::connect(test, SIGNAL(Done()), &app, SLOT(quit()), Qt::QueuedConnection);
   QTimer::singleShot(0, test, SLOT(StartTest()));
   //QTimer::singleShot(220, &test, SLOT(listen()));
   ret = app.exec();
-  
-  
+
+
   delete test;
 
-  std::cerr <<"TestClass Deleted";
+  std::cerr << "TestClass Deleted";
   return ret;
 }
 

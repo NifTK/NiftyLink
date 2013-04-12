@@ -38,7 +38,7 @@
 
 int main(int argc, char **argv)
 {
-  QCoreApplication app(argc,argv);
+  QCoreApplication app(argc, argv);
 
   // init the logging mechanism
   QsLogging::Logger& logger = QsLogging::Logger::instance();
@@ -49,9 +49,9 @@ int main(int argc, char **argv)
   logger.addDestination(debugDestination.get());
   logger.addDestination(fileDestination.get());
 
-  std::cout <<"Initializing MessageTypes Constructor / Destructor test..\n";
+  std::cout << "Initializing MessageTypes Constructor / Destructor test..\n";
   TestMsgTypes_ConstrDestr * test = new TestMsgTypes_ConstrDestr;
-  QObject::connect(test, SIGNAL(Done()), &app, SLOT(quit()),Qt::QueuedConnection);
+  QObject::connect(test, SIGNAL(Done()), &app, SLOT(quit()), Qt::QueuedConnection);
   test->SetupTest();
 
   QTimer::singleShot(220, test, SLOT(PerformTest()));
@@ -59,6 +59,6 @@ int main(int argc, char **argv)
   int ret = app.exec();
   delete test;
 
-  std::cout <<"\nTest finished OK";
+  std::cout << "\nTest finished OK";
   return ret;
 }
