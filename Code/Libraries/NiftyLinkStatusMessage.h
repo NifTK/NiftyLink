@@ -10,8 +10,8 @@ PURPOSE.
 See LICENSE.txt in the top level directory for details.
 =============================================================================*/
 
-#ifndef __NiftyLinkStatusMessage_h
-#define __NiftyLinkStatusMessage_h
+#ifndef NiftyLinkStatusMessage_h
+#define NiftyLinkStatusMessage_h
 
 #include "NiftyLinkMessage.h"
 #include "NiftyLinkUtils.h"
@@ -87,4 +87,4 @@ private:
 
 };
 
-#endif
+#endif // NiftyLinkStatusMessage_h

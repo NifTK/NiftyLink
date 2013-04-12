@@ -10,8 +10,8 @@
   See LICENSE.txt in the top level directory for details.
 =============================================================================*/
 
-#ifndef TestImagingSender_H
-#define TestImagingSender_H
+#ifndef TestImagingSender_h
+#define TestImagingSender_h
 
 #include <QObject>
 #include <QtGui/QImage>
@@ -59,4 +59,4 @@ private:
 
 };
 
-#endif // TestImagingSender_H
+#endif // TestImagingSender_h

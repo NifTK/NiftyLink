@@ -10,8 +10,8 @@
   See LICENSE.txt in the top level directory for details.
 =============================================================================*/
 
-#ifndef TestImagingReceiver_H
-#define TestImagingReceiver_H
+#ifndef TestImagingReceiver_h
+#define TestImagingReceiver_h
 
 #include <QObject>
 #include <QtGui/QImage>
@@ -55,4 +55,4 @@ private:
   igtlUint64               m_CumulativeTime;
 };
 
-#endif // TestImagingReceiver_H
+#endif // TestImagingReceiver_h

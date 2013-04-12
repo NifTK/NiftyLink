@@ -10,8 +10,8 @@ PURPOSE.
 See LICENSE.txt in the top level directory for details.
 =============================================================================*/
 
-#ifndef __NiftyLinkMessage_h
-#define __NiftyLinkMessage_h
+#ifndef NiftyLinkMessage_h
+#define NiftyLinkMessage_h
 
 // Qt related issues
 #include <QtCore>
@@ -166,4 +166,4 @@ protected:
 
 Q_DECLARE_METATYPE(NiftyLinkMessage::Pointer);
 
-#endif
+#endif // NiftyLinkMessage_h

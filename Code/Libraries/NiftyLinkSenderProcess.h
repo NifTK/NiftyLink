@@ -10,8 +10,8 @@ PURPOSE.
 See LICENSE.txt in the top level directory for details.
 =============================================================================*/
 
-#ifndef __NiftyLinkSenderProcess_h
-#define __NiftyLinkSenderProcess_h
+#ifndef NiftyLinkSenderProcess_h
+#define NiftyLinkSenderProcess_h
 
 #include "NiftyLinkProcessBase.h"
 
@@ -126,4 +126,4 @@ class NIFTYLINKCOMMON_WINEXPORT NiftyLinkSenderProcessTester : public NiftyLinkS
     : NiftyLinkSenderProcess(parent) {}
 };
 
-#endif
+#endif // NiftyLinkSenderProcess_h

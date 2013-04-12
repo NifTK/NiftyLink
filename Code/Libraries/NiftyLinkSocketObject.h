@@ -10,8 +10,8 @@ PURPOSE.
 See LICENSE.txt in the top level directory for details.
 =============================================================================*/
 
-#ifndef __NiftyLinkSocketObject_h
-#define __NiftyLinkSocketObject_h
+#ifndef NiftyLinkSocketObject_h
+#define NiftyLinkSocketObject_h
 
 #include "NiftyLinkSenderProcess.h"
 #include "NiftyLinkListenerProcess.h"
@@ -215,4 +215,4 @@ private:
 
 };
 
-#endif
+#endif // NiftyLinkSocketObject_h

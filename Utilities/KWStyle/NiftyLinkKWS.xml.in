@@ -8,7 +8,7 @@
 <Tabs>true</Tabs>
 <Spaces>0</Spaces>
 <Indent>SPACE,2,true,true</Indent>
-<IfNDefDefine>__[NameOfClass]_[Extension]</IfNDefDefine>
+<IfNDefDefine>[NameOfClass]_[Extension]</IfNDefDefine>
 <NameOfClass>
   <name>[NameOfClass]</name>
   <prefix>NiftyLink</prefix>

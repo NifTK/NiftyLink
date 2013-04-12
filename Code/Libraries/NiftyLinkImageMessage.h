@@ -10,8 +10,8 @@ PURPOSE.
 See LICENSE.txt in the top level directory for details.
 =============================================================================*/
 
-#ifndef __NiftyLinkImageMessage_h
-#define __NiftyLinkImageMessage_h
+#ifndef NiftyLinkImageMessage_h
+#define NiftyLinkImageMessage_h
 
 #include <QtGui/QImage>
 #include <QtGui/QPainter>
@@ -167,4 +167,4 @@ private:
 
 };
 
-#endif
+#endif // NiftyLinkImageMessage_h

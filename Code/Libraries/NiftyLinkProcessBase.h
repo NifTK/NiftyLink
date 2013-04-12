@@ -10,8 +10,8 @@ PURPOSE.
 See LICENSE.txt in the top level directory for details.
 =============================================================================*/
 
-#ifndef __NiftyLinkProcessBase_h
-#define __NiftyLinkProcessBase_h
+#ifndef NiftyLinkProcessBase_h
+#define NiftyLinkProcessBase_h
 
 //Qt related includes
 #include <QtCore>
@@ -255,4 +255,4 @@ protected:
   }
 };
 
-#endif
+#endif // NiftyLinkProcessBase_h
