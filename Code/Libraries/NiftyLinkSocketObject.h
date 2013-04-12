@@ -103,22 +103,40 @@ public:
   void CloseSocket(void);
 
   /// \brief Returns the current listening port
-  inline int GetPort() { return m_Port; }
+  inline int GetPort()
+  {
+    return m_Port;
+  }
 
   /// \brief Returns true if the listener is running
-  inline bool IsListening() { return m_Listening; }
+  inline bool IsListening()
+  {
+    return m_Listening;
+  }
 
   /// \brief Returns true if the sender is connected to a remote host
-  inline bool IsConnected() { return m_ConnectedToRemote; }
+  inline bool IsConnected()
+  {
+    return m_ConnectedToRemote;
+  }
 
   /// \brief Returns true if a client is connected to the listener
-  inline bool IsClientConnecting() { return m_ClientConnected; }
+  inline bool IsClientConnecting()
+  {
+    return m_ClientConnected;
+  }
 
   /// \brief Returns if the socket is valid for sending data
-  inline bool IsAbleToSend() { return m_AbleToSend; }
+  inline bool IsAbleToSend()
+  {
+    return m_AbleToSend;
+  }
 
   /// \brief Returns true if the socket is active (one of the threads are running).
-  inline bool IsActive() { return m_Active; }
+  inline bool IsActive()
+  {
+    return m_Active;
+  }
 
   /// \brief Sets the object names, including the sender / listener threads etc.
   void SetObjectNames(QString name);

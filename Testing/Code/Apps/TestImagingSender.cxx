@@ -23,10 +23,10 @@
 
 //-----------------------------------------------------------------------------
 TestImagingSender::TestImagingSender(const QImage* image,
-    const QString& hostName,
-    const int& portNumber,
-    const int& numberOfIterations
-    )
+                                     const QString& hostName,
+                                     const int& portNumber,
+                                     const int& numberOfIterations
+                                    )
   : m_Image(image)
   , m_HostName(hostName)
   , m_PortNumber(portNumber)
@@ -109,9 +109,9 @@ bool TestImagingSender::Setup()
 //-----------------------------------------------------------------------------
 void TestImagingSender::Run()
 {
-  if(this->Setup())
+  if (this->Setup())
   {
-    while(!m_Socket.IsConnected())
+    while (!m_Socket.IsConnected())
     {
       QTest::qWait(250);
     }
@@ -123,7 +123,7 @@ void TestImagingSender::Run()
     // Throw data at the socket.
     this->SendData(m_NumberOfIterations);
 
-    while(m_NumberSent < m_NumberOfIterations)
+    while (m_NumberSent < m_NumberOfIterations)
     {
       QTest::qWait(10);
     }
@@ -134,15 +134,15 @@ void TestImagingSender::Run()
 
     // Calculate results
     igtlUint64 result = GetDifferenceInNanoSeconds(endTime, startTime);
-    double bps = ((double)m_NumberOfIterations*((double)m_Image->byteCount())*(double)8) / ((double)result/(double)1000000000.0);
+    double bps = ((double)m_NumberOfIterations * ((double)m_Image->byteCount()) * (double)8) / ((double)result / (double)1000000000.0);
 
     std::cout << "Timing: for " << m_NumberOfIterations << " iterations:" << std::endl;
     std::cout << "  total time=" << result / (double)1000000000.0 << "(s)" << std::endl;
-    std::cout << "         fps=" << 1.0/((double)result/(double)m_NumberOfIterations/1000000000.0) << std::endl;
+    std::cout << "         fps=" << 1.0 / ((double)result / (double)m_NumberOfIterations / 1000000000.0) << std::endl;
     std::cout << "         bps=" << bps << std::endl;
-    std::cout << "        kbps=" << bps/(double)1024 << std::endl;
-    std::cout << "        mbps=" << bps/(double)1024/(double)1024 << std::endl;
-    std::cout << "     packing=" << m_TimePackingMessage / (double)1000000000.0 << "(s)" << " (" << 100.0*(double)m_TimePackingMessage/(double)result << "%)" << std::endl;
+    std::cout << "        kbps=" << bps / (double)1024 << std::endl;
+    std::cout << "        mbps=" << bps / (double)1024 / (double)1024 << std::endl;
+    std::cout << "     packing=" << m_TimePackingMessage / (double)1000000000.0 << "(s)" << " (" << 100.0 * (double)m_TimePackingMessage / (double)result << "%)" << std::endl;
 
     // Tidy up.
     this->FinishUp();
@@ -185,7 +185,7 @@ int main(int argc, char** argv)
   // Parse Arguments
 
   if (argc != 5) // check number of arguments
-    {
+  {
     // If not correct, print usage
     std::cerr << "Usage: " << argv[0] << " <hostname> <port> <iters> <filename>" << std::endl;
     std::cerr << "    <hostname> : IP or host name"                              << std::endl;
@@ -193,7 +193,7 @@ int main(int argc, char** argv)
     std::cerr << "    <iters>    : Number of iterations"                         << std::endl;
     std::cerr << "    <filename> : Image file to send (.raw or .png)"            << std::endl;
     exit(0);
-    }
+  }
 
   char*  hostname   = argv[1];
   int    port       = atoi(argv[2]);
@@ -216,7 +216,7 @@ int main(int argc, char** argv)
   image.convertToFormat(QImage::Format_Indexed8);
   TestImagingSender sender(&image, QString(hostname), port, iters);
 
-  QApplication app(argc,argv);
+  QApplication app(argc, argv);
   QObject::connect(&sender, SIGNAL(Done()), &app, SLOT(quit()), Qt::QueuedConnection);
 
   QTimer::singleShot(220, &sender, SLOT(Run()));

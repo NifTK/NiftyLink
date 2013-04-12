@@ -52,7 +52,10 @@ class NIFTYLINKCOMMON_WINEXPORT XMLBuilderBase : public QObject
 public:
 
   /// \brief No-arg Constructor
-  XMLBuilderBase() { m_MessageValid = false; }
+  XMLBuilderBase()
+  {
+    m_MessageValid = false;
+  }
 
   /// \brief Copy Constructor
   XMLBuilderBase(const XMLBuilderBase &other)
@@ -73,7 +76,10 @@ public:
   }
 
   /// \brief Returns true if the message is valid
-  bool IsMessageValid() { return m_MessageValid; }
+  bool IsMessageValid()
+  {
+    return m_MessageValid;
+  }
 
   /// \brief Pure virtual method: in the derived classes it composes an XML descriptor
   /// from the values of the builders member variables in a text format and returns it in a QString object
@@ -84,7 +90,10 @@ public:
   virtual void SetXMLString(QString desc) = 0;
 
   /// \brief Tells the descriptor type if it's a command / client / tracker, etc.
-  virtual QString GetDescriptorType(void) { return m_DescriptorString; }
+  virtual QString GetDescriptorType(void)
+  {
+    return m_DescriptorString;
+  }
 
   /// \brief Static function to parse the descriptor type of an XML text
   static QString ParseDescriptorType(QString xmlDoco);
@@ -116,7 +125,10 @@ class NIFTYLINKCOMMON_WINEXPORT ClientDescriptorXMLBuilder : public XMLBuilderBa
 public:
 
   /// \brief Basic constructor
-  ClientDescriptorXMLBuilder() : XMLBuilderBase() { m_MessageValid = false; }
+  ClientDescriptorXMLBuilder() : XMLBuilderBase()
+  {
+    m_MessageValid = false;
+  }
 
   /// \brief Copy Constructor
   ClientDescriptorXMLBuilder(const ClientDescriptorXMLBuilder &other);
@@ -141,7 +153,10 @@ public:
   }
 
   /// \brief Returns the device name if it was set previously
-  inline QString GetDeviceName(void) { return m_DeviceName; }
+  inline QString GetDeviceName(void)
+  {
+    return m_DeviceName;
+  }
 
   /// \brief This method is used to set the device type (for example "Tracker", "Ultrasound Imager" etc.)
   inline void SetDeviceType(QString type)
@@ -151,7 +166,10 @@ public:
   }
 
   /// \brief Returns the device type if it was set previously
-  inline QString GetDeviceType(void) { return m_DeviceType; }
+  inline QString GetDeviceType(void)
+  {
+    return m_DeviceType;
+  }
 
   /// \brief This method is used to set the device's communication type (for example "Serial", "Bluetooth" etc.)
   inline void SetCommunicationType(QString commtype)
@@ -161,7 +179,10 @@ public:
   }
 
   /// \brief Returns the device's communication type if it was set previously
-  inline QString GetCommunicationType(void) { return m_CommType; }
+  inline QString GetCommunicationType(void)
+  {
+    return m_CommType;
+  }
 
   /// \brief This method sets the port name which was used to connect the device to the PC
   inline void SetPortName(QString portName)
@@ -171,7 +192,10 @@ public:
   }
 
   /// \brief Returns the name of the port which was used to connect the device to the PC
-  inline QString GetPortName(void) { return m_PortName; }
+  inline QString GetPortName(void)
+  {
+    return m_PortName;
+  }
 
   /// \brief This method sets the IP address of the client (usually the IP of the message's sender)
   inline void SetClientIP(QString ip)
@@ -181,7 +205,10 @@ public:
   }
 
   /// \brief Returns the client's IP address (usually the IP of the message's sender)
-  inline QString GetClientIP(void) { return m_ClientIP; }
+  inline QString GetClientIP(void)
+  {
+    return m_ClientIP;
+  }
 
   /// \brief This method sets the TCP port number of the client (usually the port on which the message is sent)
   inline void SetClientPort(QString port)
@@ -191,7 +218,10 @@ public:
   }
 
   /// \brief Returns the TCP port number of the client (usually the port on which the message was sent)
-  inline QString GetClientPort(void) { return m_ClientPort;}
+  inline QString GetClientPort(void)
+  {
+    return m_ClientPort;
+  }
 
 protected:
   QString m_DeviceName;
@@ -250,14 +280,20 @@ public:
   }
 
   /// \brief Returns the command's name
-  inline QString GetCommandName(void) { return m_CommandName; }
+  inline QString GetCommandName(void)
+  {
+    return m_CommandName;
+  }
 
   /// \brief Appends a command parameter to the parameter list. Required fields are the name of the parameter (pname),
   /// type of the parameter (ptype) and the value of the parameter, all as QStrings
   void AddParameter(QString pName, QString pType, QString pVal);
 
   /// \brief Returns the number of paramters which were previously assigned to the command
-  inline int GetNumOfParameters(void) { return m_NumOfParameters; }
+  inline int GetNumOfParameters(void)
+  {
+    return m_NumOfParameters;
+  }
 
   /// \brief Returns the name of the i-th parameter of the parameter list
   QString GetParameterName(int i);
@@ -303,7 +339,10 @@ class NIFTYLINKCOMMON_WINEXPORT TrackerClientDescriptor : public ClientDescripto
 
 public:
   /// \brief Basic constructor
-  TrackerClientDescriptor() : ClientDescriptorXMLBuilder() { m_MessageValid = false; }
+  TrackerClientDescriptor() : ClientDescriptorXMLBuilder()
+  {
+    m_MessageValid = false;
+  }
 
   /// \brief Copy Constructor
   TrackerClientDescriptor(const TrackerClientDescriptor &other);
@@ -321,10 +360,16 @@ public:
   void SetXMLString(QString desc);
 
   /// \brief Appends a tracker tool to the descriptor
-  inline void AddTrackerTool(QString toolName) { m_TrackerTools.append(toolName); }
+  inline void AddTrackerTool(QString toolName)
+  {
+    m_TrackerTools.append(toolName);
+  }
 
   /// \brief Returns the list of tracker tools which were assigned to the tracker previously
-  inline QStringList GetTrackerTools(void) { return m_TrackerTools; }
+  inline QStringList GetTrackerTools(void)
+  {
+    return m_TrackerTools;
+  }
 
 private:
   QStringList m_TrackerTools;

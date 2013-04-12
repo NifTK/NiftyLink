@@ -18,18 +18,19 @@
 #include <igtlTimeStamp.h>
 #include "NiftyLinkSocketObject.h"
 
-class TestImagingReceiver : public QObject {
+class TestImagingReceiver : public QObject
+{
 
   Q_OBJECT
 
 public:
   TestImagingReceiver(const int& portNumber,
-      const int& numberOfImagesExpected
-      );
+                      const int& numberOfImagesExpected
+                     );
   virtual ~TestImagingReceiver();
 
 signals:
-    void Done();
+  void Done();
 
 public slots:
 

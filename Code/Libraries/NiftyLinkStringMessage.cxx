@@ -20,7 +20,7 @@ NiftyLinkStringMessage::NiftyLinkStringMessage(void)
   : NiftyLinkMessage()
 {
   m_MessageType = "STRING";
-  m_Message.operator =(NULL);
+  m_Message.operator = (NULL);
 }
 
 
@@ -42,7 +42,9 @@ NiftyLinkStringMessage::NiftyLinkStringMessage(const NiftyLinkStringMessage &oth
 void NiftyLinkStringMessage::SetString(QString string)
 {
   if (m_Message.IsNull())
-    m_Message.operator =(igtl::StringMessage::New());
+  {
+    m_Message.operator = (igtl::StringMessage::New());
+  }
 
   igtl::StringMessage::Pointer msgPointer;
   msgPointer = static_cast<igtl::StringMessage *>(m_Message.GetPointer());
@@ -57,7 +59,9 @@ void NiftyLinkStringMessage::SetString(QString string)
 void NiftyLinkStringMessage::SetEncoding(igtlUint16 enc)
 {
   if (m_Message.IsNull())
-    m_Message.operator =(igtl::StringMessage::New());
+  {
+    m_Message.operator = (igtl::StringMessage::New());
+  }
 
   igtl::StringMessage::Pointer msgPointer;
   msgPointer = static_cast<igtl::StringMessage *>(m_Message.GetPointer());
@@ -72,7 +76,9 @@ void NiftyLinkStringMessage::SetEncoding(igtlUint16 enc)
 QString NiftyLinkStringMessage::GetString()
 {
   if (m_Message.IsNull())
+  {
     return QString();
+  }
 
   igtl::StringMessage::Pointer msgPointer;
   msgPointer = static_cast<igtl::StringMessage *>(m_Message.GetPointer());
@@ -89,7 +95,9 @@ QString NiftyLinkStringMessage::GetString()
 igtlUint16 NiftyLinkStringMessage::GetEncoding()
 {
   if (m_Message.IsNull())
+  {
     return -1;
+  }
 
   igtl::StringMessage::Pointer msgPointer;
   msgPointer = static_cast<igtl::StringMessage *>(m_Message.GetPointer());
@@ -106,7 +114,9 @@ igtlUint16 NiftyLinkStringMessage::GetEncoding()
 void NiftyLinkStringMessage::InitializeWithTestData(void)
 {
   if (m_Message.IsNull())
-    m_Message.operator =(igtl::StringMessage::New());
+  {
+    m_Message.operator = (igtl::StringMessage::New());
+  }
 
   igtl::StringMessage::Pointer msgPointer;
   msgPointer = static_cast<igtl::StringMessage *>(m_Message.GetPointer());
@@ -120,10 +130,10 @@ void NiftyLinkStringMessage::InitializeWithTestData(void)
 //-----------------------------------------------------------------------------
 void NiftyLinkStringMessage::Create_GET(NiftyLinkMessage::Pointer &msgToCreate)
 {
-  msgToCreate.operator =(NiftyLinkMessage::Pointer(new NiftyLinkMessage()));
+  msgToCreate.operator = (NiftyLinkMessage::Pointer(new NiftyLinkMessage()));
 
   igtl::GetStringMessage::Pointer cmdMsg;
-  cmdMsg.operator =(igtl::GetStringMessage::New());
+  cmdMsg.operator = (igtl::GetStringMessage::New());
 
   igtl::TimeStamp::Pointer ts;
   ts = igtl::TimeStamp::New();
@@ -143,10 +153,10 @@ void NiftyLinkStringMessage::Create_GET(NiftyLinkMessage::Pointer &msgToCreate)
 //-----------------------------------------------------------------------------
 void NiftyLinkStringMessage::Create_STT(NiftyLinkMessage::Pointer &msgToCreate)
 {
-  msgToCreate.operator =(NiftyLinkMessage::Pointer(new NiftyLinkMessage()));
+  msgToCreate.operator = (NiftyLinkMessage::Pointer(new NiftyLinkMessage()));
 
   igtl::StartStringMessage::Pointer cmdMsg;
-  cmdMsg.operator =(igtl::StartStringMessage::New());
+  cmdMsg.operator = (igtl::StartStringMessage::New());
 
   igtl::TimeStamp::Pointer ts;
   ts = igtl::TimeStamp::New();
@@ -166,10 +176,10 @@ void NiftyLinkStringMessage::Create_STT(NiftyLinkMessage::Pointer &msgToCreate)
 //-----------------------------------------------------------------------------
 void NiftyLinkStringMessage::Create_STP(NiftyLinkMessage::Pointer &msgToCreate)
 {
-  msgToCreate.operator =(NiftyLinkMessage::Pointer(new NiftyLinkMessage()));
+  msgToCreate.operator = (NiftyLinkMessage::Pointer(new NiftyLinkMessage()));
 
   igtl::StopStringMessage::Pointer cmdMsg;
-  cmdMsg.operator =(igtl::StopStringMessage::New());
+  cmdMsg.operator = (igtl::StopStringMessage::New());
 
   igtl::TimeStamp::Pointer ts;
   ts = igtl::TimeStamp::New();
@@ -189,10 +199,10 @@ void NiftyLinkStringMessage::Create_STP(NiftyLinkMessage::Pointer &msgToCreate)
 //-----------------------------------------------------------------------------
 void NiftyLinkStringMessage::Create_RTS(NiftyLinkMessage::Pointer &msgToCreate)
 {
-  msgToCreate.operator =(NiftyLinkMessage::Pointer(new NiftyLinkMessage()));
+  msgToCreate.operator = (NiftyLinkMessage::Pointer(new NiftyLinkMessage()));
 
   igtl::RTSStringMessage::Pointer cmdMsg;
-  cmdMsg.operator =(igtl::RTSStringMessage::New());
+  cmdMsg.operator = (igtl::RTSStringMessage::New());
 
   igtl::TimeStamp::Pointer ts;
   ts = igtl::TimeStamp::New();

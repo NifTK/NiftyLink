@@ -127,16 +127,25 @@ public:
   void Update(QString hostname);
 
   /// \brief Function set message processed and to check status
-  inline void SetProcessed(bool p) { m_Processed = p; }
+  inline void SetProcessed(bool p)
+  {
+    m_Processed = p;
+  }
 
   /// \brief Function to check if a message was processed
-  bool GetProcessed() { return m_Processed; }
+  bool GetProcessed()
+  {
+    return m_Processed;
+  }
 
   /// \brief Set the name of the owner class as the message is passed back and forth
   void SetOwnerName(QString str);
 
   /// \brief Method to check who owns the message at the moment
-  QString GetOwnerName(void) { return m_OwnerName; }
+  QString GetOwnerName(void)
+  {
+    return m_OwnerName;
+  }
 
 protected:
 

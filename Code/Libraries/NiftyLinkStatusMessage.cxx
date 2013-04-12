@@ -20,7 +20,7 @@ NiftyLinkStatusMessage::NiftyLinkStatusMessage(void)
   : NiftyLinkMessage()
 {
   m_MessageType = "STATUS";
-  m_Message.operator =(NULL);
+  m_Message.operator = (NULL);
 }
 
 
@@ -42,7 +42,9 @@ NiftyLinkStatusMessage::NiftyLinkStatusMessage(const NiftyLinkStatusMessage &oth
 void NiftyLinkStatusMessage::SetErrorCode(int code)
 {
   if (m_Message.IsNull())
-    m_Message.operator =(igtl::StatusMessage::New());
+  {
+    m_Message.operator = (igtl::StatusMessage::New());
+  }
 
   igtl::StatusMessage::Pointer msgPointer;
   msgPointer = static_cast<igtl::StatusMessage *>(m_Message.GetPointer());
@@ -57,7 +59,9 @@ void NiftyLinkStatusMessage::SetErrorCode(int code)
 int NiftyLinkStatusMessage::GetErrorCode()
 {
   if (m_Message.IsNull())
+  {
     return -1;
+  }
 
   igtl::StatusMessage::Pointer msgPointer;
   msgPointer = static_cast<igtl::StatusMessage *>(m_Message.GetPointer());
@@ -74,7 +78,9 @@ int NiftyLinkStatusMessage::GetErrorCode()
 void NiftyLinkStatusMessage::SetErrorSubCode(igtlInt64 subcode)
 {
   if (m_Message.IsNull())
-    m_Message.operator =(igtl::StatusMessage::New());
+  {
+    m_Message.operator = (igtl::StatusMessage::New());
+  }
 
   igtl::StatusMessage::Pointer msgPointer;
   msgPointer = static_cast<igtl::StatusMessage *>(m_Message.GetPointer());
@@ -89,7 +95,9 @@ void NiftyLinkStatusMessage::SetErrorSubCode(igtlInt64 subcode)
 igtlInt64 NiftyLinkStatusMessage::GetErrorSubCode()
 {
   if (m_Message.IsNull())
+  {
     return -1;
+  }
 
   igtl::StatusMessage::Pointer msgPointer;
   msgPointer = static_cast<igtl::StatusMessage *>(m_Message.GetPointer());
@@ -106,7 +114,9 @@ igtlInt64 NiftyLinkStatusMessage::GetErrorSubCode()
 void NiftyLinkStatusMessage::SetErrorName(QString name)
 {
   if (m_Message.IsNull())
-    m_Message.operator =(igtl::StatusMessage::New());
+  {
+    m_Message.operator = (igtl::StatusMessage::New());
+  }
 
   igtl::StatusMessage::Pointer msgPointer;
   msgPointer = static_cast<igtl::StatusMessage *>(m_Message.GetPointer());
@@ -121,7 +131,9 @@ void NiftyLinkStatusMessage::SetErrorName(QString name)
 QString NiftyLinkStatusMessage::GetErrorName()
 {
   if (m_Message.IsNull())
+  {
     return QString();
+  }
 
   igtl::StatusMessage::Pointer msgPointer;
   msgPointer = static_cast<igtl::StatusMessage *>(m_Message.GetPointer());
@@ -138,7 +150,9 @@ QString NiftyLinkStatusMessage::GetErrorName()
 void NiftyLinkStatusMessage::SetStatusString(QString str)
 {
   if (m_Message.IsNull())
-    m_Message.operator =(igtl::StatusMessage::New());
+  {
+    m_Message.operator = (igtl::StatusMessage::New());
+  }
 
   igtl::StatusMessage::Pointer msgPointer;
   msgPointer = static_cast<igtl::StatusMessage *>(m_Message.GetPointer());
@@ -153,7 +167,9 @@ void NiftyLinkStatusMessage::SetStatusString(QString str)
 QString NiftyLinkStatusMessage::GetStatusString()
 {
   if (m_Message.IsNull())
+  {
     return QString();
+  }
 
   igtl::StatusMessage::Pointer msgPointer;
   msgPointer = static_cast<igtl::StatusMessage *>(m_Message.GetPointer());
@@ -170,7 +186,9 @@ QString NiftyLinkStatusMessage::GetStatusString()
 void NiftyLinkStatusMessage::InitializeWithTestData(void)
 {
   if (m_Message.IsNull())
-    m_Message.operator =(igtl::StatusMessage::New());
+  {
+    m_Message.operator = (igtl::StatusMessage::New());
+  }
 
   igtl::StatusMessage::Pointer msgPointer;
   msgPointer = static_cast<igtl::StatusMessage *>(m_Message.GetPointer());
@@ -187,10 +205,10 @@ void NiftyLinkStatusMessage::InitializeWithTestData(void)
 //-----------------------------------------------------------------------------
 void NiftyLinkStatusMessage::Create_GET(NiftyLinkMessage::Pointer &msgToCreate)
 {
-  msgToCreate.operator =(NiftyLinkMessage::Pointer(new NiftyLinkMessage()));
+  msgToCreate.operator = (NiftyLinkMessage::Pointer(new NiftyLinkMessage()));
 
   igtl::GetStatusMessage::Pointer cmdMsg;
-  cmdMsg.operator =(igtl::GetStatusMessage::New());
+  cmdMsg.operator = (igtl::GetStatusMessage::New());
 
   igtl::TimeStamp::Pointer ts;
   ts = igtl::TimeStamp::New();
@@ -210,10 +228,10 @@ void NiftyLinkStatusMessage::Create_GET(NiftyLinkMessage::Pointer &msgToCreate)
 //-----------------------------------------------------------------------------
 void NiftyLinkStatusMessage::Create_STT(NiftyLinkMessage::Pointer &msgToCreate)
 {
-  msgToCreate.operator =(NiftyLinkMessage::Pointer(new NiftyLinkMessage()));
+  msgToCreate.operator = (NiftyLinkMessage::Pointer(new NiftyLinkMessage()));
 
   igtl::StartStatusMessage::Pointer cmdMsg;
-  cmdMsg.operator =(igtl::StartStatusMessage::New());
+  cmdMsg.operator = (igtl::StartStatusMessage::New());
 
   igtl::TimeStamp::Pointer ts;
   ts = igtl::TimeStamp::New();
@@ -233,10 +251,10 @@ void NiftyLinkStatusMessage::Create_STT(NiftyLinkMessage::Pointer &msgToCreate)
 //-----------------------------------------------------------------------------
 void NiftyLinkStatusMessage::Create_STP(NiftyLinkMessage::Pointer &msgToCreate)
 {
-  msgToCreate.operator =(NiftyLinkMessage::Pointer(new NiftyLinkMessage()));
+  msgToCreate.operator = (NiftyLinkMessage::Pointer(new NiftyLinkMessage()));
 
   igtl::StopStatusMessage::Pointer cmdMsg;
-  cmdMsg.operator =(igtl::StopStatusMessage::New());
+  cmdMsg.operator = (igtl::StopStatusMessage::New());
 
   igtl::TimeStamp::Pointer ts;
   ts = igtl::TimeStamp::New();
@@ -256,10 +274,10 @@ void NiftyLinkStatusMessage::Create_STP(NiftyLinkMessage::Pointer &msgToCreate)
 //-----------------------------------------------------------------------------
 void NiftyLinkStatusMessage::Create_RTS(NiftyLinkMessage::Pointer &msgToCreate)
 {
-  msgToCreate.operator =(NiftyLinkMessage::Pointer(new NiftyLinkMessage()));
+  msgToCreate.operator = (NiftyLinkMessage::Pointer(new NiftyLinkMessage()));
 
   igtl::RTSStatusMessage::Pointer cmdMsg;
-  cmdMsg.operator =(igtl::RTSStatusMessage::New());
+  cmdMsg.operator = (igtl::RTSStatusMessage::New());
 
   igtl::TimeStamp::Pointer ts;
   ts = igtl::TimeStamp::New();

@@ -18,7 +18,8 @@
 #include <igtlTimeStamp.h>
 #include "NiftyLinkSocketObject.h"
 
-class TestImagingSender : public QObject {
+class TestImagingSender : public QObject
+{
 
   Q_OBJECT
 
@@ -27,7 +28,7 @@ public:
                     const QString& hostName,
                     const int& portNumber,
                     const int& numberOfIterations
-                    );
+                   );
   virtual ~TestImagingSender();
 
 signals:

@@ -15,7 +15,7 @@
 
 //-----------------------------------------------------------------------------
 NiftyLinkSenderProcess::NiftyLinkSenderProcess(QObject *parent)
-: NiftyLinkProcessBase(parent)
+  : NiftyLinkProcessBase(parent)
 {
   m_SendingOnSocket = false;
   m_ConnectTimeout = 5;
@@ -27,8 +27,8 @@ NiftyLinkSenderProcess::NiftyLinkSenderProcess(QObject *parent)
 //-----------------------------------------------------------------------------
 NiftyLinkSenderProcess::~NiftyLinkSenderProcess(void)
 {
-  m_ExtSocket.operator =(NULL);
-  m_ClientSocket.operator =(NULL);
+  m_ExtSocket.operator = (NULL);
+  m_ClientSocket.operator = (NULL);
 
   if (m_TimeOuter != NULL)
   {
@@ -43,23 +43,25 @@ bool NiftyLinkSenderProcess::Initialize(igtl::Socket::Pointer socket, int port)
 {
   if (socket.IsNull() || (socket.IsNotNull() && !socket->IsValid()) )
   {
-    QLOG_ERROR() <<objectName() <<": " << "Cannot create a sender socket, invalid external socket specified" << endl;
+    QLOG_ERROR() << objectName() << ": " << "Cannot create a sender socket, invalid external socket specified" << endl;
     return false;
   }
 
   if (m_Initialized == true)
   {
-    QLOG_ERROR() <<objectName() <<": " << "Sender already in use!" << endl;
+    QLOG_ERROR() << objectName() << ": " << "Sender already in use!" << endl;
     return false;
   }
 
-  m_ExtSocket.operator =(socket);
+  m_ExtSocket.operator = (socket);
   m_ExtSocket->SetTimeout(m_SocketTimeout);
   m_SendingOnSocket = true;
   m_Port = port;
 
   if (!Activate())
+  {
     return false;
+  }
 
   return true;
 }
@@ -70,15 +72,15 @@ bool NiftyLinkSenderProcess::Initialize(std::string &hostname, int port)
 {
   if (port <= 0 || hostname.empty())
   {
-    QLOG_ERROR() <<objectName() <<": " << "Cannot create a sender socket, invalid hostname or port specified" << endl;
-    QLOG_ERROR() <<objectName() <<": " << "Hostname: " <<hostname.c_str() << endl;
-    QLOG_ERROR() <<objectName() <<": " << "Port: " <<port << endl;
+    QLOG_ERROR() << objectName() << ": " << "Cannot create a sender socket, invalid hostname or port specified" << endl;
+    QLOG_ERROR() << objectName() << ": " << "Hostname: " << hostname.c_str() << endl;
+    QLOG_ERROR() << objectName() << ": " << "Port: " << port << endl;
     return false;
   }
 
   if (m_Initialized == true)
   {
-    QLOG_ERROR() <<objectName() <<": " << "Sender already in use!" << endl;
+    QLOG_ERROR() << objectName() << ": " << "Sender already in use!" << endl;
     return false;
   }
 
@@ -90,19 +92,21 @@ bool NiftyLinkSenderProcess::Initialize(std::string &hostname, int port)
     m_ClientSocket->SetConnectionTimeout(m_ConnectTimeout);
     m_SendingOnSocket = false;
     m_Port = port;
-    m_Hostname.operator =(hostname);
+    m_Hostname.operator = (hostname);
   }
   else
   {
-    QLOG_ERROR() <<objectName() <<": " << "Failed to create socket" << endl;
-    m_ClientSocket.operator =(NULL);
+    QLOG_ERROR() << objectName() << ": " << "Failed to create socket" << endl;
+    m_ClientSocket.operator = (NULL);
     m_Port = -1;
     m_Hostname.clear();
     return false;
   }
 
   if (!Activate())
+  {
     return false;
+  }
 
   return true;
 }
@@ -112,12 +116,18 @@ bool NiftyLinkSenderProcess::Initialize(std::string &hostname, int port)
 void NiftyLinkSenderProcess::StartProcess(void)
 {
   if (m_Initialized == false)
+  {
     return;
+  }
 
   if (!m_SendingOnSocket && !m_Running)
-    QLOG_INFO() <<objectName() <<": " <<"Started sender at: " <<m_Port <<"\n";
+  {
+    QLOG_INFO() << objectName() << ": " << "Started sender at: " << m_Port << "\n";
+  }
   else if (!m_Running)
-    QLOG_INFO() <<objectName() <<": " <<"Started sender on socket" <<"\n";
+  {
+    QLOG_INFO() << objectName() << ": " << "Started sender on socket" << "\n";
+  }
 
   m_Running = true;  //sets the process to running state
   m_Active  = true;  //sets the indicator to active
@@ -132,7 +142,7 @@ void NiftyLinkSenderProcess::StartProcess(void)
 //-----------------------------------------------------------------------------
 void NiftyLinkSenderProcess::StopProcess(void)
 {
-  QLOG_INFO() <<objectName() <<": " << "Attempting to stop sender process... (stopProcess()) \n";
+  QLOG_INFO() << objectName() << ": " << "Attempting to stop sender process... (stopProcess()) \n";
   m_Running = false;  //stops the process
 }
 
@@ -143,18 +153,18 @@ void NiftyLinkSenderProcess::TerminateProcess()
   m_Running = false; //Just in case...
 
   // Quitting Process
-  QLOG_INFO() <<objectName() <<": " << "Terminating sender process \n";
-  QLOG_INFO() <<objectName() <<": " << "Total number of messages sent: " <<m_MessageCounter;
+  QLOG_INFO() << objectName() << ": " << "Terminating sender process \n";
+  QLOG_INFO() << objectName() << ": " << "Total number of messages sent: " << m_MessageCounter;
 
   int err = 0;
-  QLOG_INFO() <<objectName() <<": " << "Closing socket... \n";
+  QLOG_INFO() << objectName() << ": " << "Closing socket... \n";
 
   m_Mutex->lock();
   if (m_ExtSocket.IsNotNull())
   {
     err |= m_ExtSocket->CloseSocket();
 
-    m_ExtSocket.operator =(NULL);
+    m_ExtSocket.operator = (NULL);
   }
   m_Mutex->unlock();
 
@@ -165,15 +175,19 @@ void NiftyLinkSenderProcess::TerminateProcess()
     {
       err |= m_ClientSocket->CloseSocket();
 
-      m_ClientSocket.operator =(NULL);
+      m_ClientSocket.operator = (NULL);
     }
     m_Mutex->unlock();
   }
 
   if (err != 0)
-    QLOG_ERROR() <<objectName() <<"CloseSocket returned with error: " <<err;
+  {
+    QLOG_ERROR() << objectName() << "CloseSocket returned with error: " << err;
+  }
   else
-    QLOG_INFO() <<objectName() <<"CloseSocket returned with error: " <<err;
+  {
+    QLOG_INFO() << objectName() << "CloseSocket returned with error: " << err;
+  }
 
   m_SendingOnSocket = false;
   m_SendQue.clear();
@@ -196,37 +210,37 @@ bool NiftyLinkSenderProcess::Activate(void)
 {
   if (m_Mutex == NULL)
   {
-    QLOG_INFO() <<objectName() <<": " <<"Cannot Activate sender, mutex not set" <<endl;
+    QLOG_INFO() << objectName() << ": " << "Cannot Activate sender, mutex not set" << endl;
     return false;
   }
 
   if ( (!m_SendingOnSocket && m_Port <= 0) || (!m_SendingOnSocket && m_Hostname.empty()) )
   {
-    QLOG_INFO() <<objectName() <<": " <<"Cannot Activate sender, hostname or port is invalid" <<endl;
+    QLOG_INFO() << objectName() << ": " << "Cannot Activate sender, hostname or port is invalid" << endl;
     return false;
   }
 
   if (!m_SendingOnSocket && ResolveHostName(QString::fromStdString(m_Hostname)) == QString("UNKNOWN") )
   {
-    QLOG_INFO() <<objectName() <<": " <<"Cannot Activate sender, hostname or ip address is invalid" <<endl;
+    QLOG_INFO() << objectName() << ": " << "Cannot Activate sender, hostname or ip address is invalid" << endl;
     return false;
   }
 
   if ( (!m_SendingOnSocket && m_ClientSocket.IsNull()) )
   {
-    QLOG_INFO() <<objectName() <<": " <<"Cannot Activate sender, client socket is invalid" <<endl;
+    QLOG_INFO() << objectName() << ": " << "Cannot Activate sender, client socket is invalid" << endl;
     return false;
   }
 
   if ( (m_SendingOnSocket && m_ExtSocket.IsNull()) || (m_SendingOnSocket && m_ExtSocket.IsNotNull() && !m_ExtSocket->IsValid()) )
   {
-    QLOG_INFO() <<objectName() <<": " <<"Cannot Activate listener, socket is invalid" <<endl;
+    QLOG_INFO() << objectName() << ": " << "Cannot Activate listener, socket is invalid" << endl;
     return false;
   }
 
   m_Initialized = true;
 
-  QLOG_INFO() <<objectName() <<": " <<"Sender successfully Activated" <<endl;
+  QLOG_INFO() << objectName() << ": " << "Sender successfully Activated" << endl;
 
   return true;
 }
@@ -235,9 +249,9 @@ bool NiftyLinkSenderProcess::Activate(void)
 //-----------------------------------------------------------------------------
 void NiftyLinkSenderProcess::OnKeepAliveTimeout(void)
 {
-  int sleepInterval = m_KeepAliveTimeout/2;
+  int sleepInterval = m_KeepAliveTimeout / 2;
 
-  QLOG_INFO() << objectName() <<": " << "KeepAliveTimeout occured: " << m_KeepAliveTimeout << ", ms";
+  QLOG_INFO() << objectName() << ": " << "KeepAliveTimeout occured: " << m_KeepAliveTimeout << ", ms";
 
   // ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
   // If the sendqueue is empty we're going to perform a keepalive - send 2 bytes through the socket
@@ -256,7 +270,7 @@ void NiftyLinkSenderProcess::OnKeepAliveTimeout(void)
     }
     catch (std::exception &e)
     {
-      qDebug() <<"Type cast error. Always run this process from QThreadEx. Exception: " <<e.what();
+      qDebug() << "Type cast error. Always run this process from QThreadEx. Exception: " << e.what();
     }
 
     bool rval;
@@ -267,12 +281,16 @@ void NiftyLinkSenderProcess::OnKeepAliveTimeout(void)
     // If the poke() was unsuccessful or the sender got terminated
     if (!rval && m_Running == true)
     {
-      QLOG_ERROR() << objectName() <<": " <<"Cannot send keep-alive message: Probably disconnected from remote host" <<"\n";
+      QLOG_ERROR() << objectName() << ": " << "Cannot send keep-alive message: Probably disconnected from remote host" << "\n";
 
       if (m_SendingOnSocket)
+      {
         emit DisconnectedFromRemoteSignal(false);
+      }
       else
+      {
         emit DisconnectedFromRemoteSignal(true);
+      }
 
       QCoreApplication::processEvents();
       return;
@@ -280,7 +298,7 @@ void NiftyLinkSenderProcess::OnKeepAliveTimeout(void)
 
     QCoreApplication::processEvents();
 
-    if (p!=NULL)
+    if (p != NULL)
     {
 //      QLOG_DEBUG() << objectName() <<": " <<"After keep alive check: Send queue to host "
 //                   << QString::fromStdString(m_Hostname) << ", port " << m_Port << ", is empty, so sleeping for "
@@ -313,7 +331,7 @@ void NiftyLinkSenderProcess::DoProcessing(void)
     int r = m_ClientSocket->ConnectToServer(m_Hostname.c_str(), m_Port);
     if (r != 0)
     {
-      QLOG_ERROR() << objectName() <<": " << "Cannot create a sender socket, could not connect to server: " <<m_Hostname.c_str() << endl;
+      QLOG_ERROR() << objectName() << ": " << "Cannot create a sender socket, could not connect to server: " << m_Hostname.c_str() << endl;
 
       emit CannotConnectToRemoteSignal();
       QCoreApplication::processEvents();
@@ -324,7 +342,7 @@ void NiftyLinkSenderProcess::DoProcessing(void)
     else
     {
       // Perform a non-blocking connect with timeout
-      m_ExtSocket.operator =((igtl::Socket::Pointer) m_ClientSocket);
+      m_ExtSocket.operator = ((igtl::Socket::Pointer) m_ClientSocket);
       m_ExtSocket->SetTimeout(m_SocketTimeout);
       m_SendingOnSocket = false;
 
@@ -340,7 +358,9 @@ void NiftyLinkSenderProcess::DoProcessing(void)
   {
     // Need to make sure that we started the timer when sending on Socket
     if (!m_TimeOuter->isActive())
+    {
       m_TimeOuter->start();
+    }
 
     // Check the queue status and act accordingly
     if (m_SendQue.isEmpty())
@@ -369,13 +389,16 @@ void NiftyLinkSenderProcess::DoProcessing(void)
       NiftyLinkMessage::Pointer msg;
 
       m_QueueMutex.lock();
-      msg.operator =(m_SendQue.takeFirst());
+      msg.operator = (m_SendQue.takeFirst());
       m_QueueMutex.unlock();
 
       igtl::MessageBase::Pointer igtMsg;
       msg->GetMessagePointer(igtMsg);
 
-      if (!m_Running) break;
+      if (!m_Running)
+      {
+        break;
+      }
 
       if (igtMsg.IsNotNull())
       {
@@ -385,17 +408,21 @@ void NiftyLinkSenderProcess::DoProcessing(void)
         ret = m_ExtSocket->Send(igtMsg->GetPackPointer(), igtMsg->GetPackSize());
         m_Mutex->unlock();
 
-        if (ret <=0)
+        if (ret <= 0)
         {
           if (m_SendingOnSocket)
+          {
             emit DisconnectedFromRemoteSignal(false);
+          }
           else
+          {
             emit DisconnectedFromRemoteSignal(true);
+          }
 
           QCoreApplication::processEvents();
 
           msg.reset();
-          QLOG_ERROR() <<objectName() <<": " <<"Cannot send message: Disconnected from remote host" <<"\n";
+          QLOG_ERROR() << objectName() << ": " << "Cannot send message: Disconnected from remote host" << "\n";
           break;
         }
 
@@ -406,9 +433,9 @@ void NiftyLinkSenderProcess::DoProcessing(void)
         igtl::TimeStamp::Pointer ts = igtl::TimeStamp::New();
         ts->SetTime(seconds, nanoseconds);
 
-        QLOG_INFO() <<objectName() <<": " <<"Message " << m_MessageCounter
+        QLOG_INFO() << objectName() << ": " << "Message " << m_MessageCounter
                     << ", created=" << GetTimeInNanoSeconds(msg->GetTimeCreated()) << ", sent=" << GetTimeInNanoSeconds(ts) << ", lag="
-                    << ((double)(GetTimeInNanoSeconds(ts)) - (double)(GetTimeInNanoSeconds(msg->GetTimeCreated())))/1000000000.0 << "(secs)";
+                    << ((double)(GetTimeInNanoSeconds(ts)) - (double)(GetTimeInNanoSeconds(msg->GetTimeCreated()))) / 1000000000.0 << "(secs)";
 
         emit MessageSentSignal(GetTimeInNanoSeconds(ts));
         m_MessageCounter++;
@@ -418,7 +445,7 @@ void NiftyLinkSenderProcess::DoProcessing(void)
       }
       else
       {
-        QLOG_ERROR() <<objectName() <<": " <<"Cannot send message: igtMsg is NULL" <<"\n";
+        QLOG_ERROR() << objectName() << ": " << "Cannot send message: igtMsg is NULL" << "\n";
       }
 
       // Force delete
@@ -433,7 +460,9 @@ void NiftyLinkSenderProcess::DoProcessing(void)
 
   // All messages were sent
   if (m_SendQue.isEmpty())
+  {
     emit SendingFinishedSignal();
+  }
 
   QCoreApplication::processEvents();
 

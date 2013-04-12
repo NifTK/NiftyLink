@@ -16,9 +16,11 @@
 #include "igtlMath.h"
 
 static igtl::Matrix4x4 dummyTransformMatrix =
-{{ -1, 0, 0, 50},
-{  0, 0.15, 0.98, 0},
-{ 0, 0.98, -0.15, 50},
-{ 0, 0, 0, 1} };
+{
+  { -1, 0, 0, 50},
+  {  0, 0.15, 0.98, 0},
+  { 0, 0.98, -0.15, 50},
+  { 0, 0, 0, 1}
+};
 
 #endif // NLTEST_DATA_H

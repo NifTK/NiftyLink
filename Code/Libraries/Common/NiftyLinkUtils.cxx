@@ -19,15 +19,23 @@ bool ValidateIp(const QString &inputIP)
   QStringList nums = inputIP.split(".");
 
   if (nums.count() != 4)
+  {
     return false;
+  }
 
   for (int i = 0; i < 4; i++)
   {
     bool ok = false;
     int frag = nums.at(i).toInt(&ok, 10);
 
-    if (!ok) return false;
-    else if (frag < 0 || frag > 255) return false;
+    if (!ok)
+    {
+      return false;
+    }
+    else if (frag < 0 || frag > 255)
+    {
+      return false;
+    }
   }
 
   return true;
@@ -38,14 +46,16 @@ bool ValidateIp(const QString &inputIP)
 QString ResolveHostName(const QString &input)
 {
   if (ValidateIp(input))
+  {
     return input;
+  }
 
   QHostInfo info = QHostInfo::fromName(input);
   QList<QHostAddress> addresses = info.addresses();
 
-  for (int i=0; i< addresses.count(); i++)
+  for (int i = 0; i < addresses.count(); i++)
   {
-    if( ValidateIp(addresses.at(i).toString()) == true )
+    if ( ValidateIp(addresses.at(i).toString()) == true )
     {
       return addresses.at(i).toString();
     }
@@ -73,7 +83,9 @@ QString GetLocalHostAddress(void)
     {
       // Need to return the one which is valid and not 'localhost'
       if (ipstr != QString("127.0.0.1"))
+      {
         return ipstr;
+      }
     }
   }
 
@@ -96,10 +108,10 @@ void CreateRandomTransformMatrix(igtl::Matrix4x4& matrix)
 
   // random orientation
   static float theta = 0.0;
-  orientation[0]=0.0;
-  orientation[1]=0.6666666666*cos(theta);
-  orientation[2]=0.577350269189626;
-  orientation[3]=0.6666666666*sin(theta);
+  orientation[0] = 0.0;
+  orientation[1] = 0.6666666666 * cos(theta);
+  orientation[2] = 0.577350269189626;
+  orientation[3] = 0.6666666666 * sin(theta);
   theta = theta + 0.1;
 
   //igtl::Matrix4x4 matrix;
@@ -229,9 +241,18 @@ igtlUint64 GetDifferenceInNanoSeconds(igtl::TimeStamp* timeA, igtl::TimeStamp* t
   igtlUint64 b = GetTimeInNanoSeconds(timeB);
   igtlUint64 d;
 
-  if (a > b)      { d = a-b; }
-  else if (b > a) { d = b-a; }
-  else            { d = 0; }
+  if (a > b)
+  {
+    d = a - b;
+  }
+  else if (b > a)
+  {
+    d = b - a;
+  }
+  else
+  {
+    d = 0;
+  }
 
   return d;
 }

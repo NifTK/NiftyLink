@@ -23,7 +23,7 @@ NiftyLinkImageMessage::NiftyLinkImageMessage(void)
   : NiftyLinkMessage()
 {
   m_MessageType = "IMAGE";
-  m_Message.operator =(NULL);
+  m_Message.operator = (NULL);
 }
 
 
@@ -45,7 +45,9 @@ NiftyLinkImageMessage::NiftyLinkImageMessage(const NiftyLinkImageMessage &other)
 void NiftyLinkImageMessage::SetMatrix(igtl::Matrix4x4 &matrix)
 {
   if (m_Message.IsNull())
-    m_Message.operator =(igtl::ImageMessage::New());
+  {
+    m_Message.operator = (igtl::ImageMessage::New());
+  }
 
   igtl::ImageMessage::Pointer msgPointer;
   msgPointer = static_cast<igtl::ImageMessage *>(m_Message.GetPointer());
@@ -60,7 +62,9 @@ void NiftyLinkImageMessage::SetMatrix(igtl::Matrix4x4 &matrix)
 void NiftyLinkImageMessage::GetMatrix(igtl::Matrix4x4 &matrix)
 {
   if (m_Message.IsNull())
+  {
     return;
+  }
 
   igtl::ImageMessage::Pointer msgPointer;
   msgPointer = static_cast<igtl::ImageMessage *>(m_Message.GetPointer());
@@ -75,7 +79,9 @@ void NiftyLinkImageMessage::GetMatrix(igtl::Matrix4x4 &matrix)
 void NiftyLinkImageMessage::PreserveMatrix()
 {
   if (m_Message.IsNull())
+  {
     return;
+  }
 
   igtl::ImageMessage::Pointer msgPointer;
   msgPointer = static_cast<igtl::ImageMessage *>(m_Message.GetPointer());
@@ -87,7 +93,9 @@ void NiftyLinkImageMessage::PreserveMatrix()
 void NiftyLinkImageMessage::SetNormals(float t[3], float s[3], float n[3])
 {
   if (m_Message.IsNull())
-    m_Message.operator =(igtl::ImageMessage::New());
+  {
+    m_Message.operator = (igtl::ImageMessage::New());
+  }
 
   igtl::ImageMessage::Pointer msgPointer;
   msgPointer = static_cast<igtl::ImageMessage *>(m_Message.GetPointer());
@@ -102,7 +110,9 @@ void NiftyLinkImageMessage::SetNormals(float t[3], float s[3], float n[3])
 void NiftyLinkImageMessage::GetNormals(float t[3], float s[3], float n[3])
 {
   if (m_Message.IsNull())
+  {
     return;
+  }
 
   igtl::ImageMessage::Pointer msgPointer;
   msgPointer = static_cast<igtl::ImageMessage *>(m_Message.GetPointer());
@@ -117,7 +127,9 @@ void NiftyLinkImageMessage::GetNormals(float t[3], float s[3], float n[3])
 void NiftyLinkImageMessage::SetSpacing(float s[3])
 {
   if (m_Message.IsNull())
-    m_Message.operator =(igtl::ImageMessage::New());
+  {
+    m_Message.operator = (igtl::ImageMessage::New());
+  }
 
   igtl::ImageMessage::Pointer msgPointer;
   msgPointer = static_cast<igtl::ImageMessage *>(m_Message.GetPointer());
@@ -132,7 +144,9 @@ void NiftyLinkImageMessage::SetSpacing(float s[3])
 void NiftyLinkImageMessage::SetSpacing(float si, float sj, float sk)
 {
   if (m_Message.IsNull())
-    m_Message.operator =(igtl::ImageMessage::New());
+  {
+    m_Message.operator = (igtl::ImageMessage::New());
+  }
 
   igtl::ImageMessage::Pointer msgPointer;
   msgPointer = static_cast<igtl::ImageMessage *>(m_Message.GetPointer());
@@ -147,7 +161,9 @@ void NiftyLinkImageMessage::SetSpacing(float si, float sj, float sk)
 void NiftyLinkImageMessage::GetSpacing(float s[3])
 {
   if (m_Message.IsNull())
+  {
     return;
+  }
 
   igtl::ImageMessage::Pointer msgPointer;
   msgPointer = static_cast<igtl::ImageMessage *>(m_Message.GetPointer());
@@ -162,7 +178,9 @@ void NiftyLinkImageMessage::GetSpacing(float s[3])
 void NiftyLinkImageMessage::GetSpacing(float &si, float &sj, float &sk)
 {
   if (m_Message.IsNull())
+  {
     return;
+  }
 
   igtl::ImageMessage::Pointer msgPointer;
   msgPointer = static_cast<igtl::ImageMessage *>(m_Message.GetPointer());
@@ -177,7 +195,9 @@ void NiftyLinkImageMessage::GetSpacing(float &si, float &sj, float &sk)
 void NiftyLinkImageMessage::SetOrigin(float s[3])
 {
   if (m_Message.IsNull())
-    m_Message.operator =(igtl::ImageMessage::New());
+  {
+    m_Message.operator = (igtl::ImageMessage::New());
+  }
 
   igtl::ImageMessage::Pointer msgPointer;
   msgPointer = static_cast<igtl::ImageMessage *>(m_Message.GetPointer());
@@ -192,7 +212,9 @@ void NiftyLinkImageMessage::SetOrigin(float s[3])
 void NiftyLinkImageMessage::SetOrigin(float si, float sj, float sk)
 {
   if (m_Message.IsNull())
-    m_Message.operator =(igtl::ImageMessage::New());
+  {
+    m_Message.operator = (igtl::ImageMessage::New());
+  }
 
   igtl::ImageMessage::Pointer msgPointer;
   msgPointer = static_cast<igtl::ImageMessage *>(m_Message.GetPointer());
@@ -207,7 +229,9 @@ void NiftyLinkImageMessage::SetOrigin(float si, float sj, float sk)
 void NiftyLinkImageMessage::GetOrigin(float s[3])
 {
   if (m_Message.IsNull())
+  {
     return;
+  }
 
   igtl::ImageMessage::Pointer msgPointer;
   msgPointer = static_cast<igtl::ImageMessage *>(m_Message.GetPointer());
@@ -222,7 +246,9 @@ void NiftyLinkImageMessage::GetOrigin(float s[3])
 void NiftyLinkImageMessage::GetOrigin(float &si, float &sj, float &sk)
 {
   if (m_Message.IsNull())
+  {
     return;
+  }
 
   igtl::ImageMessage::Pointer msgPointer;
   msgPointer = static_cast<igtl::ImageMessage *>(m_Message.GetPointer());
@@ -237,7 +263,9 @@ void NiftyLinkImageMessage::GetOrigin(float &si, float &sj, float &sk)
 void NiftyLinkImageMessage::SetDimensions(int s[3])
 {
   if (m_Message.IsNull())
-    m_Message.operator =(igtl::ImageMessage::New());
+  {
+    m_Message.operator = (igtl::ImageMessage::New());
+  }
 
   igtl::ImageMessage::Pointer msgPointer;
   msgPointer = static_cast<igtl::ImageMessage *>(m_Message.GetPointer());
@@ -252,13 +280,15 @@ void NiftyLinkImageMessage::SetDimensions(int s[3])
 void NiftyLinkImageMessage::SetDimensions(int i, int j , int k)
 {
   if (m_Message.IsNull())
-    m_Message.operator =(igtl::ImageMessage::New());
+  {
+    m_Message.operator = (igtl::ImageMessage::New());
+  }
 
   igtl::ImageMessage::Pointer msgPointer;
   msgPointer = static_cast<igtl::ImageMessage *>(m_Message.GetPointer());
 
   msgPointer->Unpack();
-  msgPointer->SetDimensions(i,j,k);
+  msgPointer->SetDimensions(i, j, k);
   msgPointer->Pack();
 }
 
@@ -267,7 +297,9 @@ void NiftyLinkImageMessage::SetDimensions(int i, int j , int k)
 void NiftyLinkImageMessage::GetDimensions(int s[3])
 {
   if (m_Message.IsNull())
+  {
     return;
+  }
 
   igtl::ImageMessage::Pointer msgPointer;
   msgPointer = static_cast<igtl::ImageMessage *>(m_Message.GetPointer());
@@ -282,13 +314,15 @@ void NiftyLinkImageMessage::GetDimensions(int s[3])
 void NiftyLinkImageMessage::GetDimensions(int &i, int &j , int &k)
 {
   if (m_Message.IsNull())
+  {
     return;
+  }
 
   igtl::ImageMessage::Pointer msgPointer;
   msgPointer = static_cast<igtl::ImageMessage *>(m_Message.GetPointer());
 
   msgPointer->Unpack();
-  msgPointer->GetDimensions(i,j,k);
+  msgPointer->GetDimensions(i, j, k);
   msgPointer->Pack();
 }
 
@@ -297,7 +331,9 @@ void NiftyLinkImageMessage::GetDimensions(int &i, int &j , int &k)
 int NiftyLinkImageMessage::SetSubVolume(int dim[3], int off[3])
 {
   if (m_Message.IsNull())
-    m_Message.operator =(igtl::ImageMessage::New());
+  {
+    m_Message.operator = (igtl::ImageMessage::New());
+  }
 
   igtl::ImageMessage::Pointer msgPointer;
   msgPointer = static_cast<igtl::ImageMessage *>(m_Message.GetPointer());
@@ -311,16 +347,18 @@ int NiftyLinkImageMessage::SetSubVolume(int dim[3], int off[3])
 
 
 //-----------------------------------------------------------------------------
-int NiftyLinkImageMessage::SetSubVolume(int dimi, int dimj , int dimk, int offi ,int offj , int offk)
+int NiftyLinkImageMessage::SetSubVolume(int dimi, int dimj , int dimk, int offi , int offj , int offk)
 {
   if (m_Message.IsNull())
-    m_Message.operator =(igtl::ImageMessage::New());
+  {
+    m_Message.operator = (igtl::ImageMessage::New());
+  }
 
   igtl::ImageMessage::Pointer msgPointer;
   msgPointer = static_cast<igtl::ImageMessage *>(m_Message.GetPointer());
 
   msgPointer->Unpack();
-  int retv=msgPointer->SetSubVolume (dimi,dimj,dimk,offi,offj,offk);
+  int retv = msgPointer->SetSubVolume (dimi, dimj, dimk, offi, offj, offk);
   msgPointer->Pack();
 
   return retv;
@@ -331,13 +369,15 @@ int NiftyLinkImageMessage::SetSubVolume(int dimi, int dimj , int dimk, int offi 
 void NiftyLinkImageMessage::GetSubVolume(int dim[3], int off[3])
 {
   if (m_Message.IsNull())
+  {
     return;
+  }
 
   igtl::ImageMessage::Pointer msgPointer;
   msgPointer = static_cast<igtl::ImageMessage *>(m_Message.GetPointer());
 
   msgPointer->Unpack();
-  msgPointer->GetSubVolume(dim,off);
+  msgPointer->GetSubVolume(dim, off);
   msgPointer->Pack();
 }
 
@@ -346,13 +386,15 @@ void NiftyLinkImageMessage::GetSubVolume(int dim[3], int off[3])
 void NiftyLinkImageMessage::GetSubVolume(int &dimi, int &dimj, int &dimk, int &offi, int &offj, int &offk)
 {
   if (m_Message.IsNull())
+  {
     return;
+  }
 
   igtl::ImageMessage::Pointer msgPointer;
   msgPointer = static_cast<igtl::ImageMessage *>(m_Message.GetPointer());
 
   msgPointer->Unpack();
-  msgPointer->GetSubVolume(dimi, dimj, dimk, offi, offj,offk);
+  msgPointer->GetSubVolume(dimi, dimj, dimk, offi, offj, offk);
   msgPointer->Pack();
 }
 
@@ -361,7 +403,9 @@ void NiftyLinkImageMessage::GetSubVolume(int &dimi, int &dimj, int &dimk, int &o
 void NiftyLinkImageMessage::SetNumComponents(int num)
 {
   if (m_Message.IsNull())
-    m_Message.operator =(igtl::ImageMessage::New());
+  {
+    m_Message.operator = (igtl::ImageMessage::New());
+  }
 
   igtl::ImageMessage::Pointer msgPointer;
   msgPointer = static_cast<igtl::ImageMessage *>(m_Message.GetPointer());
@@ -376,7 +420,9 @@ void NiftyLinkImageMessage::SetNumComponents(int num)
 int NiftyLinkImageMessage::GetNumComponents()
 {
   if (m_Message.IsNull())
+  {
     return -1;
+  }
 
   igtl::ImageMessage::Pointer msgPointer;
   msgPointer = static_cast<igtl::ImageMessage *>(m_Message.GetPointer());
@@ -393,7 +439,9 @@ int NiftyLinkImageMessage::GetNumComponents()
 void NiftyLinkImageMessage::InitializeWithTestData(void)
 {
   if (m_Message.IsNull())
-    m_Message.operator =(igtl::ImageMessage::New());
+  {
+    m_Message.operator = (igtl::ImageMessage::New());
+  }
 
   //-------------------------------------------------------------
   // Load test image from resources
@@ -401,7 +449,9 @@ void NiftyLinkImageMessage::InitializeWithTestData(void)
   image.load(":/NiftyLink/UCL_LOGO.tif");
 
   if (!image.isNull())
+  {
     SetQImage(image);
+  }
 }
 
 
@@ -409,7 +459,9 @@ void NiftyLinkImageMessage::InitializeWithTestData(void)
 void NiftyLinkImageMessage::InitializeWithRandomData(void)
 {
   if (m_Message.IsNull())
-    m_Message.operator =(igtl::ImageMessage::New());
+  {
+    m_Message.operator = (igtl::ImageMessage::New());
+  }
 
   igtl::ImageMessage::Pointer msgPointer;
   msgPointer = static_cast<igtl::ImageMessage *>(m_Message.GetPointer());
@@ -421,8 +473,8 @@ void NiftyLinkImageMessage::InitializeWithRandomData(void)
 
   // random position
   static float phi = 0.2;
-  int x = (int)((float(image.width()*0.3f) * sin(phi)) +image.width()*0.5f +0.5f);
-  int y = (int)((float(image.height()*0.3f) * cos(phi)) +image.height()*0.5f +0.5f);
+  int x = (int)((float(image.width() * 0.3f) * sin(phi)) + image.width() * 0.5f + 0.5f);
+  int y = (int)((float(image.height() * 0.3f) * cos(phi)) + image.height() * 0.5f + 0.5f);
   phi = phi + 0.2;
 
   QRect rectangle(x, y, 30, 30);
@@ -434,7 +486,9 @@ void NiftyLinkImageMessage::InitializeWithRandomData(void)
   painter.fillRect(rectangle, Qt::red);
 
   if (!image.isNull())
+  {
     SetQImage(image);
+  }
 
   igtl::Matrix4x4 localMatrix;
   CreateRandomTransformMatrix(localMatrix);
@@ -448,23 +502,29 @@ void NiftyLinkImageMessage::InitializeWithRandomData(void)
 void NiftyLinkImageMessage::Save(QString filename)
 {
   if (m_Message.IsNull() || filename.isEmpty())
+  {
     return;
+  }
 
   QImage image = GetQImage();
   //GetQImage currently does not set the color table
   //lets do it here. Insert a default index table for indexed image type
   if ( image.format() == QImage::Format_Indexed8)
   {
-    QVector<QRgb> colors=QVector<QRgb> (256);
+    QVector<QRgb> colors = QVector<QRgb> (256);
 
     for (int i = 0; i < 256; i++)
-      colors[i] = qRgb(i,i,i);
+    {
+      colors[i] = qRgb(i, i, i);
+    }
 
     image.setColorTable(colors);
   }
 
   if (!image.isNull())
+  {
     image.save(filename);
+  }
 }
 
 
@@ -472,14 +532,18 @@ void NiftyLinkImageMessage::Save(QString filename)
 void NiftyLinkImageMessage::Load(QString filename)
 {
   if (filename.isEmpty())
+  {
     return;
+  }
 
   // Load image from file
   QImage image;
   image.load(filename);
 
   if (!image.isNull())
+  {
     SetQImage(image);
+  }
 }
 
 
@@ -493,7 +557,7 @@ void NiftyLinkImageMessage::SetQImage(const QImage& inputImage)
 
   if (m_Message.IsNull())
   {
-    m_Message.operator =(igtl::ImageMessage::New());
+    m_Message.operator = (igtl::ImageMessage::New());
   }
 
   // Cast pointer and unpack message
@@ -546,7 +610,7 @@ QImage NiftyLinkImageMessage::GetQImage(void)
   int i;
   int j;
   int k;
-  msgPointer->GetDimensions(i,j,k);
+  msgPointer->GetDimensions(i, j, k);
 
   QImage image = QImage();
   if ( msgPointer->GetScalarType() == igtl::ImageMessage::TYPE_UINT32 )
@@ -562,7 +626,7 @@ QImage NiftyLinkImageMessage::GetQImage(void)
 
       for (int i = 0; i < 256; i ++)
       {
-        colors[i] = qRgb(i,i,i);
+        colors[i] = qRgb(i, i, i);
       }
 
       image.setColorTable(colors);
@@ -591,10 +655,10 @@ QImage NiftyLinkImageMessage::GetQImage(void)
 //-----------------------------------------------------------------------------
 void NiftyLinkImageMessage::Create_GET(NiftyLinkMessage::Pointer &msgToCreate)
 {
-  msgToCreate.operator =(NiftyLinkMessage::Pointer(new NiftyLinkMessage()));
+  msgToCreate.operator = (NiftyLinkMessage::Pointer(new NiftyLinkMessage()));
 
   igtl::GetImageMessage::Pointer cmdMsg;
-  cmdMsg.operator =(igtl::GetImageMessage::New());
+  cmdMsg.operator = (igtl::GetImageMessage::New());
 
   igtl::TimeStamp::Pointer ts;
   ts = igtl::TimeStamp::New();
@@ -613,10 +677,10 @@ void NiftyLinkImageMessage::Create_GET(NiftyLinkMessage::Pointer &msgToCreate)
 //-----------------------------------------------------------------------------
 void NiftyLinkImageMessage::Create_STT(NiftyLinkMessage::Pointer &msgToCreate)
 {
-  msgToCreate.operator =(NiftyLinkMessage::Pointer(new NiftyLinkMessage()));
+  msgToCreate.operator = (NiftyLinkMessage::Pointer(new NiftyLinkMessage()));
 
   igtl::StartImageMessage::Pointer cmdMsg;
-  cmdMsg.operator =(igtl::StartImageMessage::New());
+  cmdMsg.operator = (igtl::StartImageMessage::New());
 
   igtl::TimeStamp::Pointer ts;
   ts = igtl::TimeStamp::New();
@@ -635,10 +699,10 @@ void NiftyLinkImageMessage::Create_STT(NiftyLinkMessage::Pointer &msgToCreate)
 //-----------------------------------------------------------------------------
 void NiftyLinkImageMessage::Create_STP(NiftyLinkMessage::Pointer &msgToCreate)
 {
-  msgToCreate.operator =(NiftyLinkMessage::Pointer(new NiftyLinkMessage()));
+  msgToCreate.operator = (NiftyLinkMessage::Pointer(new NiftyLinkMessage()));
 
   igtl::StopImageMessage::Pointer cmdMsg;
-  cmdMsg.operator =(igtl::StopImageMessage::New());
+  cmdMsg.operator = (igtl::StopImageMessage::New());
 
   igtl::TimeStamp::Pointer ts;
   ts = igtl::TimeStamp::New();
@@ -657,10 +721,10 @@ void NiftyLinkImageMessage::Create_STP(NiftyLinkMessage::Pointer &msgToCreate)
 //-----------------------------------------------------------------------------
 void NiftyLinkImageMessage::Create_RTS(NiftyLinkMessage::Pointer &msgToCreate)
 {
-  msgToCreate.operator =(NiftyLinkMessage::Pointer(new NiftyLinkMessage()));
+  msgToCreate.operator = (NiftyLinkMessage::Pointer(new NiftyLinkMessage()));
 
   igtl::RTSImageMessage::Pointer cmdMsg;
-  cmdMsg.operator =(igtl::RTSImageMessage::New());
+  cmdMsg.operator = (igtl::RTSImageMessage::New());
 
   igtl::TimeStamp::Pointer ts;
   ts = igtl::TimeStamp::New();

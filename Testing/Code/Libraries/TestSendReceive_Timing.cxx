@@ -57,9 +57,9 @@ void TestSendReceive_Timing::SetupTest()
   connect(m_Socket2, SIGNAL(MessageSentSignal(unsigned long long )), this, SLOT(RecordSendTimestamps(unsigned long long )) );
 
   // This is just setting the timer resolution to maximum
-  #if defined(WIN32) || defined(_WIN32) || defined(_WIN64)
-    m_Socket1->InitializeWinTimers();
-  #endif
+#if defined(WIN32) || defined(_WIN32) || defined(_WIN64)
+  m_Socket1->InitializeWinTimers();
+#endif
 
   QUrl url;
   // Uncomment this if you want to connect to a remote host for speed testing
@@ -78,9 +78,9 @@ void TestSendReceive_Timing::SetupTest()
 
 void TestSendReceive_Timing::PerformTest()
 {
-  std::cout << "Sending " <<m_NumOfMsg <<" messages from Socket2 --> Socket 1" <<std::endl;
+  std::cout << "Sending " << m_NumOfMsg << " messages from Socket2 --> Socket 1" << std::endl;
 
-  for (int i = 0; i< m_NumOfMsg; i++)
+  for (int i = 0; i < m_NumOfMsg; i++)
   {
     // Transform message type for testing
     //m_MsgToSend.operator =(NiftyLinkTransformMessage::Pointer(new NiftyLinkTransformMessage()));
@@ -88,7 +88,7 @@ void TestSendReceive_Timing::PerformTest()
     //m_MsgToSend->Update(GetLocalHostAddress());
 
     // Imagemessage for testing
-    m_MsgToSend.operator =(NiftyLinkImageMessage::Pointer(new NiftyLinkImageMessage()));
+    m_MsgToSend.operator = (NiftyLinkImageMessage::Pointer(new NiftyLinkImageMessage()));
     m_MsgToSend->InitializeWithRandomData();
     m_MsgToSend->Update(GetLocalHostAddress());
 
@@ -105,7 +105,7 @@ void TestSendReceive_Timing::QuitTest2()
 {
   std::cout << "********************************************************\n";
   std::cout << "Printing timestamps... \n";
-  std::cout << "Initial stream, containing " <<m_Socket1Messages.count() <<" messages \n";
+  std::cout << "Initial stream, containing " << m_Socket1Messages.count() << " messages \n";
 
   igtlUint32 sec, msec, usec, nsec, fraction;
   igtlUint32 sec_c, msec_c, usec_c, nsec_c, fraction_c;
@@ -120,7 +120,7 @@ void TestSendReceive_Timing::QuitTest2()
   {
     igtl::TimeStamp::Pointer time_c = m_Socket1Messages.at(i)->GetTimeCreated();
     time_c->GetTime(&sec_c, &nsec_c);
-    nanotime_c = (unsigned long long)(sec_c*1e9 + nsec_c);
+    nanotime_c = (unsigned long long)(sec_c * 1e9 + nsec_c);
 
     igtl::NanoTimeToHumanReadable(nanotime_c, sec_c, msec_c, usec_c, nsec_c);
     //std::cout <<"Message " <<i <<" was created at: " <<sec_c <<"s " <<msec_c <<"ms " <<usec_c <<"usec " <<nsec_c <<"ns " <<std::endl;
@@ -129,7 +129,7 @@ void TestSendReceive_Timing::QuitTest2()
 
     igtl::TimeStamp::Pointer time = m_Socket1Messages.at(i)->GetTimeReceived();
     time->GetTime(&sec, &nsec);
-    nanotime = (unsigned long long)(sec*1e9 + nsec);
+    nanotime = (unsigned long long)(sec * 1e9 + nsec);
 
     igtl::NanoTimeToHumanReadable(nanotime, sec, msec, usec, nsec);
     //std::cout <<"Socket1 received message " <<i <<" at: " <<sec <<"s " <<msec <<"ms " <<usec <<"usec " <<nsec <<"ns " <<std::endl;
@@ -143,18 +143,18 @@ void TestSendReceive_Timing::QuitTest2()
     totalBytesTransmitted2to1 += (msgP->GetBodySizeToRead() + 58);
 
     igtl::NanoTimeToHumanReadable(nanotime - nanotime_c, sec_c, msec_c, usec_c, nsec_c);
-    std::cout <<"Socket 1 - Delivery of message " <<i <<" took: " <<sec_c <<"s " <<msec_c <<"ms " <<usec_c <<"usec " <<nsec_c <<"ns\n";
+    std::cout << "Socket 1 - Delivery of message " << i << " took: " << sec_c << "s " << msec_c << "ms " << usec_c << "usec " << nsec_c << "ns\n";
   }
 
   std::cout << "\n********************************************************\n";
-  std::cout << "Reply stream, containing " <<m_Socket2Messages.count() <<" messages \n";
+  std::cout << "Reply stream, containing " << m_Socket2Messages.count() << " messages \n";
 
   // SOCKET2 RECEIVED STAMPS
   for (int i = 0; i < m_Socket2Messages.count(); i++)
   {
     igtl::TimeStamp::Pointer time_c = m_Socket2Messages.at(i)->GetTimeCreated();
     time_c->GetTime(&sec_c, &nsec_c);
-    nanotime_c = (unsigned long long)(sec_c*1e9 + nsec_c);
+    nanotime_c = (unsigned long long)(sec_c * 1e9 + nsec_c);
 
     igtl::NanoTimeToHumanReadable(nanotime_c, sec_c, msec_c, usec_c, nsec_c);
     //std::cout <<"Message " <<i <<" was created at: " <<sec_c <<"s " <<msec_c <<"ms " <<usec_c <<"usec " <<nsec_c <<"ns " <<std::endl;
@@ -163,7 +163,7 @@ void TestSendReceive_Timing::QuitTest2()
 
     igtl::TimeStamp::Pointer time = m_Socket2Messages.at(i)->GetTimeReceived();
     time->GetTime(&sec, &nsec);
-    nanotime = (unsigned long long)(sec*1e9 + nsec);
+    nanotime = (unsigned long long)(sec * 1e9 + nsec);
 
     igtl::NanoTimeToHumanReadable(nanotime, sec, msec, usec, nsec);
     //std::cout <<"Socket2 received message " <<i <<" at: " <<sec <<"s " <<msec <<"ms " <<usec <<"usec " <<nsec <<"ns " <<std::endl;
@@ -177,7 +177,7 @@ void TestSendReceive_Timing::QuitTest2()
     totalBytesTransmitted1to2 += (msgP->GetBodySizeToRead() + 58);
 
     igtl::NanoTimeToHumanReadable(nanotime - nanotime_c, sec_c, msec_c, usec_c, nsec_c);
-    std::cout <<"Socket 2 - Delivery of message " <<i <<" took: " <<sec_c <<"s " <<msec_c <<"ms " <<usec_c <<"usec " <<nsec_c <<"ns\n";
+    std::cout << "Socket 2 - Delivery of message " << i << " took: " << sec_c << "s " << msec_c << "ms " << usec_c << "usec " << nsec_c << "ns\n";
   }
 
   //************** Calculate bandwith 2 to 1 ************************
@@ -191,13 +191,13 @@ void TestSendReceive_Timing::QuitTest2()
   {
     timeFirstReceived = m_Socket1Messages.first()->GetTimeReceived();
     timeFirstReceived->GetTime(&sec, &nsec);
-    nanotimeFirst = (unsigned long long)(sec*1e9 + nsec);
+    nanotimeFirst = (unsigned long long)(sec * 1e9 + nsec);
 
     timeLastReceived = m_Socket1Messages.last()->GetTimeReceived();
     timeLastReceived->GetTime(&sec, &nsec);
-    nanotimeLast = (unsigned long long)(sec*1e9 + nsec);
+    nanotimeLast = (unsigned long long)(sec * 1e9 + nsec);
 
-    totalTimeElapsed2to1 = nanotimeLast-nanotimeFirst;
+    totalTimeElapsed2to1 = nanotimeLast - nanotimeFirst;
     bandwidth2to1 = ((double)totalBytesTransmitted2to1 / (double)1e6) / ((double)totalTimeElapsed2to1 / (double)1e9);
   }
 
@@ -206,33 +206,35 @@ void TestSendReceive_Timing::QuitTest2()
   {
     timeFirstReceived = m_Socket2Messages.first()->GetTimeReceived();
     timeFirstReceived->GetTime(&sec, &nsec);
-    nanotimeFirst = (unsigned long long)(sec*1e9 + nsec);
+    nanotimeFirst = (unsigned long long)(sec * 1e9 + nsec);
 
     timeLastReceived = m_Socket2Messages.last()->GetTimeReceived();
     timeLastReceived->GetTime(&sec, &nsec);
-    nanotimeLast = (unsigned long long)(sec*1e9 + nsec);
+    nanotimeLast = (unsigned long long)(sec * 1e9 + nsec);
 
-    totalTimeElapsed1to2 = nanotimeLast-nanotimeFirst;
+    totalTimeElapsed1to2 = nanotimeLast - nanotimeFirst;
     bandwidth1to2 = ((double)totalBytesTransmitted1to2 / (double)1e6) / ((double)totalTimeElapsed1to2 / (double)1e9);
   }
 
   std::cout << "\n******************************************************** \n";
 
-  igtl::NanoTimeToHumanReadable(m_TotalTimeDiff / (m_NumOfMsg *2), sec, msec, usec, nsec);
-  std::cout << "\nDelivery time on average: "  <<sec <<"s " <<msec <<"ms " <<usec <<"usec " <<nsec <<"ns\n\n";
-  std::cout << "\nTotal time elapsed, Socket2 --> Socket1: "  <<totalTimeElapsed2to1/1e9 <<"sec\n";
-  std::cout << "\nTotal data transmitted, Socket2 --> Socket1: "  <<totalBytesTransmitted2to1 <<"bytes\n";
-  std::cout << "\nBandwith, Socket2 --> Socket1: "  <<bandwidth2to1 <<"Mbyte/sec\n\n";
-  std::cout << "\nTotal time elapsed, Socket1 --> Socket2: "  <<totalTimeElapsed1to2/1e9 <<"sec\n";
-  std::cout << "\nTotal data transmitted, Socket1 --> Socket2: "  <<totalBytesTransmitted1to2 <<"bytes\n";
-  std::cout << "\nBandwith, Socket1 --> Socket2: "  <<bandwidth1to2 <<"Mbyte/sec\n\n";
+  igtl::NanoTimeToHumanReadable(m_TotalTimeDiff / (m_NumOfMsg * 2), sec, msec, usec, nsec);
+  std::cout << "\nDelivery time on average: "  << sec << "s " << msec << "ms " << usec << "usec " << nsec << "ns\n\n";
+  std::cout << "\nTotal time elapsed, Socket2 --> Socket1: "  << totalTimeElapsed2to1 / 1e9 << "sec\n";
+  std::cout << "\nTotal data transmitted, Socket2 --> Socket1: "  << totalBytesTransmitted2to1 << "bytes\n";
+  std::cout << "\nBandwith, Socket2 --> Socket1: "  << bandwidth2to1 << "Mbyte/sec\n\n";
+  std::cout << "\nTotal time elapsed, Socket1 --> Socket2: "  << totalTimeElapsed1to2 / 1e9 << "sec\n";
+  std::cout << "\nTotal data transmitted, Socket1 --> Socket2: "  << totalBytesTransmitted1to2 << "bytes\n";
+  std::cout << "\nBandwith, Socket1 --> Socket2: "  << bandwidth1to2 << "Mbyte/sec\n\n";
 
   if (m_Socket1 != NULL)
   {
     m_Socket1->CloseSocket();
 
     while (m_Socket1->IsActive())
+    {
       igtl::Sleep(100);
+    }
 
     delete m_Socket1;
     m_Socket1 = NULL;
@@ -243,7 +245,9 @@ void TestSendReceive_Timing::QuitTest2()
     m_Socket2->CloseSocket();
 
     while (m_Socket2->IsActive())
+    {
       igtl::Sleep(100);
+    }
 
     delete m_Socket2;
     m_Socket2 = NULL;
@@ -261,7 +265,7 @@ void TestSendReceive_Timing::CatchMessage(NiftyLinkMessage::Pointer msg)
 {
   QString sender = QObject::sender()->objectName();
 
-  if (msg.operator!=(NULL))
+  if (msg.operator != (NULL))
   {
     //QLOG_INFO() <<m_Received+1 <<"of" <<m_NumOfMsg <<"message received: " <<msg->GetHostName() <<":" <<msg->GetPort() <<" " <<msg->GetMessageType();
 
@@ -281,38 +285,44 @@ void TestSendReceive_Timing::CatchMessage(NiftyLinkMessage::Pointer msg)
       int r = memcmp((const void*)&receivedMatrix, (const void*)dummyTransformMatrix, sizeof(igtl::Matrix4x4));
 
       if (r == 0)
-        std::cout <<sender.toStdString().c_str() <<" received matrix " <<m_Received+1 <<" of " <<m_NumOfMsg*2 <<": OK" <<std::endl;
+      {
+        std::cout << sender.toStdString().c_str() << " received matrix " << m_Received + 1 << " of " << m_NumOfMsg * 2 << ": OK" << std::endl;
+      }
       else
-        std::cout <<sender.toStdString().c_str() <<" received matrix " <<m_Received+1 <<" of " <<m_NumOfMsg*2 <<": NOT-OK" <<std::endl;
+      {
+        std::cout << sender.toStdString().c_str() << " received matrix " << m_Received + 1 << " of " << m_NumOfMsg * 2 << ": NOT-OK" << std::endl;
+      }
 
       igtl::PrintMatrix(receivedMatrix);
 
-      std::cout <<std::endl;
+      std::cout << std::endl;
 
       if (r != 0)
-        QLOG_ERROR() <<"Shit happens";
+      {
+        QLOG_ERROR() << "Shit happens";
+      }
 
       m_Received++;
     }
     else if (strcmp(message->GetNameOfClass(), "igtl::GetTransformMessage") == 0)
     {
-      std::cout <<sender.toStdString().c_str() <<" received message request, sending response" <<std::endl;
+      std::cout << sender.toStdString().c_str() << " received message request, sending response" << std::endl;
       SendResponse();
     }
     else if (strcmp(message->GetNameOfClass(), "igtl::StartTransformMessage") == 0)
     {
-      std::cout <<sender.toStdString().c_str() <<" received message request, sending response" <<std::endl;
+      std::cout << sender.toStdString().c_str() << " received message request, sending response" << std::endl;
       m_DoStream = true;
       StreamResponse();
     }
     else if (strcmp(message->GetNameOfClass(), "igtl::StopTransformMessage") == 0)
     {
-      std::cout <<sender.toStdString().c_str() <<" received message request, stopping data stream" <<std::endl;
+      std::cout << sender.toStdString().c_str() << " received message request, stopping data stream" << std::endl;
       m_DoStream = false;
     }
     else if (strcmp(message->GetNameOfClass(), "igtl::StopTransformMessage") == 0)
     {
-      std::cout <<sender.toStdString().c_str() <<" received message request, stopping data stream" <<std::endl;
+      std::cout << sender.toStdString().c_str() << " received message request, stopping data stream" << std::endl;
       m_DoStream = false;
     }
     else if (msg->GetMessageType() == QString("IMAGE"))
@@ -326,44 +336,50 @@ void TestSendReceive_Timing::CatchMessage(NiftyLinkMessage::Pointer msg)
       //fname.append(QString::number(m_Received));
       //fname.append(".png");
       //imgMsg->Save(fname);
-     }
+    }
   }
 
   if (QObject::sender()->objectName() == "Socket1")
+  {
     m_Socket1Messages.append(msg);
+  }
   else
+  {
     m_Socket2Messages.append(msg);
+  }
 
   //std::cerr <<"\nNum of messages received: " <<m_Received <<std::endl;
 
   //if (m_Received >= m_NumOfMsg)
-  if (m_Received >= 2*m_NumOfMsg)
+  if (m_Received >= 2 * m_NumOfMsg)
+  {
     QuitTest2();
+  }
 
 }
 
 void TestSendReceive_Timing::SendResponse()
 {
   //QLOG_INFO() <<"Preparing to send response messages..." <<endl;
-  std::cout << "Sending " <<m_NumOfMsg <<" reply messages from Socket1 --> Socket 2" <<std::endl;
+  std::cout << "Sending " << m_NumOfMsg << " reply messages from Socket1 --> Socket 2" << std::endl;
 
-  for (int i = 0; i< m_NumOfMsg; i++)
+  for (int i = 0; i < m_NumOfMsg; i++)
   {
-    m_MsgToSend.operator =(NiftyLinkImageMessage::Pointer(new NiftyLinkImageMessage()));
+    m_MsgToSend.operator = (NiftyLinkImageMessage::Pointer(new NiftyLinkImageMessage()));
     m_MsgToSend->InitializeWithRandomData();
     m_MsgToSend->Update(GetLocalHostAddress());
 
     m_Socket1->SendMessage(m_MsgToSend);
-   //std::cout <<"Sending response message " <<m_NumOfMsg <<std::endl;
+    //std::cout <<"Sending response message " <<m_NumOfMsg <<std::endl;
     //igtl::Sleep(2);
   }
 }
 
 void TestSendReceive_Timing::StreamResponse()
 {
-  QLOG_INFO() <<"Preparing to send response stream..." <<endl;
+  QLOG_INFO() << "Preparing to send response stream..." << endl;
 
-  for (int i = 0; i< 5; i++)
+  for (int i = 0; i < 5; i++)
     //while (m_DoStream)
   {
     m_Socket1->SendMessage(m_MsgToSend);

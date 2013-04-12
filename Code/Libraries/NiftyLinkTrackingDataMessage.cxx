@@ -25,7 +25,7 @@ NiftyLinkTrackingDataMessage::NiftyLinkTrackingDataMessage(void)
   : NiftyLinkMessage()
 {
   m_MessageType = "TDATA";
-  m_Message.operator =(NULL);
+  m_Message.operator = (NULL);
 }
 
 
@@ -51,7 +51,9 @@ NiftyLinkTrackingDataMessage::NiftyLinkTrackingDataMessage(const NiftyLinkTracki
 void NiftyLinkTrackingDataMessage::SetMatrix(igtl::Matrix4x4 &matrix)
 {
   if (m_Message.IsNull())
-    m_Message.operator =(igtl::TrackingDataMessage::New());
+  {
+    m_Message.operator = (igtl::TrackingDataMessage::New());
+  }
 
   igtl::TrackingDataMessage::Pointer msgPointer;
   msgPointer = static_cast<igtl::TrackingDataMessage *>(m_Message.GetPointer());
@@ -67,7 +69,9 @@ void NiftyLinkTrackingDataMessage::SetMatrix(igtl::Matrix4x4 &matrix)
     msgPointer->AddTrackingDataElement(tElem);
   }
   else
+  {
     msgPointer->GetTrackingDataElement(0, tElem);
+  }
 
   tElem->SetMatrix(matrix);
 
@@ -79,7 +83,9 @@ void NiftyLinkTrackingDataMessage::SetMatrix(igtl::Matrix4x4 &matrix)
 void NiftyLinkTrackingDataMessage::GetMatrix(igtl::Matrix4x4 &matrix)
 {
   if (m_Message.IsNull())
+  {
     return;
+  }
 
   igtl::TrackingDataMessage::Pointer msgPointer;
   msgPointer = static_cast<igtl::TrackingDataMessage *>(m_Message.GetPointer());
@@ -87,7 +93,9 @@ void NiftyLinkTrackingDataMessage::GetMatrix(igtl::Matrix4x4 &matrix)
   msgPointer->Unpack();
 
   if (msgPointer->GetNumberOfTrackingDataElements() == 0)
+  {
     return;
+  }
 
   igtl::TrackingDataElement::Pointer tElem;
   msgPointer->GetTrackingDataElement(0, tElem);
@@ -102,7 +110,9 @@ void NiftyLinkTrackingDataMessage::GetMatrix(igtl::Matrix4x4 &matrix)
 QString NiftyLinkTrackingDataMessage::GetMatrixAsString()
 {
   if (m_Message.IsNull())
+  {
     return QString();
+  }
 
   igtl::TrackingDataMessage::Pointer msgPointer;
   msgPointer = static_cast<igtl::TrackingDataMessage *>(m_Message.GetPointer());
@@ -110,7 +120,9 @@ QString NiftyLinkTrackingDataMessage::GetMatrixAsString()
   msgPointer->Unpack();
 
   if (msgPointer->GetNumberOfTrackingDataElements() == 0)
+  {
     return QString();
+  }
 
   igtl::TrackingDataElement::Pointer tElem;
   msgPointer->GetTrackingDataElement(0, tElem);
@@ -140,7 +152,9 @@ QString NiftyLinkTrackingDataMessage::GetMatrixAsString()
 void NiftyLinkTrackingDataMessage::SetPosition(float p[3])
 {
   if (m_Message.IsNull())
-    m_Message.operator =(igtl::TrackingDataMessage::New());
+  {
+    m_Message.operator = (igtl::TrackingDataMessage::New());
+  }
 
   igtl::TrackingDataMessage::Pointer msgPointer;
   msgPointer = static_cast<igtl::TrackingDataMessage *>(m_Message.GetPointer());
@@ -155,7 +169,9 @@ void NiftyLinkTrackingDataMessage::SetPosition(float p[3])
     msgPointer->AddTrackingDataElement(tElem);
   }
   else
+  {
     msgPointer->GetTrackingDataElement(0, tElem);
+  }
 
   tElem->SetPosition(p);
 
@@ -167,14 +183,18 @@ void NiftyLinkTrackingDataMessage::SetPosition(float p[3])
 void NiftyLinkTrackingDataMessage::GetPosition(float p[3])
 {
   if (m_Message.IsNull())
+  {
     return;
+  }
 
   igtl::TrackingDataMessage::Pointer msgPointer;
   msgPointer = static_cast<igtl::TrackingDataMessage *>(m_Message.GetPointer());
   msgPointer->Unpack();
 
   if (msgPointer->GetNumberOfTrackingDataElements() == 0)
+  {
     return;
+  }
 
   igtl::TrackingDataElement::Pointer tElem;
   msgPointer->GetTrackingDataElement(0, tElem);
@@ -188,7 +208,9 @@ void NiftyLinkTrackingDataMessage::GetPosition(float p[3])
 void NiftyLinkTrackingDataMessage::SetPosition(float px, float py, float pz)
 {
   if (m_Message.IsNull())
-    m_Message.operator =(igtl::TrackingDataMessage::New());
+  {
+    m_Message.operator = (igtl::TrackingDataMessage::New());
+  }
 
   igtl::TrackingDataMessage::Pointer msgPointer;
   msgPointer = static_cast<igtl::TrackingDataMessage *>(m_Message.GetPointer());
@@ -203,7 +225,9 @@ void NiftyLinkTrackingDataMessage::SetPosition(float px, float py, float pz)
     msgPointer->AddTrackingDataElement(tElem);
   }
   else
+  {
     msgPointer->GetTrackingDataElement(0, tElem);
+  }
 
   tElem->SetPosition(px, py, pz);
 
@@ -215,14 +239,18 @@ void NiftyLinkTrackingDataMessage::SetPosition(float px, float py, float pz)
 void NiftyLinkTrackingDataMessage::GetPosition(float &px, float &py, float &pz)
 {
   if (m_Message.IsNull())
+  {
     return;
+  }
 
   igtl::TrackingDataMessage::Pointer msgPointer;
   msgPointer = static_cast<igtl::TrackingDataMessage *>(m_Message.GetPointer());
   msgPointer->Unpack();
 
   if (msgPointer->GetNumberOfTrackingDataElements() == 0)
+  {
     return;
+  }
 
   igtl::TrackingDataElement::Pointer tElem;
   msgPointer->GetTrackingDataElement(0, tElem);
@@ -236,7 +264,9 @@ void NiftyLinkTrackingDataMessage::GetPosition(float &px, float &py, float &pz)
 void NiftyLinkTrackingDataMessage::SetTrackerToolName(QString name)
 {
   if (m_Message.IsNull())
-    m_Message.operator =(igtl::TrackingDataMessage::New());
+  {
+    m_Message.operator = (igtl::TrackingDataMessage::New());
+  }
 
   igtl::TrackingDataMessage::Pointer msgPointer;
   msgPointer = static_cast<igtl::TrackingDataMessage *>(m_Message.GetPointer());
@@ -251,7 +281,9 @@ void NiftyLinkTrackingDataMessage::SetTrackerToolName(QString name)
     msgPointer->AddTrackingDataElement(tElem);
   }
   else
+  {
     msgPointer->GetTrackingDataElement(0, tElem);
+  }
 
   tElem->SetName(name.toStdString().c_str());
 
@@ -263,14 +295,18 @@ void NiftyLinkTrackingDataMessage::SetTrackerToolName(QString name)
 QString NiftyLinkTrackingDataMessage::GetTrackerToolName()
 {
   if (m_Message.IsNull())
+  {
     return QString();
+  }
 
   igtl::TrackingDataMessage::Pointer msgPointer;
   msgPointer = static_cast<igtl::TrackingDataMessage *>(m_Message.GetPointer());
   msgPointer->Unpack();
 
   if (msgPointer->GetNumberOfTrackingDataElements() == 0)
+  {
     return QString();
+  }
 
   igtl::TrackingDataElement::Pointer tElem;
   msgPointer->GetTrackingDataElement(0, tElem);
@@ -286,7 +322,9 @@ QString NiftyLinkTrackingDataMessage::GetTrackerToolName()
 void NiftyLinkTrackingDataMessage::SetTrackerToolType(igtlUint8 type)
 {
   if (m_Message.IsNull())
-    m_Message.operator =(igtl::TrackingDataMessage::New());
+  {
+    m_Message.operator = (igtl::TrackingDataMessage::New());
+  }
 
   igtl::TrackingDataMessage::Pointer msgPointer;
   msgPointer = static_cast<igtl::TrackingDataMessage *>(m_Message.GetPointer());
@@ -301,7 +339,9 @@ void NiftyLinkTrackingDataMessage::SetTrackerToolType(igtlUint8 type)
     msgPointer->AddTrackingDataElement(tElem);
   }
   else
+  {
     msgPointer->GetTrackingDataElement(0, tElem);
+  }
 
   tElem->SetType(type);
 
@@ -313,14 +353,18 @@ void NiftyLinkTrackingDataMessage::SetTrackerToolType(igtlUint8 type)
 igtlUint8 NiftyLinkTrackingDataMessage::GetTrackerToolType()
 {
   if (m_Message.IsNull())
+  {
     return -1;
+  }
 
   igtl::TrackingDataMessage::Pointer msgPointer;
   msgPointer = static_cast<igtl::TrackingDataMessage *>(m_Message.GetPointer());
   msgPointer->Unpack();
 
   if (msgPointer->GetNumberOfTrackingDataElements() == 0)
+  {
     return -1;
+  }
 
   igtl::TrackingDataElement::Pointer tElem;
   msgPointer->GetTrackingDataElement(0, tElem);
@@ -336,7 +380,9 @@ igtlUint8 NiftyLinkTrackingDataMessage::GetTrackerToolType()
 void NiftyLinkTrackingDataMessage::InitializeWithTestData(igtl::Matrix4x4& testMatrix)
 {
   if (m_Message.IsNull())
-    m_Message.operator =(igtl::TrackingDataMessage::New());
+  {
+    m_Message.operator = (igtl::TrackingDataMessage::New());
+  }
 
   igtl::TrackingDataMessage::Pointer msgPointer;
   msgPointer = static_cast<igtl::TrackingDataMessage *>(m_Message.GetPointer());
@@ -351,7 +397,9 @@ void NiftyLinkTrackingDataMessage::InitializeWithTestData(igtl::Matrix4x4& testM
     msgPointer->AddTrackingDataElement(tElem);
   }
   else
+  {
     msgPointer->GetTrackingDataElement(0, tElem);
+  }
 
   tElem->SetMatrix(testMatrix);
 
@@ -363,7 +411,9 @@ void NiftyLinkTrackingDataMessage::InitializeWithTestData(igtl::Matrix4x4& testM
 void NiftyLinkTrackingDataMessage::InitializeWithRandomData(void)
 {
   if (m_Message.IsNull())
-    m_Message.operator =(igtl::TrackingDataMessage::New());
+  {
+    m_Message.operator = (igtl::TrackingDataMessage::New());
+  }
 
   igtl::TrackingDataMessage::Pointer msgPointer;
   msgPointer = static_cast<igtl::TrackingDataMessage *>(m_Message.GetPointer());
@@ -378,7 +428,9 @@ void NiftyLinkTrackingDataMessage::InitializeWithRandomData(void)
     msgPointer->AddTrackingDataElement(tElem);
   }
   else
+  {
     msgPointer->GetTrackingDataElement(0, tElem);
+  }
 
   igtl::Matrix4x4 localMatrix;
   CreateRandomTransformMatrix(localMatrix);
@@ -392,10 +444,10 @@ void NiftyLinkTrackingDataMessage::InitializeWithRandomData(void)
 //-----------------------------------------------------------------------------
 void NiftyLinkTrackingDataMessage::Create_GET(NiftyLinkMessage::Pointer &msgToCreate)
 {
-  msgToCreate.operator =(NiftyLinkMessage::Pointer(new NiftyLinkMessage()));
+  msgToCreate.operator = (NiftyLinkMessage::Pointer(new NiftyLinkMessage()));
 
   igtl::GetTrackingDataMessage::Pointer cmdMsg;
-  cmdMsg.operator =(igtl::GetTrackingDataMessage::New());
+  cmdMsg.operator = (igtl::GetTrackingDataMessage::New());
 
   igtl::TimeStamp::Pointer ts;
   ts = igtl::TimeStamp::New();
@@ -415,10 +467,10 @@ void NiftyLinkTrackingDataMessage::Create_GET(NiftyLinkMessage::Pointer &msgToCr
 //-----------------------------------------------------------------------------
 void NiftyLinkTrackingDataMessage::Create_STT(NiftyLinkMessage::Pointer &msgToCreate)
 {
-  msgToCreate.operator =(NiftyLinkMessage::Pointer(new NiftyLinkMessage()));
+  msgToCreate.operator = (NiftyLinkMessage::Pointer(new NiftyLinkMessage()));
 
   igtl::StartTrackingDataMessage::Pointer cmdMsg;
-  cmdMsg.operator =(igtl::StartTrackingDataMessage::New());
+  cmdMsg.operator = (igtl::StartTrackingDataMessage::New());
 
   igtl::TimeStamp::Pointer ts;
   ts = igtl::TimeStamp::New();
@@ -438,10 +490,10 @@ void NiftyLinkTrackingDataMessage::Create_STT(NiftyLinkMessage::Pointer &msgToCr
 //-----------------------------------------------------------------------------
 void NiftyLinkTrackingDataMessage::Create_STP(NiftyLinkMessage::Pointer &msgToCreate)
 {
-  msgToCreate.operator =(NiftyLinkMessage::Pointer(new NiftyLinkMessage()));
+  msgToCreate.operator = (NiftyLinkMessage::Pointer(new NiftyLinkMessage()));
 
   igtl::StopTrackingDataMessage::Pointer cmdMsg;
-  cmdMsg.operator =(igtl::StopTrackingDataMessage::New());
+  cmdMsg.operator = (igtl::StopTrackingDataMessage::New());
 
   igtl::TimeStamp::Pointer ts;
   ts = igtl::TimeStamp::New();
@@ -461,10 +513,10 @@ void NiftyLinkTrackingDataMessage::Create_STP(NiftyLinkMessage::Pointer &msgToCr
 //-----------------------------------------------------------------------------
 void NiftyLinkTrackingDataMessage::Create_RTS(NiftyLinkMessage::Pointer &msgToCreate)
 {
-  msgToCreate.operator =(NiftyLinkMessage::Pointer(new NiftyLinkMessage()));
+  msgToCreate.operator = (NiftyLinkMessage::Pointer(new NiftyLinkMessage()));
 
   igtl::RTSTrackingDataMessage::Pointer cmdMsg;
-  cmdMsg.operator =(igtl::RTSTrackingDataMessage::New());
+  cmdMsg.operator = (igtl::RTSTrackingDataMessage::New());
 
   igtl::TimeStamp::Pointer ts;
   ts = igtl::TimeStamp::New();
