@@ -10,8 +10,8 @@ PURPOSE.
 See LICENSE.txt in the top level directory for details.
 =============================================================================*/
 
-#ifndef __NiftyLinkUtils_h
-#define __NiftyLinkUtils_h
+#ifndef NiftyLinkUtils_h
+#define NiftyLinkUtils_h
 
 #include <QString>
 #include <QUrl>

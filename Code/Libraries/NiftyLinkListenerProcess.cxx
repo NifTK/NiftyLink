@@ -394,16 +394,16 @@ void NiftyLinkListenerProcess::ListenOnPort(void)
             m_TimeOuter->start(2000);
           }
           /*
-                    // Sleep for a bit to let some more data arrive to the socket
-                    try
-                    {
-                      QLOG_DEBUG() <<objectName() <<" listening with socket on port " << m_Port << ", but waiting for " << sleepInterval << " ms\n";
-                      //dynamic_cast<QThreadEx *>(QThread::currentThread())->MsleepEx(sleepInterval);
-                    }
-                    catch (std::exception &e)
-                    {
-                      qDebug() <<"Type cast error.Always run this process from QThreadEx. Exception: " <<e.what();
-                    }
+          // Sleep for a bit to let some more data arrive to the socket
+          try
+          {
+            QLOG_DEBUG() <<objectName() <<" listening with socket on port " << m_Port << ", but waiting for " << sleepInterval << " ms\n";
+            //dynamic_cast<QThreadEx *>(QThread::currentThread())->MsleepEx(sleepInterval);
+          }
+          catch (std::exception &e)
+          {
+            qDebug() <<"Type cast error.Always run this process from QThreadEx. Exception: " <<e.what();
+          }
           */
           continue;
         }
@@ -733,7 +733,7 @@ bool NiftyLinkListenerProcess::ReceiveMessage()
 
       msgHeader.operator = (NULL);
       return true;
-  }
+    }
 
   message->SetMessageHeader(msgHeader);
   message->AllocatePack();
