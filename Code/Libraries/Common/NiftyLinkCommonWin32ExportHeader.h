@@ -9,8 +9,8 @@
 
   See LICENSE.txt in the top level directory for details.
 =============================================================================*/
-#ifndef __NiftyLinkCommonWin32ExportHeader_h
-#define __NiftyLinkCommonWin32ExportHeader_h
+#ifndef NiftyLinkCommonWin32ExportHeader_h
+#define NiftyLinkCommonWin32ExportHeader_h
 
 #include "NiftyLinkConfig.h"
 
