@@ -13,7 +13,7 @@
 #include <QObject>
 #include <QtGui/QImage>
 
-#include "OIGTLStatusMessage.h"
+#include "NiftyLinkStatusMessage.h"
 
 #include "igtlStatusMessage.h"
 #include "igtlMath.h"
@@ -32,20 +32,20 @@ class TestStatusMsg_General : public QObject
   Q_OBJECT
 
 signals:
-  void done();
+  void Done();
 
 public:
   TestStatusMsg_General(void);
   ~TestStatusMsg_General(void);
 
 public slots:
-  void setupTest();
-  void performTest();
-  void quitTest();
+  void SetupTest();
+  void PerformTest();
+  void QuitTest();
 
 private:
-  QString m_localhostname;
-  int m_testCounter;
-  int m_successCounter;
+  QString m_LocalHostname;
+  int     m_TestCounter;
+  int     m_SuccessCounter;
 };
 

@@ -27,21 +27,21 @@ INCLUDE(${QT_USE_FILE})
 # Sources
 
 SET(niftylink_SRCS
-Common/NiftyLinkUtils.cpp
-Common/NiftyLinkXMLBuilder.cpp
-Common/QsDebugOutput.cpp
-Common/QsLog.cpp
-Common/QsLogDest.cpp
-OIGTLMessage.cpp
-OIGTLProcessBase.cpp
-OIGTLSenderProcess.cpp
-OIGTLListenerProcess.cpp
-OIGTLSocketObject.cpp
-OIGTLTransformMessage.cpp
-OIGTLImageMessage.cpp
-OIGTLStatusMessage.cpp
-OIGTLStringMessage.cpp
-OIGTLTrackingDataMessage.cpp
+Common/NiftyLinkUtils.cxx
+Common/NiftyLinkXMLBuilder.cxx
+Common/QsDebugOutput.cxx
+Common/QsLog.cxx
+Common/QsLogDest.cxx
+NiftyLinkMessage.cxx
+NiftyLinkProcessBase.cxx
+NiftyLinkSenderProcess.cxx
+NiftyLinkListenerProcess.cxx
+NiftyLinkSocketObject.cxx
+NiftyLinkTransformMessage.cxx
+NiftyLinkImageMessage.cxx
+NiftyLinkStatusMessage.cxx
+NiftyLinkStringMessage.cxx
+NiftyLinkTrackingDataMessage.cxx
 )
 
 #########################
@@ -49,10 +49,10 @@ OIGTLTrackingDataMessage.cpp
 #########################
 SET(niftylink_MOC_HDRS
 Common/NiftyLinkXMLBuilder.h
-OIGTLProcessBase.h
-OIGTLSenderProcess.h
-OIGTLListenerProcess.h
-OIGTLSocketObject.h
+NiftyLinkProcessBase.h
+NiftyLinkSenderProcess.h
+NiftyLinkListenerProcess.h
+NiftyLinkSocketObject.h
 )
 
 #########################
@@ -64,12 +64,12 @@ Common/NiftyLinkCommonWin32ExportHeader.h
 Common/QsDebugOutput.h
 Common/QsLog.h
 Common/QsLogDest.h
-OIGTLMessage.h
-OIGTLTransformMessage.h
-OIGTLImageMessage.h
-OIGTLTrackingDataMessage.h
-OIGTLStringMessage.h
-OIGTLStatusMessage.h
+NiftyLinkMessage.h
+NiftyLinkTransformMessage.h
+NiftyLinkImageMessage.h
+NiftyLinkTrackingDataMessage.h
+NiftyLinkStringMessage.h
+NiftyLinkStatusMessage.h
 )
 
 #########################

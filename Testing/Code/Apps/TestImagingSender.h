@@ -10,15 +10,16 @@
   See LICENSE.txt in the top level directory for details.
 =============================================================================*/
 
-#ifndef TestImagingSender_H
-#define TestImagingSender_H
+#ifndef TestImagingSender_h
+#define TestImagingSender_h
 
 #include <QObject>
 #include <QtGui/QImage>
 #include <igtlTimeStamp.h>
-#include "OIGTLSocketObject.h"
+#include "NiftyLinkSocketObject.h"
 
-class TestImagingSender : public QObject {
+class TestImagingSender : public QObject
+{
 
   Q_OBJECT
 
@@ -27,7 +28,7 @@ public:
                     const QString& hostName,
                     const int& portNumber,
                     const int& numberOfIterations
-                    );
+                   );
   virtual ~TestImagingSender();
 
 signals:
@@ -47,7 +48,7 @@ private:
   void SendData(const int& numberOfIterations);
   void FinishUp();
 
-  OIGTLSocketObject m_Socket;
+  NiftyLinkSocketObject m_Socket;
   const QImage*     m_Image;
   const QString     m_HostName;
   const int         m_PortNumber;
@@ -58,4 +59,4 @@ private:
 
 };
 
-#endif // TestImagingSender_H
+#endif // TestImagingSender_h

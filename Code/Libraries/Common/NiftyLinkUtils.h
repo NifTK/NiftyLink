@@ -1,17 +1,17 @@
 /*=============================================================================
-  NiftyLink:  A software library to facilitate communication over OpenIGTLink.
+NiftyLink: A software library to facilitate communication over OpenIGTLink.
 
-  Copyright (c) University College London (UCL). All rights reserved.
+Copyright (c) University College London (UCL). All rights reserved.
 
-  This software is distributed WITHOUT ANY WARRANTY; without even
-  the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR
-  PURPOSE.
+This software is distributed WITHOUT ANY WARRANTY; without even
+the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR
+PURPOSE.
 
-  See LICENSE.txt in the top level directory for details.
+See LICENSE.txt in the top level directory for details.
 =============================================================================*/
 
-#ifndef NIFTYLINKCOMMONUTILS_H
-#define NIFTYLINKCOMMONUTILS_H
+#ifndef NiftyLinkUtils_h
+#define NiftyLinkUtils_h
 
 #include <QString>
 #include <QUrl>
@@ -35,12 +35,12 @@
 #include "NiftyLinkConfig.h"
 #include "NiftyLinkCommonWin32ExportHeader.h"
 
-#include "OIGTLMessage.h"
+#include "NiftyLinkMessage.h"
 
 #include "QsLog.h"
 #include "QsLogDest.h"
 
-enum MessageTypes 
+enum MessageTypes
 {
   NONDEFINED,
   BIND,
@@ -127,21 +127,21 @@ enum MessageTypes
 
 // Map to associate the strings with the enum values
 typedef std::map<std::string, MessageTypes> mapStrMsgType;
-static mapStrMsgType strMsgTypes; 
+static mapStrMsgType strMsgTypes;
 
 /// \brief Initialises the types map.
 extern "C" NIFTYLINKCOMMON_WINEXPORT void InitMessageTypes(mapStrMsgType &types);
 
 /// \brief Simple function which validates if an IP address is valid or not
-extern "C++" NIFTYLINKCOMMON_WINEXPORT bool validateIp(const QString &inputIP);
+extern "C++" NIFTYLINKCOMMON_WINEXPORT bool ValidateIp(const QString &inputIP);
 
 /// \brief This function which returns the local IP address
-extern "C++" NIFTYLINKCOMMON_WINEXPORT QString getLocalHostAddress(void);
+extern "C++" NIFTYLINKCOMMON_WINEXPORT QString GetLocalHostAddress(void);
 
 /// \brief This function resolves a given hostname to IP
-extern "C++" NIFTYLINKCOMMON_WINEXPORT QString resolveHostName(const QString &input);
+extern "C++" NIFTYLINKCOMMON_WINEXPORT QString ResolveHostName(const QString &input);
 
-/// \brief This function creates a random 4x4 test matrix 
+/// \brief This function creates a random 4x4 test matrix
 extern "C++" NIFTYLINKCOMMON_WINEXPORT void CreateRandomTransformMatrix(igtl::Matrix4x4& matrix);
 
 /// \brief Returns the time as igtlUint64 in nanoseconds.
@@ -153,4 +153,4 @@ extern "C++" NIFTYLINKCOMMON_WINEXPORT void SetTimeInNanoSeconds(igtl::TimeStamp
 /// \brief Returns the difference in nanoseconds.
 extern "C++" NIFTYLINKCOMMON_WINEXPORT igtlUint64 GetDifferenceInNanoSeconds(igtl::TimeStamp* timeA, igtl::TimeStamp* timeB);
 
-#endif
+#endif //__NiftyLinkUtils_h

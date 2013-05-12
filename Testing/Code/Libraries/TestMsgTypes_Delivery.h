@@ -30,9 +30,8 @@
 #include "QsLog.h"
 #include "QsLogDest.h"
 
-#include "OIGTLSocketObject.h"
-#include "OIGTLTransformMessage.h"
-
+#include "NiftyLinkSocketObject.h"
+#include "NiftyLinkTransformMessage.h"
 
 #include <cstdlib>
 #include <cstdio>
@@ -44,43 +43,42 @@ class TestMsgTypes_Delivery : public QObject
   Q_OBJECT
 
 signals:
-  void done();
+  void Done();
 
 public:
   TestMsgTypes_Delivery(void);
   ~TestMsgTypes_Delivery(void);
 
 public slots:
-  void startTest();
-  void quitTest();
+  void StartTest();
+  void QuitTest();
 
-  void catchMessage(OIGTLMessage::Pointer);
+  void CatchMessage(NiftyLinkMessage::Pointer);
 
 private slots:
-  void clientConnected();
-  void connectedToRemote();
-  void continueTest();
+  void ClientConnected();
+  void ConnectedToRemote();
+  void ContinueTest();
 
 private:
-  igtl::Matrix4x4 m_localMatrix;
+  igtl::Matrix4x4       m_LocalMatrix;
 
-  OIGTLMessage::Pointer m_msgToSend;
+  NiftyLinkMessage::Pointer m_MsgToSend;
 
-  OIGTLSocketObject * m_socket1;
-  OIGTLSocketObject * m_socket2;
+  NiftyLinkSocketObject   * m_Socket1;
+  NiftyLinkSocketObject   * m_Socket2;
 
-  int m_numOfMsg;
-  int m_received;
-  int m_sent;
+  int    m_NumOfMsg;
+  int    m_Received;
+  int    m_Sent;
+  int    m_TestCounter;
+  int    m_SuccessCounter;
 
-  int m_testCounter;
-  int m_successCounter;
+  bool   m_DoStream;
+  bool   m_InShutdownTests;
 
-  bool m_doStream;
-  bool m_inShutdownTests;
-
-  bool   m_connectedTo;
-  bool   m_connecting;
-  QTimer m_timeOut;
+  bool   m_ConnectedTo;
+  bool   m_Connecting;
+  QTimer m_TimeOut;
 };
 

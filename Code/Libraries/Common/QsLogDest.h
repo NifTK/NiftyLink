@@ -41,8 +41,8 @@ namespace QsLogging
 class NIFTYLINKCOMMON_WINEXPORT Destination
 {
 public:
-   virtual ~Destination(){}
-   virtual void write(const QString& message) = 0;
+  virtual ~Destination() {}
+  virtual void write(const QString& message) = 0;
 };
 
 typedef std::auto_ptr<Destination> DestinationPtr;
@@ -56,8 +56,8 @@ typedef std::auto_ptr<Destination> DestinationPtr;
 class NIFTYLINKCOMMON_WINEXPORT DestinationFactory
 {
 public:
-   static DestinationPtr MakeFileDestination(const QString& filePath);
-   static DestinationPtr MakeDebugOutputDestination();
+  static DestinationPtr MakeFileDestination(const QString& filePath);
+  static DestinationPtr MakeDebugOutputDestination();
 };
 
 } // end namespace
