@@ -11,9 +11,6 @@
 #  See LICENSE.txt in the top level directory for details. 
 #
 #=================================================================================*/
-
-ADD_SUBDIRECTORY(TimeSync)
-
 # --------------------------------------------------------------------------
 # Project Setup
 
