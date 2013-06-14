@@ -1,0 +1,120 @@
+
+Number of messages received: 100
+Size / message: 48000146.0000000000
+Total number of bytes received: 4800014600
+First message was created at: 1371223140.2932426929
+Last message was created at: 1371223189.2030398846
+Total time to send messsages: 48.9097971916
+
+First message was received at: 1371223143.2184689045
+Last message was received at: 1371223193.0838179588
+Total time to receive messsages: 49.8653490543
+
+Time elapsed from the creation of the first message
+till the receipt of the last: 52.7905752659 sec
+
+Throughput: 90925597.5299436003 bytes/sec 
+            86.7134070682 megabytes/sec 
+
+
+NULL delay: 2.9252262115
+Delays 
+Msg num: 1 send delay: 0.5090289116 rec delay: 3.4221713543 relative diff: -0.0120837688
+Msg num: 2 send delay: 1.0240585804 rec delay: 4.5397393703 relative diff: 0.6025383472
+Msg num: 3 send delay: 1.5270872116 rec delay: 5.0317802429 relative diff: -0.0109877586
+Msg num: 4 send delay: 1.9811131954 rec delay: 5.5204443932 relative diff: 0.0346381664
+Msg num: 5 send delay: 2.4481399059 rec delay: 6.0125133991 relative diff: 0.0250422955
+Msg num: 6 send delay: 2.9301674366 rec delay: 6.4994382858 relative diff: 0.0048973560
+Msg num: 7 send delay: 3.4201955795 rec delay: 6.9873073101 relative diff: -0.0021591187
+Msg num: 8 send delay: 3.9682269096 rec delay: 7.4733572006 relative diff: -0.0619814396
+Msg num: 9 send delay: 4.4992573261 rec delay: 7.9631993771 relative diff: -0.0411882401
+Msg num: 10 send delay: 5.0352878571 rec delay: 8.4486162663 relative diff: -0.0506136417
+Msg num: 11 send delay: 5.5613179207 rec delay: 8.9358873367 relative diff: -0.0387589931
+Msg num: 12 send delay: 6.0463457108 rec delay: 9.4225392342 relative diff: 0.0016241074
+Msg num: 13 send delay: 6.5313732624 rec delay: 10.2236683369 relative diff: 0.3161015511
+Msg num: 14 send delay: 7.0174012184 rec delay: 10.7109222412 relative diff: 0.0012259483
+Msg num: 15 send delay: 7.4784276485 rec delay: 11.1965641975 relative diff: 0.0246155262
+Msg num: 16 send delay: 7.9434540272 rec delay: 11.6848723888 relative diff: 0.0232818127
+Msg num: 17 send delay: 8.4064807892 rec delay: 12.1714692116 relative diff: 0.0235700607
+Msg num: 18 send delay: 8.8705072403 rec delay: 12.6610863209 relative diff: 0.0255906582
+Msg num: 19 send delay: 9.3345336914 rec delay: 13.1456742287 relative diff: 0.0205614567
+Msg num: 20 send delay: 9.8025605679 rec delay: 13.6301882267 relative diff: 0.0164871216
+Msg num: 21 send delay: 10.3265905380 rec delay: 14.1143803596 relative diff: -0.0398378372
+Msg num: 22 send delay: 10.8516204357 rec delay: 14.6006023884 relative diff: -0.0388078690
+Msg num: 23 send delay: 11.3746504784 rec delay: 15.0904223919 relative diff: -0.0332100391
+Msg num: 24 send delay: 11.8926801682 rec delay: 15.5793902874 relative diff: -0.0290617943
+Msg num: 25 send delay: 12.3767077923 rec delay: 16.0708663464 relative diff: 0.0074484348
+Msg num: 26 send delay: 12.8567352295 rec delay: 16.5588583946 relative diff: 0.0079646111
+Msg num: 27 send delay: 13.3387629986 rec delay: 17.0477843285 relative diff: 0.0068981647
+Msg num: 28 send delay: 13.8187901974 rec delay: 17.5361442566 relative diff: 0.0083327293
+Msg num: 29 send delay: 14.2958176136 rec delay: 18.0278532505 relative diff: 0.0146815777
+Msg num: 30 send delay: 14.7738449574 rec delay: 18.5154953003 relative diff: 0.0096147060
+Msg num: 31 send delay: 15.2518720627 rec delay: 19.0045661926 relative diff: 0.0110437870
+Msg num: 32 send delay: 15.7298996449 rec delay: 19.4924092293 relative diff: 0.0098154545
+Msg num: 33 send delay: 16.2099268436 rec delay: 19.9834673405 relative diff: 0.0110309124
+Msg num: 34 send delay: 16.6879544258 rec delay: 20.4698472023 relative diff: 0.0083522797
+Msg num: 35 send delay: 17.1659817696 rec delay: 20.9595754147 relative diff: 0.0117008686
+Msg num: 36 send delay: 17.6460092068 rec delay: 21.4458072186 relative diff: 0.0062043667
+Msg num: 37 send delay: 18.1240365505 rec delay: 22.2523193359 relative diff: 0.3284847736
+Msg num: 38 send delay: 18.5890631676 rec delay: 22.7407433987 relative diff: 0.0233974457
+Msg num: 39 send delay: 19.0480892658 rec delay: 23.2260723114 relative diff: 0.0263028145
+Msg num: 40 send delay: 19.5061154366 rec delay: 23.7137012482 relative diff: 0.0296027660
+Msg num: 41 send delay: 19.9661419392 rec delay: 24.1986193657 relative diff: 0.0248916149
+Msg num: 42 send delay: 20.4321684837 rec delay: 24.6857712269 relative diff: 0.0211253166
+Msg num: 43 send delay: 20.9411976337 rec delay: 25.1720392704 relative diff: -0.0227611065
+Msg num: 44 send delay: 21.4512269497 rec delay: 25.6592233181 relative diff: -0.0228452682
+Msg num: 45 send delay: 21.9612560272 rec delay: 26.1485483646 relative diff: -0.0207040310
+Msg num: 46 send delay: 22.4712851048 rec delay: 26.6348252296 relative diff: -0.0237522125
+Msg num: 47 send delay: 22.9403121471 rec delay: 27.1228332520 relative diff: 0.0189809799
+Msg num: 48 send delay: 23.4053385258 rec delay: 27.6089303493 relative diff: 0.0210707188
+Msg num: 49 send delay: 23.8713653088 rec delay: 28.0972573757 relative diff: 0.0223002434
+Msg num: 50 send delay: 24.3343915939 rec delay: 28.5822763443 relative diff: 0.0219926834
+Msg num: 51 send delay: 24.7984180450 rec delay: 29.0689063072 relative diff: 0.0226035118
+Msg num: 52 send delay: 25.2614448071 rec delay: 29.5548682213 relative diff: 0.0229351521
+Msg num: 53 send delay: 25.7254712582 rec delay: 30.0467572212 relative diff: 0.0278625488
+Msg num: 54 send delay: 26.2345004082 rec delay: 30.5319054127 relative diff: -0.0238809586
+Msg num: 55 send delay: 26.7445297241 rec delay: 31.0197453499 relative diff: -0.0221893787
+Msg num: 56 send delay: 27.2545588017 rec delay: 31.5060184002 relative diff: -0.0237560272
+Msg num: 57 send delay: 27.7655880451 rec delay: 31.9968512058 relative diff: -0.0201964378
+Msg num: 58 send delay: 28.2736167908 rec delay: 32.4822022915 relative diff: -0.0226776600
+Msg num: 59 send delay: 28.8246486187 rec delay: 32.9701142311 relative diff: -0.0631198883
+Msg num: 60 send delay: 29.3546788692 rec delay: 33.4552524090 relative diff: -0.0448920727
+Msg num: 61 send delay: 29.8627078533 rec delay: 34.2614583969 relative diff: 0.2981770039
+Msg num: 62 send delay: 30.3737370968 rec delay: 34.7473082542 relative diff: -0.0251793861
+Msg num: 63 send delay: 30.8847665787 rec delay: 35.2332053185 relative diff: -0.0251324177
+Msg num: 64 send delay: 31.3907952309 rec delay: 35.7194273472 relative diff: -0.0198066235
+Msg num: 65 send delay: 31.8558218479 rec delay: 36.2068212032 relative diff: 0.0223672390
+Msg num: 66 send delay: 32.3188486099 rec delay: 36.6925733089 relative diff: 0.0227253437
+Msg num: 67 send delay: 32.8288776875 rec delay: 37.1809592247 relative diff: -0.0216431618
+Msg num: 68 send delay: 33.3389067650 rec delay: 37.6668941975 relative diff: -0.0240941048
+Msg num: 69 send delay: 33.8449356556 rec delay: 38.1558692455 relative diff: -0.0170538425
+Msg num: 70 send delay: 34.3509645462 rec delay: 38.6425752640 relative diff: -0.0193228722
+Msg num: 71 send delay: 34.8569936752 rec delay: 39.1326162815 relative diff: -0.0159881115
+Msg num: 72 send delay: 35.3180198669 rec delay: 39.6182012558 relative diff: 0.0245587826
+Msg num: 73 send delay: 35.7860467434 rec delay: 40.1068513393 relative diff: 0.0206232071
+Msg num: 74 send delay: 36.2500731945 rec delay: 40.5937132835 relative diff: 0.0228354931
+Msg num: 75 send delay: 36.7150998116 rec delay: 41.0861942768 relative diff: 0.0274543762
+Msg num: 76 send delay: 37.1791265011 rec delay: 41.5705342293 relative diff: 0.0203132629
+Msg num: 77 send delay: 37.6421530247 rec delay: 42.0571913719 relative diff: 0.0236306190
+Msg num: 78 send delay: 38.1061792374 rec delay: 42.5416014194 relative diff: 0.0203838348
+Msg num: 79 send delay: 38.5822064877 rec delay: 43.0308673382 relative diff: 0.0132386684
+Msg num: 80 send delay: 39.1052365303 rec delay: 43.5163133144 relative diff: -0.0375840664
+Msg num: 81 send delay: 39.6282665730 rec delay: 44.0035362244 relative diff: -0.0358071327
+Msg num: 82 send delay: 40.1502962112 rec delay: 44.4885823727 relative diff: -0.0369834900
+Msg num: 83 send delay: 40.6663258076 rec delay: 44.9784152508 relative diff: -0.0261967182
+Msg num: 84 send delay: 41.1533536911 rec delay: 45.4634733200 relative diff: -0.0019698143
+Msg num: 85 send delay: 41.7063853741 rec delay: 45.9511203766 relative diff: -0.0653846264
+Msg num: 86 send delay: 42.2624170780 rec delay: 46.4369933605 relative diff: -0.0701587200
+Msg num: 87 send delay: 42.7944476604 rec delay: 46.9264624119 relative diff: -0.0425615311
+Msg num: 88 send delay: 43.3074769974 rec delay: 47.4121623039 relative diff: -0.0273294449
+Msg num: 89 send delay: 43.8185060024 rec delay: 47.8994011879 relative diff: -0.0237901211
+Msg num: 90 send delay: 44.3275353909 rec delay: 48.3848793507 relative diff: -0.0235512257
+Msg num: 91 send delay: 44.8355643749 rec delay: 48.8770663738 relative diff: -0.0158419609
+Msg num: 92 send delay: 45.3465936184 rec delay: 49.3616063595 relative diff: -0.0264892578
+Msg num: 93 send delay: 45.8566226959 rec delay: 49.8490183353 relative diff: -0.0226171017
+Msg num: 94 send delay: 46.3666520119 rec delay: 50.3348472118 relative diff: -0.0242004395
+Msg num: 95 send delay: 46.8756809235 rec delay: 50.8208353519 relative diff: -0.0230407715
+Msg num: 96 send delay: 47.3847100735 rec delay: 51.3074634075 relative diff: -0.0224010944
+Msg num: 97 send delay: 47.8927392960 rec delay: 51.8021552563 relative diff: -0.0133373737
+Msg num: 98 send delay: 48.4037685394 rec delay: 52.3050603867 relative diff: -0.0081241131
+Msg num: 99 send delay: 48.9097971916 rec delay: 52.7905752659 relative diff: -0.0205137730

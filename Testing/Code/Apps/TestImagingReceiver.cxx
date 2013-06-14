@@ -129,60 +129,60 @@ void TestImagingReceiver::OnMessageReceived(NiftyLinkMessage::Pointer message)
 
   if (m_CumulativeMessageCount >= m_NumberOfMessagesExpected)
   {
-    std::ofstream outfile(m_OutFileName.c_str(), std::ofstream::binary);
-    outfile <<std::endl;
-    outfile.precision(10);
-    outfile << std::fixed;
-    
-    outfile << "Number of messages received: " << m_CumulativeMessageCount << std::endl;
-    outfile << "Size / message: " << (double)m_CumulativeMessageSize/(double)m_CumulativeMessageCount << std::endl;
-    outfile << "Total number of bytes received: " << m_CumulativeMessageSize << std::endl;
+    std::stringstream outfileContents;
+    outfileContents <<std::endl;
+    outfileContents.precision(10);
+    outfileContents << std::fixed;
 
-    outfile <<"First message was created at: " <<m_SentTimeStamps.at(0) << std::endl;
-    outfile <<"Last message was created at: " <<m_SentTimeStamps.at(m_SentTimeStamps.size()-1) << std::endl;
-    outfile <<"Total time to send messsages: " <<m_SentTimeStamps.at(m_SentTimeStamps.size()-1) - m_SentTimeStamps.at(0) << std::endl;
-    outfile <<std::endl;
-    outfile <<"First message was received at: " <<m_ReceivedTimeStamps.at(0) << std::endl;
-    outfile <<"Last message was received at: " <<m_ReceivedTimeStamps.at(m_ReceivedTimeStamps.size()-1) << std::endl;
-    outfile <<"Total time to receive messsages: " <<m_ReceivedTimeStamps.at(m_ReceivedTimeStamps.size()-1) - m_ReceivedTimeStamps.at(0) << std::endl;
+    outfileContents << "Number of messages received: " << m_CumulativeMessageCount << std::endl;
+    outfileContents << "Size / message: " << (double)m_CumulativeMessageSize/(double)m_CumulativeMessageCount << std::endl;
+    outfileContents << "Total number of bytes received: " << m_CumulativeMessageSize << std::endl;
+
+    outfileContents <<"First message was created at: " <<m_SentTimeStamps.at(0) << std::endl;
+    outfileContents <<"Last message was created at: " <<m_SentTimeStamps.at(m_SentTimeStamps.size()-1) << std::endl;
+    outfileContents <<"Total time to send messsages: " <<m_SentTimeStamps.at(m_SentTimeStamps.size()-1) - m_SentTimeStamps.at(0) << std::endl;
+    outfileContents <<std::endl;
+    outfileContents <<"First message was received at: " <<m_ReceivedTimeStamps.at(0) << std::endl;
+    outfileContents <<"Last message was received at: " <<m_ReceivedTimeStamps.at(m_ReceivedTimeStamps.size()-1) << std::endl;
+    outfileContents <<"Total time to receive messsages: " <<m_ReceivedTimeStamps.at(m_ReceivedTimeStamps.size()-1) - m_ReceivedTimeStamps.at(0) << std::endl;
 
     double first = m_SentTimeStamps.at(0);
     double last  = m_ReceivedTimeStamps.at(m_ReceivedTimeStamps.size()-1);
 
-    outfile <<std::endl;
+    outfileContents <<std::endl;
     igtlUint32 sec, msec, usec, nsec, fraction;
-    
-    outfile << "Time elapsed from the creation of the first message\n";
-    outfile << "till the receipt of the last: " <<last - first <<" sec" <<std::endl;
-    outfile <<std::endl;
 
-    outfile << "Throughput: " <<(double)m_CumulativeMessageSize / (last - first) <<" bytes/sec "<<std::endl;
-    outfile << "            " <<(double)m_CumulativeMessageSize /1024 /1024 / (last - first) <<" megabytes/sec "<<std::endl;
+    outfileContents << "Time elapsed from the creation of the first message\n";
+    outfileContents << "till the receipt of the last: " <<last - first <<" sec" <<std::endl;
+    outfileContents <<std::endl;
 
-
-    outfile <<std::endl <<std::endl;
+    outfileContents << "Throughput: " <<(double)m_CumulativeMessageSize / (last - first) <<" bytes/sec "<<std::endl;
+    outfileContents << "            " <<(double)m_CumulativeMessageSize /1024 /1024 / (last - first) <<" megabytes/sec "<<std::endl;
 
 
-    
+    outfileContents <<std::endl <<std::endl;
+
+
+
 
 
 /*
-    outfile << "Sent stamps "<<std::endl;
+    outfileContents << "Sent stamps "<<std::endl;
     for (unsigned int  i = 0; i < m_SentTimeStamps.size(); i++)
     {
-      outfile <<i <<"," << m_SentTimeStamps.at(i) <<std::endl;
+      outfileContents <<i <<"," << m_SentTimeStamps.at(i) <<std::endl;
     }
-    
-    outfile <<std::endl <<std::endl;
-    outfile << "Sent stamps "<<std::endl;
+
+    outfileContents <<std::endl <<std::endl;
+    outfileContents << "Sent stamps "<<std::endl;
     for (unsigned int  i = 0; i < m_ReceivedTimeStamps.size(); i++)
     {
-      outfile <<i <<"," << m_ReceivedTimeStamps.at(i) <<std::endl;
+      outfileContents <<i <<"," << m_ReceivedTimeStamps.at(i) <<std::endl;
     }
-    outfile <<std::endl <<std::endl;
+    outfileContents <<std::endl <<std::endl;
 */
-    outfile << "NULL delay: " <<m_ReceivedTimeStamps.at(0) - m_SentTimeStamps.at(0) <<std::endl;
-    outfile << "Delays "<<std::endl;
+    outfileContents << "NULL delay: " <<m_ReceivedTimeStamps.at(0) - m_SentTimeStamps.at(0) <<std::endl;
+    outfileContents << "Delays "<<std::endl;
     for (unsigned int  i = 1; i < m_ReceivedTimeStamps.size(); i++)
     {
       double curDiff = m_ReceivedTimeStamps.at(i) - m_SentTimeStamps.at(i);
@@ -190,11 +190,23 @@ void TestImagingReceiver::OnMessageReceived(NiftyLinkMessage::Pointer message)
 
       double sendDelay = m_SentTimeStamps.at(i) - m_SentTimeStamps.at(0);
       double receDelay = m_ReceivedTimeStamps.at(i) - m_SentTimeStamps.at(0);
-      outfile <<"Msg num: " <<i <<" send delay: " <<sendDelay <<" rec delay: " <<receDelay <<" relative diff: " << curDiff - prevDiff <<std::endl;
+      outfileContents <<"Msg num: " <<i <<" send delay: " <<sendDelay <<" rec delay: " <<receDelay <<" relative diff: " << curDiff - prevDiff <<std::endl;
     }
 
-    outfile.flush();
-    outfile.close();
+    outfileContents.flush();
+
+    if (!m_OutFileName.empty())
+    {
+      std::ofstream outfile(m_OutFileName.c_str(), std::ofstream::binary);
+      outfile <<outfileContents.str();
+      outfile.flush();
+      outfile.close();
+    }
+    else
+    {
+      std::cout <<std::endl;
+      std::cout << outfileContents.str();
+    }
   }
 }
 
@@ -221,10 +233,14 @@ int main(int argc, char** argv)
   std::cout << "TestImagingSender:" << std::endl;
   std::cout << " on port:" << port << std::endl;
   std::cout << "   iters:" << iters << std::endl;
-  std::string filename(argv[3]);
+
+  std::string filename;
+  if (argv[3] != NULL)
+    filename = std::string(argv[3]);
 
   TestImagingReceiver receiver(port, iters);
-  receiver.SetOutfilename(filename);
+  if (!filename.empty())
+    receiver.SetOutfilename(filename);
 
   QApplication app(argc, argv);
   QObject::connect(&receiver, SIGNAL(Done()), &app, SLOT(quit()), Qt::QueuedConnection);
