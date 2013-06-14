@@ -405,6 +405,12 @@ void NiftyLinkSenderProcess::DoProcessing(void)
         int ret = 0;
 
         m_Mutex->lock();
+
+        // This is to mark when the message leaves the socket
+        igtl::TimeStamp::Pointer now = igtl::TimeStamp::New();
+        now->Update();
+        igtMsg->SetTimeStamp(now);
+
         ret = m_ExtSocket->Send(igtMsg->GetPackPointer(), igtMsg->GetPackSize());
         m_Mutex->unlock();
 

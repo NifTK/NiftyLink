@@ -29,6 +29,8 @@ public:
                      );
   virtual ~TestImagingReceiver();
 
+  inline void SetOutfilename(std::string outf) { m_OutFileName = outf; }
+
 signals:
   void Done();
 
@@ -46,13 +48,18 @@ private:
 
   void FinishUp();
 
-  NiftyLinkSocketObject        m_Socket;
-  const int                m_PortNumber;
-  const int                m_NumberOfMessagesExpected;
-  int                      m_CumulativeMessageCount;
-  igtl::TimeStamp::Pointer m_StartTime;
-  igtl::TimeStamp::Pointer m_EndTime;
-  igtlUint64               m_CumulativeTime;
+  NiftyLinkSocketObject     m_Socket;
+  const int                 m_PortNumber;
+  const int                 m_NumberOfMessagesExpected;
+  int                       m_CumulativeMessageCount;
+  igtl::TimeStamp::Pointer  m_StartTime;
+  igtl::TimeStamp::Pointer  m_EndTime;
+  igtlUint64                m_CumulativeTime;
+  unsigned long long        m_CumulativeMessageSize;
+  
+  std::vector<double> m_SentTimeStamps;
+  std::vector<double> m_ReceivedTimeStamps;
+  std::string         m_OutFileName;
 };
 
 #endif // TestImagingReceiver_h

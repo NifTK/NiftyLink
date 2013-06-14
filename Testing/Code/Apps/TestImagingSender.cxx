@@ -163,6 +163,10 @@ void TestImagingSender::SendData(const int& numberOfIterations)
     msg->SetQImage(*m_Image);
     msg->SetMatrix(matrix);
 
+    // Let's update the host address and the timestamp
+    msg->Update(GetLocalHostAddress());
+
+
     igtl::TimeStamp::Pointer endPacking = igtl::TimeStamp::New();
     endPacking->Update();
 
