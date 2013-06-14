@@ -131,6 +131,9 @@ void TestImagingSender::Run()
     // Finish
     igtl::TimeStamp::Pointer endTime = igtl::TimeStamp::New();
     endTime->Update();
+    
+    std::cout << "Sending Finished - Waiting a bit (5s) for good measure... " << std::endl;
+    QTest::qWait(5000);
 
     // Calculate results
     igtlUint64 result = GetDifferenceInNanoSeconds(endTime, startTime);
