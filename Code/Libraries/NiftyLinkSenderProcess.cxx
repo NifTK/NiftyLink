@@ -406,10 +406,14 @@ void NiftyLinkSenderProcess::DoProcessing(void)
 
         m_Mutex->lock();
 
-        // This is to mark when the message leaves the socket
-        igtl::TimeStamp::Pointer now = igtl::TimeStamp::New();
-        now->Update();
-        igtMsg->SetTimeStamp(now);
+		igtl::TimeStamp::Pointer created = msg->GetTimeCreated();
+
+
+		// This is to mark when the message leaves the socket
+        igtl::TimeStamp::Pointer sendStarted = igtl::TimeStamp::New();
+        sendStarted->Update();
+        igtMsg->SetTimeStamp(sendStarted);
+
 
         ret = m_ExtSocket->Send(igtMsg->GetPackPointer(), igtMsg->GetPackSize());
         m_Mutex->unlock();
@@ -434,14 +438,22 @@ void NiftyLinkSenderProcess::DoProcessing(void)
 
         igtlUint32 seconds;
         igtlUint32 nanoseconds;
-        m_ExtSocket->GetSendTimestamp()->GetTime(&seconds, &nanoseconds);
+
+		    igtl::TimeStamp::Pointer sendFinished = m_ExtSocket->GetSendTimestamp();
+
+        sendFinished->GetTime(&seconds, &nanoseconds);
 
         igtl::TimeStamp::Pointer ts = igtl::TimeStamp::New();
         ts->SetTime(seconds, nanoseconds);
 
-        QLOG_INFO() << objectName() << ": " << "Message " << m_MessageCounter
-                    << ", created=" << GetTimeInNanoSeconds(msg->GetTimeCreated()) << ", sent=" << GetTimeInNanoSeconds(ts) << ", lag="
-                    << ((double)(GetTimeInNanoSeconds(ts)) - (double)(GetTimeInNanoSeconds(msg->GetTimeCreated()))) / 1000000000.0 << "(secs)";
+        //QLOG_INFO() << objectName() << ": " << "Message " << m_MessageCounter
+        //            << ", created=" << GetTimeInNanoSeconds(msg->GetTimeCreated()) << ", sent=" << GetTimeInNanoSeconds(ts) << ", lag="
+        //            << ((double)(GetTimeInNanoSeconds(ts)) - (double)(GetTimeInNanoSeconds(msg->GetTimeCreated()))) / 1000000000.0 << "(secs)";
+
+		    std::cout << objectName().toStdString() << ": " << "Message " << m_MessageCounter
+                    //<< ", created=" << GetTimeInNanoSeconds(created) << ", send started=" << GetTimeInNanoSeconds(sendStarted) <<", send finished=" << GetTimeInNanoSeconds(sendFinished)
+					<< ", lag1=" <<sendStarted->GetTimeInSeconds() - created->GetTimeInSeconds() << "(secs)"
+					<< ", lag2=" <<sendFinished->GetTimeInSeconds() - sendStarted->GetTimeInSeconds() << "(secs) \n";
 
         emit MessageSentSignal(GetTimeInNanoSeconds(ts));
         m_MessageCounter++;

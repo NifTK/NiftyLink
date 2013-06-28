@@ -157,6 +157,12 @@ void TestImagingSender::Run()
 void TestImagingSender::SendData(const int& numberOfIterations)
 {
 
+  QString lha = GetLocalHostAddress();
+
+  igtl::TimeStamp::Pointer timeZero = igtl::TimeStamp::New();
+
+  std::cout <<"Starting to send data at: " <<timeZero->GetTimeInSeconds() <<std::endl; 
+
   for (int i = 0; i < numberOfIterations; i++)
   {
     igtl::TimeStamp::Pointer startIteration = igtl::TimeStamp::New();
@@ -167,8 +173,7 @@ void TestImagingSender::SendData(const int& numberOfIterations)
     msg->SetMatrix(matrix);
 
     // Let's update the host address and the timestamp
-    msg->Update(GetLocalHostAddress());
-
+    msg->Update(lha);
 
     igtl::TimeStamp::Pointer endPacking = igtl::TimeStamp::New();
     endPacking->Update();
@@ -179,6 +184,9 @@ void TestImagingSender::SendData(const int& numberOfIterations)
     endSending->Update();
 
     igtlUint64 nanos = GetDifferenceInNanoSeconds(endPacking, startIteration);
+
+    std::cout <<"\nMessage " <<i <<" packaging took: " <<endPacking->GetTimeInSeconds() - startIteration->GetTimeInSeconds()
+      <<"(sec) total send delay: " <<endSending->GetTimeInSeconds() - timeZero->GetTimeInSeconds() <<"(sec)\n";
     m_TimePackingMessage += nanos;
   }
 }

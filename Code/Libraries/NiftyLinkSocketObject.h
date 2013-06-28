@@ -22,7 +22,7 @@ See LICENSE.txt in the top level directory for details.
 #if defined(_WIN32) && !defined(__CYGWIN__)
 #include <windows.h>
 #include <bcrypt.h>
-#include "tsctime/TSCtime.h"
+//#include "tsctime/TSCtime.h"
 
 #define WINAPI __stdcall
 
