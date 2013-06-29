@@ -415,9 +415,9 @@ void NiftyLinkSocketObject::SendMessage(NiftyLinkMessage::Pointer msg)
   // (otherwise messages will pile up and use up memory)
   if (m_Sender != NULL && msg.operator != (NULL) && (m_ClientConnected || m_ConnectedToRemote) )
   {
-    m_Sender->AddMsgToSendQueue(msg);
-    //emit MessageToSendSignal(msg);
-    //QCoreApplication::processEvents();
+    //m_Sender->AddMsgToSendQueue(msg);
+    emit MessageToSendSignal(msg);
+    QCoreApplication::processEvents();
   }
 }
 

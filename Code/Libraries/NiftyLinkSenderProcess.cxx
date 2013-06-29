@@ -403,12 +403,11 @@ void NiftyLinkSenderProcess::DoProcessing(void)
       if (igtMsg.IsNotNull())
       {
         int ret = 0;
-        igtl::TimeStamp::Pointer created = msg->GetTimeCreated();
+
+        // This is to mark when the message leaves the socket
+        igtl::TimeStamp::Pointer sendStarted = igtl::TimeStamp::New();
 
         m_Mutex->lock();
-
-		    // This is to mark when the message leaves the socket
-        igtl::TimeStamp::Pointer sendStarted = igtl::TimeStamp::New();
         sendStarted->Update();
         msg->TouchMessage("3. sendStarted", sendStarted);
 
