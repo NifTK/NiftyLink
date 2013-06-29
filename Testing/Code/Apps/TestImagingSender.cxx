@@ -173,7 +173,7 @@ void TestImagingSender::Run()
                                             <<dataThroughput/1024.0/1024.0 << "(Mbytes/s) / "<< std::endl;
 
     outfileContents << std::endl;
-    outfileContents <<"ID,Created,StartIter,EndPack,SendStart,SendFinish\n";
+    outfileContents <<"ID,Created,EndPack,SendStart,SendFinish\n";
     for (int  i = 1; i < m_MsgAccessTimes.size(); i++)
     {
       outfileContents <<m_MsgAccessTimes.at(i).toStdString() <<std::endl;

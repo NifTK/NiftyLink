@@ -151,7 +151,7 @@ public:
   inline void TouchMessage(std::string who, igtl::TimeStamp::Pointer when) { m_AccessTimes[who] = when; }
 
   /// \brief This method returns the time in nanosecs when the message was stamped
-  /// The format is: ID, TimeCreated, StartIter, EndPack, SendStart, SendFinish
+  /// The format is: ID, TimeCreated, EndPack, SendStart, SendFinish
   QString GetAccessTimes();
 
   /// \brief This method returns all timestamp details about the message
