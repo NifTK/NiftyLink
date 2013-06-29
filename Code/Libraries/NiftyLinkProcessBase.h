@@ -65,6 +65,9 @@ signals:
   /// \brief This signal is emitted when the process has fully terminated, so it is OK to terminate the hosting thread as well
   void ShutdownHostThreadSignal(void);
 
+  /// \brief This internal signal is to pass on the message access times, that is useful for debugging transmission lag
+  void SendMessageAccessTimes(QString);
+
 public:
 
   /// \brief Constructor which initialises the common member variables

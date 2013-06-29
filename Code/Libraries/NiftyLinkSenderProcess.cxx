@@ -403,17 +403,15 @@ void NiftyLinkSenderProcess::DoProcessing(void)
       if (igtMsg.IsNotNull())
       {
         int ret = 0;
+        igtl::TimeStamp::Pointer created = msg->GetTimeCreated();
 
         m_Mutex->lock();
 
-		igtl::TimeStamp::Pointer created = msg->GetTimeCreated();
-
-
-		// This is to mark when the message leaves the socket
+		    // This is to mark when the message leaves the socket
         igtl::TimeStamp::Pointer sendStarted = igtl::TimeStamp::New();
-        sendStarted->Update();
         igtMsg->SetTimeStamp(sendStarted);
-
+        sendStarted->Update();
+        msg->TouchMessage("3. sendStarted", sendStarted);
 
         ret = m_ExtSocket->Send(igtMsg->GetPackPointer(), igtMsg->GetPackSize());
         m_Mutex->unlock();
@@ -440,7 +438,9 @@ void NiftyLinkSenderProcess::DoProcessing(void)
         igtlUint32 nanoseconds;
 
 		    igtl::TimeStamp::Pointer sendFinished = m_ExtSocket->GetSendTimestamp();
+        msg->TouchMessage("4. sendFinished", sendFinished);
 
+        /*
         sendFinished->GetTime(&seconds, &nanoseconds);
 
         igtl::TimeStamp::Pointer ts = igtl::TimeStamp::New();
@@ -454,8 +454,10 @@ void NiftyLinkSenderProcess::DoProcessing(void)
                     //<< ", created=" << GetTimeInNanoSeconds(created) << ", send started=" << GetTimeInNanoSeconds(sendStarted) <<", send finished=" << GetTimeInNanoSeconds(sendFinished)
 					<< ", lag1=" <<sendStarted->GetTimeInSeconds() - created->GetTimeInSeconds() << "(secs)"
 					<< ", lag2=" <<sendFinished->GetTimeInSeconds() - sendStarted->GetTimeInSeconds() << "(secs) \n";
+        */
 
-        emit MessageSentSignal(GetTimeInNanoSeconds(ts));
+        emit MessageSentSignal(GetTimeInNanoSeconds(sendFinished));
+        emit SendMessageAccessTimes(msg->GetAccessTimes());
         m_MessageCounter++;
 
         // Reset the timer - no need for keepalive as we successfully sent a message.

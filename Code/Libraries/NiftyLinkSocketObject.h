@@ -85,6 +85,9 @@ signals:
   /// \brief This signal is emmitted when the CloseSocket method has successfully closed down the sender thread.
   void ShutdownSenderSignal();
 
+  /// \brief This signal is to pass on the message access times, that is useful for debugging transmission lag
+  void SendMessageAccessTimes(QString);
+
 public:
 
   /// \brief Constructor which initialises member variables and calls InitThreads()

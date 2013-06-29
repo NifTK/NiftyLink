@@ -136,6 +136,8 @@ void NiftyLinkSocketObject::InitThreads()
   ok &= connect(this, SIGNAL(ShutdownSenderSignal()), m_Sender, SLOT(StopProcess()));
   ok &= connect(m_Sender, SIGNAL(ShutdownHostThreadSignal()), m_SenderHostThread, SLOT(quit()));
 
+  ok &= connect(m_Sender, SIGNAL(SendMessageAccessTimes(QString)), this, SIGNAL(SendMessageAccessTimes(QString)));
+
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
   ok &= connect(m_Listener, SIGNAL(ClientConnectedSignal()), this, SLOT(OnClientConnected()));
@@ -146,6 +148,8 @@ void NiftyLinkSocketObject::InitThreads()
   ok &= connect(m_ListenerHostThread, SIGNAL(EventloopStarted()), m_Listener, SLOT(StartProcess()));
   ok &= connect(this, SIGNAL(ShutdownListenerSignal()), m_Listener, SLOT(StopProcess()));
   ok &= connect(m_Listener, SIGNAL(ShutdownHostThreadSignal()), m_ListenerHostThread, SLOT(quit()));
+
+  ok &= connect(m_Listener, SIGNAL(SendMessageAccessTimes(QString)), this, SIGNAL(SendMessageAccessTimes(QString)));
 
   // Set the flag
   if (m_Mutex != NULL && m_Sender != NULL && m_Listener != NULL && ok)
@@ -411,9 +415,9 @@ void NiftyLinkSocketObject::SendMessage(NiftyLinkMessage::Pointer msg)
   // (otherwise messages will pile up and use up memory)
   if (m_Sender != NULL && msg.operator != (NULL) && (m_ClientConnected || m_ConnectedToRemote) )
   {
-    //m_Sender->AddMsgToSendQueue(msg);
-    emit MessageToSendSignal(msg);
-    QCoreApplication::processEvents();
+    m_Sender->AddMsgToSendQueue(msg);
+    //emit MessageToSendSignal(msg);
+    //QCoreApplication::processEvents();
   }
 }
 

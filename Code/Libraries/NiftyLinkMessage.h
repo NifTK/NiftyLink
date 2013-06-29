@@ -147,6 +147,11 @@ public:
     return m_OwnerName;
   }
 
+  /// \brief This method is to support debugging lags in the message transmission
+  inline void TouchMessage(std::string who, igtl::TimeStamp::Pointer when) { m_AccessTimes[who] = when; }
+
+  QString GetAccessTimes();
+
 protected:
 
   QString                    m_MessageType;
@@ -162,6 +167,8 @@ protected:
 
   bool                       m_Processed;
   QString                    m_OwnerName;
+
+  std::map<std::string, igtl::TimeStamp::Pointer> m_AccessTimes;
 };
 
 Q_DECLARE_METATYPE(NiftyLinkMessage::Pointer);

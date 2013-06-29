@@ -31,6 +31,8 @@ public:
                    );
   virtual ~TestImagingSender();
 
+  inline void SetOutfilename(std::string outf) { m_OutFileName = outf; }
+
 signals:
   void Done();
 
@@ -41,6 +43,8 @@ public slots:
   void OnConnectToRemote();
   void OnLostConnectionToRemote();
   void OnShutdownSender();
+
+  void StoreMessageAccessTimes(QString);
 
 private:
 
@@ -55,7 +59,9 @@ private:
   const int         m_NumberOfIterations;
   int               m_NumberSent;
 
-  igtlUint64 m_TimePackingMessage;
+  igtlUint64        m_TimePackingMessage;
+  QStringList       m_MsgAccessTimes;
+  std::string       m_OutFileName;
 
 };
 

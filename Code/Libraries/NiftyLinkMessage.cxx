@@ -372,3 +372,32 @@ void NiftyLinkMessage::SetOwnerName(QString str)
   }
   m_OwnerName.append(str);
 }
+
+//-----------------------------------------------------------------------------
+QString NiftyLinkMessage::GetAccessTimes()
+{
+  std::map<std::string, igtl::TimeStamp::Pointer>::iterator it;
+  QString outList;
+  outList.append("MSG_ID :");
+  outList.append(QString::number(m_Id, 'f', 30));
+  outList.append("\nTime Created: ");
+  outList.append(QString::number(m_TimeCreated->GetTimeInSeconds(), 'f', 30));
+  outList.append("\nMessage type: ");
+  outList.append(m_MessageType);
+  outList.append("\n\n");
+
+  double nullTime =  m_AccessTimes.begin()->second->GetTimeInSeconds();
+
+  for (it = m_AccessTimes.begin(); it != m_AccessTimes.end(); ++it)
+  {
+    outList.append(QString::number(it->second->GetTimeInSeconds(), 'f', 30));
+    outList.append("sec "); 
+    outList.append(it->first.c_str());
+    outList.append("\n");
+    outList.append("Lag: ");
+    double lag = it->second->GetTimeInSeconds() - nullTime;
+    outList.append(QString::number(lag, 'f', 30));
+    outList.append("\n\n");
+  }
+  return outList;
+}
