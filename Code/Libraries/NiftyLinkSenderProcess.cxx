@@ -434,9 +434,6 @@ void NiftyLinkSenderProcess::DoProcessing(void)
           break;
         }
 
-        igtlUint32 seconds;
-        igtlUint32 nanoseconds;
-
 		    igtl::TimeStamp::Pointer sendFinished = m_ExtSocket->GetSendTimestamp();
         msg->TouchMessage("4. sendFinished", sendFinished);
 
@@ -456,7 +453,7 @@ void NiftyLinkSenderProcess::DoProcessing(void)
 					<< ", lag2=" <<sendFinished->GetTimeInSeconds() - sendStarted->GetTimeInSeconds() << "(secs) \n";
         */
 
-        emit MessageSentSignal(GetTimeInNanoSeconds(sendFinished));
+        emit MessageSentSignal(sendFinished->GetTimeInNanoSeconds());
         emit SendMessageAccessTimes(msg->GetAccessTimes());
         m_MessageCounter++;
 
