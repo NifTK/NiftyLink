@@ -99,9 +99,7 @@ void TestImagingReceiver::OnMessageReceived(NiftyLinkMessage::Pointer message)
     m_StartTime = beforeTime;
   }
 
-  unsigned long long nanotime;
   double seconds = 0;
-  igtlUint32 sec, msec, usec, nsec, fraction;
 
   // Get time when the current message was created
   igtl::TimeStamp::Pointer time = message->GetTimeCreated();
@@ -150,7 +148,7 @@ void TestImagingReceiver::OnMessageReceived(NiftyLinkMessage::Pointer message)
     double last  = m_ReceivedTimeStamps.at(m_ReceivedTimeStamps.size()-1);
 
     outfileContents <<std::endl;
-    igtlUint32 sec, msec, usec, nsec, fraction;
+    //igtlUint32 sec, msec, usec, nsec, fraction;
 
     outfileContents << "Time elapsed from the creation of the first message\n";
     outfileContents << "till the receipt of the last: " <<last - first <<" sec" <<std::endl;

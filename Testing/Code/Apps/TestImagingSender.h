@@ -52,17 +52,17 @@ private:
   void SendData(const int& numberOfIterations);
   void FinishUp();
 
-  NiftyLinkSocketObject m_Socket;
-  const QImage*     m_Image;
-  const QString     m_HostName;
-  const int         m_PortNumber;
-  const int         m_NumberOfIterations;
-  int               m_NumberSent;
+  NiftyLinkSocketObject    m_Socket;
+  const QImage*            m_Image;
+  const QString            m_HostName;
+  const int                m_PortNumber;
+  const int                m_NumberOfIterations;
+  int                      m_NumberSent;
 
-  igtlUint64        m_TimePackingMessage;
-  QStringList       m_MsgAccessTimes;
-  std::string       m_OutFileName;
-
+  QStringList              m_MsgAccessTimes;
+  std::string              m_OutFileName;
+  
+  igtl::TimeStamp::Pointer m_TimeZero;
 };
 
 #endif // TestImagingSender_h

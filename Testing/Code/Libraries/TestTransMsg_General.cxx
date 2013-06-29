@@ -254,7 +254,7 @@ void TestTransMsg_General::PerformTest()
   tsr->Update();
   transMsg->SetTimeReceived(tsr);
   tss = transMsg->GetTimeReceived();
-  if (tsr->GetTimeUint64() != tss->GetTimeUint64())
+  if (tsr->GetTimeInNanoSeconds() != tss->GetTimeInNanoSeconds())
   {
     std::cout << " FAILED\n";
   }
@@ -271,7 +271,7 @@ void TestTransMsg_General::PerformTest()
 
   tsc = transMsg->GetTimeCreated();
   id = transMsg->GetId();
-  if (tsr->GetTimeUint64() < tsc->GetTimeUint64() || id <= 0)
+  if (tsr->GetTimeInNanoSeconds() < tsc->GetTimeInNanoSeconds() || id <= 0)
   {
     std::cout << " FAILED\n";
   }

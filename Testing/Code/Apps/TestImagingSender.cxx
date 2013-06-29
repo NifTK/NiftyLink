@@ -36,7 +36,7 @@ TestImagingSender::TestImagingSender(const QImage* image,
   , m_PortNumber(portNumber)
   , m_NumberOfIterations(numberOfIterations)
 {
-  m_TimePackingMessage = 0;
+  m_TimeZero = 0;
   m_NumberSent = 0;
 
   connect(&m_Socket, SIGNAL(MessageSentSignal(unsigned long long)), this, SLOT(OnMessageSent(unsigned long long)));
@@ -131,7 +131,6 @@ void TestImagingSender::Run()
     igtl::TimeStamp::Pointer startTime = igtl::TimeStamp::New();
     startTime->Update();
 
-
     // Throw data at the socket.
     this->SendData(m_NumberOfIterations);
 
@@ -143,32 +142,39 @@ void TestImagingSender::Run()
     // Finish
     igtl::TimeStamp::Pointer endTime = igtl::TimeStamp::New();
     endTime->Update();
+
+    double totalTimeMs = double(endTime->GetTimeInNanoSeconds() - m_TimeZero->GetTimeInNanoSeconds())/1000.0/1000.0;
     
-    std::cout << "Sending Finished - Waiting a bit (5s) for good measure... " << std::endl;
+    // Configure cout precision
+    std::cout.precision(10);
+    std::cout <<std::fixed;
+    std::cout << "Sending finished at: " <<endTime->GetTimeInNanoSeconds() <<std::endl; 
+    std::cout << "Time spent with sending:" <<endTime->GetTimeInNanoSeconds() - m_TimeZero->GetTimeInNanoSeconds() <<"(ns) / "
+              << totalTimeMs <<"(ms)\n";
+    std::cout << "Waiting a bit (5s) before terminating... " << std::endl;
     QTest::qWait(5000);
 
+    // Calculate results
+    double dataThroughput = (double)m_NumberOfIterations * (double)m_Image->byteCount() / (totalTimeMs/1000.0);
 
     std::stringstream outfileContents;
     outfileContents <<std::endl;
     outfileContents.precision(10);
     outfileContents << std::fixed;
 
-    /*
-    // Calculate results
-    igtlUint64 result = GetDifferenceInNanoSeconds(endTime, startTime);
-    double bps = ((double)m_NumberOfIterations * ((double)m_Image->byteCount()) * (double)8) / ((double)result / (double)1000000000.0);
+    outfileContents << "Timing: for "  <<m_NumberOfIterations << " iterations:" << std::endl;
+    outfileContents << "Total time=" <<totalTimeMs << "(ms) / " << totalTimeMs/1000.0 << "(s)" << std::endl;
+    outfileContents << "Fps=" <<(double)m_NumberOfIterations / (totalTimeMs/1000.0)  << std::endl;
+    outfileContents << "Message Size=" <<(double)m_Image->byteCount() <<"(bytes) / " 
+                                       <<(double)m_Image->byteCount()/1024.0 <<"(kbytes) / "
+                                       <<(double)m_Image->byteCount()/1024.0/1024.0 <<"(Mbytes)" << std::endl;
+    outfileContents << "Data Throughput=" <<dataThroughput << "(bytes/s) / " 
+                                            <<dataThroughput/1024.0 << "(kbytes/s) / "
+                                            <<dataThroughput/1024.0/1024.0 << "(Mbytes/s) / "<< std::endl;
 
-    outfileContents << "Timing: for "  << m_NumberOfIterations << " iterations:" << std::endl;
-    outfileContents << "  total time=" << result / (double)1000000000.0 << "(s)" << std::endl;
-    outfileContents << "         fps=" << 1.0 / ((double)result / (double)m_NumberOfIterations / 1000000000.0) << std::endl;
-    outfileContents << "         bps=" << bps << std::endl;
-    outfileContents << "        kbps=" << bps / (double)1024 << std::endl;
-    outfileContents << "        mbps=" << bps / (double)1024 / (double)1024 << std::endl;
-    outfileContents << "     packing=" << m_TimePackingMessage / (double)1000000000.0 << "(s)" << " (" << 100.0 * (double)m_TimePackingMessage / (double)result << "%)" << std::endl;
-    
     outfileContents << std::endl;
-    */
-    for (unsigned int  i = 1; i < m_MsgAccessTimes.size(); i++)
+    outfileContents <<"ID,Created,StartIter,EndPack,SendStart,SendFinish\n";
+    for (int  i = 1; i < m_MsgAccessTimes.size(); i++)
     {
       outfileContents <<m_MsgAccessTimes.at(i).toStdString() <<std::endl;
     }
@@ -198,46 +204,43 @@ void TestImagingSender::Run()
 //-----------------------------------------------------------------------------
 void TestImagingSender::SendData(const int& numberOfIterations)
 {
-
+  // Update the local host address
   QString lha = GetLocalHostAddress();
 
-  igtl::TimeStamp::Pointer timeZero = igtl::TimeStamp::New();
+  // Generate a random matrix
+  igtl::Matrix4x4 matrix;
+  CreateRandomTransformMatrix(matrix);
+  
+  // Get the current time
+  m_TimeZero = igtl::TimeStamp::New();
+  m_TimeZero->Update();
 
+  // Configure cout precision
   std::cout.precision(10);
   std::cout <<std::fixed;
-  std::cout <<"Starting to send data at: " <<timeZero->GetTimeInSeconds() <<std::endl; 
+  std::cout <<"Starting to send data at: " <<m_TimeZero->GetTimeInNanoSeconds() <<std::endl; 
 
   for (int i = 0; i < numberOfIterations; i++)
   {
-    igtl::TimeStamp::Pointer startIteration = igtl::TimeStamp::New();
-    startIteration->Update();
-
-    igtl::Matrix4x4 matrix;
-    CreateRandomTransformMatrix(matrix);
-    
+    // Create a new message
     NiftyLinkImageMessage::Pointer msg(new NiftyLinkImageMessage());
-    msg->TouchMessage("1. startIteration", startIteration);
+
+    // Stuff the data into the message
     msg->SetQImage(*m_Image);
     msg->SetMatrix(matrix);
 
     // Let's update the host address and the timestamp
     msg->Update(lha);
 
-
+    // Packing is finished, get timestamp
     igtl::TimeStamp::Pointer endPacking = igtl::TimeStamp::New();
     endPacking->Update();
-    msg->TouchMessage("2. endPacking", endPacking);
+    
+    // Store timestamp into the message
+    msg->TouchMessage("1. endPacking", endPacking);
 
+    // Pass the message to the socket for transmission
     m_Socket.SendMessage(msg);
-
-    igtl::TimeStamp::Pointer endSending = igtl::TimeStamp::New();
-    endSending->Update();
-    igtlUint64 nanos = GetDifferenceInNanoSeconds(endPacking, startIteration);
-
-    //std::cout <<"\nMessage " <<i <<" packaging took: " <<endPacking->GetTimeInSeconds() - startIteration->GetTimeInSeconds()
-    //  <<"(sec) iteration took: " <<endSending->GetTimeInSeconds() - startIteration->GetTimeInSeconds()
-    //  << "(sec) delay since start: " <<endSending->GetTimeInSeconds() - timeZero->GetTimeInSeconds() <<"(sec)\n";
-    m_TimePackingMessage += nanos;
   }
 }
 
@@ -284,6 +287,7 @@ int main(int argc, char** argv)
   }
   image.convertToFormat(QImage::Format_Indexed8);
   TestImagingSender sender(&image, QString(hostname), port, iters);
+  std::cout << "    size:" << image.byteCount() << std::endl;
 
   if (!filename.empty())
     sender.SetOutfilename(filename);
