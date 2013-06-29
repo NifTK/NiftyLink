@@ -150,7 +150,7 @@ public:
   /// \brief This method is to support debugging lags in the message transmission
   inline void TouchMessage(std::string who, igtl::TimeStamp::Pointer when) { m_AccessTimes[who] = when; }
 
-  /// \brief This method returns the time in nanosecs when the message was stamped
+  /// \brief This method returns the times in nanosecs when the message was touched
   /// The format is: ID, TimeCreated, EndPack, SendStart, SendFinish
   QString GetAccessTimes();
 
