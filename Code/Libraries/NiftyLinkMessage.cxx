@@ -81,6 +81,17 @@ void NiftyLinkMessage::GetMessagePointer(igtl::MessageBase::Pointer &mp)
   mp.operator = (m_Message);
 }
 
+//-----------------------------------------------------------------------------
+void NiftyLinkMessage::SetTimeArrived(igtl::TimeStamp::Pointer ts)
+{
+  m_TimeArrived.operator = (ts);
+}
+
+//-----------------------------------------------------------------------------
+igtl::TimeStamp::Pointer NiftyLinkMessage::GetTimeArrived(void)
+{
+  return m_TimeArrived;
+}
 
 //-----------------------------------------------------------------------------
 void NiftyLinkMessage::SetTimeReceived(igtl::TimeStamp::Pointer ts)

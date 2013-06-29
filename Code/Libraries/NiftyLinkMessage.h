@@ -95,7 +95,13 @@ public:
   /// \brief This function returns the port number
   int GetPort(void);
 
-  /// \brief This function is for setting the timestamp when the message is received
+  /// \brief This function is to mark when the first byte of the message has arrived
+  void SetTimeArrived(igtl::TimeStamp::Pointer ts);
+
+  /// \brief Returns the time when the message has arrived
+  igtl::TimeStamp::Pointer GetTimeArrived(void);
+
+  /// \brief This function is for setting the timestamp when the message was fully received
   void SetTimeReceived(igtl::TimeStamp::Pointer ts);
 
   /// \brief Returns the time when the message was received
@@ -161,7 +167,11 @@ protected:
 
   QString                    m_MessageType;
   igtl::MessageBase::Pointer m_Message;
+  // To mark when the first byte of the message arrived to the socket
+  igtl::TimeStamp::Pointer   m_TimeArrived;
+  // To mark when the message was fully received
   igtl::TimeStamp::Pointer   m_TimeReceived;
+  // To mark when the message was created
   igtl::TimeStamp::Pointer   m_TimeCreated;
 
   QString                    m_SenderHostName;

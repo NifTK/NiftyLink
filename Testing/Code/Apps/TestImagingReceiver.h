@@ -57,9 +57,10 @@ private:
   igtlUint64                m_CumulativeTime;
   unsigned long long        m_CumulativeMessageSize;
   
-  std::vector<double> m_SentTimeStamps;
-  std::vector<double> m_ReceivedTimeStamps;
-  std::string         m_OutFileName;
+  std::vector<igtlUint64>   m_SentTimeStamps;
+  std::vector<igtlUint64>   m_ArrivedTimeStamps;
+  std::vector<igtlUint64>   m_ReceivedTimeStamps;
+  std::string               m_OutFileName;
 };
 
 #endif // TestImagingReceiver_h

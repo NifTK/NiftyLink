@@ -413,7 +413,7 @@ void NiftyLinkSenderProcess::DoProcessing(void)
         msg->TouchMessage("3. sendStarted", sendStarted);
 
         // Update the timestamp within the message itself
-        igtMsg->SetTimeStamp(sendStarted);
+        //igtMsg->SetTimeStamp(sendStarted);
 
         ret = m_ExtSocket->Send(igtMsg->GetPackPointer(), igtMsg->GetPackSize());
         m_Mutex->unlock();

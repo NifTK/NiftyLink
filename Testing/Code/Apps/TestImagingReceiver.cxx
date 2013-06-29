@@ -91,104 +91,79 @@ void TestImagingReceiver::Setup()
 //-----------------------------------------------------------------------------
 void TestImagingReceiver::OnMessageReceived(NiftyLinkMessage::Pointer message)
 {
-  igtl::TimeStamp::Pointer beforeTime = igtl::TimeStamp::New();
-
   if (m_CumulativeMessageCount == 0)
   {
-    std::cerr << "Started to receive messages" << std::endl;
-    m_StartTime = beforeTime;
+    std::cout << "Started to receive messages" << std::endl;
+    m_StartTime = igtl::TimeStamp::New();
+    m_StartTime->Update();
   }
 
-  double seconds = 0;
+  igtlUint64 nanoseconds = 0;
 
   // Get time when the current message was created
   igtl::TimeStamp::Pointer time = message->GetTimeCreated();
-  seconds = time->GetTimeInSeconds();
-  m_SentTimeStamps.push_back(seconds);
+  nanoseconds = time->GetTimeInNanoSeconds();
+  m_SentTimeStamps.push_back(nanoseconds);
 
-  // Get time when the current message was received
+  // Get time when the current message has arrived
+  time = message->GetTimeArrived();
+  nanoseconds = time->GetTimeInNanoSeconds();
+  m_ArrivedTimeStamps.push_back(nanoseconds);
+
+  // Get time when the current message was fully received
   time = message->GetTimeReceived();
-  seconds = time->GetTimeInSeconds();
-  m_ReceivedTimeStamps.push_back(seconds);
+  nanoseconds = time->GetTimeInNanoSeconds();
+  m_ReceivedTimeStamps.push_back(nanoseconds);
 
   // Get OpenIGTLink message pointer and update the cumulative message size
   igtl::MessageBase::Pointer msgP;
   message->GetMessagePointer(msgP);
   m_CumulativeMessageSize += (msgP->GetBodySizeToRead() + 58);
 
-  // Unpack message
-  igtl::TimeStamp::Pointer afterTime = igtl::TimeStamp::New();
-  igtlUint64 result = GetDifferenceInNanoSeconds(afterTime, beforeTime);
-
-  m_CumulativeTime += result;
   m_CumulativeMessageCount++;
-
-  m_EndTime = afterTime;
 
   if (m_CumulativeMessageCount >= m_NumberOfMessagesExpected)
   {
+
+    m_EndTime = igtl::TimeStamp::New();
+    m_EndTime->Update();
+
+    // Calculate results
+    double totalTimeMs = double(m_EndTime->GetTimeInNanoSeconds() - m_StartTime->GetTimeInNanoSeconds())/1000.0/1000.0;
+    double msgSize = (double)m_CumulativeMessageSize/(double)m_CumulativeMessageCount;
+    igtlUint64 first = m_SentTimeStamps.at(0);
+    igtlUint64 last  = m_ReceivedTimeStamps.at(m_ReceivedTimeStamps.size()-1);
+
+    igtlUint64 transmissionTimeNsec = last - first;
+    double transmissionTimeSec = double(last - first)/1000000000.0;
+    double dataThroughput = m_CumulativeMessageSize / transmissionTimeSec;
+
+
     std::stringstream outfileContents;
     outfileContents <<std::endl;
     outfileContents.precision(10);
     outfileContents << std::fixed;
 
     outfileContents << "Number of messages received: " << m_CumulativeMessageCount << std::endl;
-    outfileContents << "Size / message: " << (double)m_CumulativeMessageSize/(double)m_CumulativeMessageCount << std::endl;
-    outfileContents << "Total number of bytes received: " << m_CumulativeMessageSize << std::endl;
+    outfileContents << "Total time elapsed=" <<totalTimeMs << "(ms) / " << totalTimeMs/1000.0 << "(s)" << std::endl;
+    outfileContents << "Total transmission time (first msg created --> last received)=" <<transmissionTimeSec <<" (sec)" <<std::endl;
 
-    outfileContents <<"First message was created at: " <<m_SentTimeStamps.at(0) << std::endl;
-    outfileContents <<"Last message was created at: " <<m_SentTimeStamps.at(m_SentTimeStamps.size()-1) << std::endl;
-    outfileContents <<"Total time to send messsages: " <<m_SentTimeStamps.at(m_SentTimeStamps.size()-1) - m_SentTimeStamps.at(0) << std::endl;
-    outfileContents <<std::endl;
-    outfileContents <<"First message was received at: " <<m_ReceivedTimeStamps.at(0) << std::endl;
-    outfileContents <<"Last message was received at: " <<m_ReceivedTimeStamps.at(m_ReceivedTimeStamps.size()-1) << std::endl;
-    outfileContents <<"Total time to receive messsages: " <<m_ReceivedTimeStamps.at(m_ReceivedTimeStamps.size()-1) - m_ReceivedTimeStamps.at(0) << std::endl;
+    outfileContents << "Fps=" <<(double)m_CumulativeMessageCount / transmissionTimeSec  << std::endl; 
+    
+    outfileContents << "Message Size=" <<msgSize <<"(bytes) / " 
+                                       <<msgSize/1024.0 <<"(kbytes) / "
+                                       <<msgSize/1024.0/1024.0 <<"(Mbytes)" << std::endl;
 
-    double first = m_SentTimeStamps.at(0);
-    double last  = m_ReceivedTimeStamps.at(m_ReceivedTimeStamps.size()-1);
+    outfileContents << "Data Throughput=" <<dataThroughput << "(bytes/s) / " 
+                                            <<dataThroughput/1024.0 << "(kbytes/s) / "
+                                            <<dataThroughput/1024.0/1024.0 << "(Mbytes/s) / "<< std::endl;
 
-    outfileContents <<std::endl;
-    //igtlUint32 sec, msec, usec, nsec, fraction;
-
-    outfileContents << "Time elapsed from the creation of the first message\n";
-    outfileContents << "till the receipt of the last: " <<last - first <<" sec" <<std::endl;
-    outfileContents <<std::endl;
-
-    outfileContents << "Throughput: " <<(double)m_CumulativeMessageSize / (last - first) <<" bytes/sec "<<std::endl;
-    outfileContents << "            " <<(double)m_CumulativeMessageSize /1024 /1024 / (last - first) <<" megabytes/sec "<<std::endl;
-
-
-    outfileContents <<std::endl <<std::endl;
-
-
-
-
-
-/*
-    outfileContents << "Sent stamps "<<std::endl;
-    for (unsigned int  i = 0; i < m_SentTimeStamps.size(); i++)
-    {
-      outfileContents <<i <<"," << m_SentTimeStamps.at(i) <<std::endl;
-    }
-
-    outfileContents <<std::endl <<std::endl;
-    outfileContents << "Sent stamps "<<std::endl;
+    outfileContents << std::endl;
+    outfileContents <<"Created,Arrived,Received,Delay\n";
     for (unsigned int  i = 0; i < m_ReceivedTimeStamps.size(); i++)
     {
-      outfileContents <<i <<"," << m_ReceivedTimeStamps.at(i) <<std::endl;
-    }
-    outfileContents <<std::endl <<std::endl;
-*/
-    outfileContents << "NULL delay: " <<m_ReceivedTimeStamps.at(0) - m_SentTimeStamps.at(0) <<std::endl;
-    outfileContents << "Delays "<<std::endl;
-    for (unsigned int  i = 1; i < m_ReceivedTimeStamps.size(); i++)
-    {
-      double curDiff = m_ReceivedTimeStamps.at(i) - m_SentTimeStamps.at(i);
-      double prevDiff = m_ReceivedTimeStamps.at(i-1) - m_SentTimeStamps.at(i-1);
-
-      double sendDelay = m_SentTimeStamps.at(i) - m_SentTimeStamps.at(0);
-      double receDelay = m_ReceivedTimeStamps.at(i) - m_SentTimeStamps.at(0);
-      outfileContents <<"Msg num: " <<i <<" send delay: " <<sendDelay <<" rec delay: " <<receDelay <<" relative diff: " << curDiff - prevDiff <<std::endl;
+      double receDelay = m_ReceivedTimeStamps.at(i) - m_SentTimeStamps.at(i);
+      outfileContents <<m_SentTimeStamps.at(i) <<"," <<m_ArrivedTimeStamps.at(i) <<"," <<m_ReceivedTimeStamps.at(i) <<"," <<receDelay <<std::endl;
     }
 
     outfileContents.flush();
@@ -205,6 +180,10 @@ void TestImagingReceiver::OnMessageReceived(NiftyLinkMessage::Pointer message)
       std::cout <<std::endl;
       std::cout << outfileContents.str();
     }
+   
+    std::cout <<"Number of messages received: " << m_CumulativeMessageCount << std::endl;
+    std::cout <<"Total number of bytes received: " << m_CumulativeMessageSize << std::endl;
+    std::cout <<"Total transmission time (first msg created --> last received): " <<transmissionTimeSec <<" (sec)" <<std::endl;
   }
 }
 

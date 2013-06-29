@@ -162,7 +162,7 @@ void TestImagingSender::Run()
     outfileContents.precision(10);
     outfileContents << std::fixed;
 
-    outfileContents << "Timing: for "  <<m_NumberOfIterations << " iterations:" << std::endl;
+    outfileContents << "Number of messages received: " <<m_NumberOfIterations << std::endl;
     outfileContents << "Total time=" <<totalTimeMs << "(ms) / " << totalTimeMs/1000.0 << "(s)" << std::endl;
     outfileContents << "Fps=" <<(double)m_NumberOfIterations / (totalTimeMs/1000.0)  << std::endl;
     outfileContents << "Message Size=" <<(double)m_Image->byteCount() <<"(bytes) / " 
@@ -174,7 +174,7 @@ void TestImagingSender::Run()
 
     outfileContents << std::endl;
     outfileContents <<"ID,Created,EndPack,SendStart,SendFinish\n";
-    for (int  i = 1; i < m_MsgAccessTimes.size(); i++)
+    for (int  i = 0; i < m_MsgAccessTimes.size(); i++)
     {
       outfileContents <<m_MsgAccessTimes.at(i).toStdString() <<std::endl;
     }
