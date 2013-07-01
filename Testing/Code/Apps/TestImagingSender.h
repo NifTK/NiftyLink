@@ -59,6 +59,7 @@ private:
   const int                m_NumberOfIterations;
   int                      m_NumberSent;
 
+  double                   m_MessageSize;
   QStringList              m_MsgAccessTimes;
   std::string              m_OutFileName;
   

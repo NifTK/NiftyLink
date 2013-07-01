@@ -19,6 +19,7 @@
 #include <igtlTimeStamp.h>
 #include "NiftyLinkSocketObject.h"
 #include "NiftyLinkImageMessage.h"
+#include "NiftyLinkTrackingDataMessage.h"
 #include "TestImagingSender.h"
 
 #include <string>
@@ -38,6 +39,7 @@ TestImagingSender::TestImagingSender(const QImage* image,
 {
   m_TimeZero = 0;
   m_NumberSent = 0;
+  m_MessageSize = 0;
 
   connect(&m_Socket, SIGNAL(MessageSentSignal(unsigned long long)), this, SLOT(OnMessageSent(unsigned long long)));
   connect(&m_Socket, SIGNAL(ConnectedToRemoteSignal()), this, SLOT(OnConnectToRemote()));
@@ -155,19 +157,19 @@ void TestImagingSender::Run()
     QTest::qWait(5000);
 
     // Calculate results
-    double dataThroughput = (double)m_NumberOfIterations * (double)m_Image->byteCount() / (totalTimeMs/1000.0);
+    double dataThroughput = (double)m_NumberOfIterations * m_MessageSize / (totalTimeMs/1000.0);
 
     std::stringstream outfileContents;
     outfileContents <<std::endl;
     outfileContents.precision(10);
     outfileContents << std::fixed;
 
-    outfileContents << "Number of messages received: " <<m_NumberOfIterations << std::endl;
+    outfileContents << "Number of messages sent: " <<m_NumberOfIterations << std::endl;
     outfileContents << "Total time=" <<totalTimeMs << "(ms) / " << totalTimeMs/1000.0 << "(s)" << std::endl;
     outfileContents << "Fps=" <<(double)m_NumberOfIterations / (totalTimeMs/1000.0)  << std::endl;
-    outfileContents << "Message Size=" <<(double)m_Image->byteCount() <<"(bytes) / " 
-                                       <<(double)m_Image->byteCount()/1024.0 <<"(kbytes) / "
-                                       <<(double)m_Image->byteCount()/1024.0/1024.0 <<"(Mbytes)" << std::endl;
+    //outfileContents << "Message Size=" <<(double)m_Image->byteCount() <<"(bytes) / " 
+    //                                   <<(double)m_Image->byteCount()/1024.0 <<"(kbytes) / "
+    //                                   <<(double)m_Image->byteCount()/1024.0/1024.0 <<"(Mbytes)" << std::endl;
     outfileContents << "Data Throughput=" <<dataThroughput << "(bytes/s) / " 
                                             <<dataThroughput/1024.0 << "(kbytes/s) / "
                                             <<dataThroughput/1024.0/1024.0 << "(Mbytes/s) / "<< std::endl;
@@ -222,15 +224,27 @@ void TestImagingSender::SendData(const int& numberOfIterations)
 
   for (int i = 0; i < numberOfIterations; i++)
   {
+    
     // Create a new message
     NiftyLinkImageMessage::Pointer msg(new NiftyLinkImageMessage());
-
     // Stuff the data into the message
     msg->SetQImage(*m_Image);
     msg->SetMatrix(matrix);
+    
 
+    /*
+    NiftyLinkTrackingDataMessage::Pointer msg(new NiftyLinkTrackingDataMessage());
+    msg->InitializeWithRandomData();
+    */
     // Let's update the host address and the timestamp
     msg->Update(lha);
+
+    if (i == 0)
+    {
+      igtl::MessageBase::Pointer igtlMsg;
+      msg->GetMessagePointer(igtlMsg);
+      m_MessageSize = igtlMsg->GetPackSize();
+    }
 
     // Packing is finished, get timestamp
     igtl::TimeStamp::Pointer endPacking = igtl::TimeStamp::New();
@@ -241,6 +255,9 @@ void TestImagingSender::SendData(const int& numberOfIterations)
 
     // Pass the message to the socket for transmission
     m_Socket.SendMessage(msg);
+
+    // Let's set the fps
+    //QTest::qWait(2);
   }
 }
 
