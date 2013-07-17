@@ -22,7 +22,7 @@ See LICENSE.txt in the top level directory for details.
 #if defined(_WIN32) && !defined(__CYGWIN__)
 #include <windows.h>
 #include <bcrypt.h>
-#include "tsctime/TSCtime.h"
+//#include "tsctime/TSCtime.h"
 
 #define WINAPI __stdcall
 
@@ -84,6 +84,9 @@ signals:
 
   /// \brief This signal is emmitted when the CloseSocket method has successfully closed down the sender thread.
   void ShutdownSenderSignal();
+
+  /// \brief This signal is to pass on the message access times, that is useful for debugging transmission lag
+  void SendMessageAccessTimes(QString);
 
 public:
 

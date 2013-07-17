@@ -248,7 +248,7 @@ void TestTdataMsg_General::PerformTest()
   tsr->Update();
   tdataMsg->SetTimeReceived(tsr);
   tss = tdataMsg->GetTimeReceived();
-  if (tsr->GetTimeUint64() != tss->GetTimeUint64())
+  if (tsr->GetTimeInNanoSeconds() != tss->GetTimeInNanoSeconds())
   {
     std::cout << " FAILED\n";
   }
@@ -265,7 +265,7 @@ void TestTdataMsg_General::PerformTest()
 
   tsc = tdataMsg->GetTimeCreated();
   id = tdataMsg->GetId();
-  if (tsr->GetTimeUint64() < tsc->GetTimeUint64() || id <= 0)
+  if (tsr->GetTimeInNanoSeconds() < tsc->GetTimeInNanoSeconds() || id <= 0)
   {
     std::cout << " FAILED\n";
   }

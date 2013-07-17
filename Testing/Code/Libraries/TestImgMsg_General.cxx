@@ -252,7 +252,7 @@ void TestImgMsg_General::PerformTest()
   tsr->Update();
   imageMsg->SetTimeReceived(tsr);
   tss = imageMsg->GetTimeReceived();
-  if (tsr->GetTimeUint64() != tss->GetTimeUint64())
+  if (tsr->GetTimeInNanoSeconds() != tss->GetTimeInNanoSeconds())
   {
     std::cout << " FAILED\n";
   }
@@ -269,7 +269,7 @@ void TestImgMsg_General::PerformTest()
 
   tsc = imageMsg->GetTimeCreated();
   id = imageMsg->GetId();
-  if (tsr->GetTimeUint64() < tsc->GetTimeUint64() || id <= 0)
+  if (tsr->GetTimeInNanoSeconds() < tsc->GetTimeInNanoSeconds() || id <= 0)
   {
     std::cout << " FAILED\n";
   }

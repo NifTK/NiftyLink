@@ -404,7 +404,16 @@ void NiftyLinkSenderProcess::DoProcessing(void)
       {
         int ret = 0;
 
+        // This is to mark when the message leaves the socket
+        igtl::TimeStamp::Pointer sendStarted = igtl::TimeStamp::New();
+
         m_Mutex->lock();
+        sendStarted->Update();
+        msg->TouchMessage("3. sendStarted", sendStarted);
+
+        // Update the timestamp within the message itself
+        //igtMsg->SetTimeStamp(sendStarted);
+
         ret = m_ExtSocket->Send(igtMsg->GetPackPointer(), igtMsg->GetPackSize());
         m_Mutex->unlock();
 
@@ -426,18 +435,17 @@ void NiftyLinkSenderProcess::DoProcessing(void)
           break;
         }
 
-        igtlUint32 seconds;
-        igtlUint32 nanoseconds;
-        m_ExtSocket->GetSendTimestamp()->GetTime(&seconds, &nanoseconds);
+        // Get the time when the message was fully transmitted
+		    igtl::TimeStamp::Pointer sendFinished = m_ExtSocket->GetSendTimestamp();
+        msg->TouchMessage("4. sendFinished", sendFinished);
 
-        igtl::TimeStamp::Pointer ts = igtl::TimeStamp::New();
-        ts->SetTime(seconds, nanoseconds);
+        // Emit the time
+        emit MessageSentSignal(sendFinished->GetTimeInNanoSeconds());
 
-        QLOG_INFO() << objectName() << ": " << "Message " << m_MessageCounter
-                    << ", created=" << GetTimeInNanoSeconds(msg->GetTimeCreated()) << ", sent=" << GetTimeInNanoSeconds(ts) << ", lag="
-                    << ((double)(GetTimeInNanoSeconds(ts)) - (double)(GetTimeInNanoSeconds(msg->GetTimeCreated()))) / 1000000000.0 << "(secs)";
-
-        emit MessageSentSignal(GetTimeInNanoSeconds(ts));
+        // Send the full list of timestamps when the message was touched
+        emit SendMessageAccessTimes(msg->GetAccessTimes());
+        
+        // Internal message counter
         m_MessageCounter++;
 
         // Reset the timer - no need for keepalive as we successfully sent a message.

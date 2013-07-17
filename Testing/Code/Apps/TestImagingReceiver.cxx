@@ -21,6 +21,10 @@
 #include "NiftyLinkImageMessage.h"
 #include "TestImagingReceiver.h"
 
+#include <string>
+#include <sstream>
+#include <fstream>
+
 //-----------------------------------------------------------------------------
 TestImagingReceiver::TestImagingReceiver(const int& portNumber, const int& numberOfMessagesExpected)
   : m_PortNumber(portNumber)
@@ -70,8 +74,9 @@ void TestImagingReceiver::Setup()
 {
   m_Socket.SetConnectTimeOut(60); // keep it alive to avoid instantly exiting.
 
-  m_CumulativeTime = 0;
+  m_CumulativeTime         = 0;
   m_CumulativeMessageCount = 0;
+  m_CumulativeMessageSize  = 0;
 
   bool connectionResult = m_Socket.ListenOnPort(m_PortNumber);
 
@@ -84,33 +89,101 @@ void TestImagingReceiver::Setup()
 
 
 //-----------------------------------------------------------------------------
-void TestImagingReceiver::OnMessageReceived(NiftyLinkMessage::Pointer)
+void TestImagingReceiver::OnMessageReceived(NiftyLinkMessage::Pointer message)
 {
-  igtl::TimeStamp::Pointer beforeTime = igtl::TimeStamp::New();
-
   if (m_CumulativeMessageCount == 0)
   {
-    std::cerr << "Started to receive messages" << std::endl;
-    m_StartTime = beforeTime;
+    std::cout << "Started to receive messages" << std::endl;
+    m_StartTime = igtl::TimeStamp::New();
+    m_StartTime->Update();
   }
 
-  // Unpack message
+  igtlUint64 nanoseconds = 0;
 
-  igtl::TimeStamp::Pointer afterTime = igtl::TimeStamp::New();
-  igtlUint64 result = GetDifferenceInNanoSeconds(afterTime, beforeTime);
+  // Get time when the current message was created
+  igtl::TimeStamp::Pointer time = message->GetTimeCreated();
+  nanoseconds = time->GetTimeInNanoSeconds();
+  m_SentTimeStamps.push_back(nanoseconds);
 
-  m_CumulativeTime += result;
+  // Get time when the current message has arrived
+  time = message->GetTimeArrived();
+  nanoseconds = time->GetTimeInNanoSeconds();
+  m_ArrivedTimeStamps.push_back(nanoseconds);
+
+  // Get time when the current message was fully received
+  time = message->GetTimeReceived();
+  nanoseconds = time->GetTimeInNanoSeconds();
+  m_ReceivedTimeStamps.push_back(nanoseconds);
+
+  // Get OpenIGTLink message pointer and update the cumulative message size
+  igtl::MessageBase::Pointer msgP;
+  message->GetMessagePointer(msgP);
+  m_CumulativeMessageSize += (msgP->GetBodySizeToRead() + 58);
+
   m_CumulativeMessageCount++;
-
-  m_EndTime = afterTime;
 
   if (m_CumulativeMessageCount >= m_NumberOfMessagesExpected)
   {
-    igtlUint64 totalTime = GetDifferenceInNanoSeconds(m_EndTime, m_StartTime);
-    std::cout << "Timing: for " << m_NumberOfMessagesExpected << " iterations:" << std::endl;
-    std::cout << "       total time=" << totalTime / (double)1000000000.0 << "(s)" << std::endl;
-    std::cout << "              fps=" << 1.0 / ((double)totalTime / (double)m_NumberOfMessagesExpected / 1000000000.0) << std::endl;
 
+    m_EndTime = igtl::TimeStamp::New();
+    m_EndTime->Update();
+
+    // Calculate results
+    double totalTimeMs = double(m_EndTime->GetTimeInNanoSeconds() - m_StartTime->GetTimeInNanoSeconds())/1000.0/1000.0;
+    double msgSize = (double)m_CumulativeMessageSize/(double)m_CumulativeMessageCount;
+    igtlUint64 first = m_SentTimeStamps.at(0);
+    igtlUint64 last  = m_ReceivedTimeStamps.at(m_ReceivedTimeStamps.size()-1);
+
+    igtlUint64 transmissionTimeNsec = last - first;
+    double transmissionTimeSec = double(last - first)/1000000000.0;
+    double dataThroughput = m_CumulativeMessageSize / transmissionTimeSec;
+
+
+    std::stringstream outfileContents;
+    outfileContents <<std::endl;
+    outfileContents.precision(10);
+    outfileContents << std::fixed;
+
+    outfileContents << "Number of messages received: " << m_CumulativeMessageCount << std::endl;
+    outfileContents << "Total time elapsed=" <<totalTimeMs << "(ms) / " << totalTimeMs/1000.0 << "(s)" << std::endl;
+    outfileContents << "Total transmission time (first msg created --> last received)=" <<transmissionTimeSec <<" (sec)" <<std::endl;
+
+    outfileContents << "Fps=" <<(double)m_CumulativeMessageCount / transmissionTimeSec  << std::endl; 
+    
+    outfileContents << "Message Size=" <<msgSize <<"(bytes) / " 
+                                       <<msgSize/1024.0 <<"(kbytes) / "
+                                       <<msgSize/1024.0/1024.0 <<"(Mbytes)" << std::endl;
+
+    outfileContents << "Data Throughput=" <<dataThroughput << "(bytes/s) / " 
+                                            <<dataThroughput/1024.0 << "(kbytes/s) / "
+                                            <<dataThroughput/1024.0/1024.0 << "(Mbytes/s) / "<< std::endl;
+
+    outfileContents << std::endl;
+    outfileContents <<"Created,Arrived,Received,Delay\n";
+    for (unsigned int  i = 0; i < m_ReceivedTimeStamps.size(); i++)
+    {
+      double receDelay = m_ReceivedTimeStamps.at(i) - m_SentTimeStamps.at(i);
+      outfileContents <<m_SentTimeStamps.at(i) <<"," <<m_ArrivedTimeStamps.at(i) <<"," <<m_ReceivedTimeStamps.at(i) <<"," <<receDelay <<std::endl;
+    }
+
+    outfileContents.flush();
+
+    if (!m_OutFileName.empty())
+    {
+      std::ofstream outfile(m_OutFileName.c_str(), std::ofstream::binary);
+      outfile <<outfileContents.str();
+      outfile.flush();
+      outfile.close();
+    }
+    else
+    {
+      std::cout <<std::endl;
+      std::cout << outfileContents.str();
+    }
+   
+    std::cout <<"Number of messages received: " << m_CumulativeMessageCount << std::endl;
+    std::cout <<"Total number of bytes received: " << m_CumulativeMessageSize << std::endl;
+    std::cout <<"Total transmission time (first msg created --> last received): " <<transmissionTimeSec <<" (sec)" <<std::endl;
   }
 }
 
@@ -122,7 +195,7 @@ int main(int argc, char** argv)
   //------------------------------------------------------------
   // Parse Arguments
 
-  if (argc != 3) // check number of arguments
+  if (argc < 3) // check number of arguments
   {
     // If not correct, print usage
     std::cerr << "Usage: " << argv[0] << " <port> <iters>"    << std::endl;
@@ -138,7 +211,13 @@ int main(int argc, char** argv)
   std::cout << " on port:" << port << std::endl;
   std::cout << "   iters:" << iters << std::endl;
 
+  std::string filename;
+  if (argv[3] != NULL)
+    filename = std::string(argv[3]);
+
   TestImagingReceiver receiver(port, iters);
+  if (!filename.empty())
+    receiver.SetOutfilename(filename);
 
   QApplication app(argc, argv);
   QObject::connect(&receiver, SIGNAL(Done()), &app, SLOT(quit()), Qt::QueuedConnection);

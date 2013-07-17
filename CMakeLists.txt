@@ -152,8 +152,8 @@ SET(NIFTYLINK_DOCUMENTATION_TEXT "doxygen" CACHE STRING "Documentation text" FOR
 SET(NIFTYLINK_USER_CONTACT "https://www.mailinglists.ucl.ac.uk/mailman/listinfo/niftk-users" CACHE STRING "Contact address for users." FORCE )
 SET(NIFTYLINK_VERSION_STRING "${NIFTYLINK_VERSION_MAJOR}.${NIFTYLINK_VERSION_MINOR}.${NIFTYLINK_VERSION_PATCH}" CACHE STRING "String to describe fully named version" FORCE)
 SET(NIFTYLINK_DEPLOY_NAME "${NIFTYLINK_NAME}-${NIFTYLINK_VERSION_STRING}" CACHE STRING "String to describe deployed name" FORCE)
-SET(NIFTYLINK_OPENIGTLINK_VERSION "bb6af3f43b"  CACHE STRING "OpenIGTLink version" FORCE )
-SET(NIFTYLINK_OPENIGTLINK_MD5 "7229853c7faa30f75b404e4d89675727" CACHE STRING "OpenIGTLink MD5" FORCE )
+SET(NIFTYLINK_OPENIGTLINK_VERSION "1c96333c30"  CACHE STRING "OpenIGTLink version" FORCE )
+SET(NIFTYLINK_OPENIGTLINK_MD5 "24c52f6ad66ee1081c2d215ca4cf97ec" CACHE STRING "OpenIGTLink MD5" FORCE )
 SET(NIFTYLINK_OPENIGTLINK_LOCATION "http://cmic.cs.ucl.ac.uk/platform/dependencies/NifTK-OpenIGTLink-${NIFTYLINK_OPENIGTLINK_VERSION}.tar.gz" CACHE STRING "Location of OpenIGTLink .tar.gz" FORCE )
 SET(NIFTYLINK_OPENIGTLINK_LOCATION_DEV "git://github.com/NifTK/OpenIGTLink.git" CACHE STRING "Development version of OpenIGTLink." )
 SET(NIFTYLINK_OPENIGTLINK_LOCATION_URL "https://github.com/NifTK/OpenIGTLink" CACHE STRING "OpenIGTLink on Github" FORCE )
@@ -182,6 +182,14 @@ MARK_AS_ADVANCED(NIFTYLINK_OPENIGTLINK_MD5)
 MARK_AS_ADVANCED(NIFTYLINK_OPENIGTLINK_LOCATION)
 MARK_AS_ADVANCED(NIFTYLINK_OPENIGTLINK_LOCATION_DEV)
 MARK_AS_ADVANCED(UNAME)
+
+######################################################################
+# Make sure Git is available.
+######################################################################
+find_package(Git REQUIRED)
+if (WIN32)
+  set(GITCOMMAND ${GIT_EXECUTABLE})
+endif()
 
 ######################################################################
 # Sort out which version of OpenIGTLink we are using
