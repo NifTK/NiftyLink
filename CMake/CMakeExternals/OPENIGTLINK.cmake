@@ -29,6 +29,7 @@ IF(NOT DEFINED OpenIGTLink_DIR)
 
     ExternalProject_Add(${proj}
     ${OIGTL_OPTIONS}
+    UPDATE_COMMAND ${GIT_EXECUTABLE} checkout ${NIFTYLINK_OPENIGTLINK_VERSION}
     BINARY_DIR ${proj}-build
     INSTALL_COMMAND ""
     CMAKE_GENERATOR ${GEN}
