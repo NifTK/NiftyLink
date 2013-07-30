@@ -10,8 +10,8 @@
   See LICENSE.txt in the top level directory for details.
 =============================================================================*/
 
-#ifndef NLTEST_DATA_H
-#define NLTEST_DATA_H
+#ifndef NLTest_Data_h
+#define NLTest_Data_h
 
 #include "igtlMath.h"
 
