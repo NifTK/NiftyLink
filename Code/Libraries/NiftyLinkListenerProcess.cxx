@@ -738,11 +738,18 @@ bool NiftyLinkListenerProcess::ReceiveMessage()
   message->SetMessageHeader(msgHeader);
   message->AllocatePack();
 
+  // Create a new timestamp
+  igtl::TimeStamp::Pointer timeReceived  = igtl::TimeStamp::New();
+
   if (message->GetPackBodySize() > 0)
   {
     // Receive data from the socket
     m_Mutex->lock();
     r = m_ExtSocket->Receive(message->GetPackBodyPointer(), message->GetPackBodySize());
+
+    // Message fully received
+    timeReceived->Update();
+
     m_Mutex->unlock();
 
     //QLOG_INFO() <<objectName() <<"Total message bytes received: " <<r;
@@ -757,8 +764,12 @@ bool NiftyLinkListenerProcess::ReceiveMessage()
     }
   }
 
-  // Get the receive timestamp from the socket
-  msg->SetTimeReceived(m_ExtSocket->GetReceiveTimestamp());
+  // Get the receive timestamp from the socket - marks when the first byte of the package arrived
+  msg->SetTimeArrived(m_ExtSocket->GetReceiveTimestamp());
+  
+  // Set the time when the message was fully received
+  msg->SetTimeReceived(timeReceived);
+
   msg->SetMessagePointer(message);
   msg->SetPort(m_Port);
 

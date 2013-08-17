@@ -126,7 +126,7 @@ void TestStatusMsg_General::PerformTest()
   tsr->Update();
   statusMsg->SetTimeReceived(tsr);
   tss = statusMsg->GetTimeReceived();
-  if (tsr->GetTimeUint64() != tss->GetTimeUint64())
+  if (tsr->GetTimeInNanoSeconds() != tss->GetTimeInNanoSeconds())
   {
     std::cout << " FAILED\n";
   }
@@ -143,7 +143,7 @@ void TestStatusMsg_General::PerformTest()
 
   tsc = statusMsg->GetTimeCreated();
   id = statusMsg->GetId();
-  if (tsr->GetTimeUint64() < tsc->GetTimeUint64() || id <= 0)
+  if (tsr->GetTimeInNanoSeconds() < tsc->GetTimeInNanoSeconds() || id <= 0)
   {
     std::cout << " FAILED\n";
   }

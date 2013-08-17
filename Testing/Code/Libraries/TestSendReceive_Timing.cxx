@@ -107,9 +107,9 @@ void TestSendReceive_Timing::QuitTest2()
   std::cout << "Printing timestamps... \n";
   std::cout << "Initial stream, containing " << m_Socket1Messages.count() << " messages \n";
 
-  igtlUint32 sec, msec, usec, nsec, fraction;
-  igtlUint32 sec_c, msec_c, usec_c, nsec_c, fraction_c;
-  unsigned long long ts, nanotime, nanotime_c, nanotimeFirst, nanotimeLast;
+  igtlUint32 sec, msec, usec, nsec;
+  igtlUint32 sec_c, msec_c, usec_c, nsec_c;
+  unsigned long long nanotime, nanotime_c, nanotimeFirst, nanotimeLast;
   unsigned long long totalBytesTransmitted1to2 = 0;
   unsigned long long totalBytesTransmitted2to1 = 0;
   unsigned long long totalTimeElapsed1to2 = 0;

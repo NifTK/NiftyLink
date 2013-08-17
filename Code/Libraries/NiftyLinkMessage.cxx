@@ -15,6 +15,7 @@ See LICENSE.txt in the top level directory for details.
 #include "QsLog.h"
 #include "QsLogDest.h"
 #include "NiftyLinkUtils.h"
+#include <sstream>
 
 //-----------------------------------------------------------------------------
 NiftyLinkMessage::NiftyLinkMessage(void)
@@ -24,7 +25,7 @@ NiftyLinkMessage::NiftyLinkMessage(void)
   m_SenderPort = -1;
 
   m_SenderHostName = QString("localhost");
-  m_Id = GetTimeInNanoSeconds(m_TimeCreated);
+  m_Id = m_TimeCreated->GetTimeInNanoSeconds();
 
   //m_TimeCreated = NULL;
   m_Resolution = 0;
@@ -80,6 +81,17 @@ void NiftyLinkMessage::GetMessagePointer(igtl::MessageBase::Pointer &mp)
   mp.operator = (m_Message);
 }
 
+//-----------------------------------------------------------------------------
+void NiftyLinkMessage::SetTimeArrived(igtl::TimeStamp::Pointer ts)
+{
+  m_TimeArrived.operator = (ts);
+}
+
+//-----------------------------------------------------------------------------
+igtl::TimeStamp::Pointer NiftyLinkMessage::GetTimeArrived(void)
+{
+  return m_TimeArrived;
+}
 
 //-----------------------------------------------------------------------------
 void NiftyLinkMessage::SetTimeReceived(igtl::TimeStamp::Pointer ts)
@@ -355,7 +367,7 @@ void NiftyLinkMessage::Update(QString hostname)
   m_TimeCreated.operator = (ts);
   m_SenderHostName = hostname;
 
-  m_Id = GetTimeInNanoSeconds(ts);
+  m_Id = ts->GetTimeInNanoSeconds();
 
   m_Message->Unpack();
   m_Message->SetTimeStamp(ts);
@@ -371,4 +383,40 @@ void NiftyLinkMessage::SetOwnerName(QString str)
     m_OwnerName.clear();
   }
   m_OwnerName.append(str);
+}
+
+//-----------------------------------------------------------------------------
+QString NiftyLinkMessage::GetDetailedAccessInfo()
+{
+  std::map<std::string, igtl::TimeStamp::Pointer>::iterator it;
+
+  std::stringstream times;
+  times <<"MSG_ID :" <<m_Id <<"\nTime Created: " <<m_TimeCreated->GetTimeInNanoSeconds() <<"\nMessage type: "
+    <<m_MessageType.toStdString() <<"\n\n";
+
+  igtlUint64 nullTime =  m_AccessTimes.begin()->second->GetTimeInNanoSeconds();
+
+  for (it = m_AccessTimes.begin(); it != m_AccessTimes.end(); ++it)
+  {
+    times <<it->second->GetTimeInNanoSeconds() <<"ns " <<it->first.c_str() <<"\n";
+    igtlUint64 lag = it->second->GetTimeInNanoSeconds() - nullTime;
+    times <<"Lag: " <<lag <<"ns\n\n";
+  }
+  return QString(times.str().c_str());
+}
+
+//-----------------------------------------------------------------------------
+QString NiftyLinkMessage::GetAccessTimes()
+{
+  std::map<std::string, igtl::TimeStamp::Pointer>::iterator it;
+
+  /// The format is: ID, TimeCreated, StartIter, EndPack, SendStart, SendFinish
+  std::stringstream times;
+  times <<m_Id <<"," <<m_TimeCreated->GetTimeInNanoSeconds();
+
+  for (it = m_AccessTimes.begin(); it != m_AccessTimes.end(); ++it)
+  {
+    times <<"," <<it->second->GetTimeInNanoSeconds();
+  }
+  return QString(times.str().c_str());
 }

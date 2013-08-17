@@ -16,8 +16,8 @@
 # Our version number. Edit this to generate a new version.
 # However, be warned, you need to set CMAKE_INSTALL_PREFIX manually.
 ######################################################################
-SET(NIFTYLINK_VERSION_MAJOR 0 CACHE STRING "Major version number" )
-SET(NIFTYLINK_VERSION_MINOR 1 CACHE STRING "Minor version number" )
+SET(NIFTYLINK_VERSION_MAJOR 13 CACHE STRING "Major version number" )
+SET(NIFTYLINK_VERSION_MINOR 07 CACHE STRING "Minor version number" )
 SET(NIFTYLINK_VERSION_PATCH 0 CACHE STRING "Patch version number" )
 MARK_AS_ADVANCED(NIFTYLINK_VERSION_MAJOR)
 MARK_AS_ADVANCED(NIFTYLINK_VERSION_MINOR)
@@ -150,11 +150,10 @@ SET(NIFTYLINK_DASHBOARD_TEXT "dashboard" CACHE STRING "Dashboard text" FORCE)
 SET(NIFTYLINK_DOCUMENTATION_URL "http://cmicdev.cs.ucl.ac.uk/NiftyLink/html/index.html" CACHE STRING "Documentation URL" FORCE)
 SET(NIFTYLINK_DOCUMENTATION_TEXT "doxygen" CACHE STRING "Documentation text" FORCE)
 SET(NIFTYLINK_USER_CONTACT "https://www.mailinglists.ucl.ac.uk/mailman/listinfo/niftk-users" CACHE STRING "Contact address for users." FORCE )
-SET(NIFTYLINK_DEVELOPER_CONTACT "https://www.mailinglists.ucl.ac.uk/mailman/listinfo/niftk-developers" CACHE STRING "Contact address for developers." FORCE )
 SET(NIFTYLINK_VERSION_STRING "${NIFTYLINK_VERSION_MAJOR}.${NIFTYLINK_VERSION_MINOR}.${NIFTYLINK_VERSION_PATCH}" CACHE STRING "String to describe fully named version" FORCE)
 SET(NIFTYLINK_DEPLOY_NAME "${NIFTYLINK_NAME}-${NIFTYLINK_VERSION_STRING}" CACHE STRING "String to describe deployed name" FORCE)
-SET(NIFTYLINK_OPENIGTLINK_VERSION "bb6af3f43b"  CACHE STRING "OpenIGTLink version" FORCE )
-SET(NIFTYLINK_OPENIGTLINK_MD5 "7229853c7faa30f75b404e4d89675727" CACHE STRING "OpenIGTLink MD5" FORCE )
+SET(NIFTYLINK_OPENIGTLINK_VERSION "84fba13d86"  CACHE STRING "OpenIGTLink version" FORCE )
+SET(NIFTYLINK_OPENIGTLINK_MD5 "b0f275ac1570d3d9c02a8e0921806a7d" CACHE STRING "OpenIGTLink MD5" FORCE )
 SET(NIFTYLINK_OPENIGTLINK_LOCATION "http://cmic.cs.ucl.ac.uk/platform/dependencies/NifTK-OpenIGTLink-${NIFTYLINK_OPENIGTLINK_VERSION}.tar.gz" CACHE STRING "Location of OpenIGTLink .tar.gz" FORCE )
 SET(NIFTYLINK_OPENIGTLINK_LOCATION_DEV "git://github.com/NifTK/OpenIGTLink.git" CACHE STRING "Development version of OpenIGTLink." )
 SET(NIFTYLINK_OPENIGTLINK_LOCATION_URL "https://github.com/NifTK/OpenIGTLink" CACHE STRING "OpenIGTLink on Github" FORCE )
@@ -175,7 +174,6 @@ MARK_AS_ADVANCED(NIFTYLINK_DASHBOARD_TEXT)
 MARK_AS_ADVANCED(NIFTYLINK_DOCUMENTATION_URL)
 MARK_AS_ADVANCED(NIFTYLINK_DOCUMENTATION_TEXT)
 MARK_AS_ADVANCED(NIFTYLINK_USER_CONTACT)
-MARK_AS_ADVANCED(NIFTYLINK_DEVELOPER_CONTACT)
 MARK_AS_ADVANCED(NIFTYLINK_VERSION_STRING)
 MARK_AS_ADVANCED(NIFTYLINK_DEPLOY_NAME)
 MARK_AS_ADVANCED(NIFTYLINK_CHECK_COVERAGE)
@@ -184,6 +182,14 @@ MARK_AS_ADVANCED(NIFTYLINK_OPENIGTLINK_MD5)
 MARK_AS_ADVANCED(NIFTYLINK_OPENIGTLINK_LOCATION)
 MARK_AS_ADVANCED(NIFTYLINK_OPENIGTLINK_LOCATION_DEV)
 MARK_AS_ADVANCED(UNAME)
+
+######################################################################
+# Make sure Git is available.
+######################################################################
+find_package(Git REQUIRED)
+if (WIN32)
+  set(GITCOMMAND ${GIT_EXECUTABLE})
+endif()
 
 ######################################################################
 # Sort out which version of OpenIGTLink we are using

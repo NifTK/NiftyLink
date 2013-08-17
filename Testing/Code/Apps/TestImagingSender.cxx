@@ -19,7 +19,12 @@
 #include <igtlTimeStamp.h>
 #include "NiftyLinkSocketObject.h"
 #include "NiftyLinkImageMessage.h"
+#include "NiftyLinkTrackingDataMessage.h"
 #include "TestImagingSender.h"
+
+#include <string>
+#include <sstream>
+#include <fstream>
 
 //-----------------------------------------------------------------------------
 TestImagingSender::TestImagingSender(const QImage* image,
@@ -32,13 +37,16 @@ TestImagingSender::TestImagingSender(const QImage* image,
   , m_PortNumber(portNumber)
   , m_NumberOfIterations(numberOfIterations)
 {
-  m_TimePackingMessage = 0;
+  m_TimeZero = 0;
   m_NumberSent = 0;
+  m_MessageSize = 0;
 
   connect(&m_Socket, SIGNAL(MessageSentSignal(unsigned long long)), this, SLOT(OnMessageSent(unsigned long long)));
   connect(&m_Socket, SIGNAL(ConnectedToRemoteSignal()), this, SLOT(OnConnectToRemote()));
   connect(&m_Socket, SIGNAL(LostConnectionToRemoteSignal()), this, SLOT(OnLostConnectionToRemote()));
   connect(&m_Socket, SIGNAL(ShutdownSenderSignal()), this, SLOT(OnShutdownSender()));
+
+  connect(&m_Socket, SIGNAL(SendMessageAccessTimes(QString)), this, SLOT(StoreMessageAccessTimes(QString)));
 }
 
 
@@ -87,6 +95,12 @@ void TestImagingSender::OnMessageSent(unsigned long long timestamp)
   m_NumberSent++;
 }
 
+void TestImagingSender::StoreMessageAccessTimes(QString mat)
+{
+  m_MsgAccessTimes.append(mat);
+}
+
+
 
 //-----------------------------------------------------------------------------
 bool TestImagingSender::Setup()
@@ -119,7 +133,6 @@ void TestImagingSender::Run()
     igtl::TimeStamp::Pointer startTime = igtl::TimeStamp::New();
     startTime->Update();
 
-
     // Throw data at the socket.
     this->SendData(m_NumberOfIterations);
 
@@ -132,17 +145,57 @@ void TestImagingSender::Run()
     igtl::TimeStamp::Pointer endTime = igtl::TimeStamp::New();
     endTime->Update();
 
-    // Calculate results
-    igtlUint64 result = GetDifferenceInNanoSeconds(endTime, startTime);
-    double bps = ((double)m_NumberOfIterations * ((double)m_Image->byteCount()) * (double)8) / ((double)result / (double)1000000000.0);
+    double totalTimeMs = double(endTime->GetTimeInNanoSeconds() - m_TimeZero->GetTimeInNanoSeconds())/1000.0/1000.0;
+    
+    // Configure cout precision
+    std::cout.precision(10);
+    std::cout <<std::fixed;
+    std::cout << "Sending finished at: " <<endTime->GetTimeInNanoSeconds() <<std::endl; 
+    std::cout << "Time spent with sending:" <<endTime->GetTimeInNanoSeconds() - m_TimeZero->GetTimeInNanoSeconds() <<"(ns) / "
+              << totalTimeMs <<"(ms)\n";
+    std::cout << "Waiting a bit (5s) before terminating... " << std::endl;
+    QTest::qWait(5000);
 
-    std::cout << "Timing: for " << m_NumberOfIterations << " iterations:" << std::endl;
-    std::cout << "  total time=" << result / (double)1000000000.0 << "(s)" << std::endl;
-    std::cout << "         fps=" << 1.0 / ((double)result / (double)m_NumberOfIterations / 1000000000.0) << std::endl;
-    std::cout << "         bps=" << bps << std::endl;
-    std::cout << "        kbps=" << bps / (double)1024 << std::endl;
-    std::cout << "        mbps=" << bps / (double)1024 / (double)1024 << std::endl;
-    std::cout << "     packing=" << m_TimePackingMessage / (double)1000000000.0 << "(s)" << " (" << 100.0 * (double)m_TimePackingMessage / (double)result << "%)" << std::endl;
+    // Calculate results
+    double dataThroughput = (double)m_NumberOfIterations * m_MessageSize / (totalTimeMs/1000.0);
+
+    std::stringstream outfileContents;
+    outfileContents <<std::endl;
+    outfileContents.precision(10);
+    outfileContents << std::fixed;
+
+    outfileContents << "Number of messages sent: " <<m_NumberOfIterations << std::endl;
+    outfileContents << "Total time=" <<totalTimeMs << "(ms) / " << totalTimeMs/1000.0 << "(s)" << std::endl;
+    outfileContents << "Fps=" <<(double)m_NumberOfIterations / (totalTimeMs/1000.0)  << std::endl;
+    //outfileContents << "Message Size=" <<(double)m_Image->byteCount() <<"(bytes) / " 
+    //                                   <<(double)m_Image->byteCount()/1024.0 <<"(kbytes) / "
+    //                                   <<(double)m_Image->byteCount()/1024.0/1024.0 <<"(Mbytes)" << std::endl;
+    outfileContents << "Data Throughput=" <<dataThroughput << "(bytes/s) / " 
+                                            <<dataThroughput/1024.0 << "(kbytes/s) / "
+                                            <<dataThroughput/1024.0/1024.0 << "(Mbytes/s) / "<< std::endl;
+
+    outfileContents << std::endl;
+    outfileContents <<"ID,Created,EndPack,SendStart,SendFinish\n";
+    for (int  i = 0; i < m_MsgAccessTimes.size(); i++)
+    {
+      outfileContents <<m_MsgAccessTimes.at(i).toStdString() <<std::endl;
+    }
+
+    outfileContents.flush();
+
+    if (!m_OutFileName.empty())
+    {
+      std::ofstream outfile(m_OutFileName.c_str(), std::ofstream::binary);
+      outfile <<outfileContents.str();
+      outfile.flush();
+      outfile.close();
+    }
+    else
+    {
+      std::cout <<std::endl;
+      std::cout << outfileContents.str();
+    }
+
 
     // Tidy up.
     this->FinishUp();
@@ -153,26 +206,58 @@ void TestImagingSender::Run()
 //-----------------------------------------------------------------------------
 void TestImagingSender::SendData(const int& numberOfIterations)
 {
+  // Update the local host address
+  QString lha = GetLocalHostAddress();
+
+  // Generate a random matrix
+  igtl::Matrix4x4 matrix;
+  CreateRandomTransformMatrix(matrix);
+  
+  // Get the current time
+  m_TimeZero = igtl::TimeStamp::New();
+  m_TimeZero->Update();
+
+  // Configure cout precision
+  std::cout.precision(10);
+  std::cout <<std::fixed;
+  std::cout <<"Starting to send data at: " <<m_TimeZero->GetTimeInNanoSeconds() <<std::endl; 
 
   for (int i = 0; i < numberOfIterations; i++)
   {
-    igtl::TimeStamp::Pointer startIteration = igtl::TimeStamp::New();
-
-    igtl::Matrix4x4 matrix;
+    
+    // Create a new message
     NiftyLinkImageMessage::Pointer msg(new NiftyLinkImageMessage());
+    // Stuff the data into the message
     msg->SetQImage(*m_Image);
     msg->SetMatrix(matrix);
+    
 
+    /*
+    NiftyLinkTrackingDataMessage::Pointer msg(new NiftyLinkTrackingDataMessage());
+    msg->InitializeWithRandomData();
+    */
+    // Let's update the host address and the timestamp
+    msg->Update(lha);
+
+    if (i == 0)
+    {
+      igtl::MessageBase::Pointer igtlMsg;
+      msg->GetMessagePointer(igtlMsg);
+      m_MessageSize = igtlMsg->GetPackSize();
+    }
+
+    // Packing is finished, get timestamp
     igtl::TimeStamp::Pointer endPacking = igtl::TimeStamp::New();
     endPacking->Update();
+    
+    // Store timestamp into the message
+    msg->TouchMessage("1. endPacking", endPacking);
 
+    // Pass the message to the socket for transmission
     m_Socket.SendMessage(msg);
 
-    igtl::TimeStamp::Pointer endSending = igtl::TimeStamp::New();
-    endSending->Update();
-
-    igtlUint64 nanos = GetDifferenceInNanoSeconds(endPacking, startIteration);
-    m_TimePackingMessage += nanos;
+    // Let's set the fps
+    //QTest::qWait(2);
   }
 }
 
@@ -184,7 +269,7 @@ int main(int argc, char** argv)
   //------------------------------------------------------------
   // Parse Arguments
 
-  if (argc != 5) // check number of arguments
+  if (argc < 5) // check number of arguments
   {
     // If not correct, print usage
     std::cerr << "Usage: " << argv[0] << " <hostname> <port> <iters> <filename>" << std::endl;
@@ -199,6 +284,10 @@ int main(int argc, char** argv)
   int    port       = atoi(argv[2]);
   int    iters      = atoi(argv[3]);
   char*  imagename  = argv[4];
+
+  std::string filename;
+  if (argv[5] != NULL)
+    filename = std::string(argv[5]);
 
   std::cout << "TestImagingSender:" << std::endl;
   std::cout << " to host:" << hostname << std::endl;
@@ -215,6 +304,10 @@ int main(int argc, char** argv)
   }
   image.convertToFormat(QImage::Format_Indexed8);
   TestImagingSender sender(&image, QString(hostname), port, iters);
+  std::cout << "    size:" << image.byteCount() << std::endl;
+
+  if (!filename.empty())
+    sender.SetOutfilename(filename);
 
   QApplication app(argc, argv);
   QObject::connect(&sender, SIGNAL(Done()), &app, SLOT(quit()), Qt::QueuedConnection);

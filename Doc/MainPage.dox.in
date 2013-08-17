@@ -30,10 +30,9 @@ Further information is provided in:
 
 \li \subpage TechnicalManual "The Technical Manual"
 
-and two mailing lists for discussion
+and
 
-\li <a href="@NIFTYLINK_USER_CONTACT@">for end users</a>
-\li <a href="@NIFTYLINK_DEVELOPER_CONTACT@">for developers</a>
+\li <a href="@NIFTYLINK_USER_CONTACT@">the user's mailing list</a>.
 
 For code developers it is important to read:
 

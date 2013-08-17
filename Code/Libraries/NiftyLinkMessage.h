@@ -95,7 +95,13 @@ public:
   /// \brief This function returns the port number
   int GetPort(void);
 
-  /// \brief This function is for setting the timestamp when the message is received
+  /// \brief This function is to mark when the first byte of the message has arrived
+  void SetTimeArrived(igtl::TimeStamp::Pointer ts);
+
+  /// \brief Returns the time when the message has arrived
+  igtl::TimeStamp::Pointer GetTimeArrived(void);
+
+  /// \brief This function is for setting the timestamp when the message was fully received
   void SetTimeReceived(igtl::TimeStamp::Pointer ts);
 
   /// \brief Returns the time when the message was received
@@ -147,11 +153,25 @@ public:
     return m_OwnerName;
   }
 
+  /// \brief This method is to support debugging lags in the message transmission
+  inline void TouchMessage(std::string who, igtl::TimeStamp::Pointer when) { m_AccessTimes[who] = when; }
+
+  /// \brief This method returns the times in nanosecs when the message was touched
+  /// The format is: ID, TimeCreated, EndPack, SendStart, SendFinish
+  QString GetAccessTimes();
+
+  /// \brief This method returns all timestamp details about the message
+  QString GetDetailedAccessInfo();
+
 protected:
 
   QString                    m_MessageType;
   igtl::MessageBase::Pointer m_Message;
+  // To mark when the first byte of the message arrived to the socket
+  igtl::TimeStamp::Pointer   m_TimeArrived;
+  // To mark when the message was fully received
   igtl::TimeStamp::Pointer   m_TimeReceived;
+  // To mark when the message was created
   igtl::TimeStamp::Pointer   m_TimeCreated;
 
   QString                    m_SenderHostName;
@@ -162,6 +182,8 @@ protected:
 
   bool                       m_Processed;
   QString                    m_OwnerName;
+
+  std::map<std::string, igtl::TimeStamp::Pointer> m_AccessTimes;
 };
 
 Q_DECLARE_METATYPE(NiftyLinkMessage::Pointer);
