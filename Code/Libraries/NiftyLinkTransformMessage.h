@@ -65,6 +65,12 @@ public:
   /// \brief Gets the transformation matrix as QString (for printing)
   QString GetMatrixAsString(void);
 
+  /// \brief Sets the tracking error
+  void SetError (float error);
+
+  /// \brief Gets the tracking error
+  float GetError ();
+
   /// \brief Sets the position array
   void SetPosition(float p[3]);
 

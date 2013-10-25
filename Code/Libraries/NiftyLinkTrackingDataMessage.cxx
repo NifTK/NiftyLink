@@ -105,6 +105,66 @@ void NiftyLinkTrackingDataMessage::GetMatrix(igtl::Matrix4x4 &matrix)
 
 }
 
+//-----------------------------------------------------------------------------
+void NiftyLinkTrackingDataMessage::SetError(float error)
+{
+  if (m_Message.IsNull())
+  {
+    m_Message.operator = (igtl::TrackingDataMessage::New());
+  }
+
+  igtl::TrackingDataMessage::Pointer msgPointer;
+  msgPointer = static_cast<igtl::TrackingDataMessage *>(m_Message.GetPointer());
+
+  msgPointer->Unpack();
+
+  igtl::TrackingDataElement::Pointer tElem;
+  int elementNum = msgPointer->GetNumberOfTrackingDataElements();
+
+  if (elementNum == 0)
+  {
+    tElem = igtl::TrackingDataElement::New();
+    msgPointer->AddTrackingDataElement(tElem);
+  }
+  else
+  {
+    msgPointer->GetTrackingDataElement(0, tElem);
+  }
+
+  tElem->SetError(error);
+
+  msgPointer->Pack();
+}
+
+//-----------------------------------------------------------------------------
+float NiftyLinkTrackingDataMessage::GetError()
+{
+  if (m_Message.IsNull())
+  {
+    return;
+  }
+
+  igtl::TrackingDataMessage::Pointer msgPointer;
+  msgPointer = static_cast<igtl::TrackingDataMessage *>(m_Message.GetPointer());
+
+  msgPointer->Unpack();
+
+  if (msgPointer->GetNumberOfTrackingDataElements() == 0)
+  {
+    return;
+  }
+
+  igtl::TrackingDataElement::Pointer tElem;
+  msgPointer->GetTrackingDataElement(0, tElem);
+  float error = tElem->GetError();
+
+  msgPointer->Pack();
+  return error;
+
+}
+
+
+
 
 //-----------------------------------------------------------------------------
 QString NiftyLinkTrackingDataMessage::GetMatrixAsString()

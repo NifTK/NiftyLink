@@ -91,6 +91,12 @@ public:
   /// \brief Sets the tracker tool's name
   void SetTrackerToolName(QString name);
 
+  /// \brief Sets the tracking error 
+  void SetError (float error);
+
+  /// \brief Gets the tracking error
+  float GetError ();
+
   /// \brief Gets the tracker tool's name
   QString GetTrackerToolName();
 
