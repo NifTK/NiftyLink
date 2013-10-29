@@ -75,43 +75,6 @@ void NiftyLinkTransformMessage::GetMatrix(igtl::Matrix4x4 &matrix)
 }
 
 //-----------------------------------------------------------------------------
-void NiftyLinkTransformMessage::SetError(float error)
-{
-  if (m_Message.IsNull())
-  {
-    m_Message.operator = (igtl::TransformMessage::New());
-  }
-
-  igtl::TransformMessage::Pointer msgPointer;
-  msgPointer = static_cast<igtl::TransformMessage *>(m_Message.GetPointer());
-
-  msgPointer->Unpack();
-  msgPointer->SetError(error);
-  msgPointer->Pack();
-}
-
-
-//-----------------------------------------------------------------------------
-float NiftyLinkTransformMessage::GetError()
-{
-  if (m_Message.IsNull())
-  {
-    return;
-  }
-
-  igtl::TransformMessage::Pointer msgPointer;
-  msgPointer = static_cast<igtl::TransformMessage *>(m_Message.GetPointer());
-
-  msgPointer->Unpack();
-  float error = msgPointer->GetError();
-  msgPointer->Pack();
-  return error;
-}
-
-
-
-
-//-----------------------------------------------------------------------------
 QString NiftyLinkTransformMessage::GetMatrixAsString()
 {
   if (m_Message.IsNull())
