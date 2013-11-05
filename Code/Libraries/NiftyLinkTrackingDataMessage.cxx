@@ -141,7 +141,7 @@ float NiftyLinkTrackingDataMessage::GetError()
 {
   if (m_Message.IsNull())
   {
-    return;
+    return -1.0;
   }
 
   igtl::TrackingDataMessage::Pointer msgPointer;
@@ -151,7 +151,7 @@ float NiftyLinkTrackingDataMessage::GetError()
 
   if (msgPointer->GetNumberOfTrackingDataElements() == 0)
   {
-    return;
+    return -1.0;
   }
 
   igtl::TrackingDataElement::Pointer tElem;
