@@ -180,9 +180,6 @@ float NiftyLinkTrackingDataMessage::GetError()
 
 }
 
-
-
-
 //-----------------------------------------------------------------------------
 QString NiftyLinkTrackingDataMessage::GetMatrixAsString()
 {
@@ -665,5 +662,3 @@ void NiftyLinkTrackingDataMessage::SetUseIGTL_fulltdata (bool UseIGTL_fulltdata)
     m_UseIGTL_fulltdata=false;
   }
 }
-
-
