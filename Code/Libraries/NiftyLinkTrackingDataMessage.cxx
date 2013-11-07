@@ -26,6 +26,7 @@ NiftyLinkTrackingDataMessage::NiftyLinkTrackingDataMessage(void)
 {
   m_MessageType = "TDATA";
   m_Message.operator = (NULL);
+  m_UseIGTL_fulltdata=false;
 }
 
 
@@ -57,6 +58,10 @@ void NiftyLinkTrackingDataMessage::SetMatrix(igtl::Matrix4x4 &matrix)
 
   igtl::TrackingDataMessage::Pointer msgPointer;
   msgPointer = static_cast<igtl::TrackingDataMessage *>(m_Message.GetPointer());
+  if (  m_UseIGTL_fulltdata )
+  {
+    msgPointer->UseFullTData();
+  }
 
   msgPointer->Unpack();
 
@@ -90,6 +95,10 @@ void NiftyLinkTrackingDataMessage::GetMatrix(igtl::Matrix4x4 &matrix)
   igtl::TrackingDataMessage::Pointer msgPointer;
   msgPointer = static_cast<igtl::TrackingDataMessage *>(m_Message.GetPointer());
 
+  if (  m_UseIGTL_fulltdata )
+  {
+    msgPointer->UseFullTData();
+  }
   msgPointer->Unpack();
 
   if (msgPointer->GetNumberOfTrackingDataElements() == 0)
@@ -116,6 +125,10 @@ void NiftyLinkTrackingDataMessage::SetError(float error)
   igtl::TrackingDataMessage::Pointer msgPointer;
   msgPointer = static_cast<igtl::TrackingDataMessage *>(m_Message.GetPointer());
 
+  if (  m_UseIGTL_fulltdata )
+  {
+    msgPointer->UseFullTData();
+  }
   msgPointer->Unpack();
 
   igtl::TrackingDataElement::Pointer tElem;
@@ -147,6 +160,10 @@ float NiftyLinkTrackingDataMessage::GetError()
   igtl::TrackingDataMessage::Pointer msgPointer;
   msgPointer = static_cast<igtl::TrackingDataMessage *>(m_Message.GetPointer());
 
+  if (  m_UseIGTL_fulltdata )
+  {
+    msgPointer->UseFullTData();
+  }
   msgPointer->Unpack();
 
   if (msgPointer->GetNumberOfTrackingDataElements() == 0)
@@ -177,6 +194,10 @@ QString NiftyLinkTrackingDataMessage::GetMatrixAsString()
   igtl::TrackingDataMessage::Pointer msgPointer;
   msgPointer = static_cast<igtl::TrackingDataMessage *>(m_Message.GetPointer());
 
+  if (  m_UseIGTL_fulltdata )
+  {
+    msgPointer->UseFullTData();
+  }
   msgPointer->Unpack();
 
   if (msgPointer->GetNumberOfTrackingDataElements() == 0)
@@ -218,6 +239,10 @@ void NiftyLinkTrackingDataMessage::SetPosition(float p[3])
 
   igtl::TrackingDataMessage::Pointer msgPointer;
   msgPointer = static_cast<igtl::TrackingDataMessage *>(m_Message.GetPointer());
+  if (  m_UseIGTL_fulltdata )
+  {
+    msgPointer->UseFullTData();
+  }
   msgPointer->Unpack();
 
   igtl::TrackingDataElement::Pointer tElem;
@@ -249,6 +274,10 @@ void NiftyLinkTrackingDataMessage::GetPosition(float p[3])
 
   igtl::TrackingDataMessage::Pointer msgPointer;
   msgPointer = static_cast<igtl::TrackingDataMessage *>(m_Message.GetPointer());
+  if (  m_UseIGTL_fulltdata )
+  {
+    msgPointer->UseFullTData();
+  }
   msgPointer->Unpack();
 
   if (msgPointer->GetNumberOfTrackingDataElements() == 0)
@@ -274,6 +303,10 @@ void NiftyLinkTrackingDataMessage::SetPosition(float px, float py, float pz)
 
   igtl::TrackingDataMessage::Pointer msgPointer;
   msgPointer = static_cast<igtl::TrackingDataMessage *>(m_Message.GetPointer());
+  if (  m_UseIGTL_fulltdata )
+  {
+    msgPointer->UseFullTData();
+  }
   msgPointer->Unpack();
 
   igtl::TrackingDataElement::Pointer tElem;
@@ -305,6 +338,10 @@ void NiftyLinkTrackingDataMessage::GetPosition(float &px, float &py, float &pz)
 
   igtl::TrackingDataMessage::Pointer msgPointer;
   msgPointer = static_cast<igtl::TrackingDataMessage *>(m_Message.GetPointer());
+  if (  m_UseIGTL_fulltdata )
+  {
+    msgPointer->UseFullTData();
+  }
   msgPointer->Unpack();
 
   if (msgPointer->GetNumberOfTrackingDataElements() == 0)
@@ -330,6 +367,10 @@ void NiftyLinkTrackingDataMessage::SetTrackerToolName(QString name)
 
   igtl::TrackingDataMessage::Pointer msgPointer;
   msgPointer = static_cast<igtl::TrackingDataMessage *>(m_Message.GetPointer());
+  if (  m_UseIGTL_fulltdata )
+  {
+    msgPointer->UseFullTData();
+  }
   msgPointer->Unpack();
 
   igtl::TrackingDataElement::Pointer tElem;
@@ -361,6 +402,10 @@ QString NiftyLinkTrackingDataMessage::GetTrackerToolName()
 
   igtl::TrackingDataMessage::Pointer msgPointer;
   msgPointer = static_cast<igtl::TrackingDataMessage *>(m_Message.GetPointer());
+  if (  m_UseIGTL_fulltdata )
+  {
+    msgPointer->UseFullTData();
+  }
   msgPointer->Unpack();
 
   if (msgPointer->GetNumberOfTrackingDataElements() == 0)
@@ -388,6 +433,10 @@ void NiftyLinkTrackingDataMessage::SetTrackerToolType(igtlUint8 type)
 
   igtl::TrackingDataMessage::Pointer msgPointer;
   msgPointer = static_cast<igtl::TrackingDataMessage *>(m_Message.GetPointer());
+  if (  m_UseIGTL_fulltdata )
+  {
+    msgPointer->UseFullTData();
+  }
   msgPointer->Unpack();
 
   igtl::TrackingDataElement::Pointer tElem;
@@ -419,6 +468,10 @@ igtlUint8 NiftyLinkTrackingDataMessage::GetTrackerToolType()
 
   igtl::TrackingDataMessage::Pointer msgPointer;
   msgPointer = static_cast<igtl::TrackingDataMessage *>(m_Message.GetPointer());
+  if (  m_UseIGTL_fulltdata )
+  {
+    msgPointer->UseFullTData();
+  }
   msgPointer->Unpack();
 
   if (msgPointer->GetNumberOfTrackingDataElements() == 0)
@@ -446,6 +499,10 @@ void NiftyLinkTrackingDataMessage::InitializeWithTestData(igtl::Matrix4x4& testM
 
   igtl::TrackingDataMessage::Pointer msgPointer;
   msgPointer = static_cast<igtl::TrackingDataMessage *>(m_Message.GetPointer());
+  if (  m_UseIGTL_fulltdata )
+  {
+    msgPointer->UseFullTData();
+  }
   msgPointer->Unpack();
 
   igtl::TrackingDataElement::Pointer tElem;
@@ -477,6 +534,10 @@ void NiftyLinkTrackingDataMessage::InitializeWithRandomData(void)
 
   igtl::TrackingDataMessage::Pointer msgPointer;
   msgPointer = static_cast<igtl::TrackingDataMessage *>(m_Message.GetPointer());
+  if (  m_UseIGTL_fulltdata )
+  {
+    msgPointer->UseFullTData();
+  }
   msgPointer->Unpack();
 
   igtl::TrackingDataElement::Pointer tElem;
@@ -590,3 +651,19 @@ void NiftyLinkTrackingDataMessage::Create_RTS(NiftyLinkMessage::Pointer &msgToCr
   msgToCreate->SetMessagePointer((igtl::MessageBase::Pointer) cmdMsg);
   msgToCreate->ChangeMessageType("RTS_TDATA");
 }
+//-----------------------------------------------------------------------------
+void NiftyLinkTrackingDataMessage::SetUseIGTL_fulltdata (bool UseIGTL_fulltdata)
+{
+  if (  UseIGTL_fulltdata )
+  {
+    m_MessageType = "FULLTDATA";
+    m_UseIGTL_fulltdata=true;
+  }
+  else
+  {
+    m_MessageType = "TDATA";
+    m_UseIGTL_fulltdata=false;
+  }
+}
+
+

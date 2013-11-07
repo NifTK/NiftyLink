@@ -112,8 +112,14 @@ public:
   /// \brief Initializes the message with random test data
   virtual void InitializeWithRandomData(void);
 
+  /// \brief Sets the base igtltracking data type to use. If use full tracker message
+  /// is true a full 4x4 matrix + the error term can be sent, other wise the last
+  /// row of the tracker matrix and the error are discarded at pack and unpack
+  void SetUseIGTL_fulltdata (bool);
+
 private:
   float m_p[3];
+  bool m_UseIGTL_fulltdata;
 };
 
 #endif // NiftyLinkTrackingDataMessage_h
