@@ -74,7 +74,6 @@ void NiftyLinkTransformMessage::GetMatrix(igtl::Matrix4x4 &matrix)
   msgPointer->Pack();
 }
 
-
 //-----------------------------------------------------------------------------
 QString NiftyLinkTransformMessage::GetMatrixAsString()
 {
