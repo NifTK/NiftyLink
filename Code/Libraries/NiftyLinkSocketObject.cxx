@@ -413,11 +413,19 @@ void NiftyLinkSocketObject::SendMessage(NiftyLinkMessage::Pointer msg)
 {
   // Do not add the message to the message queue if the socket is not connected
   // (otherwise messages will pile up and use up memory)
+  // FIXME: this does not seem to work reliably. i can still trigger situations where the
+  //        socket becomes disconnected (various gui bits notice) but more and more data is
+  //        piled up in the send queue until the process dies with out-of-memory.
   if (m_Sender != NULL && msg.operator != (NULL) && (m_ClientConnected || m_ConnectedToRemote) )
   {
     //m_Sender->AddMsgToSendQueue(msg);
     emit MessageToSendSignal(msg);
-    QCoreApplication::processEvents();
+
+    // do not call processEvents()! not ever, never!
+    // this will end up overflowing the call stack at some point because some signals
+    // will be delivered synchronously, re-entering this method, entering the event loop,
+    // deliverying signals, re-entering this method, and so on. crash.
+    //QCoreApplication::processEvents();
   }
 }
 

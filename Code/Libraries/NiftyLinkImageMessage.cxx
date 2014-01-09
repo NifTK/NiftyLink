@@ -18,6 +18,8 @@ See LICENSE.txt in the top level directory for details.
 #include <QtGui/QImage>
 #include <QtGui/QPainter>
 
+#include <cassert>
+
 //-----------------------------------------------------------------------------
 NiftyLinkImageMessage::NiftyLinkImageMessage(void)
   : NiftyLinkMessage()
@@ -564,6 +566,10 @@ void NiftyLinkImageMessage::SetQImage(const QImage& inputImage)
   igtl::ImageMessage::Pointer msgPointer;
   msgPointer = static_cast<igtl::ImageMessage *>(m_Message.GetPointer());
   msgPointer->Unpack();
+
+  // better check that the assumption below that images are tightly packed is actually true.
+  // note that the qt docs are conflicting on this matter!
+  assert(inputImage.bytesPerLine() == (inputImage.width() * (inputImage.depth() / 8)));
 
   // The aim of this stuff is to make QImage of type Format_Indexed8 as efficient as possible.
   unsigned long int byteSizeOfImage = 0;
