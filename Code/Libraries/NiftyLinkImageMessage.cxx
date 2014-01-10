@@ -18,6 +18,8 @@ See LICENSE.txt in the top level directory for details.
 #include <QtGui/QImage>
 #include <QtGui/QPainter>
 
+#include <cassert>
+
 //-----------------------------------------------------------------------------
 NiftyLinkImageMessage::NiftyLinkImageMessage(void)
   : NiftyLinkMessage()
@@ -565,6 +567,10 @@ void NiftyLinkImageMessage::SetQImage(const QImage& inputImage)
   msgPointer = static_cast<igtl::ImageMessage *>(m_Message.GetPointer());
   msgPointer->Unpack();
 
+  // better check that the assumption below that images are tightly packed is actually true.
+  // note that the qt docs are conflicting on this matter!
+  assert(inputImage.bytesPerLine() == (inputImage.width() * (inputImage.depth() / 8)));
+
   // The aim of this stuff is to make QImage of type Format_Indexed8 as efficient as possible.
   unsigned long int byteSizeOfImage = 0;
   if ( inputImage.format() != QImage::Format_Indexed8 )
@@ -575,7 +581,11 @@ void NiftyLinkImageMessage::SetQImage(const QImage& inputImage)
     msgPointer->SetScalarType(igtl::ImageMessage::TYPE_UINT32);
     msgPointer->AllocateScalars();
     byteSizeOfImage = image.byteCount();
-    memcpy(msgPointer->GetScalarPointer(), image.bits(), byteSizeOfImage);
+    // in some cases we'll end up with a null-pointer if we are short of mem.
+    if ((msgPointer->GetScalarPointer() != 0) && (image.bits() != 0))
+    {
+      memcpy(msgPointer->GetScalarPointer(), image.bits(), byteSizeOfImage);
+    }
   }
   else
   {
@@ -588,7 +598,12 @@ void NiftyLinkImageMessage::SetQImage(const QImage& inputImage)
     // for QImage::Format_Indexed8 this is going to lose the index table
     // This may or may not be a problem depending on what happens to the
     // image at the other end
-    memcpy(msgPointer->GetScalarPointer(), inputImage.bits(), byteSizeOfImage);
+
+    // in some cases we'll end up with a null-pointer if we are short of mem.
+    if ((msgPointer->GetScalarPointer() != 0) && (inputImage.bits() != 0))
+    {
+      memcpy(msgPointer->GetScalarPointer(), inputImage.bits(), byteSizeOfImage);
+    }
   }
 
   // Pack message data
