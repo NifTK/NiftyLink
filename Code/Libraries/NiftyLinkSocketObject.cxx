@@ -425,7 +425,8 @@ void NiftyLinkSocketObject::SendMessage(NiftyLinkMessage::Pointer msg)
     // this will end up overflowing the call stack at some point because some signals
     // will be delivered synchronously, re-entering this method, entering the event loop,
     // deliverying signals, re-entering this method, and so on. crash.
-    //QCoreApplication::processEvents();
+    // BUT: leave it here until https://cmicdev.cs.ucl.ac.uk/trac/ticket/3025 is being worked on!
+    QCoreApplication::processEvents();
   }
 }
 
