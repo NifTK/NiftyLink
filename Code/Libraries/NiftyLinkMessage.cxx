@@ -19,6 +19,7 @@ See LICENSE.txt in the top level directory for details.
 
 //-----------------------------------------------------------------------------
 NiftyLinkMessage::NiftyLinkMessage(void)
+  : m_IsPacked(false)
 {
   m_TimeCreated = igtl::TimeStamp::New();
   m_TimeCreated->Update();
@@ -72,12 +73,21 @@ void NiftyLinkMessage::SetMessagePointer(igtl::MessageBase::Pointer mp)
   m_MessageType = QString(m_Message->GetDeviceType());
   m_Message->GetTimeStamp(m_TimeCreated);
   m_SenderHostName = QString(m_Message->GetDeviceName());
+
+  // FIXME: GetMessagePointer() will return packed messages...
+  m_Message->Unpack();
+  m_IsPacked = false;
 }
 
 
 //-----------------------------------------------------------------------------
 void NiftyLinkMessage::GetMessagePointer(igtl::MessageBase::Pointer &mp)
 {
+  // FIXME: how often is this called?
+  // for sake of consistency, messages that we hand out are always packed.
+  m_Message->Pack();
+  m_IsPacked = true;
+
   mp.operator = (m_Message);
 }
 
@@ -131,9 +141,13 @@ void NiftyLinkMessage::ChangeHostName(QString hname)
 
   m_SenderHostName = hname;
 
-  m_Message->Unpack();
+  if (m_IsPacked)
+  {
+    m_Message->Unpack();
+    m_IsPacked = false;
+  }
   m_Message->SetDeviceName(m_SenderHostName.toStdString().c_str());
-  m_Message->Pack();
+  //m_Message->Pack();
 }
 
 
@@ -145,9 +159,13 @@ QString NiftyLinkMessage::GetHostName(void)
     return QString();
   }
 
-  m_Message->Unpack();
+  if (m_IsPacked)
+  {
+    m_Message->Unpack();
+    m_IsPacked = false;
+  }
   m_SenderHostName = m_Message->GetDeviceName();
-  m_Message->Pack();
+  //m_Message->Pack();
 
   return m_SenderHostName;
 }
@@ -199,7 +217,11 @@ void NiftyLinkMessage::SetResolution(igtlUint64 res)
     return;
   }
 
-  m_Message->Unpack();
+  if (m_IsPacked)
+  {
+    m_Message->Unpack();
+    m_IsPacked = false;
+  }
 
   if (strcmp(m_Message->GetNameOfClass(), "igtl::StartTransformMessage") == 0)
   {
@@ -252,7 +274,7 @@ void NiftyLinkMessage::SetResolution(igtlUint64 res)
     pointer->SetResolution(res);
   }
 
-  m_Message->Pack();
+  //m_Message->Pack();
 }
 
 
@@ -271,7 +293,11 @@ void NiftyLinkMessage::GetResolution(igtlUint64 &res)
     return;
   }
 
-  m_Message->Unpack();
+  if (m_IsPacked)
+  {
+    m_Message->Unpack();
+    m_IsPacked = false;
+  }
 
   if (strcmp(m_Message->GetNameOfClass(), "igtl::StartTransformMessage") == 0)
   {
@@ -324,7 +350,7 @@ void NiftyLinkMessage::GetResolution(igtlUint64 &res)
     m_Resolution = pointer->GetResolution();
   }
 
-  m_Message->Pack();
+  //m_Message->Pack();
 
   res = m_Resolution;
 }
@@ -343,10 +369,14 @@ void NiftyLinkMessage::Update(QString hostname, igtl::TimeStamp::Pointer ts)
   m_TimeCreated.operator = (ts);
   m_SenderHostName = hostname;
 
-  m_Message->Unpack();
+  if (m_IsPacked)
+  {
+    m_Message->Unpack();
+    m_IsPacked = false;
+  }
   m_Message->SetTimeStamp(ts);
   m_Message->SetDeviceName(m_SenderHostName.toStdString().c_str());
-  m_Message->Pack();
+  //m_Message->Pack();
 }
 
 
@@ -369,10 +399,14 @@ void NiftyLinkMessage::Update(QString hostname)
 
   m_Id = ts->GetTimeInNanoSeconds();
 
-  m_Message->Unpack();
+  if (m_IsPacked)
+  {
+    m_Message->Unpack();
+    m_IsPacked = false;
+  }
   m_Message->SetTimeStamp(ts);
   m_Message->SetDeviceName(m_SenderHostName.toStdString().c_str());
-  m_Message->Pack();
+  //m_Message->Pack();
 }
 
 //-----------------------------------------------------------------------------
@@ -419,4 +453,25 @@ QString NiftyLinkMessage::GetAccessTimes()
     times <<"," <<it->second->GetTimeInNanoSeconds();
   }
   return QString(times.str().c_str());
+}
+
+
+//-----------------------------------------------------------------------------
+void NiftyLinkMessage::Pack()
+{
+  if (!m_IsPacked)
+  {
+    m_Message->Pack();
+  }
+  m_IsPacked = true;
+}
+
+//-----------------------------------------------------------------------------
+void NiftyLinkMessage::Unpack()
+{
+  if (m_IsPacked)
+  {
+    m_Message->Unpack();
+  }
+  m_IsPacked = false;
 }

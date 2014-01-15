@@ -63,7 +63,11 @@ void NiftyLinkTrackingDataMessage::SetMatrix(igtl::Matrix4x4 &matrix)
     msgPointer->UseFullTData();
   }
 
-  msgPointer->Unpack();
+  if (m_IsPacked)
+  {
+    msgPointer->Unpack();
+    m_IsPacked = false;
+  }
 
   igtl::TrackingDataElement::Pointer tElem;
   int elementNum = msgPointer->GetNumberOfTrackingDataElements();
@@ -80,7 +84,7 @@ void NiftyLinkTrackingDataMessage::SetMatrix(igtl::Matrix4x4 &matrix)
 
   tElem->SetMatrix(matrix);
 
-  msgPointer->Pack();
+  //msgPointer->Pack();
 }
 
 
@@ -99,7 +103,12 @@ void NiftyLinkTrackingDataMessage::GetMatrix(igtl::Matrix4x4 &matrix)
   {
     msgPointer->UseFullTData();
   }
-  msgPointer->Unpack();
+
+  if (m_IsPacked)
+  {
+    msgPointer->Unpack();
+    m_IsPacked = false;
+  }
 
   if (msgPointer->GetNumberOfTrackingDataElements() == 0)
   {
@@ -110,7 +119,7 @@ void NiftyLinkTrackingDataMessage::GetMatrix(igtl::Matrix4x4 &matrix)
   msgPointer->GetTrackingDataElement(0, tElem);
   tElem->GetMatrix(matrix);
 
-  msgPointer->Pack();
+  //msgPointer->Pack();
 
 }
 
@@ -195,7 +204,12 @@ QString NiftyLinkTrackingDataMessage::GetMatrixAsString()
   {
     msgPointer->UseFullTData();
   }
-  msgPointer->Unpack();
+
+  if (m_IsPacked)
+  {
+    msgPointer->Unpack();
+    m_IsPacked = false;
+  }
 
   if (msgPointer->GetNumberOfTrackingDataElements() == 0)
   {
@@ -220,7 +234,7 @@ QString NiftyLinkTrackingDataMessage::GetMatrixAsString()
 
   QString strMat = QString(sstr.str().c_str());
 
-  msgPointer->Pack();
+  //msgPointer->Pack();
 
   return strMat;
 }
@@ -236,11 +250,17 @@ void NiftyLinkTrackingDataMessage::SetPosition(float p[3])
 
   igtl::TrackingDataMessage::Pointer msgPointer;
   msgPointer = static_cast<igtl::TrackingDataMessage *>(m_Message.GetPointer());
+
   if (  m_UseIGTL_fulltdata )
   {
     msgPointer->UseFullTData();
   }
-  msgPointer->Unpack();
+
+  if (m_IsPacked)
+  {
+    msgPointer->Unpack();
+    m_IsPacked = false;
+  }
 
   igtl::TrackingDataElement::Pointer tElem;
   int elementNum = msgPointer->GetNumberOfTrackingDataElements();
@@ -257,7 +277,7 @@ void NiftyLinkTrackingDataMessage::SetPosition(float p[3])
 
   tElem->SetPosition(p);
 
-  msgPointer->Pack();
+  //msgPointer->Pack();
 }
 
 
@@ -271,11 +291,17 @@ void NiftyLinkTrackingDataMessage::GetPosition(float p[3])
 
   igtl::TrackingDataMessage::Pointer msgPointer;
   msgPointer = static_cast<igtl::TrackingDataMessage *>(m_Message.GetPointer());
+
   if (  m_UseIGTL_fulltdata )
   {
     msgPointer->UseFullTData();
   }
-  msgPointer->Unpack();
+
+  if (m_IsPacked)
+  {
+    msgPointer->Unpack();
+    m_IsPacked = false;
+  }
 
   if (msgPointer->GetNumberOfTrackingDataElements() == 0)
   {
@@ -286,7 +312,7 @@ void NiftyLinkTrackingDataMessage::GetPosition(float p[3])
   msgPointer->GetTrackingDataElement(0, tElem);
   tElem->GetPosition(p);
 
-  msgPointer->Pack();
+  //msgPointer->Pack();
 }
 
 
@@ -300,11 +326,17 @@ void NiftyLinkTrackingDataMessage::SetPosition(float px, float py, float pz)
 
   igtl::TrackingDataMessage::Pointer msgPointer;
   msgPointer = static_cast<igtl::TrackingDataMessage *>(m_Message.GetPointer());
+
   if (  m_UseIGTL_fulltdata )
   {
     msgPointer->UseFullTData();
   }
-  msgPointer->Unpack();
+
+  if (m_IsPacked)
+  {
+    msgPointer->Unpack();
+    m_IsPacked = false;
+  }
 
   igtl::TrackingDataElement::Pointer tElem;
   int elementNum = msgPointer->GetNumberOfTrackingDataElements();
@@ -321,7 +353,7 @@ void NiftyLinkTrackingDataMessage::SetPosition(float px, float py, float pz)
 
   tElem->SetPosition(px, py, pz);
 
-  msgPointer->Pack();
+  //msgPointer->Pack();
 }
 
 
@@ -335,11 +367,17 @@ void NiftyLinkTrackingDataMessage::GetPosition(float &px, float &py, float &pz)
 
   igtl::TrackingDataMessage::Pointer msgPointer;
   msgPointer = static_cast<igtl::TrackingDataMessage *>(m_Message.GetPointer());
+
   if (  m_UseIGTL_fulltdata )
   {
     msgPointer->UseFullTData();
   }
-  msgPointer->Unpack();
+
+  if (m_IsPacked)
+  {
+    msgPointer->Unpack();
+    m_IsPacked = false;
+  }
 
   if (msgPointer->GetNumberOfTrackingDataElements() == 0)
   {
@@ -350,7 +388,7 @@ void NiftyLinkTrackingDataMessage::GetPosition(float &px, float &py, float &pz)
   msgPointer->GetTrackingDataElement(0, tElem);
   tElem->GetPosition(&px, &py, &pz);
 
-  msgPointer->Pack();
+  //msgPointer->Pack();
 }
 
 
@@ -364,11 +402,17 @@ void NiftyLinkTrackingDataMessage::SetTrackerToolName(QString name)
 
   igtl::TrackingDataMessage::Pointer msgPointer;
   msgPointer = static_cast<igtl::TrackingDataMessage *>(m_Message.GetPointer());
+
   if (  m_UseIGTL_fulltdata )
   {
     msgPointer->UseFullTData();
   }
-  msgPointer->Unpack();
+
+  if (m_IsPacked)
+  {
+    msgPointer->Unpack();
+    m_IsPacked = false;
+  }
 
   igtl::TrackingDataElement::Pointer tElem;
   int elementNum = msgPointer->GetNumberOfTrackingDataElements();
@@ -385,7 +429,7 @@ void NiftyLinkTrackingDataMessage::SetTrackerToolName(QString name)
 
   tElem->SetName(name.toStdString().c_str());
 
-  msgPointer->Pack();
+  //msgPointer->Pack();
 }
 
 
@@ -399,11 +443,17 @@ QString NiftyLinkTrackingDataMessage::GetTrackerToolName()
 
   igtl::TrackingDataMessage::Pointer msgPointer;
   msgPointer = static_cast<igtl::TrackingDataMessage *>(m_Message.GetPointer());
+
   if (  m_UseIGTL_fulltdata )
   {
     msgPointer->UseFullTData();
   }
-  msgPointer->Unpack();
+
+  if (m_IsPacked)
+  {
+    msgPointer->Unpack();
+    m_IsPacked = false;
+  }
 
   if (msgPointer->GetNumberOfTrackingDataElements() == 0)
   {
@@ -414,7 +464,7 @@ QString NiftyLinkTrackingDataMessage::GetTrackerToolName()
   msgPointer->GetTrackingDataElement(0, tElem);
   QString str(tElem->GetName());
 
-  msgPointer->Pack();
+  //msgPointer->Pack();
 
   return str;
 }
@@ -430,11 +480,17 @@ void NiftyLinkTrackingDataMessage::SetTrackerToolType(igtlUint8 type)
 
   igtl::TrackingDataMessage::Pointer msgPointer;
   msgPointer = static_cast<igtl::TrackingDataMessage *>(m_Message.GetPointer());
+
   if (  m_UseIGTL_fulltdata )
   {
     msgPointer->UseFullTData();
   }
-  msgPointer->Unpack();
+
+  if (m_IsPacked)
+  {
+    msgPointer->Unpack();
+    m_IsPacked = false;
+  }
 
   igtl::TrackingDataElement::Pointer tElem;
   int elementNum = msgPointer->GetNumberOfTrackingDataElements();
@@ -451,7 +507,7 @@ void NiftyLinkTrackingDataMessage::SetTrackerToolType(igtlUint8 type)
 
   tElem->SetType(type);
 
-  msgPointer->Pack();
+  //msgPointer->Pack();
 }
 
 
@@ -465,11 +521,17 @@ igtlUint8 NiftyLinkTrackingDataMessage::GetTrackerToolType()
 
   igtl::TrackingDataMessage::Pointer msgPointer;
   msgPointer = static_cast<igtl::TrackingDataMessage *>(m_Message.GetPointer());
+
   if (  m_UseIGTL_fulltdata )
   {
     msgPointer->UseFullTData();
   }
-  msgPointer->Unpack();
+
+  if (m_IsPacked)
+  {
+    msgPointer->Unpack();
+    m_IsPacked = false;
+  }
 
   if (msgPointer->GetNumberOfTrackingDataElements() == 0)
   {
@@ -480,7 +542,7 @@ igtlUint8 NiftyLinkTrackingDataMessage::GetTrackerToolType()
   msgPointer->GetTrackingDataElement(0, tElem);
   igtlUint8 type = tElem->GetType();
 
-  msgPointer->Pack();
+  //msgPointer->Pack();
 
   return type;
 }
@@ -496,11 +558,17 @@ void NiftyLinkTrackingDataMessage::InitializeWithTestData(igtl::Matrix4x4& testM
 
   igtl::TrackingDataMessage::Pointer msgPointer;
   msgPointer = static_cast<igtl::TrackingDataMessage *>(m_Message.GetPointer());
+
   if (  m_UseIGTL_fulltdata )
   {
     msgPointer->UseFullTData();
   }
-  msgPointer->Unpack();
+
+  if (m_IsPacked)
+  {
+    msgPointer->Unpack();
+    m_IsPacked = false;
+  }
 
   igtl::TrackingDataElement::Pointer tElem;
   int elementNum = msgPointer->GetNumberOfTrackingDataElements();
@@ -517,7 +585,7 @@ void NiftyLinkTrackingDataMessage::InitializeWithTestData(igtl::Matrix4x4& testM
 
   tElem->SetMatrix(testMatrix);
 
-  msgPointer->Pack();
+  //msgPointer->Pack();
 }
 
 
@@ -531,11 +599,17 @@ void NiftyLinkTrackingDataMessage::InitializeWithRandomData(void)
 
   igtl::TrackingDataMessage::Pointer msgPointer;
   msgPointer = static_cast<igtl::TrackingDataMessage *>(m_Message.GetPointer());
+
   if (  m_UseIGTL_fulltdata )
   {
     msgPointer->UseFullTData();
   }
-  msgPointer->Unpack();
+
+  if (m_IsPacked)
+  {
+    msgPointer->Unpack();
+    m_IsPacked = false;
+  }
 
   igtl::TrackingDataElement::Pointer tElem;
   int elementNum = msgPointer->GetNumberOfTrackingDataElements();
@@ -555,7 +629,7 @@ void NiftyLinkTrackingDataMessage::InitializeWithRandomData(void)
 
   tElem->SetMatrix(localMatrix);
 
-  msgPointer->Pack();
+  //msgPointer->Pack();
 }
 
 

@@ -54,9 +54,13 @@ void NiftyLinkImageMessage::SetMatrix(igtl::Matrix4x4 &matrix)
   igtl::ImageMessage::Pointer msgPointer;
   msgPointer = static_cast<igtl::ImageMessage *>(m_Message.GetPointer());
 
-  msgPointer->Unpack();
+  if (m_IsPacked)
+  {
+    msgPointer->Unpack();
+    m_IsPacked = false;
+  }
   msgPointer->SetMatrix(matrix);
-  msgPointer->Pack();
+  //msgPointer->Pack();
 }
 
 
@@ -71,9 +75,13 @@ void NiftyLinkImageMessage::GetMatrix(igtl::Matrix4x4 &matrix)
   igtl::ImageMessage::Pointer msgPointer;
   msgPointer = static_cast<igtl::ImageMessage *>(m_Message.GetPointer());
 
-  msgPointer->Unpack();
+  if (m_IsPacked)
+  {
+    msgPointer->Unpack();
+    m_IsPacked = false;
+  }
   msgPointer->GetMatrix(matrix);
-  msgPointer->Pack();
+  //msgPointer->Pack();
 }
 
 
@@ -102,9 +110,13 @@ void NiftyLinkImageMessage::SetNormals(float t[3], float s[3], float n[3])
   igtl::ImageMessage::Pointer msgPointer;
   msgPointer = static_cast<igtl::ImageMessage *>(m_Message.GetPointer());
 
-  msgPointer->Unpack();
+  if (m_IsPacked)
+  {
+    msgPointer->Unpack();
+    m_IsPacked = false;
+  }
   msgPointer->SetNormals(t, s, n);
-  msgPointer->Pack();
+  //msgPointer->Pack();
 }
 
 
@@ -119,9 +131,13 @@ void NiftyLinkImageMessage::GetNormals(float t[3], float s[3], float n[3])
   igtl::ImageMessage::Pointer msgPointer;
   msgPointer = static_cast<igtl::ImageMessage *>(m_Message.GetPointer());
 
-  msgPointer->Unpack();
+  if (m_IsPacked)
+  {
+    msgPointer->Unpack();
+    m_IsPacked = false;
+  }
   msgPointer->GetNormals(t, s, n);
-  msgPointer->Pack();
+  //msgPointer->Pack();
 }
 
 
@@ -136,9 +152,13 @@ void NiftyLinkImageMessage::SetSpacing(float s[3])
   igtl::ImageMessage::Pointer msgPointer;
   msgPointer = static_cast<igtl::ImageMessage *>(m_Message.GetPointer());
 
-  msgPointer->Unpack();
+  if (m_IsPacked)
+  {
+    msgPointer->Unpack();
+    m_IsPacked = false;
+  }
   msgPointer->SetSpacing(s);
-  msgPointer->Pack();
+  //msgPointer->Pack();
 }
 
 
@@ -153,9 +173,13 @@ void NiftyLinkImageMessage::SetSpacing(float si, float sj, float sk)
   igtl::ImageMessage::Pointer msgPointer;
   msgPointer = static_cast<igtl::ImageMessage *>(m_Message.GetPointer());
 
-  msgPointer->Unpack();
+  if (m_IsPacked)
+  {
+    msgPointer->Unpack();
+    m_IsPacked = false;
+  }
   msgPointer->SetSpacing(si, sj, sk);
-  msgPointer->Pack();
+  //msgPointer->Pack();
 }
 
 
@@ -170,9 +194,13 @@ void NiftyLinkImageMessage::GetSpacing(float s[3])
   igtl::ImageMessage::Pointer msgPointer;
   msgPointer = static_cast<igtl::ImageMessage *>(m_Message.GetPointer());
 
-  msgPointer->Unpack();
+  if (m_IsPacked)
+  {
+    msgPointer->Unpack();
+    m_IsPacked = false;
+  }
   msgPointer->GetSpacing(s);
-  msgPointer->Pack();
+  //msgPointer->Pack();
 }
 
 
@@ -187,9 +215,13 @@ void NiftyLinkImageMessage::GetSpacing(float &si, float &sj, float &sk)
   igtl::ImageMessage::Pointer msgPointer;
   msgPointer = static_cast<igtl::ImageMessage *>(m_Message.GetPointer());
 
-  msgPointer->Unpack();
+  if (m_IsPacked)
+  {
+    msgPointer->Unpack();
+    m_IsPacked = false;
+  }
   msgPointer->GetSpacing(si, sj, sk);
-  msgPointer->Pack();
+  //msgPointer->Pack();
 }
 
 
@@ -204,9 +236,13 @@ void NiftyLinkImageMessage::SetOrigin(float s[3])
   igtl::ImageMessage::Pointer msgPointer;
   msgPointer = static_cast<igtl::ImageMessage *>(m_Message.GetPointer());
 
-  msgPointer->Unpack();
+  if (m_IsPacked)
+  {
+    msgPointer->Unpack();
+    m_IsPacked = false;
+  }
   msgPointer->SetOrigin(s);
-  msgPointer->Pack();
+  //msgPointer->Pack();
 }
 
 
@@ -221,9 +257,13 @@ void NiftyLinkImageMessage::SetOrigin(float si, float sj, float sk)
   igtl::ImageMessage::Pointer msgPointer;
   msgPointer = static_cast<igtl::ImageMessage *>(m_Message.GetPointer());
 
-  msgPointer->Unpack();
+  if (m_IsPacked)
+  {
+    msgPointer->Unpack();
+    m_IsPacked = false;
+  }
   msgPointer->SetOrigin(si, sj, sk);
-  msgPointer->Pack();
+  //msgPointer->Pack();
 }
 
 
@@ -238,9 +278,13 @@ void NiftyLinkImageMessage::GetOrigin(float s[3])
   igtl::ImageMessage::Pointer msgPointer;
   msgPointer = static_cast<igtl::ImageMessage *>(m_Message.GetPointer());
 
-  msgPointer->Unpack();
+  if (m_IsPacked)
+  {
+    msgPointer->Unpack();
+    m_IsPacked = false;
+  }
   msgPointer->GetOrigin(s);
-  msgPointer->Pack();
+  //msgPointer->Pack();
 }
 
 
@@ -255,9 +299,13 @@ void NiftyLinkImageMessage::GetOrigin(float &si, float &sj, float &sk)
   igtl::ImageMessage::Pointer msgPointer;
   msgPointer = static_cast<igtl::ImageMessage *>(m_Message.GetPointer());
 
-  msgPointer->Unpack();
+  if (m_IsPacked)
+  {
+    msgPointer->Unpack();
+    m_IsPacked = false;
+  }
   msgPointer->GetOrigin(si, sj, sk);
-  msgPointer->Pack();
+  //msgPointer->Pack();
 }
 
 
@@ -272,9 +320,13 @@ void NiftyLinkImageMessage::SetDimensions(int s[3])
   igtl::ImageMessage::Pointer msgPointer;
   msgPointer = static_cast<igtl::ImageMessage *>(m_Message.GetPointer());
 
-  msgPointer->Unpack();
+  if (m_IsPacked)
+  {
+    msgPointer->Unpack();
+    m_IsPacked = false;
+  }
   msgPointer->SetDimensions(s);
-  msgPointer->Pack();
+  //msgPointer->Pack();
 }
 
 
@@ -289,9 +341,13 @@ void NiftyLinkImageMessage::SetDimensions(int i, int j , int k)
   igtl::ImageMessage::Pointer msgPointer;
   msgPointer = static_cast<igtl::ImageMessage *>(m_Message.GetPointer());
 
-  msgPointer->Unpack();
+  if (m_IsPacked)
+  {
+    msgPointer->Unpack();
+    m_IsPacked = false;
+  }
   msgPointer->SetDimensions(i, j, k);
-  msgPointer->Pack();
+  //msgPointer->Pack();
 }
 
 
@@ -306,9 +362,13 @@ void NiftyLinkImageMessage::GetDimensions(int s[3])
   igtl::ImageMessage::Pointer msgPointer;
   msgPointer = static_cast<igtl::ImageMessage *>(m_Message.GetPointer());
 
-  msgPointer->Unpack();
+  if (m_IsPacked)
+  {
+    msgPointer->Unpack();
+    m_IsPacked = false;
+  }
   msgPointer->GetDimensions(s);
-  msgPointer->Pack();
+  //msgPointer->Pack();
 }
 
 
@@ -323,9 +383,13 @@ void NiftyLinkImageMessage::GetDimensions(int &i, int &j , int &k)
   igtl::ImageMessage::Pointer msgPointer;
   msgPointer = static_cast<igtl::ImageMessage *>(m_Message.GetPointer());
 
-  msgPointer->Unpack();
+  if (m_IsPacked)
+  {
+    msgPointer->Unpack();
+    m_IsPacked = false;
+  }
   msgPointer->GetDimensions(i, j, k);
-  msgPointer->Pack();
+  //msgPointer->Pack();
 }
 
 
@@ -340,9 +404,13 @@ int NiftyLinkImageMessage::SetSubVolume(int dim[3], int off[3])
   igtl::ImageMessage::Pointer msgPointer;
   msgPointer = static_cast<igtl::ImageMessage *>(m_Message.GetPointer());
 
-  msgPointer->Unpack();
+  if (m_IsPacked)
+  {
+    msgPointer->Unpack();
+    m_IsPacked = false;
+  }
   int retv = msgPointer->SetSubVolume ( dim, off);
-  msgPointer->Pack();
+  //msgPointer->Pack();
 
   return retv;
 }
@@ -359,9 +427,13 @@ int NiftyLinkImageMessage::SetSubVolume(int dimi, int dimj , int dimk, int offi 
   igtl::ImageMessage::Pointer msgPointer;
   msgPointer = static_cast<igtl::ImageMessage *>(m_Message.GetPointer());
 
-  msgPointer->Unpack();
+  if (m_IsPacked)
+  {
+    msgPointer->Unpack();
+    m_IsPacked = false;
+  }
   int retv = msgPointer->SetSubVolume (dimi, dimj, dimk, offi, offj, offk);
-  msgPointer->Pack();
+  //msgPointer->Pack();
 
   return retv;
 }
@@ -378,9 +450,13 @@ void NiftyLinkImageMessage::GetSubVolume(int dim[3], int off[3])
   igtl::ImageMessage::Pointer msgPointer;
   msgPointer = static_cast<igtl::ImageMessage *>(m_Message.GetPointer());
 
-  msgPointer->Unpack();
+  if (m_IsPacked)
+  {
+    msgPointer->Unpack();
+    m_IsPacked = false;
+  }
   msgPointer->GetSubVolume(dim, off);
-  msgPointer->Pack();
+  //msgPointer->Pack();
 }
 
 
@@ -395,9 +471,13 @@ void NiftyLinkImageMessage::GetSubVolume(int &dimi, int &dimj, int &dimk, int &o
   igtl::ImageMessage::Pointer msgPointer;
   msgPointer = static_cast<igtl::ImageMessage *>(m_Message.GetPointer());
 
-  msgPointer->Unpack();
+  if (m_IsPacked)
+  {
+    msgPointer->Unpack();
+    m_IsPacked = false;
+  }
   msgPointer->GetSubVolume(dimi, dimj, dimk, offi, offj, offk);
-  msgPointer->Pack();
+  //msgPointer->Pack();
 }
 
 
@@ -412,9 +492,13 @@ void NiftyLinkImageMessage::SetNumComponents(int num)
   igtl::ImageMessage::Pointer msgPointer;
   msgPointer = static_cast<igtl::ImageMessage *>(m_Message.GetPointer());
 
-  msgPointer->Unpack();
+  if (m_IsPacked)
+  {
+    msgPointer->Unpack();
+    m_IsPacked = false;
+  }
   msgPointer->SetNumComponents(num);
-  msgPointer->Pack();
+  //msgPointer->Pack();
 }
 
 
@@ -429,9 +513,13 @@ int NiftyLinkImageMessage::GetNumComponents()
   igtl::ImageMessage::Pointer msgPointer;
   msgPointer = static_cast<igtl::ImageMessage *>(m_Message.GetPointer());
 
-  msgPointer->Unpack();
+  if (m_IsPacked)
+  {
+    msgPointer->Unpack();
+    m_IsPacked = false;
+  }
   int retv = msgPointer->GetNumComponents();
-  msgPointer->Pack();
+  //msgPointer->Pack();
 
   return retv;
 }
@@ -467,7 +555,11 @@ void NiftyLinkImageMessage::InitializeWithRandomData(void)
 
   igtl::ImageMessage::Pointer msgPointer;
   msgPointer = static_cast<igtl::ImageMessage *>(m_Message.GetPointer());
-  msgPointer->Unpack();
+  if (m_IsPacked)
+  {
+    msgPointer->Unpack();
+    m_IsPacked = false;
+  }
 
   // Load test image from resources
   QImage image;
@@ -496,7 +588,7 @@ void NiftyLinkImageMessage::InitializeWithRandomData(void)
   CreateRandomTransformMatrix(localMatrix);
 
   msgPointer->SetMatrix(localMatrix);
-  msgPointer->Pack();
+  //msgPointer->Pack();
 }
 
 
@@ -565,7 +657,11 @@ void NiftyLinkImageMessage::SetQImage(const QImage& inputImage)
   // Cast pointer and unpack message
   igtl::ImageMessage::Pointer msgPointer;
   msgPointer = static_cast<igtl::ImageMessage *>(m_Message.GetPointer());
-  msgPointer->Unpack();
+  if (m_IsPacked)
+  {
+    msgPointer->Unpack();
+    m_IsPacked = false;
+  }
 
   // better check that the assumption below that images are tightly packed is actually true.
   // note that the qt docs are conflicting on this matter!
@@ -607,7 +703,7 @@ void NiftyLinkImageMessage::SetQImage(const QImage& inputImage)
   }
 
   // Pack message data
-  msgPointer->Pack();
+  //msgPointer->Pack();
 }
 
 //-------------------------------------------------------------
@@ -620,7 +716,11 @@ QImage NiftyLinkImageMessage::GetQImage(void)
 
   igtl::ImageMessage::Pointer msgPointer;
   msgPointer = static_cast<igtl::ImageMessage *>(m_Message.GetPointer());
-  msgPointer->Unpack();
+  if (m_IsPacked)
+  {
+    msgPointer->Unpack();
+    m_IsPacked = false;
+  }
 
   int i;
   int j;
@@ -658,7 +758,7 @@ QImage NiftyLinkImageMessage::GetQImage(void)
   memcpy(image.bits(), msgPointer->GetScalarPointer(), byteSizeOfImg);
 
   // Pack message data
-  msgPointer->Pack();
+  //msgPointer->Pack();
 
   return image;
 }

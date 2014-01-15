@@ -418,6 +418,7 @@ void NiftyLinkSocketObject::SendMessage(NiftyLinkMessage::Pointer msg)
   //        piled up in the send queue until the process dies with out-of-memory.
   if (m_Sender != NULL && msg.operator != (NULL) && (m_ClientConnected || m_ConnectedToRemote) )
   {
+    msg->Pack();
     //m_Sender->AddMsgToSendQueue(msg);
     emit MessageToSendSignal(msg);
 

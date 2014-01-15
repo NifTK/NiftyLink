@@ -52,9 +52,13 @@ void NiftyLinkTransformMessage::SetMatrix(igtl::Matrix4x4 &matrix)
   igtl::TransformMessage::Pointer msgPointer;
   msgPointer = static_cast<igtl::TransformMessage *>(m_Message.GetPointer());
 
-  msgPointer->Unpack();
+  if (m_IsPacked)
+  {
+    msgPointer->Unpack();
+    m_IsPacked = false;
+  }
   msgPointer->SetMatrix(matrix);
-  msgPointer->Pack();
+  //msgPointer->Pack();
 }
 
 
@@ -69,9 +73,13 @@ void NiftyLinkTransformMessage::GetMatrix(igtl::Matrix4x4 &matrix)
   igtl::TransformMessage::Pointer msgPointer;
   msgPointer = static_cast<igtl::TransformMessage *>(m_Message.GetPointer());
 
-  msgPointer->Unpack();
+  if (m_IsPacked)
+  {
+    msgPointer->Unpack();
+    m_IsPacked = false;
+  }
   msgPointer->GetMatrix(matrix);
-  msgPointer->Pack();
+  //msgPointer->Pack();
 }
 
 //-----------------------------------------------------------------------------
@@ -87,10 +95,14 @@ QString NiftyLinkTransformMessage::GetMatrixAsString()
 
   std::string stdStr;
 
-  msgPointer->Unpack();
+  if (m_IsPacked)
+  {
+    msgPointer->Unpack();
+    m_IsPacked = false;
+  }
   msgPointer->GetMatrixAsString(stdStr);
   QString strMat = QString(stdStr.c_str());
-  msgPointer->Pack();
+  //msgPointer->Pack();
 
   return strMat;
 }
@@ -107,9 +119,13 @@ void NiftyLinkTransformMessage::SetPosition(float p[3])
   igtl::TransformMessage::Pointer msgPointer;
   msgPointer = static_cast<igtl::TransformMessage *>(m_Message.GetPointer());
 
-  msgPointer->Unpack();
+  if (m_IsPacked)
+  {
+    msgPointer->Unpack();
+    m_IsPacked = false;
+  }
   msgPointer->SetPosition(p);
-  msgPointer->Pack();
+  //msgPointer->Pack();
 }
 
 
@@ -124,9 +140,13 @@ void NiftyLinkTransformMessage::GetPosition(float p[3])
   igtl::TransformMessage::Pointer msgPointer;
   msgPointer = static_cast<igtl::TransformMessage *>(m_Message.GetPointer());
 
-  msgPointer->Unpack();
+  if (m_IsPacked)
+  {
+    msgPointer->Unpack();
+    m_IsPacked = false;
+  }
   msgPointer->GetPosition(p);
-  msgPointer->Pack();
+  //msgPointer->Pack();
 }
 
 
@@ -141,9 +161,13 @@ void NiftyLinkTransformMessage::SetPosition(float px, float py, float pz)
   igtl::TransformMessage::Pointer msgPointer;
   msgPointer = static_cast<igtl::TransformMessage *>(m_Message.GetPointer());
 
-  msgPointer->Unpack();
+  if (m_IsPacked)
+  {
+    msgPointer->Unpack();
+    m_IsPacked = false;
+  }
   msgPointer->SetPosition(px, py, pz);
-  msgPointer->Pack();
+  //msgPointer->Pack();
 }
 
 
@@ -158,9 +182,13 @@ void NiftyLinkTransformMessage::GetPosition(float &px, float &py, float &pz)
   igtl::TransformMessage::Pointer msgPointer;
   msgPointer = static_cast<igtl::TransformMessage *>(m_Message.GetPointer());
 
-  msgPointer->Unpack();
+  if (m_IsPacked)
+  {
+    msgPointer->Unpack();
+    m_IsPacked = false;
+  }
   msgPointer->GetPosition(&px, &py, &pz);
-  msgPointer->Pack();
+  //msgPointer->Pack();
 }
 
 
@@ -175,9 +203,13 @@ void NiftyLinkTransformMessage::SetNormals(float o[3][3])
   igtl::TransformMessage::Pointer msgPointer;
   msgPointer = static_cast<igtl::TransformMessage *>(m_Message.GetPointer());
 
-  msgPointer->Unpack();
+  if (m_IsPacked)
+  {
+    msgPointer->Unpack();
+    m_IsPacked = false;
+  }
   msgPointer->SetNormals(o);
-  msgPointer->Pack();
+  //msgPointer->Pack();
 }
 
 
@@ -192,9 +224,13 @@ void NiftyLinkTransformMessage::GetNormals(float o[3][3])
   igtl::TransformMessage::Pointer msgPointer;
   msgPointer = static_cast<igtl::TransformMessage *>(m_Message.GetPointer());
 
-  msgPointer->Unpack();
+  if (m_IsPacked)
+  {
+    msgPointer->Unpack();
+    m_IsPacked = false;
+  }
   msgPointer->GetNormals(o);
-  msgPointer->Pack();
+  //msgPointer->Pack();
 }
 
 
@@ -209,9 +245,13 @@ void NiftyLinkTransformMessage::SetNormals(float t[3], float s[3], float n[3])
   igtl::TransformMessage::Pointer msgPointer;
   msgPointer = static_cast<igtl::TransformMessage *>(m_Message.GetPointer());
 
-  msgPointer->Unpack();
+  if (m_IsPacked)
+  {
+    msgPointer->Unpack();
+    m_IsPacked = false;
+  }
   msgPointer->SetNormals(t, s, n);
-  msgPointer->Pack();
+  //msgPointer->Pack();
 }
 
 
@@ -226,9 +266,13 @@ void NiftyLinkTransformMessage::GetNormals(float t[3], float s[3], float n[3])
   igtl::TransformMessage::Pointer msgPointer;
   msgPointer = static_cast<igtl::TransformMessage *>(m_Message.GetPointer());
 
-  msgPointer->Unpack();
+  if (m_IsPacked)
+  {
+    msgPointer->Unpack();
+    m_IsPacked = false;
+  }
   msgPointer->GetNormals(t, s, n);
-  msgPointer->Pack();
+  //msgPointer->Pack();
 }
 
 
@@ -243,9 +287,13 @@ void NiftyLinkTransformMessage::InitializeWithTestData(igtl::Matrix4x4& testMatr
   igtl::TransformMessage::Pointer msgPointer;
   msgPointer = static_cast<igtl::TransformMessage *>(m_Message.GetPointer());
 
-  msgPointer->Unpack();
+  if (m_IsPacked)
+  {
+    msgPointer->Unpack();
+    m_IsPacked = false;
+  }
   msgPointer->SetMatrix(testMatrix);
-  msgPointer->Pack();
+  //msgPointer->Pack();
 }
 
 
@@ -260,13 +308,17 @@ void NiftyLinkTransformMessage::InitializeWithRandomData(void)
   igtl::TransformMessage::Pointer msgPointer;
   msgPointer = static_cast<igtl::TransformMessage *>(m_Message.GetPointer());
 
-  msgPointer->Unpack();
+  if (m_IsPacked)
+  {
+    msgPointer->Unpack();
+    m_IsPacked = false;
+  }
 
   igtl::Matrix4x4 localMatrix;
   CreateRandomTransformMatrix(localMatrix);
 
   msgPointer->SetMatrix(localMatrix);
-  msgPointer->Pack();
+  //msgPointer->Pack();
 }
 
 
