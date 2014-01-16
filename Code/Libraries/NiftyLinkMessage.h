@@ -71,7 +71,7 @@ public:
   /// \brief Basic copy constructor required for this data type
   NiftyLinkMessage(const NiftyLinkMessage &other);
 
-  /// \brief This function embeds an OpenIGTLink message pointer
+  /// \brief This function embeds an OpenIGTLink message pointer. mp needs to be packed!
   void SetMessagePointer(igtl::MessageBase::Pointer mp);
 
   /// \brief This function returns the embedded OpenIGTLink message pointer
@@ -163,6 +163,11 @@ public:
   /// \brief This method returns all timestamp details about the message
   QString GetDetailedAccessInfo();
 
+  /// \brief Pack or unpack the message from its wire-format.
+  void Pack();
+  void Unpack();
+  void SetPacked(bool packed);
+
 protected:
 
   QString                    m_MessageType;
@@ -182,6 +187,12 @@ protected:
 
   bool                       m_Processed;
   QString                    m_OwnerName;
+
+  // try to keep track of whether a message has been packed for transmission, or unpacked on receive.
+  // this should avoid having to repack messages for each getter/setter, just to keep a consistent state.
+  // FIXME: this should really go to openigtlink somewhere!
+  //        SetMessagePointer() may screw us over quite a bit
+  bool                       m_IsPacked;
 
   std::map<std::string, igtl::TimeStamp::Pointer> m_AccessTimes;
 };

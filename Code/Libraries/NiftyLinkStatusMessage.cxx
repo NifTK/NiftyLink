@@ -49,9 +49,13 @@ void NiftyLinkStatusMessage::SetErrorCode(int code)
   igtl::StatusMessage::Pointer msgPointer;
   msgPointer = static_cast<igtl::StatusMessage *>(m_Message.GetPointer());
 
-  msgPointer->Unpack();
+  if (m_IsPacked)
+  {
+    msgPointer->Unpack();
+    m_IsPacked = false;
+  }
   msgPointer->SetCode(code);
-  msgPointer->Pack();
+  //msgPointer->Pack();
 }
 
 
@@ -66,9 +70,13 @@ int NiftyLinkStatusMessage::GetErrorCode()
   igtl::StatusMessage::Pointer msgPointer;
   msgPointer = static_cast<igtl::StatusMessage *>(m_Message.GetPointer());
 
-  msgPointer->Unpack();
+  if (m_IsPacked)
+  {
+    msgPointer->Unpack();
+    m_IsPacked = false;
+  }
   int code = msgPointer->GetCode();
-  msgPointer->Pack();
+  //msgPointer->Pack();
 
   return code;
 }
@@ -85,9 +93,13 @@ void NiftyLinkStatusMessage::SetErrorSubCode(igtlInt64 subcode)
   igtl::StatusMessage::Pointer msgPointer;
   msgPointer = static_cast<igtl::StatusMessage *>(m_Message.GetPointer());
 
-  msgPointer->Unpack();
+  if (m_IsPacked)
+  {
+    msgPointer->Unpack();
+    m_IsPacked = false;
+  }
   msgPointer->SetSubCode(subcode);
-  msgPointer->Pack();
+  //msgPointer->Pack();
 }
 
 
@@ -102,9 +114,13 @@ igtlInt64 NiftyLinkStatusMessage::GetErrorSubCode()
   igtl::StatusMessage::Pointer msgPointer;
   msgPointer = static_cast<igtl::StatusMessage *>(m_Message.GetPointer());
 
-  msgPointer->Unpack();
+  if (m_IsPacked)
+  {
+    msgPointer->Unpack();
+    m_IsPacked = false;
+  }
   igtlInt64 code = msgPointer->GetSubCode();
-  msgPointer->Pack();
+  //msgPointer->Pack();
 
   return code;
 }
@@ -121,9 +137,13 @@ void NiftyLinkStatusMessage::SetErrorName(QString name)
   igtl::StatusMessage::Pointer msgPointer;
   msgPointer = static_cast<igtl::StatusMessage *>(m_Message.GetPointer());
 
-  msgPointer->Unpack();
+  if (m_IsPacked)
+  {
+    msgPointer->Unpack();
+    m_IsPacked = false;
+  }
   msgPointer->SetErrorName(name.toStdString().c_str());
-  msgPointer->Pack();
+  //msgPointer->Pack();
 }
 
 
@@ -138,9 +158,13 @@ QString NiftyLinkStatusMessage::GetErrorName()
   igtl::StatusMessage::Pointer msgPointer;
   msgPointer = static_cast<igtl::StatusMessage *>(m_Message.GetPointer());
 
-  msgPointer->Unpack();
+  if (m_IsPacked)
+  {
+    msgPointer->Unpack();
+    m_IsPacked = false;
+  }
   QString txt(msgPointer->GetErrorName());
-  msgPointer->Pack();
+  //msgPointer->Pack();
 
   return txt;
 }
@@ -157,9 +181,13 @@ void NiftyLinkStatusMessage::SetStatusString(QString str)
   igtl::StatusMessage::Pointer msgPointer;
   msgPointer = static_cast<igtl::StatusMessage *>(m_Message.GetPointer());
 
-  msgPointer->Unpack();
+  if (m_IsPacked)
+  {
+    msgPointer->Unpack();
+    m_IsPacked = false;
+  }
   msgPointer->SetStatusString(str.toStdString().c_str());
-  msgPointer->Pack();
+  //msgPointer->Pack();
 }
 
 
@@ -174,9 +202,13 @@ QString NiftyLinkStatusMessage::GetStatusString()
   igtl::StatusMessage::Pointer msgPointer;
   msgPointer = static_cast<igtl::StatusMessage *>(m_Message.GetPointer());
 
-  msgPointer->Unpack();
+  if (m_IsPacked)
+  {
+    msgPointer->Unpack();
+    m_IsPacked = false;
+  }
   QString txt(msgPointer->GetStatusString());
-  msgPointer->Pack();
+  //msgPointer->Pack();
 
   return txt;
 }
@@ -193,12 +225,16 @@ void NiftyLinkStatusMessage::InitializeWithTestData(void)
   igtl::StatusMessage::Pointer msgPointer;
   msgPointer = static_cast<igtl::StatusMessage *>(m_Message.GetPointer());
 
-  msgPointer->Unpack();
+  if (m_IsPacked)
+  {
+    msgPointer->Unpack();
+    m_IsPacked = false;
+  }
   msgPointer->SetCode(igtl::StatusMessage::STATUS_OK);
   msgPointer->SetSubCode(igtl::StatusMessage::STATUS_PANICK_MODE);
   msgPointer->SetErrorName("ErrorName");
   msgPointer->SetStatusString("StatusString");
-  msgPointer->Pack();
+  //msgPointer->Pack();
 }
 
 

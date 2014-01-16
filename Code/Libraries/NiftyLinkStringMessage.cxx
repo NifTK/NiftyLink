@@ -49,9 +49,13 @@ void NiftyLinkStringMessage::SetString(QString string)
   igtl::StringMessage::Pointer msgPointer;
   msgPointer = static_cast<igtl::StringMessage *>(m_Message.GetPointer());
 
-  msgPointer->Unpack();
+  if (m_IsPacked)
+  {
+    msgPointer->Unpack();
+    m_IsPacked = false;
+  }
   msgPointer->SetString(string.toStdString().c_str());
-  msgPointer->Pack();
+  //msgPointer->Pack();
 }
 
 
@@ -66,9 +70,13 @@ void NiftyLinkStringMessage::SetEncoding(igtlUint16 enc)
   igtl::StringMessage::Pointer msgPointer;
   msgPointer = static_cast<igtl::StringMessage *>(m_Message.GetPointer());
 
-  msgPointer->Unpack();
+  if (m_IsPacked)
+  {
+    msgPointer->Unpack();
+    m_IsPacked = false;
+  }
   msgPointer->SetEncoding(enc);
-  msgPointer->Pack();
+  //msgPointer->Pack();
 }
 
 
@@ -83,9 +91,13 @@ QString NiftyLinkStringMessage::GetString()
   igtl::StringMessage::Pointer msgPointer;
   msgPointer = static_cast<igtl::StringMessage *>(m_Message.GetPointer());
 
-  msgPointer->Unpack();
+  if (m_IsPacked)
+  {
+    msgPointer->Unpack();
+    m_IsPacked = false;
+  }
   QString txt(msgPointer->GetString());
-  msgPointer->Pack();
+  //msgPointer->Pack();
 
   return txt;
 }
@@ -102,9 +114,13 @@ igtlUint16 NiftyLinkStringMessage::GetEncoding()
   igtl::StringMessage::Pointer msgPointer;
   msgPointer = static_cast<igtl::StringMessage *>(m_Message.GetPointer());
 
-  msgPointer->Unpack();
+  if (m_IsPacked)
+  {
+    msgPointer->Unpack();
+    m_IsPacked = false;
+  }
   igtlUint16 code = msgPointer->GetEncoding();
-  msgPointer->Pack();
+  //msgPointer->Pack();
 
   return code;
 }
@@ -121,9 +137,13 @@ void NiftyLinkStringMessage::InitializeWithTestData(void)
   igtl::StringMessage::Pointer msgPointer;
   msgPointer = static_cast<igtl::StringMessage *>(m_Message.GetPointer());
 
-  msgPointer->Unpack();
+  if (m_IsPacked)
+  {
+    msgPointer->Unpack();
+    m_IsPacked = false;
+  }
   msgPointer->SetString("This is a test string");
-  msgPointer->Pack();
+  //msgPointer->Pack();
 }
 
 
