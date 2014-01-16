@@ -503,6 +503,8 @@ void NiftyLinkSenderProcess::AddMsgToSendQueue(NiftyLinkMessage::Pointer msg)
 {
   // Append message to the sendqueue
   m_QueueMutex.lock();
+  // only keep the most recent message
+  m_SendQue.clear();
   m_SendQue.append(msg);
   m_QueueMutex.unlock();
 }

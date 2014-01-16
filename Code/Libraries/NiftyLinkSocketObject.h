@@ -146,7 +146,10 @@ public:
 
 public slots:
 
-  /// \brief This slot catches the signal with the message to send and it pass it on to the sender thread
+  /// \brief This slot catches the signal with the message to send and it pass it on to the sender thread.
+  /// BEWARE: this will queue only a single message for now, i.e. it will replace a queued message with the
+  /// the one you are passing in. this is an ad-hoc congestion control in case the sender thread cannot keep
+  /// up with the queue rate (i.e. you saturated the link).
   void SendMessage(NiftyLinkMessage::Pointer msg);
 
   /// \brief This slot captures the signal from the listener thread with the newly arrived data

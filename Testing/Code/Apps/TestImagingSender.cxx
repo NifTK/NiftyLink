@@ -224,7 +224,6 @@ void TestImagingSender::SendData(const int& numberOfIterations)
 
   for (int i = 0; i < numberOfIterations; i++)
   {
-    
     // Create a new message
     NiftyLinkImageMessage::Pointer msg(new NiftyLinkImageMessage());
     // Stuff the data into the message
@@ -258,6 +257,13 @@ void TestImagingSender::SendData(const int& numberOfIterations)
 
     // Let's set the fps
     //QTest::qWait(2);
+
+    while (m_NumberSent <= i)
+    {
+      // procrastinate until the message has been sent.
+      // so that the OnMessageSent slot is triggered and we can queue the next one.
+      QApplication::processEvents();
+    }
   }
 }
 
