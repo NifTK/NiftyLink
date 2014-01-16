@@ -125,7 +125,7 @@ void NiftyLinkListenerProcess::StartProcess()
   // Trigger the execution of the main processing loop
   connect(this, SIGNAL(StartWorkingSignal()), this, SLOT(DoProcessing()));
   emit StartWorkingSignal();
-  QCoreApplication::processEvents();
+  //QCoreApplication::processEvents();
 }
 
 
@@ -369,12 +369,13 @@ void NiftyLinkListenerProcess::ListenOnPort(void)
         //qDebug() <<m_TimeOuter->isActive();
 
         emit ClientConnectedSignal();
-        QCoreApplication::processEvents();
+        //QCoreApplication::processEvents();
         m_ClientConnected = true;
       }
 
       while (m_Running == true && m_ClientConnected == true) // if client connected
       {
+        // time check needs signals being delivered
         QCoreApplication::processEvents();
 
         // Quickly check if there's any pending data on the socket
@@ -777,7 +778,7 @@ bool NiftyLinkListenerProcess::ReceiveMessage()
   m_MessageCounter++;
 
   emit MessageReceivedSignal(msg);
-  QCoreApplication::processEvents();
+  //QCoreApplication::processEvents();
 
   return true;
 }
@@ -811,7 +812,7 @@ void NiftyLinkListenerProcess::OnSocketTimeout(void)
     emit ClientDisconnectedSignal(false);
   }
 
-  QCoreApplication::processEvents();
+  //QCoreApplication::processEvents();
 
   m_TimeOuter->stop();
   m_ClientConnected = false;

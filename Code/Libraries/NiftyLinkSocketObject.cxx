@@ -427,7 +427,7 @@ void NiftyLinkSocketObject::SendMessage(NiftyLinkMessage::Pointer msg)
     // will be delivered synchronously, re-entering this method, entering the event loop,
     // deliverying signals, re-entering this method, and so on. crash.
     // BUT: leave it here until https://cmicdev.cs.ucl.ac.uk/trac/ticket/3025 is being worked on!
-    QCoreApplication::processEvents();
+    //QCoreApplication::processEvents();
   }
 }
 
@@ -458,7 +458,7 @@ void NiftyLinkSocketObject::OnConnectedToRemote(void)
     }
 
     emit ConnectedToRemoteSignal();
-    QCoreApplication::processEvents();
+    //QCoreApplication::processEvents();
   }
 }
 
@@ -473,7 +473,7 @@ void NiftyLinkSocketObject::OnCannotConnectToRemote(void)
 
   // This signal notifies the outside world that it isn't possible to connect to the given host
   emit CannotConnectToRemoteSignal();
-  QCoreApplication::processEvents();
+  //QCoreApplication::processEvents();
 }
 
 
@@ -497,7 +497,7 @@ void NiftyLinkSocketObject::OnDisconnectedFromRemote(bool onPort)
 
     emit LostConnectionToRemoteSignal();
 
-    QCoreApplication::processEvents();
+    //QCoreApplication::processEvents();
   }
   // There was a client connecting to the local listener, but we cannot send messages through the socket any more
   else
@@ -507,7 +507,7 @@ void NiftyLinkSocketObject::OnDisconnectedFromRemote(bool onPort)
       emit ShutdownSenderSignal();
     }
 
-    QCoreApplication::processEvents();
+    //QCoreApplication::processEvents();
   }
 
   m_ConnectedToRemote = false;
@@ -537,7 +537,7 @@ void NiftyLinkSocketObject::OnClientConnected(void)
     m_ClientConnected = true;
     emit ClientConnectedSignal();
 
-    QCoreApplication::processEvents();
+    //QCoreApplication::processEvents();
   }
 }
 
@@ -550,12 +550,12 @@ void NiftyLinkSocketObject::OnClientDisconnected(bool onPort)
     if (m_Sender != NULL)
     {
       emit ShutdownSenderSignal();
-      QCoreApplication::processEvents();
+      //QCoreApplication::processEvents();
     }
 
 
     emit ClientDisconnectedSignal();
-    QCoreApplication::processEvents();
+    //QCoreApplication::processEvents();
   }
 
   m_ClientConnected = false;
