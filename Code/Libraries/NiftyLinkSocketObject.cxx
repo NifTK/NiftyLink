@@ -413,11 +413,21 @@ void NiftyLinkSocketObject::SendMessage(NiftyLinkMessage::Pointer msg)
 {
   // Do not add the message to the message queue if the socket is not connected
   // (otherwise messages will pile up and use up memory)
+  // FIXME: this does not seem to work reliably. i can still trigger situations where the
+  //        socket becomes disconnected (various gui bits notice) but more and more data is
+  //        piled up in the send queue until the process dies with out-of-memory.
   if (m_Sender != NULL && msg.operator != (NULL) && (m_ClientConnected || m_ConnectedToRemote) )
   {
+    msg->Pack();
     //m_Sender->AddMsgToSendQueue(msg);
     emit MessageToSendSignal(msg);
-    QCoreApplication::processEvents();
+
+    // do not call processEvents()! not ever, never!
+    // this will end up overflowing the call stack at some point because some signals
+    // will be delivered synchronously, re-entering this method, entering the event loop,
+    // deliverying signals, re-entering this method, and so on. crash.
+    // BUT: leave it here until https://cmicdev.cs.ucl.ac.uk/trac/ticket/3025 is being worked on!
+    //QCoreApplication::processEvents();
   }
 }
 
@@ -448,7 +458,7 @@ void NiftyLinkSocketObject::OnConnectedToRemote(void)
     }
 
     emit ConnectedToRemoteSignal();
-    QCoreApplication::processEvents();
+    //QCoreApplication::processEvents();
   }
 }
 
@@ -463,7 +473,7 @@ void NiftyLinkSocketObject::OnCannotConnectToRemote(void)
 
   // This signal notifies the outside world that it isn't possible to connect to the given host
   emit CannotConnectToRemoteSignal();
-  QCoreApplication::processEvents();
+  //QCoreApplication::processEvents();
 }
 
 
@@ -487,7 +497,7 @@ void NiftyLinkSocketObject::OnDisconnectedFromRemote(bool onPort)
 
     emit LostConnectionToRemoteSignal();
 
-    QCoreApplication::processEvents();
+    //QCoreApplication::processEvents();
   }
   // There was a client connecting to the local listener, but we cannot send messages through the socket any more
   else
@@ -497,7 +507,7 @@ void NiftyLinkSocketObject::OnDisconnectedFromRemote(bool onPort)
       emit ShutdownSenderSignal();
     }
 
-    QCoreApplication::processEvents();
+    //QCoreApplication::processEvents();
   }
 
   m_ConnectedToRemote = false;
@@ -527,7 +537,7 @@ void NiftyLinkSocketObject::OnClientConnected(void)
     m_ClientConnected = true;
     emit ClientConnectedSignal();
 
-    QCoreApplication::processEvents();
+    //QCoreApplication::processEvents();
   }
 }
 
@@ -540,12 +550,12 @@ void NiftyLinkSocketObject::OnClientDisconnected(bool onPort)
     if (m_Sender != NULL)
     {
       emit ShutdownSenderSignal();
-      QCoreApplication::processEvents();
+      //QCoreApplication::processEvents();
     }
 
 
     emit ClientDisconnectedSignal();
-    QCoreApplication::processEvents();
+    //QCoreApplication::processEvents();
   }
 
   m_ClientConnected = false;
