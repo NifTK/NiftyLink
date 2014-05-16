@@ -139,7 +139,7 @@ OPTION(NIFTYLINK_CHECK_COVERAGE "Enable/Disable code coverage checking." OFF)
 # Variables that get compiled into C++ code. 
 ######################################################################
 SET(NIFTYLINK_NAME "NiftyLink" CACHE STRING "Full name of platform." FORCE )
-SET(NIFTYLINK_COPYRIGHT "Copyright (C) 2008-2012 University College London" CACHE STRING "Copyright string." FORCE )
+SET(NIFTYLINK_COPYRIGHT "Copyright (C) 2008-2014 University College London" CACHE STRING "Copyright string." FORCE )
 SET(NIFTYLINK_ORIGIN_URL "http://cmic.cs.ucl.ac.uk/" CACHE STRING "URL of originating institution." FORCE )
 SET(NIFTYLINK_ORIGIN_SHORT_TEXT "CMIC" CACHE STRING "Short name of originating institution." FORCE)
 SET(NIFTYLINK_ORIGIN_LONG_TEXT "Centre For Medical Image Computing" CACHE STRING "Full name of originating institution." FORCE)
