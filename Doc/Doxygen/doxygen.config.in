@@ -286,7 +286,7 @@ EXCLUDE_PATTERNS      =
 # directories that contain example code fragments that are included (see 
 # the \include command). 
 
-EXAMPLE_PATH     = @CMAKE_SOURCE_DIR@/LICENSE.txt \
+EXAMPLE_PATH     = @CMAKE_BINARY_DIR@/LICENSE.txt \
                    @CMAKE_SOURCE_DIR@/Doc/License_OpenIGTLink.txt \
                    @CMAKE_SOURCE_DIR@/Doc/License_Qt.txt \
                    @CMAKE_SOURCE_DIR@/Doc/License_QsLog.txt

@@ -17,7 +17,7 @@
 # However, be warned, you need to set CMAKE_INSTALL_PREFIX manually.
 ######################################################################
 SET(NIFTYLINK_VERSION_MAJOR 14 CACHE STRING "Major version number" )
-SET(NIFTYLINK_VERSION_MINOR 04 CACHE STRING "Minor version number" )
+SET(NIFTYLINK_VERSION_MINOR 05 CACHE STRING "Minor version number" )
 SET(NIFTYLINK_VERSION_PATCH 0 CACHE STRING "Patch version number" )
 MARK_AS_ADVANCED(NIFTYLINK_VERSION_MAJOR)
 MARK_AS_ADVANCED(NIFTYLINK_VERSION_MINOR)
@@ -139,7 +139,7 @@ OPTION(NIFTYLINK_CHECK_COVERAGE "Enable/Disable code coverage checking." OFF)
 # Variables that get compiled into C++ code. 
 ######################################################################
 SET(NIFTYLINK_NAME "NiftyLink" CACHE STRING "Full name of platform." FORCE )
-SET(NIFTYLINK_COPYRIGHT "Copyright (C) 2008-2012 University College London" CACHE STRING "Copyright string." FORCE )
+SET(NIFTYLINK_COPYRIGHT "Copyright (C) 2008-2014 University College London" CACHE STRING "Copyright string." FORCE )
 SET(NIFTYLINK_ORIGIN_URL "http://cmic.cs.ucl.ac.uk/" CACHE STRING "URL of originating institution." FORCE )
 SET(NIFTYLINK_ORIGIN_SHORT_TEXT "CMIC" CACHE STRING "Short name of originating institution." FORCE)
 SET(NIFTYLINK_ORIGIN_LONG_TEXT "Centre For Medical Image Computing" CACHE STRING "Full name of originating institution." FORCE)
@@ -147,7 +147,7 @@ SET(NIFTYLINK_WIKI_URL "https://cmicdev.cs.ucl.ac.uk/trac/wiki/MidasPlatform" CA
 SET(NIFTYLINK_WIKI_TEXT "wiki" CACHE STRING "Wiki text" FORCE )
 SET(NIFTYLINK_DASHBOARD_URL "https://cmicdev.cs.ucl.ac.uk/cdash/index.php?project=UCLToolkit" CACHE STRING "Dashboard URL" FORCE)
 SET(NIFTYLINK_DASHBOARD_TEXT "dashboard" CACHE STRING "Dashboard text" FORCE)
-SET(NIFTYLINK_DOCUMENTATION_URL "http://cmicdev.cs.ucl.ac.uk/NiftyLink/html/index.html" CACHE STRING "Documentation URL" FORCE)
+SET(NIFTYLINK_DOCUMENTATION_URL "http://cmic.cs.ucl.ac.uk/platform/niftk/current/NiftyLink/index.html" CACHE STRING "Documentation URL" FORCE)
 SET(NIFTYLINK_DOCUMENTATION_TEXT "doxygen" CACHE STRING "Documentation text" FORCE)
 SET(NIFTYLINK_USER_CONTACT "https://www.mailinglists.ucl.ac.uk/mailman/listinfo/niftk-users" CACHE STRING "Contact address for users." FORCE )
 SET(NIFTYLINK_VERSION_STRING "${NIFTYLINK_VERSION_MAJOR}.${NIFTYLINK_VERSION_MINOR}.${NIFTYLINK_VERSION_PATCH}" CACHE STRING "String to describe fully named version" FORCE)

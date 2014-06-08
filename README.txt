@@ -4,7 +4,7 @@ Welcome
 Welcome to NiftyLink version @NIFTYLINK_VERSION_STRING@, a small messaging library
 to facilitate communication over OpenIGTLink.
  
-For all questions, please contact: 
+For all questions, please join:
 
 @NIFTYLINK_USER_CONTACT@
 
