@@ -116,19 +116,22 @@ static mapStrMsgType strMsgTypes;
 /// \brief Initialises the types map.
 extern "C" NIFTYLINKCOMMON_WINEXPORT void InitMessageTypes(mapStrMsgType &types);
 
-/// \brief Simple function which validates if an IP address is valid or not
+/// \brief Simple function which validates if an IP address is valid or not,
+/// by checking for 4 numbers [0-255] separated by dot.
 extern "C++" NIFTYLINKCOMMON_WINEXPORT bool ValidateIp(const QString &inputIP);
 
-/// \brief This function which returns the local IP address
+/// \brief This function returns the local IP address.
 extern "C++" NIFTYLINKCOMMON_WINEXPORT QString GetLocalHostAddress(void);
 
-/// \brief This function resolves a given hostname to IP
+/// \brief This function resolves a given hostname to IP.
 extern "C++" NIFTYLINKCOMMON_WINEXPORT QString ResolveHostName(const QString &input);
 
-/// \brief This function creates a random 4x4 test matrix
+/// \brief This function creates a random 4x4 test matrix.
 extern "C++" NIFTYLINKCOMMON_WINEXPORT void CreateRandomTransformMatrix(igtl::Matrix4x4& matrix);
 
 /// \brief Returns the difference in nanoseconds.
+/// \param timeA must be not-NULL
+/// \param timeB must be not-NULL
 extern "C++" NIFTYLINKCOMMON_WINEXPORT igtlUint64 GetDifferenceInNanoSeconds(igtl::TimeStamp* timeA, igtl::TimeStamp* timeB);
 
 #endif //__NiftyLinkUtils_h
