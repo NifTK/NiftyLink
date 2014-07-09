@@ -10,18 +10,21 @@
   See LICENSE.txt in the top level directory for details.
 =============================================================================*/
 
+#include "TestImagingSender.h"
+
+#include <NiftyLinkSocketObject.h>
+#include <NiftyLinkImageMessage.h>
+#include <NiftyLinkTrackingDataMessage.h>
+
+#include <igtlTimeStamp.h>
+
 #include <QObject>
 #include <QApplication>
 #include <QtGui/QImage>
 #include <QUrl>
 #include <QTest>
-#include <iostream>
-#include <igtlTimeStamp.h>
-#include "NiftyLinkSocketObject.h"
-#include "NiftyLinkImageMessage.h"
-#include "NiftyLinkTrackingDataMessage.h"
-#include "TestImagingSender.h"
 
+#include <iostream>
 #include <string>
 #include <sstream>
 #include <fstream>

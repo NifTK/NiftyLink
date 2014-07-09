@@ -11,9 +11,12 @@
 =============================================================================*/
 
 #include "NiftyLinkUtilsTests.h"
-#include "stdlib.h"
+
+#include <NiftyLinkUtils.h>
+
 #include <QDebug>
-#include "NiftyLinkUtils.h"
+
+#include <stdlib.h>
 
 void UtilsTests::InitTestCase()
 {

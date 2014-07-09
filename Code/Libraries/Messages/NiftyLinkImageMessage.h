@@ -13,12 +13,13 @@ See LICENSE.txt in the top level directory for details.
 #ifndef NiftyLinkImageMessage_h
 #define NiftyLinkImageMessage_h
 
+#include "NiftyLinkCommonWin32ExportHeader.h"
+
 #include <QtGui/QImage>
 #include <QtGui/QPainter>
 
 #include "NiftyLinkMessage.h"
-#include "NiftyLinkUtils.h"
-#include "NiftyLinkCommonWin32ExportHeader.h"
+#include <Common/NiftyLinkUtils.h>
 
 /**
 * \class NiftyLinkImageMessage

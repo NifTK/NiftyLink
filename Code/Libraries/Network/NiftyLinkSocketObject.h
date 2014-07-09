@@ -13,11 +13,11 @@ See LICENSE.txt in the top level directory for details.
 #ifndef NiftyLinkSocketObject_h
 #define NiftyLinkSocketObject_h
 
+#include "NiftyLinkCommonWin32ExportHeader.h"
+
+#include "NiftyLinkProcessBase.h"
 #include "NiftyLinkSenderProcess.h"
 #include "NiftyLinkListenerProcess.h"
-#include "NiftyLinkProcessBase.h"
-
-#include "NiftyLinkCommonWin32ExportHeader.h"
 
 #if defined(_WIN32) && !defined(__CYGWIN__)
 #include <windows.h>

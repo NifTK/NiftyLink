@@ -13,10 +13,13 @@
 #ifndef TestImagingReceiver_h
 #define TestImagingReceiver_h
 
+#include <NiftyLinkSocketObject.h>
+
+#include <igtlTimeStamp.h>
+
 #include <QObject>
 #include <QtGui/QImage>
-#include <igtlTimeStamp.h>
-#include "NiftyLinkSocketObject.h"
+
 
 class TestImagingReceiver : public QObject
 {

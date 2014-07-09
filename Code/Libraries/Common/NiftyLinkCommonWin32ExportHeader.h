@@ -12,7 +12,7 @@
 #ifndef NiftyLinkCommonWin32ExportHeader_h
 #define NiftyLinkCommonWin32ExportHeader_h
 
-#include "NiftyLinkConfig.h"
+#include <NiftyLinkConfig.h>
 
 #if (defined(_WIN32) || defined(WIN32)) && !defined(LINK_STATIC)
 #ifdef NIFTYLINKCOMMON_WINDOWS_EXPORT

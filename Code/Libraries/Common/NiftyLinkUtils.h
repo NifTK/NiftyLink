@@ -13,7 +13,6 @@ See LICENSE.txt in the top level directory for details.
 #ifndef NiftyLinkUtils_h
 #define NiftyLinkUtils_h
 
-#include "NiftyLinkConfig.h"
 #include "NiftyLinkCommonWin32ExportHeader.h"
 
 #include <QString>

@@ -13,6 +13,8 @@ See LICENSE.txt in the top level directory for details.
 #ifndef NiftyLinkMessage_h
 #define NiftyLinkMessage_h
 
+#include <NiftyLinkCommonWin32ExportHeader.h>
+
 // Qt related issues
 #include <QtCore>
 #include <QString>
@@ -21,26 +23,25 @@ See LICENSE.txt in the top level directory for details.
 #include <QExplicitlySharedDataPointer>
 
 // OpenIGTLink message types
-#include "igtlBindMessage.h"
-#include "igtlColorTableMessage.h"
-#include "igtlImageMessage.h"
-#include "igtlImageMetaMessage.h"
-#include "igtlLabelMetaMessage.h"
-#include "igtlPointMessage.h"
-#include "igtlPositionMessage.h"
-#include "igtlQuaternionTrackingDataMessage.h"
-#include "igtlSensorMessage.h"
-#include "igtlStatusMessage.h"
-#include "igtlStringMessage.h"
-#include "igtlTrackingDataMessage.h"
-#include "igtlTrajectoryMessage.h"
-#include "igtlTransformMessage.h"
+#include <igtlBindMessage.h>
+#include <igtlColorTableMessage.h>
+#include <igtlImageMessage.h>
+#include <igtlImageMetaMessage.h>
+#include <igtlLabelMetaMessage.h>
+#include <igtlPointMessage.h>
+#include <igtlPositionMessage.h>
+#include <igtlQuaternionTrackingDataMessage.h>
+#include <igtlSensorMessage.h>
+#include <igtlStatusMessage.h>
+#include <igtlStringMessage.h>
+#include <igtlTrackingDataMessage.h>
+#include <igtlTrajectoryMessage.h>
+#include <igtlTransformMessage.h>
 
 // OpenIGTLink utils
-#include "igtlOSUtil.h"
-#include "igtlTimeStamp.h"
+#include <igtlOSUtil.h>
+#include <igtlTimeStamp.h>
 
-#include "NiftyLinkCommonWin32ExportHeader.h"
 
 /**
 * \class NiftyLinkMessage
@@ -65,7 +66,7 @@ public:
   /// \brief Basic constructor which generates a timestamp and derives the message ID from it.
   NiftyLinkMessage(void);
 
-  /// \brief Basic destructor
+  /// \brief Basic destructor.
   virtual ~NiftyLinkMessage(void);
 
   /// \brief Basic copy constructor required for this data type

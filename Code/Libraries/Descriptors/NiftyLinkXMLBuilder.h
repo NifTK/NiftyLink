@@ -13,7 +13,7 @@ See LICENSE.txt in the top level directory for details.
 #ifndef NiftyLinkXMLBuilder_h
 #define NiftyLinkXMLBuilder_h
 
-#include "NiftyLinkCommonWin32ExportHeader.h"
+#include <NiftyLinkCommonWin32ExportHeader.h>
 
 #include <QString>
 #include <QStringList>

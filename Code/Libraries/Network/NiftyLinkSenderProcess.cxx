@@ -11,7 +11,7 @@
 =============================================================================*/
 
 #include "NiftyLinkSenderProcess.h"
-#include "igtlOSUtil.h"
+#include <igtlOSUtil.h>
 
 //-----------------------------------------------------------------------------
 NiftyLinkSenderProcess::NiftyLinkSenderProcess(QObject *parent)

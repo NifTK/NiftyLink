@@ -13,31 +13,31 @@ See LICENSE.txt in the top level directory for details.
 #ifndef NiftyLinkProcessBase_h
 #define NiftyLinkProcessBase_h
 
-//Qt related includes
+#include "NiftyLinkCommonWin32ExportHeader.h"
+
+// OpenIGTLink includes
+#include <igtlSocket.h>
+#include <igtlServerSocket.h>
+
+// NiftyLink includes
+#include <NiftyLinkMessage.h>
+#include <NiftyLinkTransformMessage.h>
+#include <NiftyLinkTrackingDataMessage.h>
+#include <NiftyLinkImageMessage.h>
+#include <NiftyLinkStatusMessage.h>
+#include <NiftyLinkStringMessage.h>
+#include <NiftyLinkUtils.h>
+
+// Qt related includes
 #include <QtCore>
 #include <QObject>
 #include <QDebug>
 #include <QMutex>
 #include <QTimer>
 
-//OpenIGTLink includes
-#include "igtlSocket.h"
-#include "igtlServerSocket.h"
-
-//NiftyLink includes
-#include "NiftyLinkMessage.h"
-#include "NiftyLinkTransformMessage.h"
-#include "NiftyLinkTrackingDataMessage.h"
-#include "NiftyLinkImageMessage.h"
-#include "NiftyLinkStatusMessage.h"
-#include "NiftyLinkStringMessage.h"
-#include "NiftyLinkUtils.h"
-
-//Logging
-#include "QsLog.h"
-#include "QsLogDest.h"
-
-#include "NiftyLinkCommonWin32ExportHeader.h"
+// Logging
+#include <QsLog.h>
+#include <QsLogDest.h>
 
 /**
 * \class NiftyLinkProcessBase

@@ -26,31 +26,31 @@ INCLUDE(${QT_USE_FILE})
 
 SET(niftylink_SRCS
 Common/NiftyLinkUtils.cxx
-Common/NiftyLinkXMLBuilder.cxx
 Common/QsDebugOutput.cxx
 Common/QsLog.cxx
 Common/QsLogDest.cxx
-NiftyLinkMessage.cxx
-NiftyLinkProcessBase.cxx
-NiftyLinkSenderProcess.cxx
-NiftyLinkListenerProcess.cxx
-NiftyLinkSocketObject.cxx
-NiftyLinkTransformMessage.cxx
-NiftyLinkImageMessage.cxx
-NiftyLinkStatusMessage.cxx
-NiftyLinkStringMessage.cxx
-NiftyLinkTrackingDataMessage.cxx
+Descriptors/NiftyLinkXMLBuilder.cxx
+Messages/NiftyLinkMessage.cxx
+Messages/NiftyLinkTransformMessage.cxx
+Messages/NiftyLinkImageMessage.cxx
+Messages/NiftyLinkStatusMessage.cxx
+Messages/NiftyLinkStringMessage.cxx
+Messages/NiftyLinkTrackingDataMessage.cxx
+Network/NiftyLinkProcessBase.cxx
+Network/NiftyLinkSenderProcess.cxx
+Network/NiftyLinkListenerProcess.cxx
+Network/NiftyLinkSocketObject.cxx
 )
 
 #########################
 # Does need moc.
 #########################
 SET(niftylink_MOC_HDRS
-Common/NiftyLinkXMLBuilder.h
-NiftyLinkProcessBase.h
-NiftyLinkSenderProcess.h
-NiftyLinkListenerProcess.h
-NiftyLinkSocketObject.h
+Descriptors/NiftyLinkXMLBuilder.h
+Network/NiftyLinkProcessBase.h
+Network/NiftyLinkSenderProcess.h
+Network/NiftyLinkListenerProcess.h
+Network/NiftyLinkSocketObject.h
 )
 
 #########################
@@ -62,12 +62,12 @@ Common/NiftyLinkCommonWin32ExportHeader.h
 Common/QsDebugOutput.h
 Common/QsLog.h
 Common/QsLogDest.h
-NiftyLinkMessage.h
-NiftyLinkTransformMessage.h
-NiftyLinkImageMessage.h
-NiftyLinkTrackingDataMessage.h
-NiftyLinkStringMessage.h
-NiftyLinkStatusMessage.h
+Messages/NiftyLinkMessage.h
+Messages/NiftyLinkTransformMessage.h
+Messages/NiftyLinkImageMessage.h
+Messages/NiftyLinkTrackingDataMessage.h
+Messages/NiftyLinkStringMessage.h
+Messages/NiftyLinkStatusMessage.h
 )
 
 #########################

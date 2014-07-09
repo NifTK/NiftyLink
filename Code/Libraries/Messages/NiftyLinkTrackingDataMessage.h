@@ -13,9 +13,10 @@ See LICENSE.txt in the top level directory for details.
 #ifndef NiftyLinkTrackingDataMessage_h
 #define NiftyLinkTrackingDataMessage_h
 
-#include "NiftyLinkMessage.h"
-#include "NiftyLinkUtils.h"
 #include "NiftyLinkCommonWin32ExportHeader.h"
+
+#include "NiftyLinkMessage.h"
+#include <NiftyLinkUtils.h>
 
 /**
 * \class NiftyLinkTrackingDataMessage
