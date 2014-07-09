@@ -12,6 +12,9 @@ See LICENSE.txt in the top level directory for details.
 
 #include "NiftyLinkXMLBuilder.h"
 
+#include <QDomDocument>
+
+//-----------------------------------------------------------------------------
 QString XMLBuilderBase::ParseDescriptorType(QString xmlString)
 {
   QDomDocument xmlDoco;
@@ -31,19 +34,21 @@ QString XMLBuilderBase::ParseDescriptorType(QString xmlString)
   }
 }
 
-//~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
+//-----------------------------------------------------------------------------
 ClientDescriptorXMLBuilder::ClientDescriptorXMLBuilder(const ClientDescriptorXMLBuilder &other)
   : XMLBuilderBase(other)
+,  m_DeviceName(other.m_DeviceName)
+,  m_DeviceType(other.m_DeviceType)
+,  m_CommType(other.m_CommType)
+,  m_PortName(other.m_PortName)
+,  m_ClientIP(other.m_ClientIP)
+,  m_ClientPort(other.m_ClientPort)
 {
-  m_DeviceName = other.m_DeviceName;
-  m_DeviceType = other.m_DeviceType;
-  m_CommType = other.m_CommType;
-  m_PortName = other.m_PortName;
-  m_ClientIP = other.m_ClientIP;
-  m_ClientPort = other.m_ClientPort;
 }
 
+
+//-----------------------------------------------------------------------------
 ClientDescriptorXMLBuilder& ClientDescriptorXMLBuilder::operator=(const ClientDescriptorXMLBuilder &other)
 {
   XMLBuilderBase::operator =(other);
@@ -59,6 +64,7 @@ ClientDescriptorXMLBuilder& ClientDescriptorXMLBuilder::operator=(const ClientDe
 }
 
 
+//-----------------------------------------------------------------------------
 QString ClientDescriptorXMLBuilder::GetXMLAsString(void)
 {
   QDomDocument domDocument("ClientDescriptor");
@@ -95,6 +101,8 @@ QString ClientDescriptorXMLBuilder::GetXMLAsString(void)
   }
 }
 
+
+//-----------------------------------------------------------------------------
 void ClientDescriptorXMLBuilder::SetXMLString(QString desc)
 {
   m_DescriptorString.clear();
@@ -150,8 +158,8 @@ void ClientDescriptorXMLBuilder::SetXMLString(QString desc)
   }
 }
 
-//~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~//
 
+//-----------------------------------------------------------------------------
 CommandDescriptorXMLBuilder::CommandDescriptorXMLBuilder(const CommandDescriptorXMLBuilder &other)
   : XMLBuilderBase(other)
 {
@@ -163,6 +171,8 @@ CommandDescriptorXMLBuilder::CommandDescriptorXMLBuilder(const CommandDescriptor
   m_ParameterValues = other.m_ParameterValues;
 }
 
+
+//-----------------------------------------------------------------------------
 CommandDescriptorXMLBuilder & CommandDescriptorXMLBuilder::operator=(const CommandDescriptorXMLBuilder &other)
 {
   XMLBuilderBase::operator =(other);
@@ -178,6 +188,7 @@ CommandDescriptorXMLBuilder & CommandDescriptorXMLBuilder::operator=(const Comma
 }
 
 
+//-----------------------------------------------------------------------------
 void CommandDescriptorXMLBuilder::AddParameter(QString pName, QString pType, QString pVal)
 {
   m_ParameterNames.append(pName);
@@ -186,6 +197,8 @@ void CommandDescriptorXMLBuilder::AddParameter(QString pName, QString pType, QSt
   m_NumOfParameters++;
 }
 
+
+//-----------------------------------------------------------------------------
 QString CommandDescriptorXMLBuilder::GetXMLAsString(void)
 {
   QDomDocument domDocument("CommandDescriptor");
@@ -225,6 +238,8 @@ QString CommandDescriptorXMLBuilder::GetXMLAsString(void)
   }
 }
 
+
+//-----------------------------------------------------------------------------
 void CommandDescriptorXMLBuilder::SetXMLString(QString desc)
 {
   m_DescriptorString.clear();
@@ -272,7 +287,9 @@ void CommandDescriptorXMLBuilder::SetXMLString(QString desc)
   }
 }
 
-QString CommandDescriptorXMLBuilder::GetParameterName(int i)
+
+//-----------------------------------------------------------------------------
+QString CommandDescriptorXMLBuilder::GetParameterName(int i) const
 {
   if (i >= m_ParameterNames.count())
   {
@@ -290,7 +307,9 @@ QString CommandDescriptorXMLBuilder::GetParameterName(int i)
   }
 }
 
-QString CommandDescriptorXMLBuilder::GetParameterType(int i)
+
+//-----------------------------------------------------------------------------
+QString CommandDescriptorXMLBuilder::GetParameterType(int i) const
 {
   if (i >= m_ParameterTypes.count())
   {
@@ -308,7 +327,9 @@ QString CommandDescriptorXMLBuilder::GetParameterType(int i)
   }
 }
 
-QString CommandDescriptorXMLBuilder::GetParameterValue(int i)
+
+//-----------------------------------------------------------------------------
+QString CommandDescriptorXMLBuilder::GetParameterValue(int i) const
 {
   if (i >= m_ParameterValues.count())
   {
@@ -326,7 +347,9 @@ QString CommandDescriptorXMLBuilder::GetParameterValue(int i)
   }
 }
 
-void CommandDescriptorXMLBuilder::GetParameterAllFields(int i, QString &pName, QString &pType, QString &pValue)
+
+//-----------------------------------------------------------------------------
+void CommandDescriptorXMLBuilder::GetParameterAllFields(int i, QString &pName, QString &pType, QString &pValue) const
 {
   if (i >= m_ParameterValues.count())
   {
@@ -366,29 +389,36 @@ void CommandDescriptorXMLBuilder::GetParameterAllFields(int i, QString &pName, Q
 }
 
 
-QStringList CommandDescriptorXMLBuilder::GetParameterNames(void)
+//-----------------------------------------------------------------------------
+QStringList CommandDescriptorXMLBuilder::GetParameterNames(void) const
 {
   return m_ParameterNames;
 }
 
-QStringList CommandDescriptorXMLBuilder::GetParameterTypes(void)
+
+//-----------------------------------------------------------------------------
+QStringList CommandDescriptorXMLBuilder::GetParameterTypes(void) const
 {
   return m_ParameterTypes;
 }
 
-QStringList CommandDescriptorXMLBuilder::GetParameterValues(void)
+
+//-----------------------------------------------------------------------------
+QStringList CommandDescriptorXMLBuilder::GetParameterValues(void) const
 {
   return m_ParameterValues;
 }
 
-//~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~//
 
+//-----------------------------------------------------------------------------
 TrackerClientDescriptor::TrackerClientDescriptor(const TrackerClientDescriptor &other)
   : ClientDescriptorXMLBuilder(other)
 {
   m_TrackerTools = other.m_TrackerTools;
 }
 
+
+//-----------------------------------------------------------------------------
 TrackerClientDescriptor & TrackerClientDescriptor::operator=(const TrackerClientDescriptor &other)
 {
   ClientDescriptorXMLBuilder::operator=(other);
@@ -397,6 +427,8 @@ TrackerClientDescriptor & TrackerClientDescriptor::operator=(const TrackerClient
   return *this;
 }
 
+
+//-----------------------------------------------------------------------------
 QString TrackerClientDescriptor::GetXMLAsString(void)
 {
   QDomDocument domDocument("TrackerClientDescriptor");
@@ -443,6 +475,8 @@ QString TrackerClientDescriptor::GetXMLAsString(void)
   }
 }
 
+
+//-----------------------------------------------------------------------------
 void TrackerClientDescriptor::SetXMLString(QString desc)
 {
   m_DescriptorString.clear();
