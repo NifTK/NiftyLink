@@ -23,8 +23,6 @@ See LICENSE.txt in the top level directory for details.
 #include <igtlPolyDataMessage.h>
 #include <igtlTrajectoryMessage.h>
 
-class NiftyLinkListenerProcessTester;
-
 /**
 * \class NiftyLinkListenerProcess
 * \brief Class for listening on a given local port to receive messages from a
@@ -121,20 +119,6 @@ private:
   bool                        m_ClientConnected;
   bool                        m_TimeOuterInitialized;
   int                         m_ListenInterval;
-};
-
-/**
-* \class NiftyLinkListenerProcessTester
-* \brief Class derived from NiftyLinkListenerProcess to enable unit testing.
-*/
-class NIFTYLINKCOMMON_WINEXPORT NiftyLinkListenerProcessTester : public NiftyLinkListenerProcess
-{
-  Q_OBJECT
-
-  friend class TestListenerProcess_General;
-
-  NiftyLinkListenerProcessTester(QObject *parent = 0)
-    : NiftyLinkListenerProcess(parent) {}
 };
 
 #endif // NiftyLinkListenerProcess_h

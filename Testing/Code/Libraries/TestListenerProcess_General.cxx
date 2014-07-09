@@ -15,6 +15,7 @@
 #include <QSettings>
 #include <QDateTime>
 #include "TestListenerProcess_General.h"
+#include <NiftyLinkListenerProcessTester.h>
 
 #include <cmath>
 

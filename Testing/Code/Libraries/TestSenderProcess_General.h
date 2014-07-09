@@ -31,7 +31,8 @@
 #include "QsLog.h"
 #include "QsLogDest.h"
 
-#include "NiftyLinkSenderProcess.h"
+#include <NiftyLinkSenderProcess.h>
+#include <NiftyLinkSenderProcessTester.h>
 
 #include <cstdlib>
 #include <cstdio>

@@ -217,6 +217,7 @@ TestSenderProcess_General.cxx
 )
 
 SET(SenderProcess_General_HDRS
+Network/NiftyLinkSenderProcessTester.h
 TestSenderProcess_General.h
 )
 
@@ -239,6 +240,7 @@ TestListenerProcess_General.cxx
 )
 
 SET(ListenerProcess_General_HDRS
+Network/NiftyLinkListenerProcessTester.h
 TestListenerProcess_General.h
 )
 

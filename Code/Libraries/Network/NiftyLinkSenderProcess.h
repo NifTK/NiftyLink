@@ -15,8 +15,6 @@ See LICENSE.txt in the top level directory for details.
 
 #include "NiftyLinkProcessBase.h"
 
-class NiftyLinkSenderProcessTester;
-
 /**
 * \class NiftyLinkSenderProcess
 * \brief Class for sending messages to a remote host via OpenIGTLink socket in a separate Process.
@@ -110,20 +108,6 @@ private:
 
   QList<NiftyLinkMessage::Pointer> m_SendQue;
   QMutex                           m_QueueMutex;
-};
-
-/**
-* \class NiftyLinkSenderProcessTester
-* \brief Class derived from NiftyLinkSenderProcess to enable unit testing.
-*/
-class NIFTYLINKCOMMON_WINEXPORT NiftyLinkSenderProcessTester : public NiftyLinkSenderProcess
-{
-  Q_OBJECT
-
-  friend class TestSenderProcess_General;
-
-  NiftyLinkSenderProcessTester(QObject *parent = 0)
-    : NiftyLinkSenderProcess(parent) {}
 };
 
 #endif // NiftyLinkSenderProcess_h
