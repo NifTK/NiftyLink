@@ -115,8 +115,8 @@ void NiftyLinkSocketObject::InitThreads()
   m_Sender->SetMutex(m_Mutex);
   m_Listener->SetMutex(m_Mutex);
 
-  m_SenderHostThread = new QThreadEx();
-  m_ListenerHostThread = new QThreadEx();
+  m_SenderHostThread = new NiftyLinkQThread();
+  m_ListenerHostThread = new NiftyLinkQThread();
 
   m_Sender->moveToThread(m_SenderHostThread);
   m_Listener->moveToThread(m_ListenerHostThread);

@@ -18,6 +18,7 @@ See LICENSE.txt in the top level directory for details.
 #include "NiftyLinkProcessBase.h"
 #include "NiftyLinkSenderProcess.h"
 #include "NiftyLinkListenerProcess.h"
+#include <NiftyLinkQThread.h>
 
 #if defined(_WIN32) && !defined(__CYGWIN__)
 #include <windows.h>
@@ -207,8 +208,8 @@ private:
   NiftyLinkSenderProcess   * m_Sender;
   NiftyLinkListenerProcess * m_Listener;
 
-  QThreadEx            * m_SenderHostThread;
-  QThreadEx            * m_ListenerHostThread;
+  NiftyLinkQThread     * m_SenderHostThread;
+  NiftyLinkQThread     * m_ListenerHostThread;
 
   bool                   m_Active;
   bool                   m_Initialized;

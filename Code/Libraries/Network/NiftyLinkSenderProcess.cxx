@@ -11,6 +11,7 @@
 =============================================================================*/
 
 #include "NiftyLinkSenderProcess.h"
+#include <NiftyLinkQThread.h>
 #include <igtlOSUtil.h>
 
 //-----------------------------------------------------------------------------
@@ -261,10 +262,10 @@ void NiftyLinkSenderProcess::OnKeepAliveTimeout(void)
   m_QueueMutex.unlock();
   if (queueisempty)
   {
-    QThreadEx * p = NULL;
+    NiftyLinkQThread * p = NULL;
     try
     {
-      p = dynamic_cast<QThreadEx *>(QThread::currentThread());
+      p = dynamic_cast<NiftyLinkQThread *>(QThread::currentThread());
 
 //      QLOG_DEBUG() << objectName() << "Before keep alive check: Send queue to host "
 //                   << QString::fromStdString(m_Hostname) << ", port " << m_Port << ", is empty, so sleeping for "
@@ -274,7 +275,7 @@ void NiftyLinkSenderProcess::OnKeepAliveTimeout(void)
     }
     catch (std::exception &e)
     {
-      qDebug() << "Type cast error. Always run this process from QThreadEx. Exception: " << e.what();
+      qDebug() << "Type cast error. Always run this process from NiftyLinkQThread. Exception: " << e.what();
     }
 
     bool rval;
@@ -373,19 +374,19 @@ void NiftyLinkSenderProcess::DoProcessing(void)
     m_QueueMutex.unlock();
     if (queueisempty)
     {
-      /*QThreadEx * p = NULL;
+      /*NiftyLinkQThread * p = NULL;
       try
       {
         QLOG_DEBUG() << objectName() <<": " << "Send queue to host "
                      << QString::fromStdString(m_Hostname) << ", port " << m_Port << ", is empty, so sleeping for "
                      << sleepInterval << " ms\n";
 
-        p = dynamic_cast<QThreadEx *>(QThread::currentThread());
+        p = dynamic_cast<NiftyLinkQThread *>(QThread::currentThread());
         //p->MsleepEx(sleepInterval);
       }
       catch (std::exception &e)
       {
-        qDebug() <<"Type cast error. Always run this process from QThreadEx. Exception: " <<e.what();
+        qDebug() <<"Type cast error. Always run this process from NiftyLinkQThread. Exception: " <<e.what();
       }*/
 
       QCoreApplication::processEvents();

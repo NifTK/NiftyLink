@@ -46,6 +46,7 @@ Network/NiftyLinkSocketObject.cxx
 # Does need moc.
 #########################
 SET(niftylink_MOC_HDRS
+Common/NiftyLinkQThread.h
 Descriptors/NiftyLinkXMLBuilder.h
 Network/NiftyLinkProcessBase.h
 Network/NiftyLinkSenderProcess.h

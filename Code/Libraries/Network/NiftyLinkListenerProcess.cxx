@@ -12,6 +12,8 @@ See LICENSE.txt in the top level directory for details.
 
 #include "NiftyLinkSocketObject.h"
 
+#include <NiftyLinkQThread.h>
+
 //-----------------------------------------------------------------------------
 NiftyLinkListenerProcess::NiftyLinkListenerProcess(QObject *parent)
   : NiftyLinkProcessBase(parent)
@@ -165,11 +167,11 @@ void NiftyLinkListenerProcess::TerminateProcess()
     try
     {
       QLOG_DEBUG() << "Terminating NiftyLinkListenerProcess, waiting for " << sleepInterval << " ms for socket on port " << m_Port << " to close\n";
-      dynamic_cast<QThreadEx *>(QThread::currentThread())->MsleepEx(sleepInterval);
+      dynamic_cast<NiftyLinkQThread *>(QThread::currentThread())->MsleepEx(sleepInterval);
     }
     catch (std::exception &e)
     {
-      qDebug() << "Type cast error.Always run this process from QThreadEx. Exception: " << e.what();
+      qDebug() << "Type cast error.Always run this process from NiftyLinkQThread. Exception: " << e.what();
     }
 
 
@@ -196,11 +198,11 @@ void NiftyLinkListenerProcess::TerminateProcess()
     try
     {
       QLOG_DEBUG() << "Terminating NiftyLinkListenerProcess, waiting for " << sleepInterval << " ms for server socket on port " << m_Port << " to close\n";
-      dynamic_cast<QThreadEx *>(QThread::currentThread())->MsleepEx(sleepInterval);
+      dynamic_cast<NiftyLinkQThread *>(QThread::currentThread())->MsleepEx(sleepInterval);
     }
     catch (std::exception &e)
     {
-      qDebug() << "Type cast error.Always run this process from QThreadEx. Exception: " << e.what();
+      qDebug() << "Type cast error.Always run this process from NiftyLinkQThread. Exception: " << e.what();
     }
 
     m_ServerSocket.operator = (NULL);
@@ -319,11 +321,11 @@ void NiftyLinkListenerProcess::ListenOnSocket(void)
       try
       {
         QLOG_DEBUG() <<objectName() <<" listening with socket on port " << m_Port << ", but waiting for " << sleepInterval << " ms\n";
-        //dynamic_cast<QThreadEx *>(QThread::currentThread())->MsleepEx(sleepInterval);
+        //dynamic_cast<NiftyLinkQThread *>(QThread::currentThread())->MsleepEx(sleepInterval);
       }
       catch (std::exception &e)
       {
-        qDebug() <<"Type cast error.Always run this process from QThreadEx. Exception: " <<e.what();
+        qDebug() <<"Type cast error.Always run this process from NiftyLinkQThread. Exception: " <<e.what();
       }
       */
       continue;
@@ -399,11 +401,11 @@ void NiftyLinkListenerProcess::ListenOnPort(void)
           try
           {
             QLOG_DEBUG() <<objectName() <<" listening with socket on port " << m_Port << ", but waiting for " << sleepInterval << " ms\n";
-            //dynamic_cast<QThreadEx *>(QThread::currentThread())->MsleepEx(sleepInterval);
+            //dynamic_cast<NiftyLinkQThread *>(QThread::currentThread())->MsleepEx(sleepInterval);
           }
           catch (std::exception &e)
           {
-            qDebug() <<"Type cast error.Always run this process from QThreadEx. Exception: " <<e.what();
+            qDebug() <<"Type cast error.Always run this process from NiftyLinkQThread. Exception: " <<e.what();
           }
           */
           continue;
