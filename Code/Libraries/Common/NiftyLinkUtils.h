@@ -13,32 +13,16 @@ See LICENSE.txt in the top level directory for details.
 #ifndef NiftyLinkUtils_h
 #define NiftyLinkUtils_h
 
-#include <QString>
-#include <QUrl>
-#include <QHostInfo>
-#include <QHostAddress>
-#include <QStringList>
-#include <QNetworkConfigurationManager>
-#include <QNetworkInterface>
-#include <QNetworkSession>
-
-#include "igtlPolyDataMessage.h"
-#include "igtlTrajectoryMessage.h"
-#include "igtlLightObject.h"
-#include "igtlObjectFactory.h"
-
-#include <cmath>
-#include <map>
-#include <string>
-#include "igtlMath.h"
-
 #include "NiftyLinkConfig.h"
 #include "NiftyLinkCommonWin32ExportHeader.h"
 
-#include "NiftyLinkMessage.h"
+#include <QString>
 
-#include "QsLog.h"
-#include "QsLogDest.h"
+#include <igtlMath.h>
+#include <igtlTimeStamp.h>
+
+#include <map>
+#include <string>
 
 enum MessageTypes
 {

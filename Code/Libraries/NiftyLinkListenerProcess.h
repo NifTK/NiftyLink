@@ -20,6 +20,8 @@ See LICENSE.txt in the top level directory for details.
 #include "igtlPointMessage.h"
 #include "igtlStringMessage.h"
 #include "igtlImageMessage.h"
+#include "igtlPolyDataMessage.h"
+#include "igtlTrajectoryMessage.h"
 
 class NiftyLinkListenerProcessTester;
 

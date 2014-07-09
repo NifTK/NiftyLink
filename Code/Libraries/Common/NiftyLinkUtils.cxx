@@ -11,6 +11,14 @@ See LICENSE.txt in the top level directory for details.
 =============================================================================*/
 
 #include "NiftyLinkUtils.h"
+#include <QUrl>
+#include <QHostInfo>
+#include <QHostAddress>
+#include <QStringList>
+#include <QNetworkConfigurationManager>
+#include <QNetworkInterface>
+#include <QNetworkSession>
+
 #include <cmath>
 
 //-----------------------------------------------------------------------------
