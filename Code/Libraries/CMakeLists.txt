@@ -1,6 +1,6 @@
 #/*================================================================================
 #
-#  NiftyLink:  A software library to facilitate communication over OpenIGTLink. 
+#  NiftyLink:  A software library to facilitate communication over Socket.
 #  
 #  Copyright (c) University College London (UCL). All rights reserved.
 #
@@ -37,9 +37,9 @@ Messages/NiftyLinkMessageContainer.cxx
 #Messages/NiftyLinkStatusMessage.cxx
 #Messages/NiftyLinkStringMessage.cxx
 #Messages/NiftyLinkTrackingDataMessage.cxx
-OpenIGTLink/NiftyLinkSocket.cxx
-OpenIGTLink/NiftyLinkClientSocket.cxx
-OpenIGTLink/NiftyLinkServerSocket.cxx
+Socket/NiftyLinkSocket.cxx
+Socket/NiftyLinkClientSocket.cxx
+Socket/NiftyLinkServerSocket.cxx
 Network/NiftyLinkNetworkProcess.cxx
 Network/NiftyLinkServerProcess.cxx
 Network/NiftyLinkServer.cxx
@@ -84,9 +84,9 @@ Messages/NiftyLinkMessageContainer.h
 #Messages/NiftyLinkTrackingDataMessage.h
 #Messages/NiftyLinkStringMessage.h
 #Messages/NiftyLinkStatusMessage.h
-OpenIGTLink/NiftyLinkSocket.h
-OpenIGTLink/NiftyLinkClientSocket.h
-OpenIGTLink/NiftyLinkServerSocket.h
+Socket/NiftyLinkSocket.h
+Socket/NiftyLinkClientSocket.h
+Socket/NiftyLinkServerSocket.h
 )
 
 #########################
@@ -111,7 +111,7 @@ include_directories(${CMAKE_CURRENT_SOURCE_DIR})
 SET (NIFTYLINK_LIBS
   ${QT_LIBRARIES}
   igtlutil
-  OpenIGTLink
+  Socket
   )
 
 ADD_LIBRARY(niftylink 
