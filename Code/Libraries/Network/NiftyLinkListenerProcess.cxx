@@ -11,7 +11,6 @@ See LICENSE.txt in the top level directory for details.
 =============================================================================*/
 
 #include "NiftyLinkSocketObject.h"
-
 #include <NiftyLinkQThread.h>
 
 //-----------------------------------------------------------------------------
@@ -33,9 +32,9 @@ NiftyLinkListenerProcess::~NiftyLinkListenerProcess(void)
 
 
 //-----------------------------------------------------------------------------
-bool NiftyLinkListenerProcess::Initialize(igtl::Socket::Pointer socket, int port)
+bool NiftyLinkListenerProcess::Initialize(NiftyLinkSocket::Pointer socket, int port)
 {
-  if (socket.IsNull() || (socket.IsNotNull() && !socket->IsValid()) )
+  if (socket.IsNull() || (socket.IsNotNull() && !socket->GetConnected()) )
   {
     QLOG_ERROR() << objectName() << ": " << "Cannot create a listener socket, invalid external socket specified" << endl;
     return false;
@@ -79,7 +78,7 @@ bool NiftyLinkListenerProcess::Initialize(int port)
     return false;
   }
 
-  igtl::ServerSocket::Pointer ssock = igtl::ServerSocket::New();
+  NiftyLinkServerSocket::Pointer ssock = NiftyLinkServerSocket::New();
   int err = ssock->CreateServer(port);
   ssock->SetTimeout(m_SocketTimeout);
 
@@ -251,7 +250,7 @@ bool NiftyLinkListenerProcess::Activate(void)
     return false;
   }
 
-  if ( (!m_ListeningOnPort && m_ExtSocket.IsNull()) || (!m_ListeningOnPort && m_ServerSocket.IsNotNull() && !m_ExtSocket->IsValid()) )
+  if ( (!m_ListeningOnPort && m_ExtSocket.IsNull()) || (!m_ListeningOnPort && m_ServerSocket.IsNotNull() && !m_ExtSocket->GetConnected()) )
   {
     QLOG_INFO() << objectName() << ": " << "Cannot activate listener, external socket is invalid" << endl;
     return false;
@@ -342,7 +341,7 @@ void NiftyLinkListenerProcess::ListenOnSocket(void)
 void NiftyLinkListenerProcess::ListenOnPort(void)
 {
   //int sleepInterval = 1; // milliseconds
-  igtl::Socket::Pointer socket;
+  NiftyLinkSocket::Pointer socket;
 
   while (m_Running == true)
   {
@@ -356,7 +355,7 @@ void NiftyLinkListenerProcess::ListenOnPort(void)
       socket = m_ServerSocket->WaitForConnection(m_ListenInterval);
       m_Mutex->unlock();
 
-      if (!socket->IsValid())
+      if (!socket->GetConnected())
       {
         QLOG_INFO() << objectName() << ": " << "No client connecting\n";
         continue;
@@ -452,6 +451,7 @@ bool NiftyLinkListenerProcess::ReceiveMessage()
   msgHeader->Unpack();
 
   //Double check if message types are mapped or not
+/*
   if (strMsgTypes.size() == 0)
   {
     InitMessageTypes(strMsgTypes);
@@ -737,7 +737,7 @@ bool NiftyLinkListenerProcess::ReceiveMessage()
       msgHeader.operator = (NULL);
       return true;
     }
-
+*/
   message->SetMessageHeader(msgHeader);
   message->AllocatePack();
 
@@ -751,7 +751,7 @@ bool NiftyLinkListenerProcess::ReceiveMessage()
     r = m_ExtSocket->Receive(message->GetPackBodyPointer(), message->GetPackBodySize());
 
     // Message fully received
-    timeReceived->Update();
+    timeReceived->GetTime();
 
     m_Mutex->unlock();
 
@@ -768,7 +768,9 @@ bool NiftyLinkListenerProcess::ReceiveMessage()
   }
 
   // Get the receive timestamp from the socket - marks when the first byte of the package arrived
-  msg->SetTimeArrived(m_ExtSocket->GetReceiveTimestamp());
+  igtl::TimeStamp::Pointer ta = igtl::TimeStamp::New();
+  ta->SetTimeInNanoseconds(m_ExtSocket->GetReceiveTimestampInNanoseconds());
+  msg->SetTimeArrived(ta);
   
   // Set the time when the message was fully received
   msg->SetTimeReceived(timeReceived);

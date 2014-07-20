@@ -40,9 +40,9 @@ NiftyLinkSenderProcess::~NiftyLinkSenderProcess(void)
 
 
 //-----------------------------------------------------------------------------
-bool NiftyLinkSenderProcess::Initialize(igtl::Socket::Pointer socket, int port)
+bool NiftyLinkSenderProcess::Initialize(NiftyLinkSocket::Pointer socket, int port)
 {
-  if (socket.IsNull() || (socket.IsNotNull() && !socket->IsValid()) )
+  if (socket.IsNull() || (socket.IsNotNull() && !socket->GetConnected()) )
   {
     QLOG_ERROR() << objectName() << ": " << "Cannot create a sender socket, invalid external socket specified" << endl;
     return false;
@@ -86,7 +86,7 @@ bool NiftyLinkSenderProcess::Initialize(std::string &hostname, int port)
   }
 
   // Try to create a new client socket and if it is successful, set its parameters.
-  m_ClientSocket = igtl::ClientSocket::New();
+  m_ClientSocket = NiftyLinkClientSocket::New();
   if (m_ClientSocket.IsNotNull())
   {
     m_ClientSocket->SetTimeout(m_SocketTimeout);
@@ -233,7 +233,7 @@ bool NiftyLinkSenderProcess::Activate(void)
     return false;
   }
 
-  if ( (m_SendingOnSocket && m_ExtSocket.IsNull()) || (m_SendingOnSocket && m_ExtSocket.IsNotNull() && !m_ExtSocket->IsValid()) )
+  if ( (m_SendingOnSocket && m_ExtSocket.IsNull()) || (m_SendingOnSocket && m_ExtSocket.IsNotNull() && !m_ExtSocket->GetConnected()) )
   {
     QLOG_INFO() << objectName() << ": " << "Cannot Activate listener, socket is invalid" << endl;
     return false;
@@ -347,7 +347,7 @@ void NiftyLinkSenderProcess::DoProcessing(void)
     else
     {
       // Perform a non-blocking connect with timeout
-      m_ExtSocket.operator = ((igtl::Socket::Pointer) m_ClientSocket);
+      m_ExtSocket.operator = ((NiftyLinkSocket::Pointer) m_ClientSocket);
       m_ExtSocket->SetTimeout(m_SocketTimeout);
       m_SendingOnSocket = false;
 
@@ -402,7 +402,7 @@ void NiftyLinkSenderProcess::DoProcessing(void)
       m_QueueMutex.unlock();
 
       igtl::MessageBase::Pointer igtMsg;
-      msg->GetMessagePointer(igtMsg);
+      //msg->GetMessagePointer(igtMsg);
 
       if (!m_Running)
       {
@@ -417,7 +417,7 @@ void NiftyLinkSenderProcess::DoProcessing(void)
         igtl::TimeStamp::Pointer sendStarted = igtl::TimeStamp::New();
 
         m_Mutex->lock();
-        sendStarted->Update();
+        sendStarted->GetTime();
         msg->TouchMessage("3. sendStarted", sendStarted);
 
         // Update the timestamp within the message itself
@@ -445,14 +445,15 @@ void NiftyLinkSenderProcess::DoProcessing(void)
         }
 
         // Get the time when the message was fully transmitted
-		    igtl::TimeStamp::Pointer sendFinished = m_ExtSocket->GetSendTimestamp();
+        igtl::TimeStamp::Pointer sendFinished = igtl::TimeStamp::New();
+        sendFinished->SetTimeInNanoseconds(m_ExtSocket->GetSendTimestampInNanoseconds());
         msg->TouchMessage("4. sendFinished", sendFinished);
 
         // Emit the time
-        emit MessageSentSignal(sendFinished->GetTimeInNanoSeconds());
+        emit MessageSentSignal(sendFinished->GetTimeStampInNanoseconds());
 
         // Send the full list of timestamps when the message was touched
-        emit SendMessageAccessTimes(msg->GetAccessTimes());
+        //emit SendMessageAccessTimes(msg->GetAccessTimes());
         
         // Internal message counter
         m_MessageCounter++;

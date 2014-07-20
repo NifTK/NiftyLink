@@ -14,14 +14,7 @@ See LICENSE.txt in the top level directory for details.
 #define NiftyLinkListenerProcess_h
 
 #include "NiftyLinkProcessBase.h"
-
-// OpenIGTLink includes
-#include <igtlBindMessage.h>
-#include <igtlPointMessage.h>
-#include <igtlStringMessage.h>
-#include <igtlImageMessage.h>
-#include <igtlPolyDataMessage.h>
-#include <igtlTrajectoryMessage.h>
+#include <NiftyLinkSocket.h>
 
 /**
 * \class NiftyLinkListenerProcess
@@ -62,7 +55,7 @@ protected:
   virtual ~NiftyLinkListenerProcess(void);
 
   /// \brief Initialize the process on a given externally created OpenIGTLink socket (igtl::Socket), while specifying the related port.
-  virtual bool Initialize(igtl::Socket::Pointer socket = 0, int port = -1);
+  virtual bool Initialize(NiftyLinkSocket::Pointer socket = 0, int port = -1);
 
   /// \brief Initialize the process by specifying the local port number to listen on.
   bool Initialize(int port);
@@ -114,11 +107,11 @@ private slots:
   //void debugTimeoutSignal() { qDebug() <<"Timer timout signal received "; }
 
 private:
-  igtl::ServerSocket::Pointer m_ServerSocket;
-  bool                        m_ListeningOnPort;
-  bool                        m_ClientConnected;
-  bool                        m_TimeOuterInitialized;
-  int                         m_ListenInterval;
+  NiftyLinkServerSocket::Pointer m_ServerSocket;
+  bool                           m_ListeningOnPort;
+  bool                           m_ClientConnected;
+  bool                           m_TimeOuterInitialized;
+  int                            m_ListenInterval;
 };
 
 #endif // NiftyLinkListenerProcess_h

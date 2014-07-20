@@ -1,0 +1,146 @@
+/*=============================================================================
+NiftyLink: A software library to facilitate communication over OpenIGTLink.
+
+Copyright (c) University College London (UCL). All rights reserved.
+
+This software is distributed WITHOUT ANY WARRANTY; without even
+the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR
+PURPOSE.
+
+See LICENSE.txt in the top level directory for details.
+=============================================================================*/
+
+#ifndef NiftyLinkMessageContainer_h
+#define NiftyLinkMessageContainer_h
+
+#include <NiftyLinkCommonWin32ExportHeader.h>
+
+#include <QtCore>
+#include <QString>
+#include <QObject>
+#include <QStringList>
+#include <QSharedData>
+#include <QExplicitlySharedDataPointer>
+
+#include <igtlObject.h>
+#include <igtlOSUtil.h>
+#include <igtlTimeStamp.h>
+#include <igtlMessageBase.h>
+
+#include <map>
+
+/**
+* \class NiftyLinkMessageContainer
+* \brief Wrapper for OpenIGTLink message types.
+*
+* The aim of this class is to provide any additional information
+* that we require on an image, that is not present in OpenIGTLink.
+*
+* It should wrap ANY OpenIGTLink message type, and should not refer
+* to any specific OpenIGTLink message type, so that if OpenIGTLink
+* introduces more message types derived from igtl::MessageBase,
+* then this class does not need modifying.
+*
+* DO NOT expose access to the internal igtl::TimeStamp objects.
+*
+* DO NOT provide copy/assignment operators.
+*/
+class NIFTYLINKCOMMON_WINEXPORT NiftyLinkMessageContainer : public QSharedData
+{
+
+public:
+
+  // Typedefs that are common in all message types
+  typedef NiftyLinkMessageContainer Self;
+  typedef QExplicitlySharedDataPointer<Self> Pointer;
+  typedef QExplicitlySharedDataPointer<const Self> ConstPointer;
+
+  /// \brief Basic constructor which generates a timestamp and derives the message ID from it.
+  NiftyLinkMessageContainer(void);
+
+  /// \brief Basic destructor.
+  virtual ~NiftyLinkMessageContainer(void);
+
+  /// \brief Returns the message ID.
+  igtlUint64 GetNiftyLinkMessageId(void) const;
+
+  /// \brief This function sets the OpenIGTLink message, which copies the smart pointer.
+  void SetMessage(igtl::MessageBase::Pointer mp);
+
+  /// \brief This function copies and returns the embedded OpenIGTLink message smart pointer.
+  igtl::MessageBase::Pointer GetMessage() const;
+
+  /// \brief Set the time arrived, which is copied into this object.
+  void SetTimeArrived(const igtl::TimeStamp::Pointer &time);
+
+  /// \brief Get the time arrived, which is copied out of this object, in nanoseconds since Unix Epoch.
+  igtlUint64 GetTimeArrived() const;
+
+  /// \brief Set the time received, which is copied into this object.
+  void SetTimeReceived(const igtl::TimeStamp::Pointer& time);
+
+  /// \brief Get the time received, which is copied out of this object, in nanoseconds since Unix Epoch.
+  igtlUint64 GetTimeReceived() const;
+
+  /// \brief Retrieves the time created, directly from the message, in nanoseconds since Unix Epoch.
+  igtlUint64 GetTimeCreated() const;
+
+  /// \brief Set the host name of where the message came from.
+  void SetSenderHostName(const QString &host);
+
+  /// \brief Get the host name of where the message came from.
+  QString GetSenderHostName() const;
+
+  /// \brief Set the sender host's port number.
+  void SetSenderPortNumber(const int& portNumber);
+
+  /// \brief Get the sender host's port number.
+  int GetSenderPortNumber() const;
+
+  /// \brief Set the name of the owner class as the message is passed back and forth
+  void SetOwnerName(const QString& str);
+
+  /// \brief Method to check who owns the message at the moment
+  QString GetOwnerName(void);
+
+  /// \brief This method is to support debugging lags in the message transmission
+  void TouchMessage(const QString& who, const igtlUint64& when);
+
+  /// \brief This method returns the times in nanosecs when the message was touched.
+  QStringList GetAccessTimes();
+
+protected:
+
+  NiftyLinkMessageContainer(const NiftyLinkMessageContainer&); // Purposefully not implemented.
+  NiftyLinkMessageContainer& operator=(const NiftyLinkMessageContainer&); // Purposefully not implemented.
+
+private:
+
+  // Holds the actual message. All operations on the message should be done directly here.
+  igtl::MessageBase::Pointer         m_Message;
+
+  // To give the message a unique ID.
+  igtlUint64                         m_Id;
+
+  // To mark when the first byte of the message arrived at the socket
+  igtl::TimeStamp::Pointer           m_TimeArrived;
+
+  // To mark when the message was fully received
+  igtl::TimeStamp::Pointer           m_TimeReceived;
+
+  // To indicate which host/ip address the message came from.
+  QString                            m_SenderHostName;
+
+  // To indicate which port number the message came from.
+  int                                m_SenderPortNumber;
+
+  // We store an indicator of who 'owns' this message.
+  QString                            m_OwnerName;
+
+  // We also store access times, to help debugging message flow timings.
+  std::map<QString, igtlUint64>      m_AccessTimes;
+};
+
+Q_DECLARE_METATYPE(NiftyLinkMessageContainer::Pointer);
+
+#endif // NiftyLinkMessageContainer_h

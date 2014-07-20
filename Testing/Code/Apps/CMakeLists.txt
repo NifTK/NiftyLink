@@ -21,8 +21,10 @@ SET(LIBS
 )
 
 SET(APPS
-  TestImagingSender
-  TestImagingReceiver
+#  TestImagingSender
+#  TestImagingReceiver
+  TestServer
+  TestTrackingClient
 )
 
 FOREACH(APP ${APPS})

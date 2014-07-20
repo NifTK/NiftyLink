@@ -26,4 +26,4 @@
 #endif
 
 
-#endif  //__NiftyLinkCommonWin32ExportHeader_h
+#endif  // NiftyLinkCommonWin32ExportHeader_h

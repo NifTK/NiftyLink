@@ -219,7 +219,7 @@ bool NiftyLinkSocketObject::ListenOnPort(int port)
       m_ListenerHostThread->start();
 
       // Wait until the thread and it's event loop really started
-      while (!m_ListenerHostThread->IsEventloopRunning())
+      while (!m_ListenerHostThread->IsEventLoopRunning())
       {
         m_ListenerHostThread->MsleepEx(100);
 
@@ -292,7 +292,7 @@ bool NiftyLinkSocketObject::ConnectToRemote(QUrl url)
       // Start the thread
       m_SenderHostThread->start();
 
-      while (!m_SenderHostThread->IsEventloopRunning())
+      while (!m_SenderHostThread->IsEventLoopRunning())
       {
         m_SenderHostThread->MsleepEx(100);
 
@@ -418,7 +418,7 @@ void NiftyLinkSocketObject::SendMessage(NiftyLinkMessage::Pointer msg)
   //        piled up in the send queue until the process dies with out-of-memory.
   if (m_Sender != NULL && msg.operator != (NULL) && (m_ClientConnected || m_ConnectedToRemote) )
   {
-    msg->Pack();
+    //msg->Pack();
     //m_Sender->AddMsgToSendQueue(msg);
     emit MessageToSendSignal(msg);
 

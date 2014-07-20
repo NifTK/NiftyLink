@@ -15,11 +15,8 @@ See LICENSE.txt in the top level directory for details.
 
 #include "NiftyLinkCommonWin32ExportHeader.h"
 
-// OpenIGTLink includes
-#include <igtlSocket.h>
-#include <igtlServerSocket.h>
-
-// NiftyLink includes
+#include <NiftyLinkSocket.h>
+#include <NiftyLinkServerSocket.h>
 #include <NiftyLinkMessage.h>
 #include <NiftyLinkTransformMessage.h>
 #include <NiftyLinkTrackingDataMessage.h>
@@ -28,14 +25,12 @@ See LICENSE.txt in the top level directory for details.
 #include <NiftyLinkStringMessage.h>
 #include <NiftyLinkUtils.h>
 
-// Qt related includes
 #include <QtCore>
 #include <QObject>
 #include <QDebug>
 #include <QMutex>
 #include <QTimer>
 
-// Logging
 #include <QsLog.h>
 #include <QsLogDest.h>
 
@@ -80,7 +75,7 @@ protected:
 
   /// \brief Initialize the Process on a given, externally created OpenIGTLink socket (igtl::Socket),
   /// while specifying the related port. Process specific functionalty are defined in the derived classes.
-  virtual bool Initialize(igtl::Socket::Pointer socket = 0, int port = -1)
+  virtual bool Initialize(NiftyLinkSocket::Pointer socket = 0, int port = -1)
   {
     return false;
   }
@@ -97,7 +92,7 @@ protected:
 
   /// \brief This function returns the actual socket pointer. This is necessary in order to set up a two communication chanel:
   /// to initiate a sender Process on a socket created by a listener Process and vica versa.
-  virtual igtl::Socket::Pointer GetSocketPointer(void)
+  virtual NiftyLinkSocket::Pointer GetSocketPointer(void)
   {
     return m_ExtSocket;
   }
@@ -178,22 +173,22 @@ protected slots:
   virtual void DoProcessing(void) = 0;
 
 protected:
-  int                   m_Port;
-  int                   m_SocketTimeout;
+  int                       m_Port;
+  int                       m_SocketTimeout;
 
   //this bool is to control the running state of the process
-  bool                  m_Running;
+  bool                      m_Running;
 
   //this bool is to indicate to the outside world if the process is running or not
   //m_active is false by default, true when the process is running, and gets false again only if the process has fully stopped
-  bool                  m_Active;
+  bool                      m_Active;
 
-  bool                  m_Initialized;
-  QMutex              * m_Mutex;
-  QTimer              * m_TimeOuter;
+  bool                      m_Initialized;
+  QMutex                   *m_Mutex;
+  QTimer                   *m_TimeOuter;
 
-  unsigned long         m_MessageCounter;
-  igtl::Socket::Pointer m_ExtSocket;
+  unsigned long             m_MessageCounter;
+  NiftyLinkSocket::Pointer  m_ExtSocket;
 };
 
 #endif // NiftyLinkProcessBase_h

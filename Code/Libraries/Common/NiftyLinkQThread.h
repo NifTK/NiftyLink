@@ -38,7 +38,7 @@ public:
 
   /// \brief Simple constructor.
   inline NiftyLinkQThread() : QThread()
-  , m_IsEventloopRunning(false)
+  , m_IsEventLoopRunning(false)
   {
   }
 
@@ -49,14 +49,14 @@ public:
   }
 
   /// \brief Member function to check if the eventloop has started.
-  inline bool IsEventloopRunning(void) const
+  inline bool IsEventLoopRunning(void) const
   {
-    return m_IsEventloopRunning;
+    return m_IsEventLoopRunning;
   }
 
 signals:
 
-  void EventloopStarted(void);
+  void EventLoopStarted(void);
 
 protected:
 
@@ -75,13 +75,13 @@ private slots:
   /// \brief A slot to capture the internal signal after the eventloop has started.
   void CatchSignal(void)
   {
-    m_IsEventloopRunning = true;
-    emit EventloopStarted();
+    m_IsEventLoopRunning = true;
+    emit EventLoopStarted();
   }
 
 private:
 
-  bool m_IsEventloopRunning;
+  bool m_IsEventLoopRunning;
 
 };
 
