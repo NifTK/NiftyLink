@@ -19,6 +19,9 @@
 #include <stdexcept>
 #include <cassert>
 
+namespace niftk
+{
+
 //-----------------------------------------------------------------------------
 NiftyLinkClientProcess::NiftyLinkClientProcess()
 : m_ConnectionTimeout(5000)
@@ -131,3 +134,5 @@ void NiftyLinkClientProcess::DoProcessing()
   // Now we continuously process messages from the incoming receive buffer.
   this->ReceiveMessageLoop();
 }
+
+} // end namespace niftk

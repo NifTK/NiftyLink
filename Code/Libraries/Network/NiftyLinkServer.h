@@ -19,6 +19,9 @@
 
 #include <QObject>
 
+namespace niftk
+{
+
 class NiftyLinkQThread;
 class NiftyLinkServerProcess;
 
@@ -96,5 +99,7 @@ private:
   NiftyLinkQThread       *m_Thread;
   NiftyLinkServerProcess *m_ServerProcess;
 };
+
+} // end namespace niftk
 
 #endif

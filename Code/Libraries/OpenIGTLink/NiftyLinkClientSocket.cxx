@@ -31,6 +31,9 @@ See LICENSE.txt in the top level directory for details.
 #include <cstdio>
 #include <cstring>
 
+namespace niftk
+{
+
 //-----------------------------------------------------------------------------
 NiftyLinkClientSocket::NiftyLinkClientSocket()
 {
@@ -275,5 +278,5 @@ void NiftyLinkClientSocket::PrintSelf(std::ostream& os) const
   this->Superclass::PrintSelf(os);
 }
 
-
+} // end namespace niftk
 

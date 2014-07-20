@@ -17,8 +17,12 @@ See LICENSE.txt in the top level directory for details.
 #include <igtlAbstractSocket.h>
 #include <igtlTimeStamp.h>
 
-/** \class NiftyLinkSocket
- *  \brief BSD socket encapsulation.
+namespace niftk
+{
+
+/**
+ * \class NiftyLinkSocket
+ * \brief BSD socket encapsulation.
  *
  * This socket class was originally derived from igtlSocket, which itself
  * was largely based on the socket class in the Visualization Toolkit VTK.
@@ -130,5 +134,7 @@ private:
   igtl::TimeStamp::Pointer m_SendTimeStamp;
 
 }; // NiftyLinkSocket_h
+
+} // end namespace niftk
 
 #endif

@@ -21,6 +21,10 @@ See LICENSE.txt in the top level directory for details.
 
 #include <cmath>
 
+namespace niftk
+{
+
+
 //-----------------------------------------------------------------------------
 bool ValidateIp(const QString &inputIP)
 {
@@ -155,3 +159,6 @@ igtlUint64 GetDifferenceInNanoSeconds(igtl::TimeStamp* timeA, igtl::TimeStamp* t
 
   return d;
 }
+
+} // end namespace niftk
+

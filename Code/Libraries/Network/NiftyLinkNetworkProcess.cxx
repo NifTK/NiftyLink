@@ -24,6 +24,9 @@
 #include <iostream>
 #include <cassert>
 
+namespace niftk
+{
+
 const std::string NiftyLinkNetworkProcess::KEEP_ALIVE_MESSAGE("POKE");
 
 //-----------------------------------------------------------------------------
@@ -546,3 +549,5 @@ void NiftyLinkNetworkProcess::TerminateProcess()
 
   emit TerminateFinished();
 }
+
+} // end namespace niftk

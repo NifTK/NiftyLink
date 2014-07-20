@@ -29,6 +29,9 @@ See LICENSE.txt in the top level directory for details.
 
 #include <map>
 
+namespace niftk
+{
+
 /**
 * \class NiftyLinkMessageContainer
 * \brief Wrapper for OpenIGTLink message types.
@@ -141,6 +144,8 @@ private:
   std::map<QString, igtlUint64>      m_AccessTimes;
 };
 
-Q_DECLARE_METATYPE(NiftyLinkMessageContainer::Pointer);
+} // end namespace niftk
+
+Q_DECLARE_METATYPE(niftk::NiftyLinkMessageContainer::Pointer);
 
 #endif // NiftyLinkMessageContainer_h

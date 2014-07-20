@@ -16,6 +16,9 @@
 #include <QsLogDest.h>
 #include <QApplication>
 
+namespace niftk
+{
+
 //-----------------------------------------------------------------------------
 TestServer::TestServer(const int& portNumber)
 {
@@ -76,6 +79,7 @@ void TestServer::OnMessageSent(igtlUint64 startTimeInNanoseconds, igtlUint64 end
   QLOG_INFO() << QObject::tr("%1::OnMessageSent().").arg(objectName()).arg(startTimeInNanoseconds).arg(endTimeInNanoseconds);
 }
 
+} // end namespace niftk
 
 //-----------------------------------------------------------------------------
 int main(int argc, char** argv)
@@ -104,7 +108,7 @@ int main(int argc, char** argv)
   logger.addDestination(debugDestination.get());
 
   // Start server.
-  TestServer server(port);
+  niftk::TestServer server(port);
 
   std::cout << "TestServer: Creating app." << std::endl;
 

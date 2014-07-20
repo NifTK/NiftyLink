@@ -13,6 +13,9 @@ See LICENSE.txt in the top level directory for details.
 #include "NiftyLinkServerSocket.h"
 #include "NiftyLinkClientSocket.h"
 
+namespace niftk
+{
+
 //-----------------------------------------------------------------------------
 NiftyLinkServerSocket::NiftyLinkServerSocket()
 {
@@ -105,3 +108,5 @@ void NiftyLinkServerSocket::PrintSelf(std::ostream& os) const
 {
   this->Superclass::PrintSelf(os);
 }
+
+} // end namespace niftk

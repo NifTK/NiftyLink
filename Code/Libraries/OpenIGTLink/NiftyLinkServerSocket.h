@@ -19,6 +19,9 @@ See LICENSE.txt in the top level directory for details.
 
 #include <igtlWin32Header.h>
 
+namespace niftk
+{
+
 /**
  * \class NiftyLinkServerSocket
  * \brief Represents the server side of a socket connection.
@@ -59,6 +62,8 @@ private:
   NiftyLinkServerSocket(const NiftyLinkServerSocket&); // Purposefully not implemented.
   void operator=(const NiftyLinkServerSocket&); // Purposefully not implemented.
 };
+
+} // end namespace niftk
 
 #endif
 

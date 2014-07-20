@@ -19,6 +19,9 @@ See LICENSE.txt in the top level directory for details.
 #include <QTimer>
 #include <QCoreApplication>
 
+namespace niftk
+{
+
 /**
 * \class NiftyLinkQThread
 * \brief Extends QThread and makes it sure that the event loop has started.
@@ -29,7 +32,6 @@ See LICENSE.txt in the top level directory for details.
 * functions to check for this. Also, we expose the thread's sleep function
 * via member function.
 */
-
 class NIFTYLINKCOMMON_WINEXPORT NiftyLinkQThread : public QThread
 {
   Q_OBJECT
@@ -84,5 +86,7 @@ private:
   bool m_IsEventLoopRunning;
 
 };
+
+} // end namespace niftk
 
 #endif // NiftyLinkQThread_h

@@ -38,6 +38,9 @@ See LICENSE.txt in the top level directory for details.
 #include <cstring>
 #include <stdexcept>
 
+namespace niftk
+{
+
 //-----------------------------------------------------------------------------
 NiftyLinkSocket::NiftyLinkSocket()
 : m_TimeoutFlag(0)
@@ -433,3 +436,5 @@ void NiftyLinkSocket::PrintSelf(std::ostream& os) const
 {
   this->Superclass::PrintSelf(os);
 }
+
+} // end namespace niftk

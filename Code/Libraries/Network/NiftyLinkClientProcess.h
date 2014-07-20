@@ -22,6 +22,9 @@
 #include <QObject>
 #include <QMutex>
 
+namespace niftk
+{
+
 /**
  * \class NiftyLinkClientProcess
  * \brief Represents a Process running a NiftyLinkClient socket in a separate thread.
@@ -66,5 +69,7 @@ private:
   QString                           m_HostName;
 
 }; // end class
+
+} // end namespace niftk
 
 #endif // NiftyLinkClientProcess_h

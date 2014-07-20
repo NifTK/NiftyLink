@@ -18,6 +18,9 @@
 #include <stdexcept>
 #include <cassert>
 
+namespace niftk
+{
+
 //-----------------------------------------------------------------------------
 NiftyLinkServerProcess::NiftyLinkServerProcess()
 : m_ListenInterval(1000)
@@ -141,3 +144,5 @@ void NiftyLinkServerProcess::DoProcessing()
 
   } // end while - continuously checking for client connections.
 }
+
+} // end namespace niftk

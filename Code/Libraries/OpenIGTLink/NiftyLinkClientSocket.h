@@ -17,6 +17,9 @@ See LICENSE.txt in the top level directory for details.
 
 #include <igtlWin32Header.h>
 
+namespace niftk
+{
+
 /**
  * \class NiftyLinkClientSocket
  * \brief Represents the client side of a socket connection.
@@ -63,6 +66,8 @@ private:
   // To store the timeout details for when we connect to a server.
   struct timeval m_ConnectionTimeout;
 };
+
+} // end namespace niftk
 
 #endif
 

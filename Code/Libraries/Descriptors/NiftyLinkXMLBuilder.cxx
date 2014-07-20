@@ -14,6 +14,9 @@ See LICENSE.txt in the top level directory for details.
 
 #include <QDomDocument>
 
+namespace niftk
+{
+
 //-----------------------------------------------------------------------------
 QString XMLBuilderBase::ParseDescriptorType(QString xmlString)
 {
@@ -534,3 +537,5 @@ void TrackerClientDescriptor::SetXMLString(QString desc)
     }
   }
 }
+
+} // end namespace niftk

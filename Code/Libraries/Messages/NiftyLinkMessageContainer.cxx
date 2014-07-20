@@ -19,6 +19,9 @@ See LICENSE.txt in the top level directory for details.
 
 #include <cassert>
 
+namespace niftk
+{
+
 //-----------------------------------------------------------------------------
 NiftyLinkMessageContainer::NiftyLinkMessageContainer()
   : m_Message(NULL)
@@ -182,3 +185,5 @@ QStringList NiftyLinkMessageContainer::GetAccessTimes()
 
   return result;
 }
+
+} // end namespace niftk

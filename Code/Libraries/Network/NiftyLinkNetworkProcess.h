@@ -20,6 +20,9 @@
 
 class QTimer;
 
+namespace niftk
+{
+
 /**
  * \class NiftyLinkNetworkProcess
  * \brief Abstract base class of NiftyLinkServerProcess and NiftyLinkClientProcess.
@@ -185,5 +188,7 @@ private:
   igtl::TimeStamp::Pointer       m_LastMessageProcessedTime;
 
 }; // end class
+
+} // end namespace niftk
 
 #endif // NiftyLinkServerProcess_h

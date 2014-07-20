@@ -22,6 +22,9 @@
 
 #include <QObject>
 
+namespace niftk
+{
+
 /**
  * \class NiftyLinkServerProcess
  * \brief Represents a Process running a NiftyLinkServer socket in a separate thread.
@@ -64,5 +67,7 @@ private:
   int                             m_ListenInterval;
 
 }; // end class
+
+} // end namespace niftk
 
 #endif // NiftyLinkServerProcess_h

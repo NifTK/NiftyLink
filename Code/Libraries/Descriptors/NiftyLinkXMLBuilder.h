@@ -18,6 +18,9 @@ See LICENSE.txt in the top level directory for details.
 #include <QString>
 #include <QStringList>
 
+namespace niftk
+{
+
 /**
 * \class XMLBuilderBase
 * \brief Base class for the XML based descriptor builder classes.
@@ -357,5 +360,7 @@ public:
 private:
   QStringList m_TrackerTools;
 };
+
+} // end namespace niftk
 
 #endif

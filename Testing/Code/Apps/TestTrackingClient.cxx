@@ -16,6 +16,9 @@
 #include <QApplication>
 #include <QUrl>
 
+namespace niftk
+{
+
 //-----------------------------------------------------------------------------
 TestTrackingClient::TestTrackingClient(const std::string& hostName, const int& portNumber, const int& fps)
 {
@@ -95,6 +98,7 @@ void TestTrackingClient::OnMessageSent(igtlUint64 startTimeInNanoseconds, igtlUi
   QLOG_INFO() << QObject::tr("%1::OnMessageSent(%2, %3).").arg(objectName()).arg(startTimeInNanoseconds).arg(endTimeInNanoseconds);
 }
 
+} // end namespace niftk
 
 //-----------------------------------------------------------------------------
 int main(int argc, char** argv)
@@ -129,7 +133,7 @@ int main(int argc, char** argv)
   logger.addDestination(debugDestination.get());
 
   // Start client.
-  TestTrackingClient client(hostName, port, fps);
+  niftk::TestTrackingClient client(hostName, port, fps);
 
   std::cout << "TestTrackingClient: Creating app." << std::endl;
 

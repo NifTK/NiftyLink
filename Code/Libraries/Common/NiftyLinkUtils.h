@@ -20,6 +20,9 @@ See LICENSE.txt in the top level directory for details.
 #include <igtlMath.h>
 #include <igtlTimeStamp.h>
 
+namespace niftk
+{
+
 /// \brief Simple function which validates if an IP address is valid or not,
 /// by checking for 4 numbers [0-255] separated by dot.
 extern "C++" NIFTYLINKCOMMON_WINEXPORT bool ValidateIp(const QString &inputIP);
@@ -38,4 +41,6 @@ extern "C++" NIFTYLINKCOMMON_WINEXPORT void CreateRandomTransformMatrix(igtl::Ma
 /// \param timeB must be not-NULL
 extern "C++" NIFTYLINKCOMMON_WINEXPORT igtlUint64 GetDifferenceInNanoSeconds(igtl::TimeStamp* timeA, igtl::TimeStamp* timeB);
 
-#endif //__NiftyLinkUtils_h
+} // end namespace niftk
+
+#endif // NiftyLinkUtils_h

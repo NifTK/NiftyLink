@@ -21,6 +21,9 @@
 #include <QObject>
 #include <QTimer>
 
+namespace niftk
+{
+
 class TestTrackingClient : public QObject
 {
 
@@ -48,5 +51,7 @@ private:
   NiftyLinkClient m_Client;
   QTimer         *m_Timer;
 };
+
+} // end namespace niftk
 
 #endif // TestTrackingClient_h

@@ -20,6 +20,9 @@
 #include <cassert>
 #include <stdexcept>
 
+namespace niftk
+{
+
 //-----------------------------------------------------------------------------
 NiftyLinkClient::NiftyLinkClient(QObject *parent)
 {
@@ -180,3 +183,5 @@ void NiftyLinkClient::OnNoResponseFromRemote()
 {
   emit ServerDisconnected();
 }
+
+} // end namespace niftk

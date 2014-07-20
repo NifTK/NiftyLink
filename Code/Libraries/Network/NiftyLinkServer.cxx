@@ -15,13 +15,16 @@
 
 #include <QsLog.h>
 
+namespace niftk
+{
+
 //-----------------------------------------------------------------------------
 NiftyLinkServer::NiftyLinkServer(QObject * /* parent */)
 : m_Thread(NULL)
 , m_ServerProcess(NULL)
 {
   this->setObjectName("NiftyLinkServer");
-  m_Thread = new NiftyLinkQThread();
+  m_Thread = new niftk::NiftyLinkQThread();
   m_ServerProcess = new NiftyLinkServerProcess();
   connect(m_ServerProcess, SIGNAL(ClientConnectedSignal()), this, SLOT(OnClientConnected()));
   connect(m_ServerProcess, SIGNAL(CantReachRemote()), this, SLOT(OnCantSendToClient()));
@@ -141,3 +144,4 @@ void NiftyLinkServer::OnMessageSent(igtlUint64 startTimeInNanoseconds, igtlUint6
   emit MessageSent(startTimeInNanoseconds, endTimeInNanoseconds);
 }
 
+} // end namespace niftk

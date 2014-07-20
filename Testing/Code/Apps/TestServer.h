@@ -20,6 +20,9 @@
 
 #include <QObject>
 
+namespace niftk
+{
+
 class TestServer : public QObject
 {
 
@@ -43,5 +46,7 @@ private:
   int             m_PortNumber;
   NiftyLinkServer m_Server;
 };
+
+} // end namespace niftk
 
 #endif // TestServer_h
