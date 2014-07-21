@@ -31,6 +31,9 @@ Common/QsLog.cxx
 Common/QsLogDest.cxx
 Descriptors/NiftyLinkXMLBuilder.cxx
 Messages/NiftyLinkMessageContainer.cxx
+Messages/NiftyLinkImageMessageHelpers.cxx
+Messages/NiftyLinkTrackingDataMessageHelpers.cxx
+Messages/NiftyLinkTransformMessageHelpers.cxx
 #Messages/NiftyLinkMessage.cxx
 #Messages/NiftyLinkTransformMessage.cxx
 #Messages/NiftyLinkImageMessage.cxx
@@ -78,6 +81,9 @@ Common/QsDebugOutput.h
 Common/QsLog.h
 Common/QsLogDest.h
 Messages/NiftyLinkMessageContainer.h
+Messages/NiftyLinkImageMessageHelpers.h
+Messages/NiftyLinkTrackingDataMessageHelpers.h
+Messages/NiftyLinkTransformMessageHelpers.h
 #Messages/NiftyLinkMessage.h
 #Messages/NiftyLinkTransformMessage.h
 #Messages/NiftyLinkImageMessage.h
