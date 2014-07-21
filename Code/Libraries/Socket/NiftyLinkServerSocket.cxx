@@ -13,6 +13,8 @@
 #include "NiftyLinkServerSocket.h"
 #include "NiftyLinkClientSocket.h"
 
+#include <cstdio>
+
 namespace niftk
 {
 

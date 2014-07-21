@@ -14,7 +14,7 @@
 #include <NiftyLinkMacro.h>
 #include <NiftyLinkUtils.h>
 
-#include <strstream>
+#include <sstream>
 #include <iostream>
 #include <iomanip>
 
