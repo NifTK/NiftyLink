@@ -34,12 +34,6 @@ Messages/NiftyLinkMessageContainer.cxx
 Messages/NiftyLinkImageMessageHelpers.cxx
 Messages/NiftyLinkTrackingDataMessageHelpers.cxx
 Messages/NiftyLinkTransformMessageHelpers.cxx
-#Messages/NiftyLinkMessage.cxx
-#Messages/NiftyLinkTransformMessage.cxx
-#Messages/NiftyLinkImageMessage.cxx
-#Messages/NiftyLinkStatusMessage.cxx
-#Messages/NiftyLinkStringMessage.cxx
-#Messages/NiftyLinkTrackingDataMessage.cxx
 Socket/NiftyLinkSocket.cxx
 Socket/NiftyLinkClientSocket.cxx
 Socket/NiftyLinkServerSocket.cxx
@@ -48,10 +42,6 @@ Network/NiftyLinkServerProcess.cxx
 Network/NiftyLinkServer.cxx
 Network/NiftyLinkClientProcess.cxx
 Network/NiftyLinkClient.cxx
-#Network/NiftyLinkProcessBase.cxx
-#Network/NiftyLinkListenerProcess.cxx
-#Network/NiftyLinkSenderProcess.cxx
-#Network/NiftyLinkSocketObject.cxx
 )
 
 #########################
@@ -65,10 +55,6 @@ Network/NiftyLinkServerProcess.h
 Network/NiftyLinkServer.h
 Network/NiftyLinkClientProcess.h
 Network/NiftyLinkClient.h
-#Network/NiftyLinkProcessBase.h
-#Network/NiftyLinkListenerProcess.h
-#Network/NiftyLinkSenderProcess.h
-#Network/NiftyLinkSocketObject.h
 )
 
 #########################
@@ -84,12 +70,6 @@ Messages/NiftyLinkMessageContainer.h
 Messages/NiftyLinkImageMessageHelpers.h
 Messages/NiftyLinkTrackingDataMessageHelpers.h
 Messages/NiftyLinkTransformMessageHelpers.h
-#Messages/NiftyLinkMessage.h
-#Messages/NiftyLinkTransformMessage.h
-#Messages/NiftyLinkImageMessage.h
-#Messages/NiftyLinkTrackingDataMessage.h
-#Messages/NiftyLinkStringMessage.h
-#Messages/NiftyLinkStatusMessage.h
 Socket/NiftyLinkSocket.h
 Socket/NiftyLinkClientSocket.h
 Socket/NiftyLinkServerSocket.h
