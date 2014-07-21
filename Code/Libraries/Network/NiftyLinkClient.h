@@ -28,7 +28,7 @@ class NiftyLinkClientProcess;
 /**
  * \class NiftyLinkClient
  * \brief Main NiftyLink Client class that users instantiate to
- * connect to a local/remote host and port start to send messages.
+ * connect to a local/remote host and port, and start to send messages.
  *
  * Note: Error handling strategy is to throw std::exception sub-classes for everything.
  */
