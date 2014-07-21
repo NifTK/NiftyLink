@@ -55,12 +55,6 @@ public:
   /// \brief Returns the socket timeout in milliseconds.
   int GetSocketTimeout() const;
 
-  /// \brief Sets the main loop sleep interval in milliseconds, default = 1 msec.
-  void SetSleepInterval(const int& msec);
-
-  /// \brief Gets the main loop sleep interval in milliseconds.
-  int GetSleepInterval() const;
-
   /// \brief Starts the main processing loop.
   void StartProcessing();
 
@@ -169,9 +163,6 @@ private:
 
   // The timeout in milliseconds passed onto the socket object.
   int                            m_SocketTimeout;
-
-  // The sleep interval in milliseconds at each iteration of the main processing loop. Set to -1 for no sleep.
-  int                            m_SleepInterval;
 
   // For sending keep alive pings.
   QTimer                        *m_KeepAliveTimer;

@@ -36,7 +36,6 @@ NiftyLinkNetworkProcess::NiftyLinkNetworkProcess(QObject *parent)
 : m_NumberOfMessagesReceived(0)
 , m_NumberOfMessagesSent(0)
 , m_SocketTimeout(50)
-, m_SleepInterval(0)
 , m_MySocket(NULL)
 , m_CommsSocket(NULL)
 , m_KeepAliveTimer(NULL)
@@ -77,20 +76,6 @@ int NiftyLinkNetworkProcess::GetSocketTimeout() const
 void NiftyLinkNetworkProcess::SetSocketTimeout(const int& msec)
 {
   m_SocketTimeout = msec;
-}
-
-
-//-----------------------------------------------------------------------------
-void NiftyLinkNetworkProcess::SetSleepInterval(const int& msec)
-{
-  m_SleepInterval = msec;
-}
-
-
-//-----------------------------------------------------------------------------
-int NiftyLinkNetworkProcess::GetSleepInterval() const
-{
-  return m_SleepInterval;
 }
 
 
@@ -262,12 +247,6 @@ void NiftyLinkNetworkProcess::ReceiveMessageLoop()
     if (bytesPending > 0)
     {
       this->ReceiveMessage();
-    }
-
-    // Slow loop down a bit. Not advisable.
-    if (m_SleepInterval > 0)
-    {
-      p->MsleepEx(m_SleepInterval);
     }
 
     // Make sure this while loop doesn't swamp the QTimers.
@@ -532,7 +511,7 @@ void NiftyLinkNetworkProcess::TerminateProcess()
       QLOG_ERROR() << QObject::tr("%1::TerminateProcess() - failed to close client side of server socket, call returned %2, check log file.").arg(objectName()).arg(err);
     }
     QLOG_INFO() << QObject::tr("%1::TerminateProcess() - Closing client side returned %2, now sleeping for %3 msec.").arg(objectName()).arg(err).arg(sleepInterval);
-    p->MsleepEx(sleepInterval);
+    NiftyLinkQThread::SleepCallingThread(sleepInterval);
   }
 
   if (m_MySocket.IsNotNull())
@@ -543,7 +522,7 @@ void NiftyLinkNetworkProcess::TerminateProcess()
       QLOG_ERROR() << QObject::tr("%1::TerminateProcess() - failed to close socket, call returned %2, check log file.").arg(objectName()).arg(err);
     }
     QLOG_INFO() << QObject::tr("%1::TerminateProcess() - Closing socket returned %2, now sleeping for %3 msec.").arg(objectName()).arg(err).arg(sleepInterval);
-    p->MsleepEx(sleepInterval);
+    NiftyLinkQThread::SleepCallingThread(sleepInterval);
   }
   m_IsConnected = false;
 

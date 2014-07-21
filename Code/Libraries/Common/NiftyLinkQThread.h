@@ -44,10 +44,10 @@ public:
   {
   }
 
-  /// \brief Member function to put the thread into sleep.
-  inline void MsleepEx(int msec)
+  /// \brief Member function to put the calling thread into sleep.
+  static void SleepCallingThread(int msec)
   {
-    this->msleep(msec);
+    QThread::msleep(msec);
   }
 
   /// \brief Member function to check if the eventloop has started.

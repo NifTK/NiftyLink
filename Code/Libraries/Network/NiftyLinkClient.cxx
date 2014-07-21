@@ -119,10 +119,7 @@ void NiftyLinkClient::Start(const QUrl& url)
   // Wait until the thread and it's event loop really started
   while (!m_Thread->IsEventLoopRunning())
   {
-    m_Thread->MsleepEx(100);
-
-    // Make sure that our signals are being processed
-    QCoreApplication::processEvents();
+    NiftyLinkQThread::SleepCallingThread(100);
   }
 
   QLOG_INFO() << objectName() << " - NiftyLinkClientProcess thread successfully initialized";
