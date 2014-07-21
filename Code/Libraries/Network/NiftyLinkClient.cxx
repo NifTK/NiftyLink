@@ -121,6 +121,7 @@ void NiftyLinkClient::Start(const QUrl& url)
   while (!m_Thread->IsEventLoopRunning())
   {
     NiftyLinkQThread::SleepCallingThread(100);
+    QCoreApplication::processEvents();
   }
 
   QLOG_INFO() << objectName() << " - NiftyLinkClientProcess thread successfully initialized";
@@ -145,6 +146,13 @@ void NiftyLinkClient::Stop()
 void NiftyLinkClient::OnStartProcessing()
 {
   m_ClientProcess->StartProcessing();
+}
+
+
+//-----------------------------------------------------------------------------
+void NiftyLinkClient::OutputStats()
+{
+  m_ClientProcess->OutputStats();
 }
 
 

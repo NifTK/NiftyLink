@@ -22,11 +22,13 @@ namespace niftk
 {
 
 //-----------------------------------------------------------------------------
-TestTrackingClient::TestTrackingClient(const std::string& hostName, const int& portNumber, const int& fps)
+TestTrackingClient::TestTrackingClient(const std::string& hostName, const int& portNumber, const int& fps, const int& numberMessages)
 {
   this->setObjectName("TestTrackingClient");
   m_HostName = QString::fromStdString(hostName);
   m_PortNumber = portNumber;
+  m_IntendedNumberMessages = numberMessages;
+  m_NumberMessagesSent = 0;
   m_Timer = new QTimer();
   m_Timer->setInterval(1000/fps);
   connect(m_Timer, SIGNAL(timeout()), this, SLOT(OnTimeOut()));
@@ -69,12 +71,18 @@ void TestTrackingClient::OnTimeOut()
   igtl::TrackingDataElement::Pointer element = igtl::TrackingDataElement::New();
   element->SetMatrix(matrix);
 
-  // Send message.
+  // Send message. We should NOT pack it.
   igtl::TrackingDataMessage::Pointer msg = igtl::TrackingDataMessage::New();
-  msg->SetDeviceName("TDataClient");
+  msg->SetDeviceName("TestTrackingClient");
   msg->AddTrackingDataElement(element);
-  msg->Pack();
   m_Client.Send(msg.GetPointer());
+
+  m_NumberMessagesSent++;
+  if (m_NumberMessagesSent == m_IntendedNumberMessages)
+  {
+    m_Client.OutputStats();
+    m_NumberMessagesSent = 0;
+  }
 }
 
 
@@ -121,23 +129,26 @@ int main(int argc, char** argv)
   //------------------------------------------------------------
   // Parse Arguments
 
-  if (argc < 4) // check number of arguments
+  if (argc < 5) // check number of arguments
   {
     // If not correct, print usage
-    std::cerr << "Usage: " << argv[0] << " <host> <port> <fps>"    << std::endl;
-    std::cerr << "    <host>     : Hostname"                       << std::endl;
-    std::cerr << "    <port>     : Port #"                         << std::endl;
-    std::cerr << "    <fps>      : Frames per second [30]"         << std::endl;
+    std::cerr << "Usage: " << argv[0] << " <host> <port> <fps> <total>"    << std::endl;
+    std::cerr << "    <host>     : Hostname"                               << std::endl;
+    std::cerr << "    <port>     : Port #"                                 << std::endl;
+    std::cerr << "    <fps>      : Frames per second [30]"                 << std::endl;
+    std::cerr << "    <total>    : # of frames in total [1000]"            << std::endl;
     exit(0);
   }
 
   std::string hostName = argv[1];
   int         port     = atoi(argv[2]);
   int         fps      = atoi(argv[3]);
+  int         total    = atoi(argv[4]);
 
   std::cout << "TestTrackingClient: host = " << hostName << "." << std::endl;
   std::cout << "TestTrackingClient: port = " << port << "." << std::endl;
   std::cout << "TestTrackingClient: fps = " << fps << "." << std::endl;
+  std::cout << "TestTrackingClient: total = " << total << "." << std::endl;
   std::cout << "TestTrackingClient: Instantiating client." << std::endl;
 
   // Init the logging mechanism.
@@ -147,7 +158,7 @@ int main(int argc, char** argv)
   logger.addDestination(debugDestination.get());
 
   // Start client.
-  niftk::TestTrackingClient client(hostName, port, fps);
+  niftk::TestTrackingClient client(hostName, port, fps, total);
 
   std::cout << "TestTrackingClient: Creating app." << std::endl;
 

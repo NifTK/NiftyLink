@@ -52,6 +52,9 @@ public:
   /// \brief Returns the current value of the connection timeout.
   int GetConnectionTimeOut();
 
+  /// \brief Used for testing, and performance analysis, writing some stats to console.
+  void OutputStats();
+
 signals:
 
   /// \brief Emmitted when this client connects to remote server.

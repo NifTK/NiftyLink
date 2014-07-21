@@ -31,6 +31,7 @@ namespace niftk
 {
 
 const std::string NiftyLinkNetworkProcess::KEEP_ALIVE_MESSAGE("POKE");
+const std::string NiftyLinkNetworkProcess::STATS_MESSAGE("STATS");
 
 //-----------------------------------------------------------------------------
 NiftyLinkNetworkProcess::NiftyLinkNetworkProcess(QObject *parent)
@@ -173,7 +174,9 @@ void NiftyLinkNetworkProcess::StartProcessing()
   // within the context of another thread, hence another event loop.
   connect(this, SIGNAL(InternalStartWorkingSignal()), this, SLOT(RunProcessing()));
 
+  m_ListOfLatencies.clear();
   m_IsRunning = true;
+
   emit InternalStartWorkingSignal();
 
   QLOG_INFO() << QObject::tr("%1::NiftyLinkNetworkProcess::StartProcessing() - finishing").arg(objectName());
@@ -183,7 +186,7 @@ void NiftyLinkNetworkProcess::StartProcessing()
 //-----------------------------------------------------------------------------
 void NiftyLinkNetworkProcess::StopProcessing()
 {
-  QLOG_INFO() << QObject::tr("%1::NiftyLinkNetworkProcess::StopProcessing() - requested").arg(objectName());
+  QLOG_INFO() << QObject::tr("%1::NiftyLinkNetworkProcess::StopProcessing() - requested.").arg(objectName());
 
   // Here we set the member variable to false, and the processing loops in subclass will realise to exit.
   m_IsRunning = false;
@@ -312,22 +315,28 @@ bool NiftyLinkNetworkProcess::ReceiveMessage()
     // Don't forget to Unpack!
     message->Unpack();
 
-    // Message fully received
+    // Message fully received, i.e. last byte arrived.
     timeReceived->GetTime();
 
     // So we restart the no response timer, as we have had a valid message.
     this->StartNoResponseTimer();
-  }
 
-  // Check if its a string keep-alive message.
-  // These are not delivered to the client via the Qt signal. They are squashed here.
-  igtl::StringMessage::Pointer tmp = dynamic_cast<igtl::StringMessage*>(message.GetPointer());
-  if (tmp.IsNotNull() && tmp->GetString() == KEEP_ALIVE_MESSAGE)
-  {
-    QLOG_DEBUG() << QObject::tr("%1::ReceiveMessage() - Keep-alive received, restarting the timeouter.").arg(objectName());
-    this->StartNoResponseTimer();
-    return true;
-  }
+    // Check for special case messages. They are squashed here, and not delivered to client.
+    igtl::StringMessage::Pointer tmp = dynamic_cast<igtl::StringMessage*>(message.GetPointer());
+    if (tmp.IsNotNull() && tmp->GetString() == KEEP_ALIVE_MESSAGE)
+    {
+      QLOG_DEBUG() << QObject::tr("%1::ReceiveMessage() - Keep-alive received, restarting the timeouter.").arg(objectName());
+      this->StartNoResponseTimer();
+      return true;
+    }
+    else if (tmp.IsNotNull() && tmp->GetString() == STATS_MESSAGE)
+    {
+      QLOG_INFO() << QObject::tr("%1::ReceiveMessage() - Stats request received.").arg(objectName());
+      this->StartNoResponseTimer();
+      this->DumpStats();
+      return true;
+    }
+  } // end if we have a body.
 
   // Get the receive timestamp from the socket - marks when the first byte of the package arrived
   igtl::TimeStamp::Pointer timeArrived = igtl::TimeStamp::New();
@@ -348,14 +357,23 @@ bool NiftyLinkNetworkProcess::ReceiveMessage()
   msg->SetMessage(message);
 
   m_NumberOfMessagesReceived++;
-  m_LastMessageProcessedTime->SetTimeInNanoseconds(timeArrived->GetTimeStampInNanoseconds());
 
-  QLOG_DEBUG() << QObject::tr("%1::ReceiveMessage() - id=%2, class=%3, size=%4 bytes, device='%5'")
+  // In OpenIGTLink paper (Tokuda 2009), Latency is defined as the difference
+  // between last byte received and first byte sent.
+  igtl::TimeStamp::Pointer timeCreated = igtl::TimeStamp::New();
+  message->GetTimeStamp(timeCreated);
+
+  igtlUint64 latency = niftk::GetDifferenceInNanoSeconds(timeCreated, timeReceived);
+  m_ListOfLatencies.append(latency);
+
+  QLOG_DEBUG() << QObject::tr("%1::ReceiveMessage() - id=%2, class=%3, size=%4 bytes, device='%5', latency=%6")
                   .arg(objectName())
                   .arg(msg->GetNiftyLinkMessageId())
                   .arg(message->GetNameOfClass())
                   .arg(message->GetPackBodySize())
-                  .arg(message->GetDeviceType());
+                  .arg(message->GetDeviceType())
+                  .arg(latency)
+                 ;
 
   emit MessageReceived(msg);
 
@@ -370,8 +388,12 @@ void NiftyLinkNetworkProcess::Send(igtl::MessageBase::Pointer msg)
 
   if (this->GetIsRunning())
   {
+    // In OpenIGTLink paper (Tokuda et. al. 2009), latency is
+    // defined as the time from the first byte sent to the last byte arrived.
+    // So, here we set the time, just as we send it to the socket.
     igtl::TimeStamp::Pointer sendStarted = igtl::TimeStamp::New();
     msg->SetTimeStamp(sendStarted);
+    msg->Pack();
 
     int ret = m_CommsSocket->Send(msg->GetPackPointer(), msg->GetPackSize());
     if (ret <= 0)
@@ -381,13 +403,13 @@ void NiftyLinkNetworkProcess::Send(igtl::MessageBase::Pointer msg)
       NiftyLinkStdExceptionMacro(std::logic_error, << errorMessage.toStdString());
     }
 
-    // Emit the time. Note, this assumes the constructor sets a valid time.
-    igtl::TimeStamp::Pointer sendFinished = igtl::TimeStamp::New();
-
     // Internal message counter
     m_NumberOfMessagesSent++;
 
-    // Store the time for later, as its used to try and avoid sending too many keep-alive messages.
+    // Get the time. Note, this assumes the constructor sets a valid time.
+    igtl::TimeStamp::Pointer sendFinished = igtl::TimeStamp::New();
+
+    // Store the time where we last sent a message.
     m_LastMessageProcessedTime->SetTimeInNanoseconds(sendFinished->GetTimeStampInNanoseconds());
 
     emit MessageSent(sendStarted->GetTimeStampInNanoseconds(),
@@ -418,11 +440,10 @@ void NiftyLinkNetworkProcess::OnKeepAliveTimerTimedOut()
     return;
   }
 
-  igtl::TimeStamp::Pointer sendStarted = igtl::TimeStamp::New();
-
   // Check if we can avoid sending this message, just to save on network traffic.
+  igtl::TimeStamp::Pointer sendStarted = igtl::TimeStamp::New();
   igtlUint64 diff = GetDifferenceInNanoSeconds(sendStarted, m_LastMessageProcessedTime) / 1000000; // convert nano to milliseconds.
-  if (diff < m_KeepAliveInterval)
+  if (diff < m_KeepAliveInterval/2)
   {
     QLOG_DEBUG() << QObject::tr("%1::OnKeepAliveTimerTimedOut() - No real need to send a keep-alive as we have recently processed a message.").arg(objectName());
     return;
@@ -432,7 +453,6 @@ void NiftyLinkNetworkProcess::OnKeepAliveTimerTimedOut()
   igtl::StringMessage::Pointer stringMessage = igtl::StringMessage::New();
   stringMessage->SetDeviceName(objectName().toStdString().c_str());
   stringMessage->SetString(tmpMsg);
-  stringMessage->SetTimeStamp(sendStarted);
   stringMessage->Pack();
 
   int rval = m_CommsSocket->Send(stringMessage->GetPackPointer(), stringMessage->GetPackSize());
@@ -445,6 +465,10 @@ void NiftyLinkNetworkProcess::OnKeepAliveTimerTimedOut()
 
     emit CantReachRemote();
   }
+
+  // Store the time where we last sent a message.
+  m_LastMessageProcessedTime->SetTimeInNanoseconds(sendStarted->GetTimeStampInNanoseconds());
+
 }
 
 
@@ -522,6 +546,32 @@ void NiftyLinkNetworkProcess::TerminateProcess()
   m_IsConnected = false;
 
   emit TerminateFinished();
+}
+
+
+//-----------------------------------------------------------------------------
+void NiftyLinkNetworkProcess::DumpStats()
+{
+  igtlUint64 number = m_ListOfLatencies.size();
+  double mean = CalculateMean(m_ListOfLatencies);
+  double stdDev = CalculateStdDev(m_ListOfLatencies);
+
+  m_ListOfLatencies.clear();
+  m_ListOfLatencies.clear();
+
+  QLOG_INFO() << QObject::tr("%1::NiftyLinkNetworkProcess::DumpStats() - number=%2, mean=%3, std dev=%4, (nanoseconds).").arg(objectName()).arg(number).arg(mean).arg(stdDev);
+}
+
+
+//-----------------------------------------------------------------------------
+void NiftyLinkNetworkProcess::RequestRemoteStats()
+{
+  // Send message to other end to get stats out of other end.
+  std::string tmpMsg = STATS_MESSAGE;
+  igtl::StringMessage::Pointer statsMessage = igtl::StringMessage::New();
+  statsMessage->SetDeviceName(objectName().toStdString().c_str());
+  statsMessage->SetString(tmpMsg);
+  this->Send(statsMessage.GetPointer());
 }
 
 } // end namespace niftk

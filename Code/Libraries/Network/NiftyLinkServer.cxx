@@ -80,8 +80,6 @@ void NiftyLinkServer::Start(const int& portNumber)
   while (!m_Thread->IsEventLoopRunning())
   {
     NiftyLinkQThread::SleepCallingThread(100);
-
-    // Make sure that our signals are being processed
     QCoreApplication::processEvents();
   }
 

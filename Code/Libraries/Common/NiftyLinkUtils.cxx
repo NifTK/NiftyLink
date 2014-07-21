@@ -160,5 +160,40 @@ igtlUint64 GetDifferenceInNanoSeconds(igtl::TimeStamp* timeA, igtl::TimeStamp* t
   return d;
 }
 
+
+//-----------------------------------------------------------------------------
+double CalculateMean(const QList<igtlUint64>& list)
+{
+  double mean = 0;
+  foreach(igtlUint64 latency, list)
+  {
+    mean += static_cast<double>(latency);
+  }
+  if (list.size() > 1)
+  {
+    mean /= static_cast<double>(list.size());
+  }
+  return mean;
+}
+
+
+//-----------------------------------------------------------------------------
+double CalculateStdDev(const QList<igtlUint64>& list)
+{
+  double stdDev = 0;
+  double mean = CalculateMean(list);
+  foreach(igtlUint64 latency, list)
+  {
+    stdDev += ((latency-mean)*(latency-mean));
+  }
+  if (list.size() > 1)
+  {
+    stdDev /= static_cast<double>(list.size());
+  }
+  stdDev = sqrt(stdDev);
+  return stdDev;
+}
+
+
 } // end namespace niftk
 

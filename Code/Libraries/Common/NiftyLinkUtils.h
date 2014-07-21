@@ -41,6 +41,12 @@ extern "C++" NIFTYLINKCOMMON_WINEXPORT void CreateRandomTransformMatrix(igtl::Ma
 /// \param timeB must be not-NULL
 extern "C++" NIFTYLINKCOMMON_WINEXPORT igtlUint64 GetDifferenceInNanoSeconds(igtl::TimeStamp* timeA, igtl::TimeStamp* timeB);
 
+/// \brief Used to calculate stats of latency, this one computing the mean.
+extern "C++" NIFTYLINKCOMMON_WINEXPORT double CalculateMean(const QList<igtlUint64>& list);
+
+/// \brief Used to calculate stats of latency, this one computing the standard deviation.
+extern "C++" NIFTYLINKCOMMON_WINEXPORT double CalculateStdDev(const QList<igtlUint64>& list);
+
 } // end namespace niftk
 
 #endif // NiftyLinkUtils_h

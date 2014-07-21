@@ -61,6 +61,9 @@ public:
   /// \brief Returns the time to wait when trying to connect to the server.
   int GetTimeToWaitToConnectToServer();
 
+  /// \brief Used for testing, and performance analysis, writing some stats to console.
+  void OutputStats();
+
 signals:
 
   /// \brief This signal is emitted when the client first connects to the remote server.

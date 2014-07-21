@@ -30,7 +30,7 @@ class TestTrackingClient : public QObject
   Q_OBJECT
 
 public:
-  TestTrackingClient(const std::string& hostName, const int& portNumber, const int& fps);
+  TestTrackingClient(const std::string& hostName, const int& portNumber, const int& fps, const int& numberMessages);
   virtual ~TestTrackingClient();
 
 private slots:
@@ -50,6 +50,8 @@ private:
   int             m_PortNumber;
   NiftyLinkClient m_Client;
   QTimer         *m_Timer;
+  int             m_IntendedNumberMessages;
+  int             m_NumberMessagesSent;
 };
 
 } // end namespace niftk

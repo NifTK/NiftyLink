@@ -46,9 +46,6 @@ public:
   /// \brief Destructor.
   virtual ~NiftyLinkNetworkProcess();
 
-  /// \brief Contains the standard keep-alive message.
-  static const std::string KEEP_ALIVE_MESSAGE;
-
   /// \brief Sets the socket timeout in milliseconds, default = 50 msec.
   void SetSocketTimeout(const int& msec);
 
@@ -61,7 +58,7 @@ public:
   /// \brief Stops the main processing loop.
   void StopProcessing();
 
-  /// \brief Sends the OpenIGTLink message (blocking).
+  /// \brief Sends the OpenIGTLink message (blocking), which should be Unpacked when passed in, as this methods Packs it.
   void Send(igtl::MessageBase::Pointer msg);
 
 signals:
@@ -135,6 +132,12 @@ protected:
   /// \brief Processes an incomming message.
   bool ReceiveMessage();
 
+  /// \brief Method thats triggered to extract some statistics of latencies.
+  void DumpStats();
+
+  /// \brief Sends a message to the remote to dump stats.
+  void RequestRemoteStats();
+
   // Simple running counters of all messages received.
   igtlUint64                     m_NumberOfMessagesReceived;
   igtlUint64                     m_NumberOfMessagesSent;
@@ -161,6 +164,12 @@ private:
   /// \brief Shutdown/Destroy stuff, called at the end of processing loop, as processing thread will finish, and from destructor.
   void TerminateProcess();
 
+  /// \brief Contains the system level, standard keep-alive message.
+  static const std::string KEEP_ALIVE_MESSAGE;
+
+  /// \brief Contains the system level, standard message, to extract stats;
+  static const std::string STATS_MESSAGE;
+
   // The timeout in milliseconds passed onto the socket object.
   int                            m_SocketTimeout;
 
@@ -178,6 +187,8 @@ private:
   // We track the last time we processed a real message (not a keep-alive), so we can avoid sending keep-alive if not needed.
   igtl::TimeStamp::Pointer       m_LastMessageProcessedTime;
 
+  // This used for calculating stats.
+  QList<igtlUint64>              m_ListOfLatencies;
 }; // end class
 
 } // end namespace niftk

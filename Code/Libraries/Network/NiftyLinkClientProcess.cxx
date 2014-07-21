@@ -54,12 +54,19 @@ int NiftyLinkClientProcess::GetConnectionTimeOut()
 
 
 //-----------------------------------------------------------------------------
+void NiftyLinkClientProcess::OutputStats()
+{
+  this->DumpStats();
+  this->RequestRemoteStats();
+}
+
+
+//-----------------------------------------------------------------------------
 void NiftyLinkClientProcess::Initialise(const QString &hostname, const int &port)
 {
   if (port <= 0 || hostname.size() == 0)
   {
     QString errorMessage = QObject::tr("%1::Initialise(%2, %3) - Cannot create a client socket, invalid host or port specified.").arg(objectName()).arg(hostname).arg(port);
-
     QLOG_ERROR() << errorMessage;
     NiftyLinkStdExceptionMacro(std::invalid_argument, << errorMessage.toStdString());
   }
@@ -67,7 +74,6 @@ void NiftyLinkClientProcess::Initialise(const QString &hostname, const int &port
   if (m_MySocket.IsNotNull() || m_CommsSocket.IsNotNull())
   {
     QString errorMessage = QObject::tr("%1::Initialise(%2, %3) - Client already in use, you should not try to re-initialise it.").arg(objectName()).arg(hostname).arg(port);
-
     QLOG_ERROR() << errorMessage;
     NiftyLinkStdExceptionMacro(std::logic_error, << errorMessage.toStdString());
   }
@@ -91,7 +97,6 @@ void NiftyLinkClientProcess::DoProcessing()
   if (m_MySocket.IsNull())
   {
     QString errorMessage = QObject::tr("%1::DoProcessing() - Client socket is not initialised.").arg(objectName());
-
     QLOG_ERROR() << errorMessage;
     NiftyLinkStdExceptionMacro(std::logic_error, << errorMessage.toStdString());
   }
@@ -99,7 +104,6 @@ void NiftyLinkClientProcess::DoProcessing()
   if (m_CommsSocket.IsNull())
   {
     QString errorMessage = QObject::tr("%1::DoProcessing() - Client socket is not initialised.").arg(objectName());
-
     QLOG_ERROR() << errorMessage;
     NiftyLinkStdExceptionMacro(std::logic_error, << errorMessage.toStdString());
   }
@@ -112,7 +116,6 @@ void NiftyLinkClientProcess::DoProcessing()
   {
     QString errorMessage = QObject::tr("%1::DoProcessing() - Error connecting to server (%2:%3). Check console/log file.").arg(objectName()).arg(m_HostName).arg(m_Port);
     QLOG_ERROR() << errorMessage;
-
     NiftyLinkStdExceptionMacro(std::runtime_error, << errorMessage.toStdString());
   }
 
