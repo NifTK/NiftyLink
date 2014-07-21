@@ -14,6 +14,7 @@
 #include <NiftyLinkQThread.h>
 #include <NiftyLinkUtils.h>
 #include <NiftyLinkMessageContainer.h>
+#include <NiftyLinkMacro.h>
 
 #include <QTimer>
 #include <QsLog.h>
@@ -99,9 +100,8 @@ void NiftyLinkNetworkProcess::StartKeepAliveTimer()
   if (m_KeepAliveTimer == NULL)
   {
     QString errorMessage = QObject::tr("%1::NiftyLinkNetworkProcess::StartKeepAliveTimer() - QTimer is not initialised, so can't start it.").arg(objectName());
-
     QLOG_ERROR() << errorMessage;
-    throw std::logic_error(errorMessage.toStdString());
+    NiftyLinkStdExceptionMacro(std::logic_error, << errorMessage.toStdString());
   }
 
   m_KeepAliveTimer->start(m_KeepAliveInterval);
@@ -114,9 +114,8 @@ void NiftyLinkNetworkProcess::StopKeepAliveTimer()
   if (m_KeepAliveTimer == NULL)
   {
     QString errorMessage = QObject::tr("%1::NiftyLinkNetworkProcess::StopKeepAliveTimer() - QTimer is not initialised, so can't stop it.").arg(objectName());
-
     QLOG_ERROR() << errorMessage;
-    throw std::logic_error(errorMessage.toStdString());
+    NiftyLinkStdExceptionMacro(std::logic_error, << errorMessage.toStdString());
   }
 
   m_KeepAliveTimer->stop();
@@ -143,9 +142,8 @@ void NiftyLinkNetworkProcess::StartNoResponseTimer()
   if (m_NoResponseTimer == NULL)
   {
     QString errorMessage = QObject::tr("%1::StartNoResponseTimer() - QTimer is not initialised, so can't start it.").arg(objectName());
-
     QLOG_ERROR() << errorMessage;
-    throw std::logic_error(errorMessage.toStdString());
+    NiftyLinkStdExceptionMacro(std::logic_error, << errorMessage.toStdString());
   }
 
   m_NoResponseTimer->start(m_NoResponseInterval);
@@ -158,9 +156,8 @@ void NiftyLinkNetworkProcess::StopNoResponseTimer()
   if (m_NoResponseTimer == NULL)
   {
     QString errorMessage = QObject::tr("%1::StopNoResponseTimer() - QTimer is not initialised, so can't stop it.").arg(objectName());
-
     QLOG_ERROR() << errorMessage;
-    throw std::logic_error(errorMessage.toStdString());
+    NiftyLinkStdExceptionMacro(std::logic_error, << errorMessage.toStdString());
   }
 
   m_NoResponseTimer->stop();
@@ -238,9 +235,8 @@ void NiftyLinkNetworkProcess::ReceiveMessageLoop()
     if (bytesPending < 0)
     {
       QString errorMessage = QObject::tr("%1::ReceiveMessageLoop() - CheckPendingData returned -1. This is a system error. Check console/log file.").arg(objectName());
-
       QLOG_ERROR() << errorMessage;
-      throw std::runtime_error(errorMessage.toStdString());
+      NiftyLinkStdExceptionMacro(std::runtime_error, << errorMessage.toStdString());
     }
 
     // Process the message.
@@ -382,8 +378,7 @@ void NiftyLinkNetworkProcess::Send(igtl::MessageBase::Pointer msg)
     {
       QString errorMessage = QObject::tr("%1::Send() - Failed to send message, return code %2. Check console/log file.").arg(objectName()).arg(ret);
       QLOG_ERROR() << errorMessage;
-
-      throw std::logic_error(errorMessage.toStdString());
+      NiftyLinkStdExceptionMacro(std::logic_error, << errorMessage.toStdString());
     }
 
     // Emit the time. Note, this assumes the constructor sets a valid time.

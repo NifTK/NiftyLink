@@ -12,6 +12,8 @@
 
 #include "NiftyLinkSocket.h"
 
+#include <NiftyLinkMacro.h>
+
 #include <igtlOSUtil.h>
 
 #if defined(_WIN32) && !defined(__CYGWIN__)
@@ -59,28 +61,28 @@ NiftyLinkSocket::~NiftyLinkSocket()
 //-----------------------------------------------------------------------------
 int NiftyLinkSocket::SetReceiveTimeout(int /*timeout*/)
 {
-  throw std::runtime_error("SetReceiveTimeout should not be called.");
+  NiftyLinkStdExceptionMacro(std::logic_error, "SetReceiveTimeout should not be called.");
 }
 
 
 //-----------------------------------------------------------------------------
 int NiftyLinkSocket::SetSendTimeout(int /*timeout*/)
 {
-  throw std::runtime_error("SetSendTimeout should not be called.");
+  NiftyLinkStdExceptionMacro(std::logic_error, "SetSendTimeout should not be called.");
 }
 
 
 //-----------------------------------------------------------------------------
 int NiftyLinkSocket::SetReceiveBlocking(int /*sw*/)
 {
-  throw std::runtime_error("SetReceiveBlocking should not be called.");
+  NiftyLinkStdExceptionMacro(std::logic_error, "SetReceiveBlocking should not be called.");
 }
 
 
 //-----------------------------------------------------------------------------
 int NiftyLinkSocket::SetSendBlocking(int /*sw*/)
 {
-  throw std::runtime_error("SetSendBlocking should not be called.");
+  NiftyLinkStdExceptionMacro(std::logic_error, "SetSendBlocking should not be called.");
 }
 
 

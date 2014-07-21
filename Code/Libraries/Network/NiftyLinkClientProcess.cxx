@@ -13,6 +13,7 @@
 #include "NiftyLinkClientProcess.h"
 #include <NiftyLinkQThread.h>
 #include <NiftyLinkClientSocket.h>
+#include <NiftyLinkMacro.h>
 
 #include <QsLog.h>
 
@@ -60,7 +61,7 @@ void NiftyLinkClientProcess::Initialise(const QString &hostname, const int &port
     QString errorMessage = QObject::tr("%1::Initialise(%2, %3) - Cannot create a client socket, invalid host or port specified.").arg(objectName()).arg(hostname).arg(port);
 
     QLOG_ERROR() << errorMessage;
-    throw std::invalid_argument(errorMessage.toStdString());
+    NiftyLinkStdExceptionMacro(std::invalid_argument, << errorMessage.toStdString());
   }
 
   if (m_MySocket.IsNotNull() || m_CommsSocket.IsNotNull())
@@ -68,7 +69,7 @@ void NiftyLinkClientProcess::Initialise(const QString &hostname, const int &port
     QString errorMessage = QObject::tr("%1::Initialise(%2, %3) - Client already in use, you should not try to re-initialise it.").arg(objectName()).arg(hostname).arg(port);
 
     QLOG_ERROR() << errorMessage;
-    throw std::logic_error(errorMessage.toStdString());
+    NiftyLinkStdExceptionMacro(std::logic_error, << errorMessage.toStdString());
   }
 
   this->m_MySocket = NiftyLinkClientSocket::New();  // Note: these are deliberately the same.
@@ -92,7 +93,7 @@ void NiftyLinkClientProcess::DoProcessing()
     QString errorMessage = QObject::tr("%1::DoProcessing() - Client socket is not initialised.").arg(objectName());
 
     QLOG_ERROR() << errorMessage;
-    throw std::logic_error(errorMessage.toStdString());
+    NiftyLinkStdExceptionMacro(std::logic_error, << errorMessage.toStdString());
   }
 
   if (m_CommsSocket.IsNull())
@@ -100,7 +101,7 @@ void NiftyLinkClientProcess::DoProcessing()
     QString errorMessage = QObject::tr("%1::DoProcessing() - Client socket is not initialised.").arg(objectName());
 
     QLOG_ERROR() << errorMessage;
-    throw std::logic_error(errorMessage.toStdString());
+    NiftyLinkStdExceptionMacro(std::logic_error, << errorMessage.toStdString());
   }
 
   NiftyLinkClientSocket::Pointer csock = dynamic_cast<NiftyLinkClientSocket*>(m_MySocket.GetPointer());
@@ -112,7 +113,7 @@ void NiftyLinkClientProcess::DoProcessing()
     QString errorMessage = QObject::tr("%1::DoProcessing() - Error connecting to server (%2:%3). Check console/log file.").arg(objectName()).arg(m_HostName).arg(m_Port);
     QLOG_ERROR() << errorMessage;
 
-    throw std::runtime_error(errorMessage.toStdString());
+    NiftyLinkStdExceptionMacro(std::runtime_error, << errorMessage.toStdString());
   }
 
   m_MySocket->SetTimeout(this->GetSocketTimeout());

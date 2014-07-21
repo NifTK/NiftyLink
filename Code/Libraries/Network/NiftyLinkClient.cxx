@@ -15,6 +15,7 @@
 #include "NiftyLinkClientSocket.h"
 #include <NiftyLinkQThread.h>
 #include <NiftyLinkUtils.h>
+#include <NiftyLinkMacro.h>
 
 #include <QsLog.h>
 #include <cassert>
@@ -89,7 +90,7 @@ void NiftyLinkClient::Start(const QUrl& url)
     QString errorMessage = QObject::tr("%1::Start(%2) - Cannot validate Url host name").arg(objectName()).arg(url.toString());
 
     QLOG_ERROR() << errorMessage;
-    throw std::invalid_argument(errorMessage.toStdString());
+    NiftyLinkStdExceptionMacro(std::invalid_argument, << errorMessage.toStdString());
   }
 
   int port = url.port();
@@ -98,7 +99,7 @@ void NiftyLinkClient::Start(const QUrl& url)
     QString errorMessage = QObject::tr("%1::Start(%2) - Invalid port.").arg(objectName()).arg(port);
 
     QLOG_ERROR() << errorMessage;
-    throw std::invalid_argument(errorMessage.toStdString());
+    NiftyLinkStdExceptionMacro(std::invalid_argument, << errorMessage.toStdString());
   }
   assert(m_ClientProcess != NULL);
 

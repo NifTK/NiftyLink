@@ -12,6 +12,7 @@
 
 #include "NiftyLinkServerProcess.h"
 #include <NiftyLinkQThread.h>
+#include <NiftyLinkMacro.h>
 
 #include <QsLog.h>
 
@@ -56,17 +57,15 @@ void NiftyLinkServerProcess::Initialise(const int& port)
   if (port <= 0)
   {
     QString errorMessage = QObject::tr("%1::Initialise(%2) - Cannot create a server socket, invalid port specified.").arg(objectName()).arg(port);
-
     QLOG_ERROR() << errorMessage;
-    throw std::invalid_argument(errorMessage.toStdString());
+    NiftyLinkStdExceptionMacro(std::invalid_argument, << errorMessage.toStdString());
   }
 
   if (m_MySocket.IsNotNull())
   {
     QString errorMessage = QObject::tr("%1::Initialise(%2) - Server already in use, you should not try to re-initialise it.").arg(objectName()).arg(port);
-
     QLOG_ERROR() << errorMessage;
-    throw std::logic_error(errorMessage.toStdString());
+    NiftyLinkStdExceptionMacro(std::logic_error, << errorMessage.toStdString());
   }
 
   NiftyLinkServerSocket::Pointer ssock = NiftyLinkServerSocket::New();
@@ -74,9 +73,8 @@ void NiftyLinkServerProcess::Initialise(const int& port)
   if (err < 0)
   {    
     QString errorMessage = QObject::tr("%1::Initialise(%2) - Error creating server socket. Check console/log file.").arg(objectName()).arg(port);
-
     QLOG_ERROR() << errorMessage;
-    throw std::runtime_error(errorMessage.toStdString());
+    NiftyLinkStdExceptionMacro(std::runtime_error, << errorMessage.toStdString());
   }
 
   ssock->SetTimeout(this->GetSocketTimeout());
@@ -100,9 +98,8 @@ void NiftyLinkServerProcess::DoProcessing()
   if (m_MySocket.IsNull())
   {
     QString errorMessage = QObject::tr("%1::DoProcessing() - Server socket is not initialised.").arg(objectName());
-
     QLOG_ERROR() << errorMessage;
-    throw std::logic_error(errorMessage.toStdString());
+    NiftyLinkStdExceptionMacro(std::logic_error, << errorMessage.toStdString());
   }
 
   NiftyLinkSocket::Pointer sock = NULL;
