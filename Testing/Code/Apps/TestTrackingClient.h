@@ -40,7 +40,7 @@ private slots:
   void OnConnectedToServer();
   void OnDisconnectedFromServer();
   void OnServerDisconnected();
-  void OnMessageReceived(NiftyLinkMessageContainer::Pointer msg);
+  void OnMessageReceived(niftk::NiftyLinkMessageContainer::Pointer msg);
   void OnMessageSent(igtlUint64 startTimeInNanoseconds, igtlUint64 endTimeInNanoseconds);
 
   void OnTimeOut();

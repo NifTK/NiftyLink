@@ -76,7 +76,7 @@ signals:
   void ClientDisconnected();
 
   /// \brief This signal is emitted when a new message is received from the remote peer.
-  void MessageReceived(NiftyLinkMessageContainer::Pointer msg);
+  void MessageReceived(niftk::NiftyLinkMessageContainer::Pointer msg);
 
   /// \brief This signal is emmitted when a message has been successfully sent.
   /// The start and end times indicate the time it took to process the Send() request.
@@ -91,7 +91,7 @@ private slots:
   void OnClientConnected();
   void OnCantSendToClient();
   void OnClientDisconnected();
-  void OnMessageReceived(NiftyLinkMessageContainer::Pointer msg);
+  void OnMessageReceived(niftk::NiftyLinkMessageContainer::Pointer msg);
   void OnMessageSent(igtlUint64 startTimeInNanoseconds, igtlUint64 endTimeInNanoseconds);
 
 private:

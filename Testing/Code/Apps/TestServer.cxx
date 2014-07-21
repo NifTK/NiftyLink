@@ -20,10 +20,11 @@ namespace niftk
 {
 
 //-----------------------------------------------------------------------------
-TestServer::TestServer(const int& portNumber)
+TestServer::TestServer(const int& portNumber, const bool& isEchoing)
 {
   this->setObjectName("TestServer");
   m_PortNumber = portNumber;
+  m_IsEchoing = isEchoing;
 }
 
 
@@ -38,7 +39,7 @@ void TestServer::Start()
 {
   connect(&m_Server, SIGNAL(ClientConnected()), this, SLOT(OnClientConnected()));
   connect(&m_Server, SIGNAL(ClientDisconnected()), this, SLOT(OnClientDisconnected()));
-  connect(&m_Server, SIGNAL(MessageReceived(NiftyLinkMessageContainer::Pointer)), this, SLOT(OnMessageReceived(NiftyLinkMessageContainer::Pointer)));
+  connect(&m_Server, SIGNAL(MessageReceived(niftk::NiftyLinkMessageContainer::Pointer)), this, SLOT(OnMessageReceived(niftk::NiftyLinkMessageContainer::Pointer)));
   connect(&m_Server, SIGNAL(CantSendToClient()), this, SLOT(OnCantSendToClient()));
   connect(&m_Server, SIGNAL(MessageSent(igtlUint64, igtlUint64)), this, SLOT(OnMessageSent(igtlUint64, igtlUint64)));
   m_Server.Start(m_PortNumber);
@@ -60,9 +61,15 @@ void TestServer::OnClientDisconnected()
 
 
 //-----------------------------------------------------------------------------
-void TestServer::OnMessageReceived(NiftyLinkMessageContainer::Pointer message)
+void TestServer::OnMessageReceived(niftk::NiftyLinkMessageContainer::Pointer message)
 {
-  QLOG_INFO() << QObject::tr("%1::OnMessageReceived(%2).").arg(objectName()).arg(message->GetNiftyLinkMessageId());
+  QLOG_DEBUG() << QObject::tr("%1::OnMessageReceived(%2), type=%3").arg(objectName()).arg(message->GetNiftyLinkMessageId()).arg(message->GetMessage()->GetDeviceType());
+  if (m_IsEchoing)
+  {
+    QLOG_DEBUG() << QObject::tr("%1::OnMessageReceived(%2), sending.").arg(objectName()).arg(message->GetNiftyLinkMessageId());
+    message->GetMessage()->Pack();
+    m_Server.Send(message->GetMessage());
+  }
 }
 
 
@@ -76,7 +83,7 @@ void TestServer::OnCantSendToClient()
 //-----------------------------------------------------------------------------
 void TestServer::OnMessageSent(igtlUint64 startTimeInNanoseconds, igtlUint64 endTimeInNanoseconds)
 {
-  QLOG_INFO() << QObject::tr("%1::OnMessageSent().").arg(objectName()).arg(startTimeInNanoseconds).arg(endTimeInNanoseconds);
+  QLOG_DEBUG() << QObject::tr("%1::OnMessageSent(%2, %3), time taken=%4 nsec").arg(objectName()).arg(startTimeInNanoseconds).arg(endTimeInNanoseconds).arg(endTimeInNanoseconds - startTimeInNanoseconds);
 }
 
 } // end namespace niftk
@@ -88,17 +95,20 @@ int main(int argc, char** argv)
   //------------------------------------------------------------
   // Parse Arguments
 
-  if (argc < 2) // check number of arguments
+  if (argc < 3) // check number of arguments
   {
     // If not correct, print usage
     std::cerr << "Usage: " << argv[0] << " <port>"    << std::endl;
     std::cerr << "    <port>     : Port #"            << std::endl;
+    std::cerr << "    <bool>     : is echoing [0|1]"  << std::endl;
     exit(0);
   }
 
   int    port       = atoi(argv[1]);
+  int    isEcho     = atoi(argv[2]);
 
   std::cout << "TestServer: port = " << port << "." << std::endl;
+  std::cout << "TestServer: echo = " << isEcho << "." << std::endl;
   std::cout << "TestServer: Instantiating server." << std::endl;
 
   // Init the logging mechanism.
@@ -108,7 +118,8 @@ int main(int argc, char** argv)
   logger.addDestination(debugDestination.get());
 
   // Start server.
-  niftk::TestServer server(port);
+  bool isEchoing = (isEcho == 1 ? true : false);
+  niftk::TestServer server(port, isEchoing);
 
   std::cout << "TestServer: Creating app." << std::endl;
 

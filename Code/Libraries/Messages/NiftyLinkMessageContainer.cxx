@@ -37,6 +37,34 @@ NiftyLinkMessageContainer::NiftyLinkMessageContainer()
 
 
 //-----------------------------------------------------------------------------
+NiftyLinkMessageContainer::NiftyLinkMessageContainer(const NiftyLinkMessageContainer& another)
+{
+  this->ShallowCopy(another);
+}
+
+
+//-----------------------------------------------------------------------------
+NiftyLinkMessageContainer& NiftyLinkMessageContainer::operator=(const NiftyLinkMessageContainer& another)
+{
+  this->ShallowCopy(another);
+  return *this;
+}
+
+
+//-----------------------------------------------------------------------------
+void NiftyLinkMessageContainer::ShallowCopy(const NiftyLinkMessageContainer& another)
+{
+  m_Message = another.m_Message;
+  m_Id = another.m_Id;
+  m_TimeArrived = another.m_TimeArrived;
+  m_TimeReceived = another.m_TimeReceived;
+  m_SenderHostName = another.m_SenderHostName;
+  m_SenderPortNumber = another.m_SenderPortNumber;
+  m_OwnerName = another.m_OwnerName;
+}
+
+
+//-----------------------------------------------------------------------------
 NiftyLinkMessageContainer::~NiftyLinkMessageContainer(void)
 {
 }
@@ -137,13 +165,6 @@ QString NiftyLinkMessageContainer::GetOwnerName(void)
 
 
 //-----------------------------------------------------------------------------
-void NiftyLinkMessageContainer::TouchMessage(const QString &who, const igtlUint64 &when)
-{
-  this->m_AccessTimes[who] = when;
-}
-
-
-//-----------------------------------------------------------------------------
 igtlUint64 NiftyLinkMessageContainer::GetTimeCreated() const
 {
   assert(this->m_Message.IsNotNull());
@@ -152,38 +173,6 @@ igtlUint64 NiftyLinkMessageContainer::GetTimeCreated() const
   this->m_Message->GetTimeStamp(tmp);
 
   return tmp->GetTimeStampInNanoseconds();
-}
-
-
-//-----------------------------------------------------------------------------
-QStringList NiftyLinkMessageContainer::GetAccessTimes()
-{
-  assert(this->m_Message.IsNotNull());
-
-  QStringList result;
-  std::map<QString, igtlUint64>::iterator it;
-
-  igtl::TimeStamp::Pointer timeCreated = igtl::TimeStamp::New();
-  this->m_Message->GetTimeStamp(timeCreated);
-
-  result << QObject::tr("Message:%1, created:%2.%3")
-            .arg(m_Id)
-            .arg(timeCreated->GetSecond())
-            .arg(timeCreated->GetNanosecond());
-
-  for (it = m_AccessTimes.begin(); it != m_AccessTimes.end(); ++it)
-  {
-    igtl::TimeStamp::Pointer tmp = igtl::TimeStamp::New();
-    tmp->SetTimeInNanoseconds(it->second);
-
-    result << QObject::tr("  Accessed:%1.%2, by %3, lag=%4")
-              .arg(tmp->GetSecond())
-              .arg(tmp->GetNanosecond())
-              .arg(it->first)
-              .arg(GetDifferenceInNanoSeconds(timeCreated, tmp));
-  }
-
-  return result;
 }
 
 } // end namespace niftk

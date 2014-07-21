@@ -46,7 +46,11 @@ namespace niftk
 *
 * DO NOT expose access to the internal igtl::TimeStamp objects.
 *
-* DO NOT provide copy/assignment operators.
+* NOTE: Copy operations are shallow, copying pointers and not
+* producing a totally new object. So, for example, if you have
+* a NiftyLinkMessageContainer containing an image, and you
+* copy the NiftyLinkMessageContainer, then both NiftyLinkMessageContainer
+* will point to the same image message.
 */
 class NIFTYLINKCOMMON_WINEXPORT NiftyLinkMessageContainer : public QSharedData
 {
@@ -60,6 +64,13 @@ public:
 
   /// \brief Basic constructor which generates a timestamp and derives the message ID from it.
   NiftyLinkMessageContainer(void);
+
+  /// \brief We need a copy constructor to register a Qt metatype.
+  NiftyLinkMessageContainer(const NiftyLinkMessageContainer& another);
+
+  /// \brief We might as well have operator equals if we have a copy constructor.
+  /// This implies that we are considering this type as a Value Type.
+  NiftyLinkMessageContainer& operator=(const NiftyLinkMessageContainer&);
 
   /// \brief Basic destructor.
   virtual ~NiftyLinkMessageContainer(void);
@@ -106,18 +117,10 @@ public:
   /// \brief Method to check who owns the message at the moment
   QString GetOwnerName(void);
 
-  /// \brief This method is to support debugging lags in the message transmission
-  void TouchMessage(const QString& who, const igtlUint64& when);
-
-  /// \brief This method returns the times in nanosecs when the message was touched.
-  QStringList GetAccessTimes();
-
-protected:
-
-  NiftyLinkMessageContainer(const NiftyLinkMessageContainer&); // Purposefully not implemented.
-  NiftyLinkMessageContainer& operator=(const NiftyLinkMessageContainer&); // Purposefully not implemented.
-
 private:
+
+  // Shallow copy, meaning that it copies pointer values.
+  void ShallowCopy(const NiftyLinkMessageContainer& another);
 
   // Holds the actual message. All operations on the message should be done directly here.
   igtl::MessageBase::Pointer         m_Message;
@@ -139,9 +142,6 @@ private:
 
   // We store an indicator of who 'owns' this message.
   QString                            m_OwnerName;
-
-  // We also store access times, to help debugging message flow timings.
-  std::map<QString, igtlUint64>      m_AccessTimes;
 };
 
 } // end namespace niftk

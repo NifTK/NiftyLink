@@ -73,7 +73,7 @@ public:
 signals:
 
   /// \brief This signal is emitted when a new message is received from the remote peer.
-  void MessageReceived(NiftyLinkMessageContainer::Pointer msg);
+  void MessageReceived(niftk::NiftyLinkMessageContainer::Pointer msg);
 
   /// \brief This signal is emmitted when a message has been successfully sent.
   /// The start and end times indicate the time it took to process the Send() request.

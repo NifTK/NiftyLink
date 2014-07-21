@@ -13,11 +13,13 @@
 #include <NiftyLinkSocket.h>
 #include <NiftyLinkQThread.h>
 #include <NiftyLinkUtils.h>
+#include <NiftyLinkMessageContainer.h>
 
 #include <QTimer>
 #include <QsLog.h>
 #include <QCoreApplication>
 
+#include <igtlMessageFactory.h>
 #include <igtlStringMessage.h>
 
 #include <stdexcept>
@@ -45,6 +47,7 @@ NiftyLinkNetworkProcess::NiftyLinkNetworkProcess(QObject *parent)
 , m_IsConnected(false)
 , m_LastMessageProcessedTime(NULL)
 {
+  qRegisterMetaType<niftk::NiftyLinkMessageContainer::Pointer>("niftk::NiftyLinkMessageContainer::Pointer");
   m_LastMessageProcessedTime = igtl::TimeStamp::New();
 }
 
@@ -281,10 +284,10 @@ bool NiftyLinkNetworkProcess::ReceiveMessage()
   assert(m_CommsSocket.IsNotNull());
 
   // This is the container we eventually publish.
-  NiftyLinkMessageContainer::Pointer msg;
+  NiftyLinkMessageContainer::Pointer msg = (NiftyLinkMessageContainer::Pointer(new NiftyLinkMessageContainer()));
 
   // This contains the original OpenIGTLink message.
-  igtl::MessageBase::Pointer message;
+  igtl::MessageBase::Pointer message = NULL;
 
   // Create a message buffer to receive header
   igtl::MessageHeader::Pointer msgHeader = igtl::MessageHeader::New();
@@ -295,13 +298,13 @@ bool NiftyLinkNetworkProcess::ReceiveMessage()
   if (r <= 0)
   {
     // Failed to read a proper header. Is this an error? If its not an OpenIGTLink message we discard it anyway.
-    QLOG_WARN() << QObject::tr("%1::ReceiveMessageLoop() - Failed to receive valid OpenIGTLink header.").arg(objectName());
+    QLOG_WARN() << QObject::tr("%1::ReceiveMessage() - Failed to receive valid OpenIGTLink header.").arg(objectName());
     return false;
   }
   if (r != msgHeader->GetPackSize())
   {
     // Failed to read a proper header. Is this an error? If its not an OpenIGTLink message we discard it anyway.
-    QLOG_WARN() << QObject::tr("%1::ReceiveMessageLoop() - Failed to read the right size OpenIGTLink header.").arg(objectName());
+    QLOG_WARN() << QObject::tr("%1::ReceiveMessage() - Failed to read the right size OpenIGTLink header.").arg(objectName());
     return false;
   }
 
@@ -312,14 +315,9 @@ bool NiftyLinkNetworkProcess::ReceiveMessage()
   // Deserialize the header
   msgHeader->Unpack();
 
-  // Allocate correct message type.
-  std::string type = msgHeader->GetDeviceType();
-  if (type == "STRING")
-  {
-    message = igtl::StringMessage::New();
-  }
-  message->SetMessageHeader(msgHeader);
-  message->AllocatePack();
+  // Allocate correct message type. The factory sets the header on the message and calls AllocatePack().
+  igtl::MessageFactory::Pointer messageFactory = igtl::MessageFactory::New();
+  message = messageFactory->GetMessage(msgHeader);
 
   // Create a new timestamp.
   igtl::TimeStamp::Pointer timeReceived  = igtl::TimeStamp::New();
@@ -332,7 +330,7 @@ bool NiftyLinkNetworkProcess::ReceiveMessage()
     if (r <= 0)
     {
       // Failed to read message.
-      QLOG_WARN() << QObject::tr("%1::ReceiveMessageLoop() - Failed to receive valid OpenIGTLink message (r=%2).").arg(objectName()).arg(r);
+      QLOG_WARN() << QObject::tr("%1::ReceiveMessage() - Failed to receive valid OpenIGTLink message (r=%2).").arg(objectName()).arg(r);
       return false;
     }
 
@@ -351,7 +349,7 @@ bool NiftyLinkNetworkProcess::ReceiveMessage()
   igtl::StringMessage::Pointer tmp = dynamic_cast<igtl::StringMessage*>(message.GetPointer());
   if (tmp.IsNotNull() && tmp->GetString() == KEEP_ALIVE_MESSAGE)
   {
-    QLOG_DEBUG() << QObject::tr("%1::ReceiveMessageLoop() - Keep-alive received, restarting the timeouter.").arg(objectName());
+    QLOG_DEBUG() << QObject::tr("%1::ReceiveMessage() - Keep-alive received, restarting the timeouter.").arg(objectName());
     this->StartNoResponseTimer();
     return true;
   }
@@ -377,10 +375,12 @@ bool NiftyLinkNetworkProcess::ReceiveMessage()
   m_NumberOfMessagesReceived++;
   m_LastMessageProcessedTime->SetTimeInNanoseconds(timeArrived->GetTimeStampInNanoseconds());
 
-  QLOG_INFO() << objectName() <<"::" << "ReceiveMessage(): " \
-              << msg->GetNiftyLinkMessageId() \
-              << ", " << message->GetNameOfClass() \
-              << ", " << message->GetPackBodySize() << " bytes.";
+  QLOG_DEBUG() << QObject::tr("%1::ReceiveMessage() - id=%2, class=%3, size=%4 bytes, device='%5'")
+                  .arg(objectName())
+                  .arg(msg->GetNiftyLinkMessageId())
+                  .arg(message->GetNameOfClass())
+                  .arg(message->GetPackBodySize())
+                  .arg(message->GetDeviceType());
 
   emit MessageReceived(msg);
 
@@ -450,7 +450,7 @@ void NiftyLinkNetworkProcess::OnKeepAliveTimerTimedOut()
   igtlUint64 diff = GetDifferenceInNanoSeconds(sendStarted, m_LastMessageProcessedTime) / 1000000; // convert nano to milliseconds.
   if (diff < m_KeepAliveInterval)
   {
-    QLOG_INFO() << QObject::tr("%1::OnKeepAliveTimerTimedOut() - No real need to send a keep-alive as we have recently processed a message.").arg(objectName());
+    QLOG_DEBUG() << QObject::tr("%1::OnKeepAliveTimerTimedOut() - No real need to send a keep-alive as we have recently processed a message.").arg(objectName());
     return;
   }
 

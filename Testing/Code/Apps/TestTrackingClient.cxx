@@ -15,6 +15,8 @@
 #include <QsLogDest.h>
 #include <QApplication>
 #include <QUrl>
+#include <igtlTrackingDataMessage.h>
+#include <NiftyLinkUtils.h>
 
 namespace niftk
 {
@@ -31,7 +33,7 @@ TestTrackingClient::TestTrackingClient(const std::string& hostName, const int& p
   connect(&m_Client, SIGNAL(ConnectedToServer()), this, SLOT(OnConnectedToServer()));
   connect(&m_Client, SIGNAL(DisconnectedFromServer()), this, SLOT(OnDisconnectedFromServer()));
   connect(&m_Client, SIGNAL(ServerDisconnected()), this, SLOT(OnServerDisconnected()));
-  connect(&m_Client, SIGNAL(MessageReceived(NiftyLinkMessageContainer::Pointer)), this, SLOT(OnMessageReceived(NiftyLinkMessageContainer::Pointer)));
+  connect(&m_Client, SIGNAL(MessageReceived(niftk::NiftyLinkMessageContainer::Pointer)), this, SLOT(OnMessageReceived(niftk::NiftyLinkMessageContainer::Pointer)));
   connect(&m_Client, SIGNAL(MessageSent(igtlUint64, igtlUint64)), this, SLOT(OnMessageSent(igtlUint64, igtlUint64)));
 }
 
@@ -52,6 +54,7 @@ void TestTrackingClient::Start()
   url.setPort(m_PortNumber);
 
   m_Client.Start(url);
+  m_Timer->start();
 
   QLOG_INFO() << QObject::tr("%1::Start() - finished.").arg(objectName());
 }
@@ -60,7 +63,18 @@ void TestTrackingClient::Start()
 //-----------------------------------------------------------------------------
 void TestTrackingClient::OnTimeOut()
 {
+  igtl::Matrix4x4 matrix;
+  niftk::CreateRandomTransformMatrix(matrix);
+
+  igtl::TrackingDataElement::Pointer element = igtl::TrackingDataElement::New();
+  element->SetMatrix(matrix);
+
   // Send message.
+  igtl::TrackingDataMessage::Pointer msg = igtl::TrackingDataMessage::New();
+  msg->SetDeviceName("TDataClient");
+  msg->AddTrackingDataElement(element);
+  msg->Pack();
+  m_Client.Send(msg.GetPointer());
 }
 
 
@@ -86,16 +100,16 @@ void TestTrackingClient::OnServerDisconnected()
 
 
 //-----------------------------------------------------------------------------
-void TestTrackingClient::OnMessageReceived(NiftyLinkMessageContainer::Pointer msg)
+void TestTrackingClient::OnMessageReceived(niftk::NiftyLinkMessageContainer::Pointer msg)
 {
-  QLOG_INFO() << QObject::tr("%1::OnMessageReceived(%2).").arg(objectName()).arg(msg->GetNiftyLinkMessageId());
+  QLOG_DEBUG() << QObject::tr("%1::OnMessageReceived(%2).").arg(objectName()).arg(msg->GetNiftyLinkMessageId());
 }
 
 
 //-----------------------------------------------------------------------------
 void TestTrackingClient::OnMessageSent(igtlUint64 startTimeInNanoseconds, igtlUint64 endTimeInNanoseconds)
 {
-  QLOG_INFO() << QObject::tr("%1::OnMessageSent(%2, %3).").arg(objectName()).arg(startTimeInNanoseconds).arg(endTimeInNanoseconds);
+  QLOG_DEBUG() << QObject::tr("%1::OnMessageSent(%2, %3).").arg(objectName()).arg(startTimeInNanoseconds).arg(endTimeInNanoseconds);
 }
 
 } // end namespace niftk

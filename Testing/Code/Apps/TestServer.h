@@ -29,7 +29,7 @@ class TestServer : public QObject
   Q_OBJECT
 
 public:
-  TestServer(const int& portNumber);
+  TestServer(const int& portNumber, const bool& isEchoing);
   virtual ~TestServer();
 
 private slots:
@@ -39,11 +39,12 @@ private slots:
   void OnClientConnected();
   void OnCantSendToClient();
   void OnClientDisconnected();
-  void OnMessageReceived(NiftyLinkMessageContainer::Pointer msg);
+  void OnMessageReceived(niftk::NiftyLinkMessageContainer::Pointer msg);
   void OnMessageSent(igtlUint64 startTimeInNanoseconds, igtlUint64 endTimeInNanoseconds);
 
 private:
   int             m_PortNumber;
+  bool            m_IsEchoing;
   NiftyLinkServer m_Server;
 };
 
