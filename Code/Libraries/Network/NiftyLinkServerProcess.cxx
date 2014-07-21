@@ -105,7 +105,7 @@ void NiftyLinkServerProcess::DoProcessing()
     throw std::logic_error(errorMessage.toStdString());
   }
 
-  NiftyLinkClientSocket::Pointer clientSocket = NULL;
+  NiftyLinkSocket::Pointer sock = NULL;
 
   // Loop continuously as we are in our own thread.
   while (this->GetIsRunning())
@@ -115,21 +115,21 @@ void NiftyLinkServerProcess::DoProcessing()
       NiftyLinkServerSocket::Pointer ssock = dynamic_cast<NiftyLinkServerSocket*>(m_MySocket.GetPointer());
       assert(ssock); // should always be true, as this class created it above.
 
-      clientSocket = ssock->WaitForConnection(m_ListenInterval);
-      if (clientSocket.IsNull() || !clientSocket->GetConnected())
+      sock = ssock->WaitForConnection(m_ListenInterval);
+      if (sock.IsNull() || !sock->GetConnected())
       {
         QLOG_INFO() << QObject::tr("%1::DoProcessing() - No client connecting").arg(objectName());
         continue;
       }
 
       // So by this point, client should be a valid new connection.
-      assert(clientSocket.IsNotNull());
-      assert(clientSocket->GetConnected());
+      assert(sock.IsNotNull());
+      assert(sock->GetConnected());
 
       // Client connected, need to set socket parameters
-      m_CommsSocket = clientSocket;
+      m_CommsSocket = sock;
       m_IsConnected = true;
-      clientSocket->SetTimeout(this->GetSocketTimeout());
+      sock->SetTimeout(this->GetSocketTimeout());
 
       // Broadcast that we do have a valid connection.
       emit ClientConnectedSignal();

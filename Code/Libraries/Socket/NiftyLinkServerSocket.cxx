@@ -68,7 +68,7 @@ int NiftyLinkServerSocket::CreateServer(int port)
 
 
 //-----------------------------------------------------------------------------
-NiftyLinkClientSocket::Pointer NiftyLinkServerSocket::WaitForConnection(unsigned long msec /*=0*/)
+NiftyLinkSocket::Pointer NiftyLinkServerSocket::WaitForConnection(unsigned long msec /*=0*/)
 {
   if (!this->GetConnected())
     {
@@ -99,7 +99,7 @@ NiftyLinkClientSocket::Pointer NiftyLinkServerSocket::WaitForConnection(unsigned
   NiftyLinkClientSocket::Pointer cs = NiftyLinkClientSocket::New();
   cs->m_SocketDescriptor = clientsock;
 
-  return cs;
+  return cs.GetPointer();
 }
 
 

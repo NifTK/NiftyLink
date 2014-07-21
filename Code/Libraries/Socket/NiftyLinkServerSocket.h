@@ -50,7 +50,7 @@ public:
   /// Waits for a connection. When a connection is received
   /// a new NiftyLinkClientSocket object is created and returned.
   /// Returns NULL on timeout.
-  NiftyLinkClientSocket::Pointer WaitForConnection(unsigned long msec=0);
+  NiftyLinkSocket::Pointer WaitForConnection(unsigned long msec=0);
 
 protected:
   NiftyLinkServerSocket();
