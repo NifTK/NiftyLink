@@ -97,7 +97,7 @@ include_directories(${CMAKE_CURRENT_SOURCE_DIR})
 SET (NIFTYLINK_LIBS
   ${QT_LIBRARIES}
   igtlutil
-  openigtlink
+  OpenIGTLink
   )
 
 ADD_LIBRARY(niftylink 
