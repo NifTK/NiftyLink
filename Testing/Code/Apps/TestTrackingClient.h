@@ -38,8 +38,8 @@ private slots:
   void Start();
 
   void OnConnectedToServer();
-  void OnDisconnectedFromServer();
-  void OnServerDisconnected();
+  void OnFailedToSendKeepAliveMessage();
+  void OnNoIncommingData();
   void OnMessageReceived(niftk::NiftyLinkMessageContainer::Pointer msg);
   void OnMessageSent(igtlUint64 startTimeInNanoseconds, igtlUint64 endTimeInNanoseconds);
 

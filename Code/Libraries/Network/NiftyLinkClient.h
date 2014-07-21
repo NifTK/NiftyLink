@@ -66,13 +66,11 @@ signals:
   /// \brief This signal is emitted when the client first connects to the remote server.
   void ConnectedToServer();
 
-  /// \brief This signal is emitted when the client disconnects from the remote server.
-  /// This is determined by failure to send a keep-alive ping.
-  void DisconnectedFromServer();
+  /// \brief This signal is emitted when the client can't send a keep-alive message to the remote server.
+  void FailedToSendKeepAliveMessage();
 
   /// \brief This signal is emmitted when this client thinks it has not heard from the server in a while.
-  /// This is determined by the lack of incoming data, such as keep-alive pings from the server.
-  void ServerDisconnected();
+  void NoIncommingData();
 
   /// \brief This signal is emitted when a new message is received from the remote server.
   void MessageReceived(niftk::NiftyLinkMessageContainer::Pointer msg);

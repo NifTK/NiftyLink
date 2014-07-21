@@ -120,14 +120,14 @@ void NiftyLinkServer::OnClientConnected()
 //-----------------------------------------------------------------------------
 void NiftyLinkServer::OnCantSendToClient()
 {
-  emit CantSendToClient();
+  emit FailedToSendKeepAliveMessage();
 }
 
 
 //-----------------------------------------------------------------------------
 void NiftyLinkServer::OnClientDisconnected()
 {
-  emit ClientDisconnected();
+  emit NoIncommingData();
 }
 
 

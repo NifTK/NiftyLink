@@ -38,9 +38,9 @@ TestServer::~TestServer()
 void TestServer::Start()
 {
   connect(&m_Server, SIGNAL(ClientConnected()), this, SLOT(OnClientConnected()));
-  connect(&m_Server, SIGNAL(ClientDisconnected()), this, SLOT(OnClientDisconnected()));
+  connect(&m_Server, SIGNAL(FailedToSendKeepAliveMessage()), this, SLOT(OnFailedToSendKeepAliveMessage()));
+  connect(&m_Server, SIGNAL(NoIncommingData()), this, SLOT(OnNoIncommingData()));
   connect(&m_Server, SIGNAL(MessageReceived(niftk::NiftyLinkMessageContainer::Pointer)), this, SLOT(OnMessageReceived(niftk::NiftyLinkMessageContainer::Pointer)));
-  connect(&m_Server, SIGNAL(CantSendToClient()), this, SLOT(OnCantSendToClient()));
   connect(&m_Server, SIGNAL(MessageSent(igtlUint64, igtlUint64)), this, SLOT(OnMessageSent(igtlUint64, igtlUint64)));
   m_Server.Start(m_PortNumber);
 }
@@ -54,9 +54,9 @@ void TestServer::OnClientConnected()
 
 
 //-----------------------------------------------------------------------------
-void TestServer::OnClientDisconnected()
+void TestServer::OnNoIncommingData()
 {
-  QLOG_INFO() << QObject::tr("%1::OnClientDisconnected().").arg(objectName());
+  QLOG_INFO() << QObject::tr("%1::OnNoIncommingData().").arg(objectName());
 }
 
 
@@ -74,9 +74,9 @@ void TestServer::OnMessageReceived(niftk::NiftyLinkMessageContainer::Pointer mes
 
 
 //-----------------------------------------------------------------------------
-void TestServer::OnCantSendToClient()
+void TestServer::OnFailedToSendKeepAliveMessage()
 {
-  QLOG_INFO() << QObject::tr("%1::OnCantSendToClient().").arg(objectName());
+  QLOG_INFO() << QObject::tr("%1::OnFailedToSendKeepAliveMessage().").arg(objectName());
 }
 
 

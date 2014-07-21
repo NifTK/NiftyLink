@@ -31,8 +31,8 @@ TestTrackingClient::TestTrackingClient(const std::string& hostName, const int& p
   m_Timer->setInterval(1000/fps);
   connect(m_Timer, SIGNAL(timeout()), this, SLOT(OnTimeOut()));
   connect(&m_Client, SIGNAL(ConnectedToServer()), this, SLOT(OnConnectedToServer()));
-  connect(&m_Client, SIGNAL(DisconnectedFromServer()), this, SLOT(OnDisconnectedFromServer()));
-  connect(&m_Client, SIGNAL(ServerDisconnected()), this, SLOT(OnServerDisconnected()));
+  connect(&m_Client, SIGNAL(FailedToSendKeepAliveMessage()), this, SLOT(OnFailedToSendKeepAliveMessage()));
+  connect(&m_Client, SIGNAL(NoIncommingData()), this, SLOT(OnNoIncommingData()));
   connect(&m_Client, SIGNAL(MessageReceived(niftk::NiftyLinkMessageContainer::Pointer)), this, SLOT(OnMessageReceived(niftk::NiftyLinkMessageContainer::Pointer)));
   connect(&m_Client, SIGNAL(MessageSent(igtlUint64, igtlUint64)), this, SLOT(OnMessageSent(igtlUint64, igtlUint64)));
 }
@@ -86,16 +86,16 @@ void TestTrackingClient::OnConnectedToServer()
 
 
 //-----------------------------------------------------------------------------
-void TestTrackingClient::OnDisconnectedFromServer()
+void TestTrackingClient::OnFailedToSendKeepAliveMessage()
 {
-  QLOG_INFO() << QObject::tr("%1::OnDisconnectedFromServer().").arg(objectName());
+  QLOG_INFO() << QObject::tr("%1::OnFailedToSendKeepAliveMessage().").arg(objectName());
 }
 
 
 //-----------------------------------------------------------------------------
-void TestTrackingClient::OnServerDisconnected()
+void TestTrackingClient::OnNoIncommingData()
 {
-  QLOG_INFO() << QObject::tr("%1::OnServerDisconnected().").arg(objectName());
+  QLOG_INFO() << QObject::tr("%1::OnNoIncommingData().").arg(objectName());
 }
 
 

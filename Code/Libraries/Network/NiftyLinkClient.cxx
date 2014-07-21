@@ -174,14 +174,14 @@ void NiftyLinkClient::OnMessageSent(igtlUint64 startTimeInNanoseconds, igtlUint6
 //-----------------------------------------------------------------------------
 void NiftyLinkClient::OnCantReachRemote()
 {
-  emit DisconnectedFromServer();
+  emit FailedToSendKeepAliveMessage();
 }
 
 
 //-----------------------------------------------------------------------------
 void NiftyLinkClient::OnNoResponseFromRemote()
 {
-  emit ServerDisconnected();
+  emit NoIncommingData();
 }
 
 } // end namespace niftk

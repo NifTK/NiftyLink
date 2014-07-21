@@ -67,13 +67,11 @@ signals:
   /// \brief This signal is emitted when a client connects to this server.
   void ClientConnected();
 
-  /// \brief This signal is emmitted when this server believes it can't contact the client.
-  /// This is determined by failure to send a keep-alive ping.
-  void CantSendToClient();
+  /// \brief This signal is emitted when the server can't send a keep-alive message to the remote client.
+  void FailedToSendKeepAliveMessage();
 
-  /// \brief This signal is emitted when a client disconnects from this server.
-  /// This is determined by the lack of incoming data, such as keep-alive pings of OpenIGTLink messages from the client.
-  void ClientDisconnected();
+  /// \brief This signal is emmitted when this server thinks it has not heard from the client in a while.
+  void NoIncommingData();
 
   /// \brief This signal is emitted when a new message is received from the remote peer.
   void MessageReceived(niftk::NiftyLinkMessageContainer::Pointer msg);
