@@ -9,7 +9,6 @@
 
   See LICENSE.txt in the top level directory for details.
 =============================================================================*/
-
 #ifndef NiftyLinkXMLBuilder_h
 #define NiftyLinkXMLBuilder_h
 

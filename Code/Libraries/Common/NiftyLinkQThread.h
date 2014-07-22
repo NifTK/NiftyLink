@@ -9,7 +9,6 @@
 
   See LICENSE.txt in the top level directory for details.
 =============================================================================*/
-
 #ifndef NiftyLinkQThread_h
 #define NiftyLinkQThread_h
 

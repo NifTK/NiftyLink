@@ -13,7 +13,6 @@
 #define NiftyLinkServerProcess_h
 
 #include <NiftyLinkCommonWin32ExportHeader.h>
-
 #include <NiftyLinkNetworkProcess.h>
 #include <NiftyLinkServer.h>
 #include <NiftyLinkServerSocket.h>

@@ -9,7 +9,6 @@
 
   See LICENSE.txt in the top level directory for details.
 =============================================================================*/
-
 #include "NiftyLinkMessageContainer.h"
 
 #include <NiftyLinkUtils.h>

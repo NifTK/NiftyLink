@@ -15,6 +15,7 @@
 #include <NiftyLinkCommonWin32ExportHeader.h>
 
 #include <igtlImageMessage.h>
+
 #include <QImage>
 
 namespace niftk

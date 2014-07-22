@@ -15,6 +15,7 @@
 #include <NiftyLinkCommonWin32ExportHeader.h>
 
 #include <igtlTransformMessage.h>
+
 #include <QString>
 
 namespace niftk

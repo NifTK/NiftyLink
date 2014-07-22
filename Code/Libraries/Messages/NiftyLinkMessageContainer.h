@@ -9,11 +9,15 @@
 
   See LICENSE.txt in the top level directory for details.
 =============================================================================*/
-
 #ifndef NiftyLinkMessageContainer_h
 #define NiftyLinkMessageContainer_h
 
 #include <NiftyLinkCommonWin32ExportHeader.h>
+
+#include <igtlObject.h>
+#include <igtlOSUtil.h>
+#include <igtlTimeStamp.h>
+#include <igtlMessageBase.h>
 
 #include <QtCore>
 #include <QString>
@@ -21,11 +25,6 @@
 #include <QStringList>
 #include <QSharedData>
 #include <QExplicitlySharedDataPointer>
-
-#include <igtlObject.h>
-#include <igtlOSUtil.h>
-#include <igtlTimeStamp.h>
-#include <igtlMessageBase.h>
 
 #include <map>
 

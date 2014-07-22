@@ -9,16 +9,15 @@
 
   See LICENSE.txt in the top level directory for details.
 =============================================================================*/
-
 #ifndef NiftyLinkUtils_h
 #define NiftyLinkUtils_h
 
 #include "NiftyLinkCommonWin32ExportHeader.h"
 
-#include <QString>
-
 #include <igtlMath.h>
 #include <igtlTimeStamp.h>
+
+#include <QString>
 
 namespace niftk
 {
@@ -41,10 +40,10 @@ extern "C++" NIFTYLINKCOMMON_WINEXPORT void CreateRandomTransformMatrix(igtl::Ma
 /// \param timeB must be not-NULL
 extern "C++" NIFTYLINKCOMMON_WINEXPORT igtlUint64 GetDifferenceInNanoSeconds(igtl::TimeStamp* timeA, igtl::TimeStamp* timeB);
 
-/// \brief Used to calculate stats of latency, this one computing the mean.
+/// \brief Used to calculate stats of latency, this one computing the mean of a list of igtlUint64.
 extern "C++" NIFTYLINKCOMMON_WINEXPORT double CalculateMean(const QList<igtlUint64>& list);
 
-/// \brief Used to calculate stats of latency, this one computing the standard deviation.
+/// \brief Used to calculate stats of latency, this one computing the standard deviation of a list of igtlUint64.
 extern "C++" NIFTYLINKCOMMON_WINEXPORT double CalculateStdDev(const QList<igtlUint64>& list);
 
 } // end namespace niftk

@@ -9,8 +9,8 @@
 
   See LICENSE.txt in the top level directory for details.
 =============================================================================*/
-
 #include "NiftyLinkUtils.h"
+
 #include <QUrl>
 #include <QHostInfo>
 #include <QHostAddress>
@@ -23,7 +23,6 @@
 
 namespace niftk
 {
-
 
 //-----------------------------------------------------------------------------
 bool ValidateIp(const QString &inputIP)

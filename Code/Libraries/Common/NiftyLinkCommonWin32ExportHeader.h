@@ -25,5 +25,4 @@
 #define NIFTYLINKCOMMON_WINEXPORT
 #endif
 
-
 #endif  // NiftyLinkCommonWin32ExportHeader_h
