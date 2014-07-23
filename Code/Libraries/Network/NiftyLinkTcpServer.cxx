@@ -12,6 +12,7 @@
 #include "NiftyLinkTcpServer.h"
 #include <NiftyLinkTcpNetworkWorker.h>
 #include <NiftyLinkUtils.h>
+#include <NiftyLinkQThread.h>
 
 #include <QsLog.h>
 #include <QMutexLocker>
@@ -52,7 +53,7 @@ void NiftyLinkTcpServer::incomingConnection(int socketDescriptor)
   {
     socket->setSocketOption(QAbstractSocket::LowDelayOption, 1);
 
-    QThread *thread = new QThread(this);
+    NiftyLinkQThread *thread = new NiftyLinkQThread(this);
     NiftyLinkTcpNetworkWorker *worker = new NiftyLinkTcpNetworkWorker(socket);
     worker->moveToThread(thread);
     socket->moveToThread(thread);

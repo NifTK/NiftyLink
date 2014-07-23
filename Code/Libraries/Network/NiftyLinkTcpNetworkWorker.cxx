@@ -11,6 +11,7 @@
 =============================================================================*/
 #include "NiftyLinkTcpNetworkWorker.h"
 #include <NiftyLinkMacro.h>
+#include <NiftyLinkQThread.h>
 
 #include <igtl_header.h>
 #include <igtlMessageBase.h>
@@ -87,6 +88,10 @@ void NiftyLinkTcpNetworkWorker::OnSocketReadyRead()
     QLOG_ERROR() << QObject::tr("%1::OnSocketReadyRead() - Abort reading. Giving up.").arg(m_MessagePrefix);
     return;
   }
+
+  // This doubly double checks we are running in our own thread.
+  NiftyLinkQThread *p = dynamic_cast<NiftyLinkQThread*>(QThread::currentThread());
+  assert(p != NULL);
 
   // Create stream outside of loop ... maybe more efficient.
   QDataStream in(m_Socket);
@@ -282,6 +287,11 @@ void NiftyLinkTcpNetworkWorker::Send(igtl::MessageBase::Pointer msg)
 //-----------------------------------------------------------------------------
 void NiftyLinkTcpNetworkWorker::OnSend(igtl::MessageBase::Pointer msg)
 {
+  // This doubly double checks we are running in our own thread.
+  niftk::NiftyLinkQThread *p = dynamic_cast<niftk::NiftyLinkQThread*>(QThread::currentThread());
+  assert(p != NULL);
+
+  // Make sure the message is timestamped and packed.
   igtl::TimeStamp::Pointer sendStarted = igtl::TimeStamp::New();
   msg->SetTimeStamp(sendStarted);
   msg->Pack();
@@ -291,8 +301,7 @@ void NiftyLinkTcpNetworkWorker::OnSend(igtl::MessageBase::Pointer msg)
   {
     QLOG_ERROR() << QObject::tr("%1::Send() - only written %2 bytes instead of %3").arg(m_MessagePrefix).arg(bytesWritten).arg(msg->GetPackSize());
   }
-  m_Socket->flush();
-  QLOG_INFO() << QObject::tr("%1::Send() - written %2 bytes, errorString=%3, errorCode=%4").arg(m_MessagePrefix).arg(bytesWritten).arg(m_Socket->errorString()).arg(m_Socket->error());
+  QLOG_INFO() << QObject::tr("%1::Send() - written %2 bytes.").arg(m_MessagePrefix).arg(bytesWritten);
 }
 
 } // end niftk namespace

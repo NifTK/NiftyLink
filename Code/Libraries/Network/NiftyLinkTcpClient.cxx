@@ -11,6 +11,8 @@
 =============================================================================*/
 #include "NiftyLinkTcpClient.h"
 #include "NiftyLinkTcpNetworkWorker.h"
+#include <NiftyLinkQThread.h>
+
 #include <igtlMessageBase.h>
 #include <QsLog.h>
 
@@ -66,7 +68,7 @@ void NiftyLinkTcpClient::OnConnected()
 
   m_Socket->setSocketOption(QAbstractSocket::LowDelayOption, 1);
 
-  QThread *thread = new QThread(this);
+  NiftyLinkQThread *thread = new NiftyLinkQThread(this);
   m_Worker = new NiftyLinkTcpNetworkWorker(m_Socket);
   m_Worker->moveToThread(thread);
   m_Socket->moveToThread(thread);
