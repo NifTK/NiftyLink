@@ -12,6 +12,7 @@
 #include "NiftyLinkTcpNetworkWorker.h"
 #include <NiftyLinkMacro.h>
 #include <NiftyLinkQThread.h>
+#include <NiftyLinkUtils.h>
 
 #include <igtl_header.h>
 #include <igtlMessageBase.h>
@@ -38,16 +39,22 @@ NiftyLinkTcpNetworkWorker::NiftyLinkTcpNetworkWorker(QTcpSocket *socket, QObject
 , m_IncomingMessage(NULL)
 , m_IncomingMessageBytesReceived(0)
 , m_AbortReading(false)
+, m_TotalBytesReceived(0)
+, m_NumberMessagesReceived(0)
+, m_NumberMessagesSent(0)
 {
   assert(m_Socket);
+
+  m_StatsTimePoint = igtl::TimeStamp::New();
 
   qRegisterMetaType<niftk::NiftyLinkMessageContainer::Pointer>("niftk::NiftyLinkMessageContainer::Pointer");
   qRegisterMetaType<QAbstractSocket::SocketError>("QAbstractSocket::SocketError");
 
-  m_MessagePrefix = QObject::tr("NiftyLinkTcpNetworkWorker(%1)").arg(m_Socket->socketDescriptor());
+  m_MessagePrefix = QObject::tr("NiftyLinkTcpNetworkWorker(d=%1, h=%2, p=%3)").arg(m_Socket->socketDescriptor()).arg(m_Socket->peerName()).arg(m_Socket->peerPort());
   this->setObjectName(m_MessagePrefix);
 
-  connect(this, SIGNAL(InternalSendSignal(igtl::MessageBase::Pointer)), SLOT(OnSend(igtl::MessageBase::Pointer)));
+  connect(this, SIGNAL(InternalStatsSignal()), this, SLOT(OnOutputStats()));
+  connect(this, SIGNAL(InternalSendSignal(igtl::MessageBase::Pointer)), this, SLOT(OnSend(igtl::MessageBase::Pointer)));
   connect(m_Socket, SIGNAL(bytesWritten(qint64)), this, SIGNAL(BytesSent(qint64)));
   connect(m_Socket, SIGNAL(disconnected()), this, SLOT(OnSocketDisconnected()));
   connect(m_Socket, SIGNAL(error(QAbstractSocket::SocketError)), this, SLOT(OnSocketError(QAbstractSocket::SocketError)));
@@ -90,8 +97,34 @@ void NiftyLinkTcpNetworkWorker::OnSocketError(QAbstractSocket::SocketError error
 //-----------------------------------------------------------------------------
 void NiftyLinkTcpNetworkWorker::Send(igtl::MessageBase::Pointer msg)
 {
-  // This is done, as the actual send method should be in a different thread.
+  // This is done, as the actual send method should be running in a different thread.
   emit this->InternalSendSignal(msg);
+}
+
+
+//-----------------------------------------------------------------------------
+void NiftyLinkTcpNetworkWorker::OutputStatsToConsole()
+{
+  // This is done, as the actual send stats should be running in a different thread.
+  emit this->InternalStatsSignal();
+}
+
+
+//-----------------------------------------------------------------------------
+void NiftyLinkTcpNetworkWorker::OnOutputStats()
+{
+  double mean = niftk::CalculateMean(m_ListOfLatencies);
+  double stdDev = niftk::CalculateStdDev(m_ListOfLatencies);
+
+  igtl::TimeStamp::Pointer nowTime = igtl::TimeStamp::New();
+  igtlUint64 duration = niftk::GetDifferenceInNanoSeconds(nowTime, m_StatsTimePoint);
+  double durationInSeconds = duration/static_cast<double>(1000000000);
+  double rate = m_TotalBytesReceived/durationInSeconds;
+
+  QLOG_INFO() << QObject::tr("%1::OnOutputStats() - Received %2 bytes, in %3 secs, %4 b/sec, mean latency %6, std dev latency %7.").arg(objectName()).arg(m_TotalBytesReceived).arg(durationInSeconds).arg(rate).arg(mean).arg(stdDev);
+
+  m_TotalBytesReceived = 0;
+  m_StatsTimePoint->SetTimeInNanoseconds(nowTime->GetTimeStampInNanoseconds());
 }
 
 
@@ -263,15 +296,13 @@ void NiftyLinkTcpNetworkWorker::OnSocketReadyRead()
     msg->SetTimeReceived(timeFullyReceived);
     msg->SetMessage(m_IncomingMessage);
 
-  //  m_NumberOfMessagesReceived++;
-
     // In OpenIGTLink paper (Tokuda 2009), Latency is defined as the difference
     // between last byte received and first byte sent.
     igtl::TimeStamp::Pointer timeCreated = igtl::TimeStamp::New();
     m_IncomingHeader->GetTimeStamp(timeCreated);
 
-    igtlUint64 latency = 0;//niftk::GetDifferenceInNanoSeconds(timeCreated, timeReceived);
-  //  m_ListOfLatencies.append(latency);
+    igtlUint64 latency = niftk::GetDifferenceInNanoSeconds(timeCreated, timeFullyReceived);
+    m_ListOfLatencies.append(latency);
 
     QLOG_DEBUG() << QObject::tr("%1::OnSocketReadyRead() - id=%2, class=%3, size=%4 bytes, device='%5', latency=%6, avail=%7.")
                     .arg(m_MessagePrefix)
@@ -289,6 +320,8 @@ void NiftyLinkTcpNetworkWorker::OnSocketReadyRead()
     m_MessageInProgress = false;
     m_IncomingMessageBytesReceived = 0;
 
+    m_NumberMessagesReceived++;
+    m_TotalBytesReceived += bytesAvailable;
     emit MessageReceived(m_Socket->peerPort(), msg);
 
   } while (bytesAvailable > 0);
@@ -314,7 +347,7 @@ void NiftyLinkTcpNetworkWorker::OnSend(igtl::MessageBase::Pointer msg)
   {
     QLOG_ERROR() << QObject::tr("%1::Send() - only written %2 bytes instead of %3").arg(m_MessagePrefix).arg(bytesWritten).arg(msg->GetPackSize());
   }
-  QLOG_INFO() << QObject::tr("%1::Send() - written %2 bytes.").arg(m_MessagePrefix).arg(bytesWritten);
+  QLOG_DEBUG() << QObject::tr("%1::Send() - written %2 bytes.").arg(m_MessagePrefix).arg(bytesWritten);
 }
 
 } // end niftk namespace

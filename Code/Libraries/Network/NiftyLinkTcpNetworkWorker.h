@@ -42,12 +42,16 @@ public:
   /// \brief Sends an OpenIGTLink message.
   void Send(igtl::MessageBase::Pointer msg);
 
+  /// \brief Sends a request to output some statistics to console.
+  void OutputStatsToConsole();
+
 signals:
 
   void SocketError(int portNumber, QAbstractSocket::SocketError errorCode, QString errorString);
   void MessageReceived(int portNumber, niftk::NiftyLinkMessageContainer::Pointer msg);
   void BytesSent(qint64 bytes);
   void InternalSendSignal(igtl::MessageBase::Pointer msg);
+  void InternalStatsSignal();
 
 private slots:
 
@@ -55,6 +59,7 @@ private slots:
   void OnSocketError(QAbstractSocket::SocketError error);
   void OnSocketReadyRead();
   void OnSend(igtl::MessageBase::Pointer msg);
+  void OnOutputStats();
 
 private:
   QTcpSocket                   *m_Socket;
@@ -66,6 +71,11 @@ private:
   igtl::MessageBase::Pointer    m_IncomingMessage;
   quint64                       m_IncomingMessageBytesReceived;
   bool                          m_AbortReading;
+  igtl::TimeStamp::Pointer      m_StatsTimePoint;
+  quint64                       m_TotalBytesReceived;
+  quint64                       m_NumberMessagesReceived;
+  quint64                       m_NumberMessagesSent;
+  QList<quint64>                m_ListOfLatencies;
 }; // end class
 
 } // end namespace niftk

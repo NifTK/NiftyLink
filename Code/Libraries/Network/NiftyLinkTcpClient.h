@@ -44,6 +44,9 @@ public:
   /// \brief Sends an OpenIGTLink message.
   void Send(igtl::MessageBase::Pointer msg);
 
+  /// \brief Writes some stats to console.
+  void OutputStats();
+
 signals:
 
   /// \brief Emmitted when we have successfully connected.

@@ -36,6 +36,7 @@ public:
 private slots:
 
   void Start();
+  void OnTimeOut();
   void OnConnectedToServer();
   void OnSocketError(int portNumber, QAbstractSocket::SocketError errorCode, QString errorString);
 
@@ -47,7 +48,7 @@ private slots:
   void OnBytesSent(qint64 bytes);
 
 
-  void OnTimeOut();
+
 
 private:
   QString             m_HostName;

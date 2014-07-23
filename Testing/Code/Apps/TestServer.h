@@ -45,8 +45,8 @@ private slots:
   void OnMessageSent(igtlUint64 startTimeInNanoseconds, igtlUint64 endTimeInNanoseconds);
 
 private:
-  int             m_PortNumber;
-  bool            m_IsEchoing;
+  int                 m_PortNumber;
+  bool                m_IsEchoing;
   NiftyLinkTcpServer *m_Server;
 };
 

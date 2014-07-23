@@ -102,21 +102,21 @@ void TestTrackingClient::OnTimeOut()
 //-----------------------------------------------------------------------------
 void TestTrackingClient::OnSocketError(int portNumber, QAbstractSocket::SocketError errorCode, QString errorString)
 {
-  QLOG_INFO() << QObject::tr("%1::OnSocketError(port=%2, code=%3, string=%4).").arg(objectName()).arg(portNumber).arg(errorCode).arg(errorString);
+  QLOG_ERROR() << QObject::tr("%1::OnSocketError(port=%2, code=%3, string=%4).").arg(objectName()).arg(portNumber).arg(errorCode).arg(errorString);
 }
 
 
 //-----------------------------------------------------------------------------
 void TestTrackingClient::OnFailedToSendKeepAliveMessage()
 {
-  QLOG_INFO() << QObject::tr("%1::OnFailedToSendKeepAliveMessage().").arg(objectName());
+  QLOG_ERROR() << QObject::tr("%1::OnFailedToSendKeepAliveMessage().").arg(objectName());
 }
 
 
 //-----------------------------------------------------------------------------
 void TestTrackingClient::OnNoIncommingData()
 {
-  QLOG_INFO() << QObject::tr("%1::OnNoIncommingData().").arg(objectName());
+  QLOG_ERROR() << QObject::tr("%1::OnNoIncommingData().").arg(objectName());
 }
 
 
@@ -137,7 +137,7 @@ void TestTrackingClient::OnMessageSent(igtlUint64 startTimeInNanoseconds, igtlUi
 //-----------------------------------------------------------------------------
 void TestTrackingClient::OnBytesSent(qint64 bytes)
 {
-  QLOG_INFO() << QObject::tr("%1::OnBytesSent(%2).").arg(objectName()).arg(bytes);
+  QLOG_DEBUG() << QObject::tr("%1::OnBytesSent(%2).").arg(objectName()).arg(bytes);
 }
 
 } // end namespace niftk

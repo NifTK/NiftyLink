@@ -41,6 +41,8 @@ NiftyLinkTcpClient::NiftyLinkTcpClient(QObject *parent)
 //-----------------------------------------------------------------------------
 NiftyLinkTcpClient::~NiftyLinkTcpClient()
 {
+  QLOG_INFO() << QObject::tr("%1::~NiftyLinkTcpClient() - destroying.").arg(objectName());
+
   QLOG_INFO() << QObject::tr("%1::~NiftyLinkTcpClient() - destroyed.").arg(objectName());
 }
 
@@ -99,8 +101,14 @@ void NiftyLinkTcpClient::ConnectToHost(const QString& hostName, quint16 portNumb
 //-----------------------------------------------------------------------------
 void NiftyLinkTcpClient::Send(igtl::MessageBase::Pointer msg)
 {
-  // Its up to the worker to cope with thread boundaries.
   m_Worker->Send(msg);
+}
+
+
+//-----------------------------------------------------------------------------
+void NiftyLinkTcpClient::OutputStats()
+{
+  m_Worker->OutputStatsToConsole();
 }
 
 

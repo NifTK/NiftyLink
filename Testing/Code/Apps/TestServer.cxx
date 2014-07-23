@@ -67,7 +67,7 @@ void TestServer::OnClientConnected(int portNumber)
 //-----------------------------------------------------------------------------
 void TestServer::OnNoIncommingData()
 {
-  QLOG_INFO() << QObject::tr("%1::OnNoIncommingData().").arg(objectName());
+  QLOG_ERROR() << QObject::tr("%1::OnNoIncommingData().").arg(objectName());
 }
 
 
@@ -81,7 +81,7 @@ void TestServer::OnSocketError(int portNumber, QAbstractSocket::SocketError erro
 //-----------------------------------------------------------------------------
 void TestServer::OnMessageReceived(int portNumber, niftk::NiftyLinkMessageContainer::Pointer message)
 {
-  QLOG_INFO() << QObject::tr("%1::OnMessageReceived(%2, %3), type=%4").arg(objectName()).arg(portNumber).arg(message->GetNiftyLinkMessageId()).arg(message->GetMessage()->GetDeviceType());
+  QLOG_DEBUG() << QObject::tr("%1::OnMessageReceived(%2, %3), type=%4").arg(objectName()).arg(portNumber).arg(message->GetNiftyLinkMessageId()).arg(message->GetMessage()->GetDeviceType());
 /*
   igtl::TrackingDataMessage::Pointer msg = dynamic_cast<igtl::TrackingDataMessage*>(message->GetMessage().GetPointer());
   if (msg.IsNotNull())

@@ -38,7 +38,7 @@ NiftyLinkTcpServer::NiftyLinkTcpServer(QObject *parent)
 //-----------------------------------------------------------------------------
 NiftyLinkTcpServer::~NiftyLinkTcpServer()
 {
-  QLOG_INFO() << QObject::tr("%1::~NiftyLinkTcpServer() - destroyed.").arg(objectName());
+  this->Shutdown();
 }
 
 
@@ -76,6 +76,7 @@ void NiftyLinkTcpServer::incomingConnection(int socketDescriptor)
   // Base class does this (regardless of errors), so as I'm re-implementing the function, so do I.
   this->addPendingConnection(socket);
 
+  this->setObjectName(QObject::tr("NiftyLinkTcpServer(%1)").arg(this->serverPort()));
   QLOG_INFO() << QObject::tr("%1::incomingConnection(%2) - created.").arg(objectName()).arg(socketDescriptor);
 }
 
@@ -118,6 +119,36 @@ void NiftyLinkTcpServer::OnClientDisconnected()
     }
   }
   QLOG_INFO() << QObject::tr("%1::OnClientDisconnected() - number of clients = %2.").arg(objectName()).arg(m_Workers.size());
+}
+
+
+//-----------------------------------------------------------------------------
+void NiftyLinkTcpServer::Send(igtl::MessageBase::Pointer msg)
+{
+  // Send same message to all clients.
+  foreach (NiftyLinkTcpNetworkWorker* worker, m_Workers)
+  {
+    worker->Send(msg);
+  }
+}
+
+
+//-----------------------------------------------------------------------------
+void NiftyLinkTcpServer::OutputStats()
+{
+
+}
+
+
+//-----------------------------------------------------------------------------
+void NiftyLinkTcpServer::Shutdown()
+{
+  emit StartShutdown();
+  QLOG_WARN() << QObject::tr("%1::Shutdown() - started.").arg(objectName());
+
+
+  QLOG_WARN() << QObject::tr("%1::Shutdown() - finished.").arg(objectName());
+  emit EndShutdown();
 }
 
 } // end namespace niftk
