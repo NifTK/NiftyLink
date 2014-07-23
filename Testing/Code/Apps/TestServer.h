@@ -35,8 +35,8 @@ public:
 private slots:
 
   void Start();
+  void OnSocketError(int portNumber, QAbstractSocket::SocketError errorCode, QString errorString);
 
-  void OnSocketError(int portNumber, QAbstractSocket::SocketError socketError);
   void OnFailedToSendKeepAliveMessage();
   void OnNoIncommingData();
 

@@ -35,13 +35,15 @@ TestTrackingClient::TestTrackingClient(const std::string& hostName, const int& p
   qRegisterMetaType<QAbstractSocket::SocketError>("QAbstractSocket::SocketError");
 
   this->setObjectName("TestTrackingClient");
+
   m_NumberMessagesSent = 0;
-  connect(m_Client->GetTcpSocket(), SIGNAL(connected()), this, SLOT(OnConnectedToServer()));
-  connect(m_Client, SIGNAL(BytesSent(qint64)), this, SLOT(OnBytesSent(qint64)));
   m_Timer = new QTimer();
   m_Timer->setInterval(1000/fps);
   connect(m_Timer, SIGNAL(timeout()), this, SLOT(OnTimeOut()));
-/*
+  connect(m_Client, SIGNAL(Connected()), this, SLOT(OnConnectedToServer()));
+  connect(m_Client, SIGNAL(BytesSent(qint64)), this, SLOT(OnBytesSent(qint64)));
+
+  /*
   connect(&m_Client, SIGNAL(ConnectedToServer()), this, SLOT(OnConnectedToServer()));
   connect(&m_Client, SIGNAL(FailedToSendKeepAliveMessage()), this, SLOT(OnFailedToSendKeepAliveMessage()));
   connect(&m_Client, SIGNAL(NoIncommingData()), this, SLOT(OnNoIncommingData()));
@@ -61,17 +63,7 @@ TestTrackingClient::~TestTrackingClient()
 void TestTrackingClient::Start()
 {
   QLOG_INFO() << QObject::tr("%1::Start() - started.").arg(objectName());
-/*
-  QUrl url;
-  url.setHost(m_HostName);
-  url.setPort(m_PortNumber);
-
-  m_Client.Start(url);
-  m_Timer->start();
-*/
-
   m_Client->ConnectToHost(m_HostName, m_PortNumber);
-  QLOG_INFO() << QObject::tr("%1::Start() - finished.").arg(objectName());
 }
 
 
@@ -108,9 +100,9 @@ void TestTrackingClient::OnTimeOut()
 
 
 //-----------------------------------------------------------------------------
-void TestTrackingClient::OnSocketError(int portNumber, QAbstractSocket::SocketError socketError)
+void TestTrackingClient::OnSocketError(int portNumber, QAbstractSocket::SocketError errorCode, QString errorString)
 {
-  QLOG_INFO() << QObject::tr("%1::OnSocketError(port=%2, error=%3).").arg(objectName()).arg(portNumber).arg(socketError);
+  QLOG_INFO() << QObject::tr("%1::OnSocketError(port=%2, code=%3, string=%4).").arg(objectName()).arg(portNumber).arg(errorCode).arg(errorString);
 }
 
 

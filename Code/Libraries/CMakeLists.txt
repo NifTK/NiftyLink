@@ -38,7 +38,6 @@ Socket/NiftyLinkSocket.cxx
 Socket/NiftyLinkClientSocket.cxx
 Socket/NiftyLinkServerSocket.cxx
 Network/NiftyLinkTcpNetworkWorker.cxx
-Network/NiftyLinkTcpServerWorker.cxx
 Network/NiftyLinkTcpServer.cxx
 Network/NiftyLinkTcpClient.cxx
 Network/NiftyLinkNetworkProcess.cxx
@@ -55,7 +54,6 @@ SET(niftylink_MOC_HDRS
 Common/NiftyLinkQThread.h
 Descriptors/NiftyLinkXMLBuilder.h
 Network/NiftyLinkTcpNetworkWorker.h
-Network/NiftyLinkTcpServerWorker.h
 Network/NiftyLinkTcpServer.h
 Network/NiftyLinkTcpClient.h
 Network/NiftyLinkNetworkProcess.h

@@ -47,7 +47,7 @@ void TestServer::Start()
   m_Server.Start(m_PortNumber);
   */
   connect(m_Server, SIGNAL(MessageReceived(int, niftk::NiftyLinkMessageContainer::Pointer)), this, SLOT(OnMessageReceived(int, niftk::NiftyLinkMessageContainer::Pointer)), Qt::DirectConnection);
-  connect(m_Server, SIGNAL(SocketError(int,QAbstractSocket::SocketError)), this, SLOT(OnSocketError(int,QAbstractSocket::SocketError)));
+  connect(m_Server, SIGNAL(SocketError(int,QAbstractSocket::SocketError, QString)), this, SLOT(OnSocketError(int,QAbstractSocket::SocketError, QString)));
   connect(m_Server, SIGNAL(ClientConnected(int)), this, SLOT(OnClientConnected(int)));
 
   if (!m_Server->listen(QHostAddress::LocalHost, m_PortNumber))
@@ -72,9 +72,9 @@ void TestServer::OnNoIncommingData()
 
 
 //-----------------------------------------------------------------------------
-void TestServer::OnSocketError(int portNumber, QAbstractSocket::SocketError socketError)
+void TestServer::OnSocketError(int portNumber, QAbstractSocket::SocketError errorCode, QString errorString)
 {
-  QLOG_ERROR() << QObject::tr("%1::OnSocketError(%2, %3).").arg(objectName()).arg(portNumber).arg(socketError);
+  QLOG_ERROR() << QObject::tr("%1::OnSocketError(port=%2, code=%3, string=%4).").arg(objectName()).arg(portNumber).arg(errorCode).arg(errorString);
 }
 
 

@@ -27,7 +27,7 @@ namespace niftk
  * \class NiftyLinkTcpNetworkWorker
  * \brief Worker object, to be run in a separate QThread by NiftyLinkTcpServer or NiftyLinkTcpClient.
  */
-class NIFTYLINKCOMMON_WINEXPORT NiftyLinkTcpNetworkWorker : public QObject
+class NiftyLinkTcpNetworkWorker : public QObject
 {
   Q_OBJECT
 
@@ -36,14 +36,15 @@ public:
   NiftyLinkTcpNetworkWorker(QTcpSocket *socket, QObject *parent = 0);
   virtual ~NiftyLinkTcpNetworkWorker();
 
-public slots:
+  /// \brief Returns the contained socket - be careful, breaks encapsulation.
+  QTcpSocket* GetSocket() const;
 
-  /// \brief Sends an OpenIGTLink message, written as a slot, as it may be called from another thread.
+  /// \brief Sends an OpenIGTLink message.
   void Send(igtl::MessageBase::Pointer msg);
 
 signals:
 
-  void SocketError(int portNumber, QAbstractSocket::SocketError);
+  void SocketError(int portNumber, QAbstractSocket::SocketError errorCode, QString errorString);
   void MessageReceived(int portNumber, niftk::NiftyLinkMessageContainer::Pointer msg);
   void BytesSent(qint64 bytes);
   void InternalSendSignal(igtl::MessageBase::Pointer msg);

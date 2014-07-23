@@ -14,10 +14,11 @@
 
 #include <NiftyLinkCommonWin32ExportHeader.h>
 #include <NiftyLinkMessageContainer.h>
+#include <NiftyLinkTcpNetworkWorker.h>
 
-#include <QTcpServer>
 #include <QSet>
 #include <QMutex>
+#include <QTcpServer>
 
 class QTcpSocket;
 
@@ -53,7 +54,7 @@ signals:
   void MessageReceived(int portNumber, niftk::NiftyLinkMessageContainer::Pointer msg);
 
   /// \brief Emitted when one of the remote clients reports an error.
-  void SocketError(int portNumber, QAbstractSocket::SocketError socketError);
+  void SocketError(int portNumber, QAbstractSocket::SocketError errorCode, QString errorString);
 
 private slots:
 
@@ -62,8 +63,8 @@ private slots:
 
 private:
 
-  QSet<QTcpSocket*> m_Sockets;
-  QMutex            m_Mutex;
+  QSet<NiftyLinkTcpNetworkWorker*> m_Workers;
+  QMutex                           m_Mutex;
 };
 
 } // end namespace niftk

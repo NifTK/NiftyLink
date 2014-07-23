@@ -36,14 +36,17 @@ public:
 private slots:
 
   void Start();
+  void OnConnectedToServer();
+  void OnSocketError(int portNumber, QAbstractSocket::SocketError errorCode, QString errorString);
+
   void OnFailedToSendKeepAliveMessage();
   void OnNoIncommingData();
   void OnMessageReceived(niftk::NiftyLinkMessageContainer::Pointer msg);
   void OnMessageSent(igtlUint64 startTimeInNanoseconds, igtlUint64 endTimeInNanoseconds);
 
   void OnBytesSent(qint64 bytes);
-  void OnSocketError(int portNumber, QAbstractSocket::SocketError socketError);
-  void OnConnectedToServer();
+
+
   void OnTimeOut();
 
 private:

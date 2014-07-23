@@ -65,6 +65,13 @@ NiftyLinkTcpNetworkWorker::~NiftyLinkTcpNetworkWorker()
 
 
 //-----------------------------------------------------------------------------
+QTcpSocket* NiftyLinkTcpNetworkWorker::GetSocket() const
+{
+  return m_Socket;
+}
+
+
+//-----------------------------------------------------------------------------
 void NiftyLinkTcpNetworkWorker::OnSocketDisconnected()
 {
   QThread::currentThread()->quit();
@@ -74,8 +81,17 @@ void NiftyLinkTcpNetworkWorker::OnSocketDisconnected()
 //-----------------------------------------------------------------------------
 void NiftyLinkTcpNetworkWorker::OnSocketError(QAbstractSocket::SocketError error)
 {
-  QLOG_INFO() << QObject::tr("%1::OnSocketError(code=%2)").arg(objectName()).arg(error);
-  emit SocketError(m_Socket->peerPort(), error);
+  QString errorString = m_Socket->errorString();
+  QLOG_INFO() << QObject::tr("%1::OnSocketError(code=%2, string=%3)").arg(objectName()).arg(error).arg(errorString);
+  emit SocketError(m_Socket->peerPort(), error, errorString);
+}
+
+
+//-----------------------------------------------------------------------------
+void NiftyLinkTcpNetworkWorker::Send(igtl::MessageBase::Pointer msg)
+{
+  // This is done, as the actual send method should be in a different thread.
+  emit this->InternalSendSignal(msg);
 }
 
 
@@ -126,8 +142,9 @@ void NiftyLinkTcpNetworkWorker::OnSocketReadyRead()
       if (bytesReceived <= 0)
       {
         m_AbortReading = true;
-        QLOG_ERROR() << QObject::tr("%1::OnSocketReadyRead() - Failed to receive valid OpenIGTLink header. I expected to read a full header, but couldn't. This suggests junk on the wire, or system failure.").arg(m_MessagePrefix);
-        emit SocketError(m_Socket->peerPort(), QTcpSocket::UnknownSocketError);
+        QString errorMessage = QObject::tr("%1::OnSocketReadyRead() - Failed to receive valid OpenIGTLink header. I expected to read a full header, but couldn't. This suggests junk on the wire, or system failure.").arg(m_MessagePrefix);
+        QLOG_ERROR() << errorMessage;
+        emit SocketError(m_Socket->peerPort(), QAbstractSocket::UnknownSocketError, errorMessage);
         return;
       }
 
@@ -158,8 +175,9 @@ void NiftyLinkTcpNetworkWorker::OnSocketReadyRead()
       catch (const std::exception& e)
       {
         m_AbortReading = true;
-        QLOG_ERROR() << QObject::tr("%1::OnSocketReadyRead() - Failed to create message type %2. Error was %3. This suggests junk on the wire, or incorrectly encoded messages, or similar.").arg(m_MessagePrefix).arg(QString::fromStdString(m_IncomingHeader->GetDeviceType())).arg(QString::fromStdString(e.what()));
-        emit SocketError(m_Socket->peerPort(), QTcpSocket::UnknownSocketError);
+        QString errorMessage = QObject::tr("%1::OnSocketReadyRead() - Failed to create message type %2. Error was %3. This suggests junk on the wire, or incorrectly encoded messages, or similar.").arg(m_MessagePrefix).arg(QString::fromStdString(m_IncomingHeader->GetDeviceType())).arg(QString::fromStdString(e.what()));
+        QLOG_ERROR() << errorMessage;
+        emit SocketError(m_Socket->peerPort(), QAbstractSocket::UnknownSocketError, errorMessage);
         return;
       }
     }
@@ -183,8 +201,9 @@ void NiftyLinkTcpNetworkWorker::OnSocketReadyRead()
         if (bytesReceived <= 0)
         {
           m_AbortReading = true;
-          QLOG_ERROR() << QObject::tr("%1::OnSocketReadyRead() - Failed to read the right size (%2) fragment of OpenIGTLink message data, (bytesReceived=%3).").arg(m_MessagePrefix).arg(bytesAvailable).arg(bytesReceived);
-          emit SocketError(m_Socket->peerPort(), QTcpSocket::UnknownSocketError);
+          QString errorMessage = QObject::tr("%1::OnSocketReadyRead() - Failed to read the right size (%2) fragment of OpenIGTLink message data, (bytesReceived=%3).").arg(m_MessagePrefix).arg(bytesAvailable).arg(bytesReceived);
+          QLOG_ERROR() << errorMessage;
+          emit SocketError(m_Socket->peerPort(), QAbstractSocket::UnknownSocketError, errorMessage);
           return;
         }
         m_IncomingMessageBytesReceived += bytesReceived;
@@ -198,8 +217,9 @@ void NiftyLinkTcpNetworkWorker::OnSocketReadyRead()
         if (bytesReceived <= 0)
         {
           m_AbortReading = true;
-          QLOG_ERROR() << QObject::tr("%1::OnSocketReadyRead() - Failed to read the right size (%2) OpenIGTLink message, (bytesReceived=%3).").arg(m_MessagePrefix).arg(bytesRequiredToCompleteMessage).arg(bytesReceived);
-          emit SocketError(m_Socket->peerPort(), QTcpSocket::UnknownSocketError);
+          QString errorMessage = QObject::tr("%1::OnSocketReadyRead() - Failed to read the right size (%2) OpenIGTLink message, (bytesReceived=%3).").arg(m_MessagePrefix).arg(bytesRequiredToCompleteMessage).arg(bytesReceived);
+          QLOG_ERROR() << errorMessage;
+          emit SocketError(m_Socket->peerPort(), QAbstractSocket::UnknownSocketError, errorMessage);
           return;
         }
         m_IncomingMessageBytesReceived += bytesReceived;
@@ -274,13 +294,6 @@ void NiftyLinkTcpNetworkWorker::OnSocketReadyRead()
   } while (bytesAvailable > 0);
 
   return;
-}
-
-
-//-----------------------------------------------------------------------------
-void NiftyLinkTcpNetworkWorker::Send(igtl::MessageBase::Pointer msg)
-{
-  emit this->InternalSendSignal(msg);
 }
 
 

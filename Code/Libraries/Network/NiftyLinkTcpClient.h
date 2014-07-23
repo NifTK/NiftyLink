@@ -38,10 +38,7 @@ public:
   NiftyLinkTcpClient(QObject *parent = 0);
   virtual ~NiftyLinkTcpClient();
 
-  /// \brief Returns the contained socket, (but breaks encapsulation)!
-  QTcpSocket* GetTcpSocket() const;
-
-  /// \brief Connects to a host, before calling this, register for all errors on the above mentioned socket.
+  /// \brief Connects to a host. You should listen to SocketError signal.
   void ConnectToHost(const QString& hostName, quint16 portNumber);
 
   /// \brief Sends an OpenIGTLink message.
@@ -49,11 +46,17 @@ public:
 
 signals:
 
-  /// \brief Emitted when this client receives an OpenIGTLink message.
-  void MessageReceived(int portNumber, niftk::NiftyLinkMessageContainer::Pointer msg);
+  /// \brief Emmitted when we have successfully connected.
+  void Connected();
+
+  /// \brief Emmitted when we have disconnected.
+  void Disconnected();
 
   /// \brief Emitted when the socket reports an error.
-  void SocketError(int portNumber, QAbstractSocket::SocketError socketError);
+  void SocketError(QString hostName, int portNumber, QAbstractSocket::SocketError errorCode, QString errorString);
+
+  /// \brief Emitted when this client receives an OpenIGTLink message.
+  void MessageReceived(niftk::NiftyLinkMessageContainer::Pointer msg);
 
   /// \brief Emmitted when we have actually sent bytes.
   void BytesSent(qint64 bytes);
@@ -62,6 +65,15 @@ private slots:
 
   /// \brief When the socket successfully connects, we move all processing to another thread.
   void OnConnected();
+
+  /// \brief We listen to all socket errors from the moment we create it.
+  void OnError();
+
+  /// \brief At the moment, just log, and emmit the Disconnected signal.
+  void OnDisconnected();
+
+  /// \brief At the moment, this just copes with the different number of arguments, and passes the message on.
+  void OnMessageReceived(int portNumber, niftk::NiftyLinkMessageContainer::Pointer msg);
 
 private:
 
