@@ -15,16 +15,18 @@
 #include <QsLog.h>
 #include <QsLogDest.h>
 #include <QApplication>
+#include <igtlTrackingDataMessage.h>
 
 namespace niftk
 {
 
 //-----------------------------------------------------------------------------
-TestServer::TestServer(const int& portNumber, const bool& isEchoing)
+TestServer::TestServer(const int& portNumber, const bool& isEchoing, QObject *parent)
+: m_PortNumber(portNumber)
+, m_IsEchoing(isEchoing)
+, m_Server(new NiftyLinkTcpServer(parent))
 {
   this->setObjectName("TestServer");
-  m_PortNumber = portNumber;
-  m_IsEchoing = isEchoing;
 }
 
 
@@ -37,19 +39,28 @@ TestServer::~TestServer()
 //-----------------------------------------------------------------------------
 void TestServer::Start()
 {
+  /*
   connect(&m_Server, SIGNAL(ClientConnected()), this, SLOT(OnClientConnected()));
   connect(&m_Server, SIGNAL(FailedToSendKeepAliveMessage()), this, SLOT(OnFailedToSendKeepAliveMessage()));
   connect(&m_Server, SIGNAL(NoIncommingData()), this, SLOT(OnNoIncommingData()));
-  connect(&m_Server, SIGNAL(MessageReceived(niftk::NiftyLinkMessageContainer::Pointer)), this, SLOT(OnMessageReceived(niftk::NiftyLinkMessageContainer::Pointer)));
   connect(&m_Server, SIGNAL(MessageSent(igtlUint64, igtlUint64)), this, SLOT(OnMessageSent(igtlUint64, igtlUint64)));
   m_Server.Start(m_PortNumber);
+  */
+  connect(m_Server, SIGNAL(MessageReceived(int, niftk::NiftyLinkMessageContainer::Pointer)), this, SLOT(OnMessageReceived(int, niftk::NiftyLinkMessageContainer::Pointer)), Qt::DirectConnection);
+  connect(m_Server, SIGNAL(SocketError(int,QAbstractSocket::SocketError)), this, SLOT(OnSocketError(int,QAbstractSocket::SocketError)));
+  connect(m_Server, SIGNAL(ClientConnected(int)), this, SLOT(OnClientConnected(int)));
+
+  if (!m_Server->listen(QHostAddress::LocalHost, m_PortNumber))
+  {
+    QLOG_ERROR() << QObject::tr("%1::Start() - Unable to start server, error code %2, error string %3").arg(objectName()).arg(m_Server->serverError()).arg(m_Server->errorString());
+  }
 }
 
 
 //-----------------------------------------------------------------------------
-void TestServer::OnClientConnected()
+void TestServer::OnClientConnected(int portNumber)
 {
-  QLOG_INFO() << QObject::tr("%1::OnClientConnected().").arg(objectName());
+  QLOG_INFO() << QObject::tr("%1::OnClientConnected(%2).").arg(objectName()).arg(portNumber);
 }
 
 
@@ -61,15 +72,39 @@ void TestServer::OnNoIncommingData()
 
 
 //-----------------------------------------------------------------------------
-void TestServer::OnMessageReceived(niftk::NiftyLinkMessageContainer::Pointer message)
+void TestServer::OnSocketError(int portNumber, QAbstractSocket::SocketError socketError)
 {
-  QLOG_DEBUG() << QObject::tr("%1::OnMessageReceived(%2), type=%3").arg(objectName()).arg(message->GetNiftyLinkMessageId()).arg(message->GetMessage()->GetDeviceType());
+  QLOG_ERROR() << QObject::tr("%1::OnSocketError(%2, %3).").arg(objectName()).arg(portNumber).arg(socketError);
+}
+
+
+//-----------------------------------------------------------------------------
+void TestServer::OnMessageReceived(int portNumber, niftk::NiftyLinkMessageContainer::Pointer message)
+{
+  QLOG_INFO() << QObject::tr("%1::OnMessageReceived(%2, %3), type=%4").arg(objectName()).arg(portNumber).arg(message->GetNiftyLinkMessageId()).arg(message->GetMessage()->GetDeviceType());
+/*
+  igtl::TrackingDataMessage::Pointer msg = dynamic_cast<igtl::TrackingDataMessage*>(message->GetMessage().GetPointer());
+  if (msg.IsNotNull())
+  {
+    igtl::Matrix4x4 matrix;
+    igtl::TrackingDataElement::Pointer elem = igtl::TrackingDataElement::New();
+    msg->GetTrackingDataElement(0, elem);
+    elem->GetMatrix(matrix);
+    std::cerr << "Matrix=" << std::endl;
+    for (int i = 0; i < 4; i++)
+    {
+      std::cerr << matrix[i][0] << ", " << matrix[i][1] << ", " << matrix[i][2] << ", " << matrix[i][3] << std::endl;
+    }
+  }
+*/
+/*
   if (m_IsEchoing)
   {
     QLOG_DEBUG() << QObject::tr("%1::OnMessageReceived(%2), sending.").arg(objectName()).arg(message->GetNiftyLinkMessageId());
-    message->GetMessage()->Pack();
-    m_Server.Send(message->GetMessage());
+    //message->GetMessage()->Pack();
+    //m_Server.Send(message->GetMessage());
   }
+  */
 }
 
 

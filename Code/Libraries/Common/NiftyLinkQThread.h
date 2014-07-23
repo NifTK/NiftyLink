@@ -38,7 +38,7 @@ class NIFTYLINKCOMMON_WINEXPORT NiftyLinkQThread : public QThread
 public:
 
   /// \brief Simple constructor.
-  inline NiftyLinkQThread() : QThread()
+  inline NiftyLinkQThread(QObject *parent = 0) : QThread(parent)
   , m_IsEventLoopRunning(false)
   {
   }

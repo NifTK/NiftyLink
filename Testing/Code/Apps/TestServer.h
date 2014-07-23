@@ -14,7 +14,7 @@
 #define TestServer_h
 
 #include <NiftyLinkMessageContainer.h>
-#include <NiftyLinkServer.h>
+#include <NiftyLinkTcpServer.h>
 
 #include <igtlTimeStamp.h>
 
@@ -29,23 +29,25 @@ class TestServer : public QObject
   Q_OBJECT
 
 public:
-  TestServer(const int& portNumber, const bool& isEchoing);
+  TestServer(const int& portNumber, const bool& isEchoing, QObject *parent=0);
   virtual ~TestServer();
 
 private slots:
 
   void Start();
 
-  void OnClientConnected();
+  void OnSocketError(int portNumber, QAbstractSocket::SocketError socketError);
   void OnFailedToSendKeepAliveMessage();
   void OnNoIncommingData();
-  void OnMessageReceived(niftk::NiftyLinkMessageContainer::Pointer msg);
+
+  void OnClientConnected(int portNumber);
+  void OnMessageReceived(int portNumber, niftk::NiftyLinkMessageContainer::Pointer msg);
   void OnMessageSent(igtlUint64 startTimeInNanoseconds, igtlUint64 endTimeInNanoseconds);
 
 private:
   int             m_PortNumber;
   bool            m_IsEchoing;
-  NiftyLinkServer m_Server;
+  NiftyLinkTcpServer *m_Server;
 };
 
 } // end namespace niftk

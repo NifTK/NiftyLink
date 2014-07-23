@@ -14,7 +14,7 @@
 #define TestTrackingClient_h
 
 #include <NiftyLinkMessageContainer.h>
-#include <NiftyLinkClient.h>
+#include <NiftyLinkTcpClient.h>
 
 #include <igtlTimeStamp.h>
 
@@ -30,28 +30,30 @@ class TestTrackingClient : public QObject
   Q_OBJECT
 
 public:
-  TestTrackingClient(const std::string& hostName, const int& portNumber, const int& fps, const int& numberMessages);
+  TestTrackingClient(const std::string& hostName, const int& portNumber, const int& fps, const int& numberMessages, QObject *parent=0);
   virtual ~TestTrackingClient();
 
 private slots:
 
   void Start();
-
-  void OnConnectedToServer();
   void OnFailedToSendKeepAliveMessage();
   void OnNoIncommingData();
   void OnMessageReceived(niftk::NiftyLinkMessageContainer::Pointer msg);
   void OnMessageSent(igtlUint64 startTimeInNanoseconds, igtlUint64 endTimeInNanoseconds);
 
+  void OnBytesSent(qint64 bytes);
+  void OnSocketError(int portNumber, QAbstractSocket::SocketError socketError);
+  void OnConnectedToServer();
   void OnTimeOut();
 
 private:
-  QString         m_HostName;
-  int             m_PortNumber;
-  NiftyLinkClient m_Client;
-  QTimer         *m_Timer;
-  int             m_IntendedNumberMessages;
-  int             m_NumberMessagesSent;
+  QString             m_HostName;
+  int                 m_PortNumber;
+  int                 m_IntendedNumberMessages;
+  NiftyLinkTcpClient *m_Client;
+
+  QTimer             *m_Timer;
+  int                 m_NumberMessagesSent;
 };
 
 } // end namespace niftk

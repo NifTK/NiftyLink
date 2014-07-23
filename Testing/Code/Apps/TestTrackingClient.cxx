@@ -15,6 +15,8 @@
 #include <QsLogDest.h>
 #include <QApplication>
 #include <QUrl>
+#include <QAbstractSocket>
+#include "NiftyLinkMessageContainer.h"
 #include <igtlTrackingDataMessage.h>
 #include <NiftyLinkUtils.h>
 
@@ -22,21 +24,30 @@ namespace niftk
 {
 
 //-----------------------------------------------------------------------------
-TestTrackingClient::TestTrackingClient(const std::string& hostName, const int& portNumber, const int& fps, const int& numberMessages)
+TestTrackingClient::TestTrackingClient(const std::string& hostName, const int& portNumber, const int& fps, const int& numberMessages, QObject *parent)
+: m_HostName(QString::fromStdString(hostName))
+, m_PortNumber(portNumber)
+, m_IntendedNumberMessages(numberMessages)
+, m_Client(new NiftyLinkTcpClient(parent))
 {
+  qRegisterMetaType<igtl::MessageBase::Pointer>("igtl::MessageBase::Pointer");
+  qRegisterMetaType<niftk::NiftyLinkMessageContainer::Pointer>("niftk::NiftyLinkMessageContainer::Pointer");
+  qRegisterMetaType<QAbstractSocket::SocketError>("QAbstractSocket::SocketError");
+
   this->setObjectName("TestTrackingClient");
-  m_HostName = QString::fromStdString(hostName);
-  m_PortNumber = portNumber;
-  m_IntendedNumberMessages = numberMessages;
   m_NumberMessagesSent = 0;
+  connect(m_Client->GetTcpSocket(), SIGNAL(connected()), this, SLOT(OnConnectedToServer()));
+  connect(m_Client, SIGNAL(BytesSent(qint64)), this, SLOT(OnBytesSent(qint64)));
   m_Timer = new QTimer();
   m_Timer->setInterval(1000/fps);
   connect(m_Timer, SIGNAL(timeout()), this, SLOT(OnTimeOut()));
+/*
   connect(&m_Client, SIGNAL(ConnectedToServer()), this, SLOT(OnConnectedToServer()));
   connect(&m_Client, SIGNAL(FailedToSendKeepAliveMessage()), this, SLOT(OnFailedToSendKeepAliveMessage()));
   connect(&m_Client, SIGNAL(NoIncommingData()), this, SLOT(OnNoIncommingData()));
   connect(&m_Client, SIGNAL(MessageReceived(niftk::NiftyLinkMessageContainer::Pointer)), this, SLOT(OnMessageReceived(niftk::NiftyLinkMessageContainer::Pointer)));
   connect(&m_Client, SIGNAL(MessageSent(igtlUint64, igtlUint64)), this, SLOT(OnMessageSent(igtlUint64, igtlUint64)));
+*/
 }
 
 
@@ -50,15 +61,25 @@ TestTrackingClient::~TestTrackingClient()
 void TestTrackingClient::Start()
 {
   QLOG_INFO() << QObject::tr("%1::Start() - started.").arg(objectName());
-
+/*
   QUrl url;
   url.setHost(m_HostName);
   url.setPort(m_PortNumber);
 
   m_Client.Start(url);
   m_Timer->start();
+*/
 
+  m_Client->ConnectToHost(m_HostName, m_PortNumber);
   QLOG_INFO() << QObject::tr("%1::Start() - finished.").arg(objectName());
+}
+
+
+//-----------------------------------------------------------------------------
+void TestTrackingClient::OnConnectedToServer()
+{
+  QLOG_INFO() << QObject::tr("%1::OnConnectedToServer().").arg(objectName());
+  m_Timer->start();
 }
 
 
@@ -71,25 +92,25 @@ void TestTrackingClient::OnTimeOut()
   igtl::TrackingDataElement::Pointer element = igtl::TrackingDataElement::New();
   element->SetMatrix(matrix);
 
-  // Send message. We should NOT pack it.
+  // Send message. We should NOT pack it, as our client class does it for us.
   igtl::TrackingDataMessage::Pointer msg = igtl::TrackingDataMessage::New();
   msg->SetDeviceName("TestTrackingClient");
   msg->AddTrackingDataElement(element);
-  m_Client.Send(msg.GetPointer());
+  m_Client->Send(msg.GetPointer());
 
   m_NumberMessagesSent++;
   if (m_NumberMessagesSent == m_IntendedNumberMessages)
   {
-    m_Client.OutputStats();
+    //m_Client->OutputStats();
     m_NumberMessagesSent = 0;
   }
 }
 
 
 //-----------------------------------------------------------------------------
-void TestTrackingClient::OnConnectedToServer()
+void TestTrackingClient::OnSocketError(int portNumber, QAbstractSocket::SocketError socketError)
 {
-  QLOG_INFO() << QObject::tr("%1::OnConnectedToServer().").arg(objectName());
+  QLOG_INFO() << QObject::tr("%1::OnSocketError(port=%2, error=%3).").arg(objectName()).arg(portNumber).arg(socketError);
 }
 
 
@@ -118,6 +139,13 @@ void TestTrackingClient::OnMessageReceived(niftk::NiftyLinkMessageContainer::Poi
 void TestTrackingClient::OnMessageSent(igtlUint64 startTimeInNanoseconds, igtlUint64 endTimeInNanoseconds)
 {
   QLOG_DEBUG() << QObject::tr("%1::OnMessageSent(%2, %3).").arg(objectName()).arg(startTimeInNanoseconds).arg(endTimeInNanoseconds);
+}
+
+
+//-----------------------------------------------------------------------------
+void TestTrackingClient::OnBytesSent(qint64 bytes)
+{
+  QLOG_INFO() << QObject::tr("%1::OnBytesSent(%2).").arg(objectName()).arg(bytes);
 }
 
 } // end namespace niftk
