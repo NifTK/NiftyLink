@@ -18,7 +18,7 @@
 #include <igtlMessageBase.h>
 #include <igtlTimeStamp.h>
 
-#include <QThread.h>
+#include <QThread>
 #include <QTcpSocket>
 
 namespace niftk
