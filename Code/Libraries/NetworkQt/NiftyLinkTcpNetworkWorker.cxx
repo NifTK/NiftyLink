@@ -78,6 +78,14 @@ NiftyLinkTcpNetworkWorker::NiftyLinkTcpNetworkWorker(
 //-----------------------------------------------------------------------------
 NiftyLinkTcpNetworkWorker::~NiftyLinkTcpNetworkWorker()
 {
+  QLOG_INFO() << QObject::tr("%1::~NiftyLinkTcpNetworkWorker() - destroying").arg(m_MessagePrefix);
+
+  m_Socket->close();
+  while (m_Socket->isOpen())
+  {
+    QThread::currentThread()->wait(10);
+  }
+
   QLOG_INFO() << QObject::tr("%1::~NiftyLinkTcpNetworkWorker() - destroyed").arg(m_MessagePrefix);
 }
 
@@ -92,6 +100,12 @@ QTcpSocket* NiftyLinkTcpNetworkWorker::GetSocket() const
 //-----------------------------------------------------------------------------
 void NiftyLinkTcpNetworkWorker::OnSocketDisconnected()
 {
+  QLOG_INFO() << QObject::tr("%1::OnSocketDisconnected() - client disconnected.").arg(m_MessagePrefix);
+
+  // This doubly double checks we are running in our own thread.
+  NiftyLinkQThread *p = dynamic_cast<NiftyLinkQThread*>(QThread::currentThread());
+  assert(p != NULL);
+
   QThread::currentThread()->quit();
 }
 

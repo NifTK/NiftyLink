@@ -33,10 +33,13 @@ class NiftyLinkTcpNetworkWorker : public QObject
 
 public:
 
+  /// \brief Constructor, and this class owns none of the objects passed in.
   NiftyLinkTcpNetworkWorker(NiftyLinkMessageManager* inboundMessages,
                             NiftyLinkMessageManager* outboundMessages,
                             QTcpSocket *socket,
                             QObject *parent = 0);
+
+  /// \brief Destructor.
   virtual ~NiftyLinkTcpNetworkWorker();
 
   /// \brief Returns the contained socket.

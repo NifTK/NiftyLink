@@ -121,9 +121,14 @@ void NiftyLinkTcpServer::OnClientDisconnected()
     if (chosenWorker != NULL)
     {
       m_Workers.remove(chosenWorker);
+      int portNumber = sender->peerPort();
+
+      delete chosenWorker;
+      delete sender;
+
       QLOG_INFO() << QObject::tr("%1::OnClientDisconnected() - client %2 removed.").arg(objectName()).arg(reinterpret_cast<qulonglong>(sender));
 
-      emit ClientDisconnected(sender->peerPort());
+      emit ClientDisconnected(portNumber);
     }
     else
     {
