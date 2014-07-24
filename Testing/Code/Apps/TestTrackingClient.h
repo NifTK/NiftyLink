@@ -38,24 +38,13 @@ private slots:
   void Start();
   void OnTimeOut();
   void OnConnectedToServer();
-  void OnSocketError(int portNumber, QAbstractSocket::SocketError errorCode, QString errorString);
-
-  void OnFailedToSendKeepAliveMessage();
-  void OnNoIncommingData();
-  void OnMessageReceived(niftk::NiftyLinkMessageContainer::Pointer msg);
-  void OnMessageSent(igtlUint64 startTimeInNanoseconds, igtlUint64 endTimeInNanoseconds);
-
   void OnBytesSent(qint64 bytes);
-
-
-
 
 private:
   QString             m_HostName;
   int                 m_PortNumber;
   int                 m_IntendedNumberMessages;
   NiftyLinkTcpClient *m_Client;
-
   QTimer             *m_Timer;
   int                 m_NumberMessagesSent;
 };

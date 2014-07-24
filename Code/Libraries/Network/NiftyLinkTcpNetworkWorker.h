@@ -14,7 +14,7 @@
 
 #include <NiftyLinkCommonWin32ExportHeader.h>
 #include <NiftyLinkMessageContainer.h>
-
+#include <NiftyLinkMessageManager.h>
 #include <igtlMessageBase.h>
 #include <igtlTimeStamp.h>
 
@@ -33,14 +33,18 @@ class NiftyLinkTcpNetworkWorker : public QObject
 
 public:
 
-  NiftyLinkTcpNetworkWorker(QTcpSocket *socket, QObject *parent = 0);
+  NiftyLinkTcpNetworkWorker(NiftyLinkMessageManager* inboundMessages,
+                            NiftyLinkMessageManager* outboundMessages,
+                            QTcpSocket *socket,
+                            QObject *parent = 0);
   virtual ~NiftyLinkTcpNetworkWorker();
 
   /// \brief Returns the contained socket - be careful, breaks encapsulation.
   QTcpSocket* GetSocket() const;
 
   /// \brief Sends an OpenIGTLink message.
-  void Send(igtl::MessageBase::Pointer msg);
+  /// The OpenIGTLink message within NiftyLinkMessageContainer should be already packed.
+  void Send(NiftyLinkMessageContainer::Pointer message);
 
   /// \brief Sends a request to output some statistics to console.
   void OutputStatsToConsole();
@@ -48,9 +52,9 @@ public:
 signals:
 
   void SocketError(int portNumber, QAbstractSocket::SocketError errorCode, QString errorString);
-  void MessageReceived(int portNumber, niftk::NiftyLinkMessageContainer::Pointer msg);
+  void MessageReceived(int portNumber);
   void BytesSent(qint64 bytes);
-  void InternalSendSignal(igtl::MessageBase::Pointer msg);
+  void InternalSendSignal();
   void InternalStatsSignal();
 
 private slots:
@@ -58,10 +62,12 @@ private slots:
   void OnSocketDisconnected();
   void OnSocketError(QAbstractSocket::SocketError error);
   void OnSocketReadyRead();
-  void OnSend(igtl::MessageBase::Pointer msg);
+  void OnSend();
   void OnOutputStats();
 
 private:
+  NiftyLinkMessageManager      *m_InboundMessages;
+  NiftyLinkMessageManager      *m_OutboundMessages;
   QTcpSocket                   *m_Socket;
   QString                       m_MessagePrefix;
   bool                          m_HeaderInProgress;
@@ -76,6 +82,7 @@ private:
   quint64                       m_NumberMessagesReceived;
   quint64                       m_NumberMessagesSent;
   QList<quint64>                m_ListOfLatencies;
+
 }; // end class
 
 } // end namespace niftk

@@ -29,8 +29,14 @@ namespace niftk
 {
 
 //-----------------------------------------------------------------------------
-NiftyLinkTcpNetworkWorker::NiftyLinkTcpNetworkWorker(QTcpSocket *socket, QObject *parent)
+NiftyLinkTcpNetworkWorker::NiftyLinkTcpNetworkWorker(
+    NiftyLinkMessageManager* inboundMessages,
+    NiftyLinkMessageManager *outboundMessages,
+    QTcpSocket *socket,
+    QObject *parent)
 : QObject(parent)
+, m_InboundMessages(inboundMessages)
+, m_OutboundMessages(outboundMessages)
 , m_Socket(socket)
 , m_HeaderInProgress(false)
 , m_MessageInProgress(false)
@@ -44,17 +50,22 @@ NiftyLinkTcpNetworkWorker::NiftyLinkTcpNetworkWorker(QTcpSocket *socket, QObject
 , m_NumberMessagesSent(0)
 {
   assert(m_Socket);
+  assert(m_InboundMessages);
+  assert(m_OutboundMessages);
 
   m_StatsTimePoint = igtl::TimeStamp::New();
 
-  qRegisterMetaType<niftk::NiftyLinkMessageContainer::Pointer>("niftk::NiftyLinkMessageContainer::Pointer");
-  qRegisterMetaType<QAbstractSocket::SocketError>("QAbstractSocket::SocketError");
+  QString host = m_Socket->peerName();
+  if (host.size() == 0)
+  {
+    host = "localhost";
+  }
 
-  m_MessagePrefix = QObject::tr("NiftyLinkTcpNetworkWorker(d=%1, h=%2, p=%3)").arg(m_Socket->socketDescriptor()).arg(m_Socket->peerName()).arg(m_Socket->peerPort());
+  m_MessagePrefix = QObject::tr("NiftyLinkTcpNetworkWorker(d=%1, h=%2, p=%3)").arg(m_Socket->socketDescriptor()).arg(host).arg(m_Socket->peerPort());
   this->setObjectName(m_MessagePrefix);
 
   connect(this, SIGNAL(InternalStatsSignal()), this, SLOT(OnOutputStats()));
-  connect(this, SIGNAL(InternalSendSignal(igtl::MessageBase::Pointer)), this, SLOT(OnSend(igtl::MessageBase::Pointer)));
+  connect(this, SIGNAL(InternalSendSignal()), this, SLOT(OnSend()));
   connect(m_Socket, SIGNAL(bytesWritten(qint64)), this, SIGNAL(BytesSent(qint64)));
   connect(m_Socket, SIGNAL(disconnected()), this, SLOT(OnSocketDisconnected()));
   connect(m_Socket, SIGNAL(error(QAbstractSocket::SocketError)), this, SLOT(OnSocketError(QAbstractSocket::SocketError)));
@@ -95,10 +106,12 @@ void NiftyLinkTcpNetworkWorker::OnSocketError(QAbstractSocket::SocketError error
 
 
 //-----------------------------------------------------------------------------
-void NiftyLinkTcpNetworkWorker::Send(igtl::MessageBase::Pointer msg)
+void NiftyLinkTcpNetworkWorker::Send(NiftyLinkMessageContainer::Pointer message)
 {
+  m_OutboundMessages->InsertContainer(m_Socket->peerPort(), message);
+
   // This is done, as the actual send method should be running in a different thread.
-  emit this->InternalSendSignal(msg);
+  emit this->InternalSendSignal();
 }
 
 
@@ -113,15 +126,15 @@ void NiftyLinkTcpNetworkWorker::OutputStatsToConsole()
 //-----------------------------------------------------------------------------
 void NiftyLinkTcpNetworkWorker::OnOutputStats()
 {
-  double mean = niftk::CalculateMean(m_ListOfLatencies);
-  double stdDev = niftk::CalculateStdDev(m_ListOfLatencies);
+  double mean = niftk::CalculateMean(m_ListOfLatencies) / static_cast<double>(1000000);
+  double stdDev = niftk::CalculateStdDev(m_ListOfLatencies) / static_cast<double>(1000000);
 
   igtl::TimeStamp::Pointer nowTime = igtl::TimeStamp::New();
   igtlUint64 duration = niftk::GetDifferenceInNanoSeconds(nowTime, m_StatsTimePoint);
   double durationInSeconds = duration/static_cast<double>(1000000000);
   double rate = m_TotalBytesReceived/durationInSeconds;
 
-  QLOG_INFO() << QObject::tr("%1::OnOutputStats() - Received %2 bytes, in %3 secs, %4 b/sec, mean latency %6, std dev latency %7.").arg(objectName()).arg(m_TotalBytesReceived).arg(durationInSeconds).arg(rate).arg(mean).arg(stdDev);
+  QLOG_INFO() << QObject::tr("%1::OnOutputStats() - Received %2 bytes, in %3 secs, %4 b/sec, mean %6, std dev %7.").arg(objectName()).arg(m_TotalBytesReceived).arg(durationInSeconds).arg(rate).arg(mean).arg(stdDev);
 
   m_TotalBytesReceived = 0;
   m_StatsTimePoint->SetTimeInNanoseconds(nowTime->GetTimeStampInNanoseconds());
@@ -148,6 +161,9 @@ void NiftyLinkTcpNetworkWorker::OnSocketReadyRead()
 
   // Storing this locally, incase the socket gets updated.
   quint64 bytesAvailable = m_Socket->bytesAvailable();
+  quint64 bytesAtStart = bytesAvailable;
+  quint64 bytesReceived = 0;
+
   QLOG_DEBUG() << QObject::tr("%1::OnSocketReadyRead() - Starting to read data, bytes available=%2.").arg(m_MessagePrefix).arg(bytesAvailable);
 
   // Need to cater for reading > 1 message at once.
@@ -171,7 +187,7 @@ void NiftyLinkTcpNetworkWorker::OnSocketReadyRead()
       m_IncomingHeaderTimeStamp = igtl::TimeStamp::New();
 
       // Read header data.
-      int bytesReceived = in.readRawData(static_cast<char*>(m_IncomingHeader->GetPackPointer()), m_IncomingHeader->GetPackSize());
+      bytesReceived = in.readRawData(static_cast<char*>(m_IncomingHeader->GetPackPointer()), m_IncomingHeader->GetPackSize());
       if (bytesReceived <= 0)
       {
         m_AbortReading = true;
@@ -230,8 +246,8 @@ void NiftyLinkTcpNetworkWorker::OnSocketReadyRead()
       {
         QLOG_WARN() << QObject::tr("%1::OnSocketReadyRead() - Message suggests there should be %2 bytes of data, but only %3 are available. Fragmentation has occurred.").arg(m_MessagePrefix).arg(m_IncomingMessage->GetPackBodySize()).arg(bytesAvailable);
 
-        int bytesReceived = in.readRawData(static_cast<char *>(m_IncomingMessage->GetPackBodyPointer()) + m_IncomingMessageBytesReceived, bytesAvailable);
-        if (bytesReceived <= 0)
+        bytesReceived = in.readRawData(static_cast<char *>(m_IncomingMessage->GetPackBodyPointer()) + m_IncomingMessageBytesReceived, bytesAvailable);
+        if (bytesReceived <= 0 || bytesReceived != bytesAvailable)
         {
           m_AbortReading = true;
           QString errorMessage = QObject::tr("%1::OnSocketReadyRead() - Failed to read the right size (%2) fragment of OpenIGTLink message data, (bytesReceived=%3).").arg(m_MessagePrefix).arg(bytesAvailable).arg(bytesReceived);
@@ -246,7 +262,7 @@ void NiftyLinkTcpNetworkWorker::OnSocketReadyRead()
       else
       {
         // Receive remaining data from the socket.
-        int bytesReceived = in.readRawData(static_cast<char *>(m_IncomingMessage->GetPackBodyPointer()) + m_IncomingMessageBytesReceived, bytesRequiredToCompleteMessage);
+        bytesReceived = in.readRawData(static_cast<char *>(m_IncomingMessage->GetPackBodyPointer()) + m_IncomingMessageBytesReceived, bytesRequiredToCompleteMessage);
         if (bytesReceived <= 0)
         {
           m_AbortReading = true;
@@ -289,7 +305,7 @@ void NiftyLinkTcpNetworkWorker::OnSocketReadyRead()
     igtl::TimeStamp::Pointer timeFullyReceived  = igtl::TimeStamp::New();
 
     // This is the container we eventually publish.
-    NiftyLinkMessageContainer::Pointer msg = (NiftyLinkMessageContainer::Pointer(new NiftyLinkMessageContainer()));
+     NiftyLinkMessageContainer::Pointer msg = (NiftyLinkMessageContainer::Pointer(new NiftyLinkMessageContainer()));
 
     // Set timestamps on NiftyLink container.
     msg->SetTimeArrived(m_IncomingHeaderTimeStamp);
@@ -319,28 +335,28 @@ void NiftyLinkTcpNetworkWorker::OnSocketReadyRead()
     m_HeaderInProgress = false;
     m_MessageInProgress = false;
     m_IncomingMessageBytesReceived = 0;
-
     m_NumberMessagesReceived++;
-    m_TotalBytesReceived += bytesAvailable;
-    emit MessageReceived(m_Socket->peerPort(), msg);
+
+    // Store the message in the map, and signal that we have done so.
+    m_InboundMessages->InsertContainer(m_Socket->peerPort(), msg);
+    emit MessageReceived(m_Socket->peerPort());
 
   } while (bytesAvailable > 0);
 
+  m_TotalBytesReceived += bytesAtStart;
   return;
 }
 
 
 //-----------------------------------------------------------------------------
-void NiftyLinkTcpNetworkWorker::OnSend(igtl::MessageBase::Pointer msg)
+void NiftyLinkTcpNetworkWorker::OnSend()
 {
   // This doubly double checks we are running in our own thread.
   niftk::NiftyLinkQThread *p = dynamic_cast<niftk::NiftyLinkQThread*>(QThread::currentThread());
   assert(p != NULL);
 
-  // Make sure the message is timestamped and packed.
-  igtl::TimeStamp::Pointer sendStarted = igtl::TimeStamp::New();
-  msg->SetTimeStamp(sendStarted);
-  msg->Pack();
+  NiftyLinkMessageContainer::Pointer message = m_OutboundMessages->GetContainer();
+  igtl::MessageBase::Pointer msg = message->GetMessage();
 
   int bytesWritten = m_Socket->write(static_cast<const char*>(msg->GetPackPointer()), msg->GetPackSize());
   if (bytesWritten != msg->GetPackSize())

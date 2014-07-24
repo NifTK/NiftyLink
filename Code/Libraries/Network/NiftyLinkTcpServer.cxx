@@ -17,6 +17,9 @@
 #include <QMutexLocker>
 #include <QTcpSocket>
 
+#include <igtlMessageFactory.h>
+#include <igtlTrackingDataMessage.h>
+
 #include <iostream>
 
 namespace niftk
@@ -28,8 +31,8 @@ NiftyLinkTcpServer::NiftyLinkTcpServer(QObject *parent)
 {
   this->setObjectName("NiftyLinkTcpServer");
 
-  qRegisterMetaType<niftk::NiftyLinkMessageContainer::Pointer>("niftk::NiftyLinkMessageContainer::Pointer");
   qRegisterMetaType<QAbstractSocket::SocketError>("QAbstractSocket::SocketError");
+  qRegisterMetaType<NiftyLinkMessageContainer::Pointer>("NiftyLinkMessageContainer::Pointer");
 
   QLOG_INFO() << QObject::tr("%1::NiftyLinkTcpServer() - started.").arg(objectName());
 }
@@ -53,14 +56,15 @@ void NiftyLinkTcpServer::incomingConnection(int socketDescriptor)
     socket->setSocketOption(QAbstractSocket::LowDelayOption, 1);
 
     NiftyLinkQThread *thread = new NiftyLinkQThread(this);
-    NiftyLinkTcpNetworkWorker *worker = new NiftyLinkTcpNetworkWorker(socket);
+    NiftyLinkTcpNetworkWorker *worker = new NiftyLinkTcpNetworkWorker(&m_InboundMessages, &m_OutboundMessages, socket);
     worker->moveToThread(thread);
     socket->moveToThread(thread);
 
     connect(socket, SIGNAL(disconnected()), this, SLOT(OnClientDisconnected()));
     connect(socket, SIGNAL(connected()), this, SLOT(OnClientConnected()));
+    connect(worker, SIGNAL(BytesSent(qint64)), this, SIGNAL(BytesSent(qint64)));
     connect(worker, SIGNAL(SocketError(int,QAbstractSocket::SocketError,QString)), this, SIGNAL(SocketError(int,QAbstractSocket::SocketError,QString)), Qt::BlockingQueuedConnection);
-    connect(worker, SIGNAL(MessageReceived(int,niftk::NiftyLinkMessageContainer::Pointer)), this, SIGNAL(MessageReceived(int,niftk::NiftyLinkMessageContainer::Pointer)), Qt::BlockingQueuedConnection);
+    connect(worker, SIGNAL(MessageReceived(int)), this, SLOT(OnMessageReceived(int)), Qt::BlockingQueuedConnection); // as the worker is in another thread.
     connect(thread, SIGNAL(finished()), thread, SLOT(deleteLater())); // i.e. the event loop of thread deletes it when control returns to this event loop.
 
     QMutexLocker locker(&m_Mutex);
@@ -78,6 +82,14 @@ void NiftyLinkTcpServer::incomingConnection(int socketDescriptor)
 
   this->setObjectName(QObject::tr("NiftyLinkTcpServer(%1)").arg(this->serverPort()));
   QLOG_INFO() << QObject::tr("%1::incomingConnection(%2) - created.").arg(objectName()).arg(socketDescriptor);
+}
+
+
+//-----------------------------------------------------------------------------
+void NiftyLinkTcpServer::OnMessageReceived(int portNumber)
+{
+  NiftyLinkMessageContainer::Pointer msg = m_InboundMessages.GetContainer(portNumber);
+  emit MessageReceived(portNumber, msg);
 }
 
 
@@ -123,12 +135,11 @@ void NiftyLinkTcpServer::OnClientDisconnected()
 
 
 //-----------------------------------------------------------------------------
-void NiftyLinkTcpServer::Send(igtl::MessageBase::Pointer msg)
+void NiftyLinkTcpServer::Send(NiftyLinkMessageContainer::Pointer message)
 {
-  // Send same message to all clients.
   foreach (NiftyLinkTcpNetworkWorker* worker, m_Workers)
   {
-    worker->Send(msg);
+    worker->Send(message);
   }
 }
 
@@ -136,7 +147,10 @@ void NiftyLinkTcpServer::Send(igtl::MessageBase::Pointer msg)
 //-----------------------------------------------------------------------------
 void NiftyLinkTcpServer::OutputStats()
 {
-
+  foreach (NiftyLinkTcpNetworkWorker* worker, m_Workers)
+  {
+    worker->OutputStatsToConsole();
+  }
 }
 
 

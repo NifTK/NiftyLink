@@ -19,6 +19,7 @@
 #include <igtlTimeStamp.h>
 
 #include <QObject>
+#include <QTimer>
 
 namespace niftk
 {
@@ -36,18 +37,14 @@ private slots:
 
   void Start();
   void OnSocketError(int portNumber, QAbstractSocket::SocketError errorCode, QString errorString);
-
-  void OnFailedToSendKeepAliveMessage();
-  void OnNoIncommingData();
-
+  void OnMessageReceived(int portNumber, NiftyLinkMessageContainer::Pointer message);
   void OnClientConnected(int portNumber);
-  void OnMessageReceived(int portNumber, niftk::NiftyLinkMessageContainer::Pointer msg);
-  void OnMessageSent(igtlUint64 startTimeInNanoseconds, igtlUint64 endTimeInNanoseconds);
 
 private:
   int                 m_PortNumber;
   bool                m_IsEchoing;
   NiftyLinkTcpServer *m_Server;
+  QTimer             *m_StatsTimer;
 };
 
 } // end namespace niftk

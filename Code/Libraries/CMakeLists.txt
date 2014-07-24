@@ -31,20 +31,21 @@ Common/QsLog.cxx
 Common/QsLogDest.cxx
 Descriptors/NiftyLinkXMLBuilder.cxx
 Messages/NiftyLinkMessageContainer.cxx
+Messages/NiftyLinkMessageManager.cxx
 Messages/NiftyLinkImageMessageHelpers.cxx
 Messages/NiftyLinkTrackingDataMessageHelpers.cxx
 Messages/NiftyLinkTransformMessageHelpers.cxx
-Socket/NiftyLinkSocket.cxx
-Socket/NiftyLinkClientSocket.cxx
-Socket/NiftyLinkServerSocket.cxx
+#Socket/NiftyLinkSocket.cxx
+#Socket/NiftyLinkClientSocket.cxx
+#Socket/NiftyLinkServerSocket.cxx
+#Network/NiftyLinkNetworkProcess.cxx
+#Network/NiftyLinkServerProcess.cxx
+#Network/NiftyLinkServer.cxx
+#Network/NiftyLinkClientProcess.cxx
+#Network/NiftyLinkClient.cxx
 Network/NiftyLinkTcpNetworkWorker.cxx
 Network/NiftyLinkTcpServer.cxx
 Network/NiftyLinkTcpClient.cxx
-Network/NiftyLinkNetworkProcess.cxx
-Network/NiftyLinkServerProcess.cxx
-Network/NiftyLinkServer.cxx
-Network/NiftyLinkClientProcess.cxx
-Network/NiftyLinkClient.cxx
 )
 
 #########################
@@ -53,14 +54,15 @@ Network/NiftyLinkClient.cxx
 SET(niftylink_MOC_HDRS
 Common/NiftyLinkQThread.h
 Descriptors/NiftyLinkXMLBuilder.h
+Messages/NiftyLinkMessageManager.h
+#Network/NiftyLinkNetworkProcess.h
+#Network/NiftyLinkServerProcess.h
+#Network/NiftyLinkServer.h
+#Network/NiftyLinkClientProcess.h
+#Network/NiftyLinkClient.h
 Network/NiftyLinkTcpNetworkWorker.h
 Network/NiftyLinkTcpServer.h
 Network/NiftyLinkTcpClient.h
-Network/NiftyLinkNetworkProcess.h
-Network/NiftyLinkServerProcess.h
-Network/NiftyLinkServer.h
-Network/NiftyLinkClientProcess.h
-Network/NiftyLinkClient.h
 )
 
 #########################
@@ -76,9 +78,9 @@ Messages/NiftyLinkMessageContainer.h
 Messages/NiftyLinkImageMessageHelpers.h
 Messages/NiftyLinkTrackingDataMessageHelpers.h
 Messages/NiftyLinkTransformMessageHelpers.h
-Socket/NiftyLinkSocket.h
-Socket/NiftyLinkClientSocket.h
-Socket/NiftyLinkServerSocket.h
+#Socket/NiftyLinkSocket.h
+#Socket/NiftyLinkClientSocket.h
+#Socket/NiftyLinkServerSocket.h
 )
 
 #########################

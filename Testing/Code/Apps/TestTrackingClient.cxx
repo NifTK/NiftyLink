@@ -30,26 +30,19 @@ TestTrackingClient::TestTrackingClient(const std::string& hostName, const int& p
 , m_IntendedNumberMessages(numberMessages)
 , m_Client(new NiftyLinkTcpClient(parent))
 {
-  qRegisterMetaType<igtl::MessageBase::Pointer>("igtl::MessageBase::Pointer");
-  qRegisterMetaType<niftk::NiftyLinkMessageContainer::Pointer>("niftk::NiftyLinkMessageContainer::Pointer");
   qRegisterMetaType<QAbstractSocket::SocketError>("QAbstractSocket::SocketError");
+  qRegisterMetaType<NiftyLinkMessageContainer::Pointer>("NiftyLinkMessageContainer::Pointer");
 
   this->setObjectName("TestTrackingClient");
 
   m_NumberMessagesSent = 0;
+
   m_Timer = new QTimer();
   m_Timer->setInterval(1000/fps);
-  connect(m_Timer, SIGNAL(timeout()), this, SLOT(OnTimeOut()));
+
+  connect(m_Timer, SIGNAL(timeout()), this, SLOT(OnTimeOut()));  
   connect(m_Client, SIGNAL(Connected()), this, SLOT(OnConnectedToServer()));
   connect(m_Client, SIGNAL(BytesSent(qint64)), this, SLOT(OnBytesSent(qint64)));
-
-  /*
-  connect(&m_Client, SIGNAL(ConnectedToServer()), this, SLOT(OnConnectedToServer()));
-  connect(&m_Client, SIGNAL(FailedToSendKeepAliveMessage()), this, SLOT(OnFailedToSendKeepAliveMessage()));
-  connect(&m_Client, SIGNAL(NoIncommingData()), this, SLOT(OnNoIncommingData()));
-  connect(&m_Client, SIGNAL(MessageReceived(niftk::NiftyLinkMessageContainer::Pointer)), this, SLOT(OnMessageReceived(niftk::NiftyLinkMessageContainer::Pointer)));
-  connect(&m_Client, SIGNAL(MessageSent(igtlUint64, igtlUint64)), this, SLOT(OnMessageSent(igtlUint64, igtlUint64)));
-*/
 }
 
 
@@ -84,53 +77,26 @@ void TestTrackingClient::OnTimeOut()
   igtl::TrackingDataElement::Pointer element = igtl::TrackingDataElement::New();
   element->SetMatrix(matrix);
 
-  // Send message. We should NOT pack it, as our client class does it for us.
   igtl::TrackingDataMessage::Pointer msg = igtl::TrackingDataMessage::New();
   msg->SetDeviceName("TestTrackingClient");
   msg->AddTrackingDataElement(element);
-  m_Client->Send(msg.GetPointer());
+  msg->Pack();
+
+  NiftyLinkMessageContainer::Pointer m = (NiftyLinkMessageContainer::Pointer(new NiftyLinkMessageContainer()));
+  m->SetMessage(msg.GetPointer());
+  m->SetOwnerName("TestTrackingClient");
+  m->SetSenderHostName("123.456.789.012");  // NiftyLink should provide easy way to access the machine name.
+  m->SetSenderPortNumber(1234);
+
+  // Send message.
+  m_Client->Send(m);
 
   m_NumberMessagesSent++;
   if (m_NumberMessagesSent == m_IntendedNumberMessages)
   {
-    //m_Client->OutputStats();
+    m_Client->OutputStats();
     m_NumberMessagesSent = 0;
   }
-}
-
-
-//-----------------------------------------------------------------------------
-void TestTrackingClient::OnSocketError(int portNumber, QAbstractSocket::SocketError errorCode, QString errorString)
-{
-  QLOG_ERROR() << QObject::tr("%1::OnSocketError(port=%2, code=%3, string=%4).").arg(objectName()).arg(portNumber).arg(errorCode).arg(errorString);
-}
-
-
-//-----------------------------------------------------------------------------
-void TestTrackingClient::OnFailedToSendKeepAliveMessage()
-{
-  QLOG_ERROR() << QObject::tr("%1::OnFailedToSendKeepAliveMessage().").arg(objectName());
-}
-
-
-//-----------------------------------------------------------------------------
-void TestTrackingClient::OnNoIncommingData()
-{
-  QLOG_ERROR() << QObject::tr("%1::OnNoIncommingData().").arg(objectName());
-}
-
-
-//-----------------------------------------------------------------------------
-void TestTrackingClient::OnMessageReceived(niftk::NiftyLinkMessageContainer::Pointer msg)
-{
-  QLOG_DEBUG() << QObject::tr("%1::OnMessageReceived(%2).").arg(objectName()).arg(msg->GetNiftyLinkMessageId());
-}
-
-
-//-----------------------------------------------------------------------------
-void TestTrackingClient::OnMessageSent(igtlUint64 startTimeInNanoseconds, igtlUint64 endTimeInNanoseconds)
-{
-  QLOG_DEBUG() << QObject::tr("%1::OnMessageSent(%2, %3).").arg(objectName()).arg(startTimeInNanoseconds).arg(endTimeInNanoseconds);
 }
 
 

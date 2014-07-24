@@ -30,7 +30,9 @@ NiftyLinkMessageContainer::NiftyLinkMessageContainer()
 , m_OwnerName("")
 {
   m_TimeArrived = igtl::TimeStamp::New();
+  m_TimeArrived->GetTime();
   m_TimeReceived = igtl::TimeStamp::New();
+  m_TimeReceived->GetTime();
   m_Id = m_TimeReceived->GetTimeStampInNanoseconds();
 }
 
@@ -55,11 +57,11 @@ void NiftyLinkMessageContainer::ShallowCopy(const NiftyLinkMessageContainer& ano
 {
   m_Message = another.m_Message;
   m_Id = another.m_Id;
-  m_TimeArrived = another.m_TimeArrived;
-  m_TimeReceived = another.m_TimeReceived;
   m_SenderHostName = another.m_SenderHostName;
   m_SenderPortNumber = another.m_SenderPortNumber;
   m_OwnerName = another.m_OwnerName;
+  m_TimeArrived->SetTimeInNanoseconds(another.m_TimeArrived->GetTimeStampInNanoseconds());
+  m_TimeReceived->SetTimeInNanoseconds(another.m_TimeReceived->GetTimeStampInNanoseconds());
 }
 
 

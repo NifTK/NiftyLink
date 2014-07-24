@@ -11,11 +11,9 @@
 =============================================================================*/
 
 #include "TestServer.h"
-#include <NiftyLinkServer.h>
 #include <QsLog.h>
 #include <QsLogDest.h>
 #include <QApplication>
-#include <igtlTrackingDataMessage.h>
 
 namespace niftk
 {
@@ -27,6 +25,12 @@ TestServer::TestServer(const int& portNumber, const bool& isEchoing, QObject *pa
 , m_Server(new NiftyLinkTcpServer(parent))
 {
   this->setObjectName("TestServer");
+
+  qRegisterMetaType<QAbstractSocket::SocketError>("QAbstractSocket::SocketError");
+  qRegisterMetaType<NiftyLinkMessageContainer::Pointer>("NiftyLinkMessageContainer::Pointer");
+
+  m_StatsTimer = new QTimer();
+  m_StatsTimer->setInterval(10000);
 }
 
 
@@ -39,14 +43,7 @@ TestServer::~TestServer()
 //-----------------------------------------------------------------------------
 void TestServer::Start()
 {
-  /*
-  connect(&m_Server, SIGNAL(ClientConnected()), this, SLOT(OnClientConnected()));
-  connect(&m_Server, SIGNAL(FailedToSendKeepAliveMessage()), this, SLOT(OnFailedToSendKeepAliveMessage()));
-  connect(&m_Server, SIGNAL(NoIncommingData()), this, SLOT(OnNoIncommingData()));
-  connect(&m_Server, SIGNAL(MessageSent(igtlUint64, igtlUint64)), this, SLOT(OnMessageSent(igtlUint64, igtlUint64)));
-  m_Server.Start(m_PortNumber);
-  */
-  connect(m_Server, SIGNAL(MessageReceived(int, niftk::NiftyLinkMessageContainer::Pointer)), this, SLOT(OnMessageReceived(int, niftk::NiftyLinkMessageContainer::Pointer)), Qt::DirectConnection);
+  connect(m_Server, SIGNAL(MessageReceived(int,NiftyLinkMessageContainer::Pointer)), this, SLOT(OnMessageReceived(int,NiftyLinkMessageContainer::Pointer)), Qt::DirectConnection);
   connect(m_Server, SIGNAL(SocketError(int,QAbstractSocket::SocketError, QString)), this, SLOT(OnSocketError(int,QAbstractSocket::SocketError, QString)));
   connect(m_Server, SIGNAL(ClientConnected(int)), this, SLOT(OnClientConnected(int)));
 
@@ -54,6 +51,9 @@ void TestServer::Start()
   {
     QLOG_ERROR() << QObject::tr("%1::Start() - Unable to start server, error code %2, error string %3").arg(objectName()).arg(m_Server->serverError()).arg(m_Server->errorString());
   }
+
+  connect(m_StatsTimer, SIGNAL(timeout()), m_Server, SLOT(OutputStats()));
+  m_StatsTimer->start();
 }
 
 
@@ -65,13 +65,6 @@ void TestServer::OnClientConnected(int portNumber)
 
 
 //-----------------------------------------------------------------------------
-void TestServer::OnNoIncommingData()
-{
-  QLOG_ERROR() << QObject::tr("%1::OnNoIncommingData().").arg(objectName());
-}
-
-
-//-----------------------------------------------------------------------------
 void TestServer::OnSocketError(int portNumber, QAbstractSocket::SocketError errorCode, QString errorString)
 {
   QLOG_ERROR() << QObject::tr("%1::OnSocketError(port=%2, code=%3, string=%4).").arg(objectName()).arg(portNumber).arg(errorCode).arg(errorString);
@@ -79,46 +72,15 @@ void TestServer::OnSocketError(int portNumber, QAbstractSocket::SocketError erro
 
 
 //-----------------------------------------------------------------------------
-void TestServer::OnMessageReceived(int portNumber, niftk::NiftyLinkMessageContainer::Pointer message)
+void TestServer::OnMessageReceived(int portNumber, NiftyLinkMessageContainer::Pointer message)
 {
   QLOG_DEBUG() << QObject::tr("%1::OnMessageReceived(%2, %3), type=%4").arg(objectName()).arg(portNumber).arg(message->GetNiftyLinkMessageId()).arg(message->GetMessage()->GetDeviceType());
-/*
-  igtl::TrackingDataMessage::Pointer msg = dynamic_cast<igtl::TrackingDataMessage*>(message->GetMessage().GetPointer());
-  if (msg.IsNotNull())
-  {
-    igtl::Matrix4x4 matrix;
-    igtl::TrackingDataElement::Pointer elem = igtl::TrackingDataElement::New();
-    msg->GetTrackingDataElement(0, elem);
-    elem->GetMatrix(matrix);
-    std::cerr << "Matrix=" << std::endl;
-    for (int i = 0; i < 4; i++)
-    {
-      std::cerr << matrix[i][0] << ", " << matrix[i][1] << ", " << matrix[i][2] << ", " << matrix[i][3] << std::endl;
-    }
-  }
-*/
-/*
+
   if (m_IsEchoing)
   {
-    QLOG_DEBUG() << QObject::tr("%1::OnMessageReceived(%2), sending.").arg(objectName()).arg(message->GetNiftyLinkMessageId());
-    //message->GetMessage()->Pack();
-    //m_Server.Send(message->GetMessage());
+    message->GetMessage()->Pack();
+    m_Server->Send(message);
   }
-  */
-}
-
-
-//-----------------------------------------------------------------------------
-void TestServer::OnFailedToSendKeepAliveMessage()
-{
-  QLOG_INFO() << QObject::tr("%1::OnFailedToSendKeepAliveMessage().").arg(objectName());
-}
-
-
-//-----------------------------------------------------------------------------
-void TestServer::OnMessageSent(igtlUint64 startTimeInNanoseconds, igtlUint64 endTimeInNanoseconds)
-{
-  QLOG_DEBUG() << QObject::tr("%1::OnMessageSent(%2, %3), time taken=%4 nsec").arg(objectName()).arg(startTimeInNanoseconds).arg(endTimeInNanoseconds).arg(endTimeInNanoseconds - startTimeInNanoseconds);
 }
 
 } // end namespace niftk

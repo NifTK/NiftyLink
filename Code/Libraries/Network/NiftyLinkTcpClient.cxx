@@ -27,9 +27,8 @@ NiftyLinkTcpClient::NiftyLinkTcpClient(QObject *parent)
 {
   this->setObjectName("NiftyLinkTcpClient");
 
-  qRegisterMetaType<igtl::MessageBase::Pointer>("igtl::MessageBase::Pointer");
-  qRegisterMetaType<niftk::NiftyLinkMessageContainer::Pointer>("niftk::NiftyLinkMessageContainer::Pointer");
   qRegisterMetaType<QAbstractSocket::SocketError>("QAbstractSocket::SocketError");
+  qRegisterMetaType<NiftyLinkMessageContainer::Pointer>("NiftyLinkMessageContainer::Pointer");
 
   connect(m_Socket, SIGNAL(connected()), this, SLOT(OnConnected()));
   connect(m_Socket, SIGNAL(error(QAbstractSocket::SocketError)), this, SLOT(OnError()));
@@ -58,13 +57,13 @@ void NiftyLinkTcpClient::OnConnected()
   m_Socket->setSocketOption(QAbstractSocket::LowDelayOption, 1);
 
   NiftyLinkQThread *thread = new NiftyLinkQThread(this);
-  m_Worker = new NiftyLinkTcpNetworkWorker(m_Socket);
+  m_Worker = new NiftyLinkTcpNetworkWorker(&m_InboundMessages, &m_OutboundMessages, m_Socket);
   m_Worker->moveToThread(thread);
   m_Socket->moveToThread(thread);
 
   connect(m_Socket, SIGNAL(disconnected()), this, SLOT(OnDisconnected()));
   connect(m_Worker, SIGNAL(BytesSent(qint64)), this, SIGNAL(BytesSent(qint64)));
-  connect(m_Worker, SIGNAL(MessageReceived(int,niftk::NiftyLinkMessageContainer::Pointer)), this, SLOT(OnMessageReceived(int,niftk::NiftyLinkMessageContainer::Pointer)), Qt::BlockingQueuedConnection);
+  connect(m_Worker, SIGNAL(MessageReceived(int)), this, SLOT(OnMessageReceived(int)), Qt::BlockingQueuedConnection);
   connect(thread, SIGNAL(finished()), thread, SLOT(deleteLater())); // i.e. the event loop of thread deletes it when control returns to this event loop.
 
   this->setObjectName(QObject::tr("NiftyLinkTcpClient(%1:%2)").arg(m_Socket->peerName()).arg(m_Socket->peerPort()));
@@ -99,9 +98,9 @@ void NiftyLinkTcpClient::ConnectToHost(const QString& hostName, quint16 portNumb
 
 
 //-----------------------------------------------------------------------------
-void NiftyLinkTcpClient::Send(igtl::MessageBase::Pointer msg)
+void NiftyLinkTcpClient::Send(NiftyLinkMessageContainer::Pointer message)
 {
-  m_Worker->Send(msg);
+  m_Worker->Send(message);
 }
 
 
@@ -113,8 +112,9 @@ void NiftyLinkTcpClient::OutputStats()
 
 
 //-----------------------------------------------------------------------------
-void NiftyLinkTcpClient::OnMessageReceived(int /*portNumber*/, niftk::NiftyLinkMessageContainer::Pointer msg)
+void NiftyLinkTcpClient::OnMessageReceived(int /*portNumber*/)
 {
+  NiftyLinkMessageContainer::Pointer msg = m_InboundMessages.GetContainer();
   emit MessageReceived(msg);
 }
 

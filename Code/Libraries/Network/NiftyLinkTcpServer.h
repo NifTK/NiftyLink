@@ -14,6 +14,7 @@
 
 #include <NiftyLinkCommonWin32ExportHeader.h>
 #include <NiftyLinkMessageContainer.h>
+#include <NiftyLinkMessageManager.h>
 #include <NiftyLinkTcpNetworkWorker.h>
 
 #include <QSet>
@@ -26,6 +27,8 @@ namespace niftk
  * \class NiftyLinkTcpServer
  * \brief TCP server that processes multiple clients bound to a single port,
  * each in a separate QThread, sending and receiving OpenIGTLink messages.
+ *
+ * Lots of functionality is provided by the QTcpServer base class.
  */
 class NIFTYLINKCOMMON_WINEXPORT NiftyLinkTcpServer : public QTcpServer
 {
@@ -37,15 +40,16 @@ public:
   virtual ~NiftyLinkTcpServer();
 
   /// \brief Sends an OpenIGTLink message to all clients.
-  void Send(igtl::MessageBase::Pointer msg);
+  ///
+  /// The OpenIGTLink message within NiftyLinkMessageContainer should be Packed.
+  void Send(NiftyLinkMessageContainer::Pointer message);
+
+public slots:
 
   /// \brief Writes some stats to console.
+  ///
+  /// Defined as a slot, so we can trigger it via QTimer.
   void OutputStats();
-
-protected:
-
-  // Override the base class method.
-  virtual void incomingConnection(int socketDescriptor);
 
 signals:
 
@@ -55,22 +59,32 @@ signals:
   /// \brief Emmitted when a remote client disconnects.
   void ClientDisconnected(int portNumber);
 
-  /// \brief Emitted when a new message is received from a remote client.
-  void MessageReceived(int portNumber, niftk::NiftyLinkMessageContainer::Pointer msg);
-
   /// \brief Emitted when one of the remote clients reports an error.
   void SocketError(int portNumber, QAbstractSocket::SocketError errorCode, QString errorString);
+
+  /// \brief Emitted when a new message is received from a remote client, messages are UnPacked.
+  /// IMPORTANT: Use a Qt::DirectConnection, and never a Qt::QueuedConnection.
+  void MessageReceived(int portNumber, NiftyLinkMessageContainer::Pointer message);
+
+  /// \brief Emmitted when we have actually sent bytes.
+  void BytesSent(qint64 bytes);
 
   /// \brief Emmitted when we are starting to shut things down.
   void StartShutdown();
 
-  /// \brief Emmitted when we have finished all the clear down stuff.
+  /// \brief Emmitted when we have finished all the shut down stuff.
   void EndShutdown();
+
+protected:
+
+  // Override the base class method.
+  virtual void incomingConnection(int socketDescriptor);
 
 private slots:
 
   void OnClientConnected();
   void OnClientDisconnected();
+  void OnMessageReceived(int portNumber);
 
 private:
 
@@ -78,6 +92,9 @@ private:
 
   QSet<NiftyLinkTcpNetworkWorker*> m_Workers;
   QMutex                           m_Mutex;
+  NiftyLinkMessageManager          m_InboundMessages;
+  NiftyLinkMessageManager          m_OutboundMessages;
+
 };
 
 } // end namespace niftk

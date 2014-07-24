@@ -45,11 +45,12 @@ namespace niftk
 *
 * DO NOT expose access to the internal igtl::TimeStamp objects.
 *
-* NOTE: Copy operations are shallow, copying pointers and not
-* producing a totally new object. So, for example, if you have
-* a NiftyLinkMessageContainer containing an image, and you
-* copy the NiftyLinkMessageContainer, then both NiftyLinkMessageContainer
-* will point to the same image message.
+* This class should NOT be used across a Qt::QueuedConnection,
+* as even though there are default constructor, copy and
+* assignment operators, it does NOT survive the Qt Meta-Object system.
+*
+* We currently store a smart pointer to the OpenIGTLink image, so
+* copy operators are shallow, copying the value of this pointer.
 */
 class NIFTYLINKCOMMON_WINEXPORT NiftyLinkMessageContainer : public QSharedData
 {
@@ -62,7 +63,7 @@ public:
   typedef QExplicitlySharedDataPointer<const Self> ConstPointer;
 
   /// \brief Basic constructor which generates a timestamp and derives the message ID from it.
-  NiftyLinkMessageContainer(void);
+  NiftyLinkMessageContainer();
 
   /// \brief We need a copy constructor to register a Qt metatype.
   NiftyLinkMessageContainer(const NiftyLinkMessageContainer& another);
