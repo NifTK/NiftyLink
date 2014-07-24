@@ -148,15 +148,6 @@ void NiftyLinkTcpServer::Send(NiftyLinkMessageContainer::Pointer message)
 
 
 //-----------------------------------------------------------------------------
-void NiftyLinkTcpServer::OnMessageReceived(int portNumber)
-{
-  NiftyLinkMessageContainer::Pointer msg = m_InboundMessages.GetContainer(portNumber);
-  m_ReceivedCounter.OnMessageReceived(msg);
-  emit MessageReceived(portNumber, msg);
-}
-
-
-//-----------------------------------------------------------------------------
 void NiftyLinkTcpServer::OutputStats()
 {
   foreach (NiftyLinkTcpNetworkWorker* worker, m_Workers)
@@ -175,6 +166,15 @@ void NiftyLinkTcpServer::SetNumberMessageReceivedThreshold(qint64 threshold)
     worker->SetNumberMessageReceivedThreshold(threshold);
   }
   m_ReceivedCounter.SetNumberMessageReceivedThreshold(threshold);
+}
+
+
+//-----------------------------------------------------------------------------
+void NiftyLinkTcpServer::OnMessageReceived(int portNumber)
+{
+  NiftyLinkMessageContainer::Pointer msg = m_InboundMessages.GetContainer(portNumber);
+  m_ReceivedCounter.OnMessageReceived(msg);
+  emit MessageReceived(portNumber, msg);
 }
 
 
