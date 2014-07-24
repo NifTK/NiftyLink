@@ -45,6 +45,10 @@ public:
   /// The OpenIGTLink message within NiftyLinkMessageContainer should be Packed.
   void Send(NiftyLinkMessageContainer::Pointer message);
 
+  /// \brief Set a threshold for the number of messages, so that you
+  /// get stats every X number of messages. Set to -1 to turn this off.
+  void SetNumberMessageReceivedThreshold(qint64 threshold);
+
 public slots:
 
   /// \brief Writes some stats to console.

@@ -89,15 +89,6 @@ void NiftyLinkTcpServer::incomingConnection(int socketDescriptor)
 
 
 //-----------------------------------------------------------------------------
-void NiftyLinkTcpServer::OnMessageReceived(int portNumber)
-{
-  NiftyLinkMessageContainer::Pointer msg = m_InboundMessages.GetContainer(portNumber);
-  m_ReceivedCounter.OnMessageReceived(msg);
-  emit MessageReceived(portNumber, msg);
-}
-
-
-//-----------------------------------------------------------------------------
 void NiftyLinkTcpServer::OnClientConnected()
 {
   QTcpSocket *sender = qobject_cast<QTcpSocket*>(QObject::sender());
@@ -157,6 +148,15 @@ void NiftyLinkTcpServer::Send(NiftyLinkMessageContainer::Pointer message)
 
 
 //-----------------------------------------------------------------------------
+void NiftyLinkTcpServer::OnMessageReceived(int portNumber)
+{
+  NiftyLinkMessageContainer::Pointer msg = m_InboundMessages.GetContainer(portNumber);
+  m_ReceivedCounter.OnMessageReceived(msg);
+  emit MessageReceived(portNumber, msg);
+}
+
+
+//-----------------------------------------------------------------------------
 void NiftyLinkTcpServer::OutputStats()
 {
   foreach (NiftyLinkTcpNetworkWorker* worker, m_Workers)
@@ -164,6 +164,17 @@ void NiftyLinkTcpServer::OutputStats()
     worker->OutputStatsToConsole();
   }
   m_ReceivedCounter.OnOutputStats();
+}
+
+
+//-----------------------------------------------------------------------------
+void NiftyLinkTcpServer::SetNumberMessageReceivedThreshold(qint64 threshold)
+{
+  foreach (NiftyLinkTcpNetworkWorker* worker, m_Workers)
+  {
+    worker->SetNumberMessageReceivedThreshold(threshold);
+  }
+  m_ReceivedCounter.SetNumberMessageReceivedThreshold(threshold);
 }
 
 

@@ -134,6 +134,13 @@ void NiftyLinkTcpNetworkWorker::OutputStatsToConsole()
 
 
 //-----------------------------------------------------------------------------
+void NiftyLinkTcpNetworkWorker::SetNumberMessageReceivedThreshold(qint64 threshold)
+{
+  m_ReceivedCounter.SetNumberMessageReceivedThreshold(threshold);
+}
+
+
+//-----------------------------------------------------------------------------
 void NiftyLinkTcpNetworkWorker::OnOutputStats()
 {
   m_ReceivedCounter.OnOutputStats();
