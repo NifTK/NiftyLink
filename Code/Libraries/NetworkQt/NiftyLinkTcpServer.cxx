@@ -92,6 +92,10 @@ void NiftyLinkTcpServer::incomingConnection(int socketDescriptor)
 void NiftyLinkTcpServer::OnClientConnected()
 {
   QTcpSocket *sender = qobject_cast<QTcpSocket*>(QObject::sender());
+  foreach (NiftyLinkTcpNetworkWorker* worker, m_Workers)
+  {
+    worker->SetNumberMessageReceivedThreshold(m_ReceivedCounter.GetNumberMessageReceivedThreshold());
+  }
   QLOG_INFO() << QObject::tr("%1::OnClientConnected() - client %2 connected.").arg(objectName()).arg(reinterpret_cast<qulonglong>(sender));
   emit ClientConnected(sender->peerPort());
 }
@@ -167,6 +171,7 @@ void NiftyLinkTcpServer::SetNumberMessageReceivedThreshold(qint64 threshold)
   }
   m_ReceivedCounter.SetNumberMessageReceivedThreshold(threshold);
 }
+
 
 
 //-----------------------------------------------------------------------------

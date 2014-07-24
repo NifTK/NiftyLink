@@ -19,9 +19,10 @@ namespace niftk
 {
 
 //-----------------------------------------------------------------------------
-TestServer::TestServer(const int& portNumber, const bool& isEchoing, QObject *parent)
+TestServer::TestServer(const int& portNumber, const bool& isEchoing, const int threshold, QObject *parent)
 : m_PortNumber(portNumber)
 , m_IsEchoing(isEchoing)
+, m_StatsThreshold(threshold)
 , m_Server(new NiftyLinkTcpServer(parent))
 {
   this->setObjectName("TestServer");
@@ -37,6 +38,9 @@ TestServer::TestServer(const int& portNumber, const bool& isEchoing, QObject *pa
 //-----------------------------------------------------------------------------
 TestServer::~TestServer()
 {
+  m_StatsTimer->disconnect();
+  delete m_StatsTimer;
+  delete m_Server;
 }
 
 
@@ -52,8 +56,15 @@ void TestServer::Start()
     QLOG_ERROR() << QObject::tr("%1::Start() - Unable to start server, error code %2, error string %3").arg(objectName()).arg(m_Server->serverError()).arg(m_Server->errorString());
   }
 
-  connect(m_StatsTimer, SIGNAL(timeout()), m_Server, SLOT(OutputStats()));
-  m_StatsTimer->start();
+  if (m_StatsThreshold > 1)
+  {
+    m_Server->SetNumberMessageReceivedThreshold(m_StatsThreshold);
+  }
+  else
+  {
+    connect(m_StatsTimer, SIGNAL(timeout()), m_Server, SLOT(OutputStats()));
+    m_StatsTimer->start();
+  }
 }
 
 
@@ -92,20 +103,23 @@ int main(int argc, char** argv)
   //------------------------------------------------------------
   // Parse Arguments
 
-  if (argc < 3) // check number of arguments
+  if (argc < 4) // check number of arguments
   {
     // If not correct, print usage
     std::cerr << "Usage: " << argv[0] << " <port>"    << std::endl;
-    std::cerr << "    <port>     : Port #"            << std::endl;
-    std::cerr << "    <bool>     : is echoing [0|1]"  << std::endl;
+    std::cerr << "    <port>      : Port #"            << std::endl;
+    std::cerr << "    <bool>      : is echoing [0|1]"  << std::endl;
+    std::cerr << "    <threshold> : stats every <threshold> number of messages [-1=off]" << std::endl;
     exit(0);
   }
 
   int    port       = atoi(argv[1]);
   int    isEcho     = atoi(argv[2]);
+  int    threshold  = atoi(argv[3]);
 
   std::cout << "TestServer: port = " << port << "." << std::endl;
   std::cout << "TestServer: echo = " << isEcho << "." << std::endl;
+  std::cout << "TestServer: threshold = " << threshold << "." << std::endl;
   std::cout << "TestServer: Instantiating server." << std::endl;
 
   // Init the logging mechanism.
@@ -116,14 +130,8 @@ int main(int argc, char** argv)
 
   // Start server.
   bool isEchoing = (isEcho == 1 ? true : false);
-  niftk::TestServer server(port, isEchoing);
-
-  std::cout << "TestServer: Creating app." << std::endl;
-
+  niftk::TestServer server(port, isEchoing, threshold);
   QApplication app(argc, argv);
-
-  std::cout << "TestServer: Launching app." << std::endl;
-
   QTimer::singleShot(220, &server, SLOT(Start()));
   int ret = app.exec();
 

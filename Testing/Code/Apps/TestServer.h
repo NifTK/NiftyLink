@@ -30,7 +30,7 @@ class TestServer : public QObject
   Q_OBJECT
 
 public:
-  TestServer(const int& portNumber, const bool& isEchoing, QObject *parent=0);
+  TestServer(const int& portNumber, const bool& isEchoing, const int threshold, QObject *parent=0);
   virtual ~TestServer();
 
 private slots:
@@ -43,6 +43,7 @@ private slots:
 private:
   int                 m_PortNumber;
   bool                m_IsEchoing;
+  int                 m_StatsThreshold;
   NiftyLinkTcpServer *m_Server;
   QTimer             *m_StatsTimer;
 };

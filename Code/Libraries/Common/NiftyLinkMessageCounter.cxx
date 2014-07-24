@@ -90,8 +90,8 @@ void NiftyLinkMessageCounter::OnMessageReceived(NiftyLinkMessageContainer::Point
   m_ListOfLatencies.append(latency);
 
   // Do this to get stats based on a fixed number of message counts.
-  if (m_NumberMessageReceivedThreshold > 0
-      && m_NumberMessagesReceived % m_NumberMessageReceivedThreshold)
+  if (m_NumberMessageReceivedThreshold > 1
+      && (m_NumberMessagesReceived % m_NumberMessageReceivedThreshold == 0))
   {
     this->OnOutputStats();
   }
