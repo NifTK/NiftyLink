@@ -35,17 +35,17 @@ Messages/NiftyLinkMessageManager.cxx
 Messages/NiftyLinkImageMessageHelpers.cxx
 Messages/NiftyLinkTrackingDataMessageHelpers.cxx
 Messages/NiftyLinkTransformMessageHelpers.cxx
-#Socket/NiftyLinkSocket.cxx
-#Socket/NiftyLinkClientSocket.cxx
-#Socket/NiftyLinkServerSocket.cxx
-#Network/NiftyLinkNetworkProcess.cxx
-#Network/NiftyLinkServerProcess.cxx
-#Network/NiftyLinkServer.cxx
-#Network/NiftyLinkClientProcess.cxx
-#Network/NiftyLinkClient.cxx
-Network/NiftyLinkTcpNetworkWorker.cxx
-Network/NiftyLinkTcpServer.cxx
-Network/NiftyLinkTcpClient.cxx
+NetworkOpenIGTLink/NiftyLinkSocket.cxx
+NetworkOpenIGTLink/NiftyLinkClientSocket.cxx
+NetworkOpenIGTLink/NiftyLinkServerSocket.cxx
+NetworkOpenIGTLink/NiftyLinkNetworkProcess.cxx
+NetworkOpenIGTLink/NiftyLinkServerProcess.cxx
+NetworkOpenIGTLink/NiftyLinkServer.cxx
+NetworkOpenIGTLink/NiftyLinkClientProcess.cxx
+NetworkOpenIGTLink/NiftyLinkClient.cxx
+NetworkQt/NiftyLinkTcpNetworkWorker.cxx
+NetworkQt/NiftyLinkTcpServer.cxx
+NetworkQt/NiftyLinkTcpClient.cxx
 )
 
 #########################
@@ -55,14 +55,14 @@ SET(niftylink_MOC_HDRS
 Common/NiftyLinkQThread.h
 Descriptors/NiftyLinkXMLBuilder.h
 Messages/NiftyLinkMessageManager.h
-#Network/NiftyLinkNetworkProcess.h
-#Network/NiftyLinkServerProcess.h
-#Network/NiftyLinkServer.h
-#Network/NiftyLinkClientProcess.h
-#Network/NiftyLinkClient.h
-Network/NiftyLinkTcpNetworkWorker.h
-Network/NiftyLinkTcpServer.h
-Network/NiftyLinkTcpClient.h
+NetworkOpenIGTLink/NiftyLinkNetworkProcess.h
+NetworkOpenIGTLink/NiftyLinkServerProcess.h
+NetworkOpenIGTLink/NiftyLinkServer.h
+NetworkOpenIGTLink/NiftyLinkClientProcess.h
+NetworkOpenIGTLink/NiftyLinkClient.h
+NetworkQt/NiftyLinkTcpNetworkWorker.h
+NetworkQt/NiftyLinkTcpServer.h
+NetworkQt/NiftyLinkTcpClient.h
 )
 
 #########################
@@ -78,9 +78,9 @@ Messages/NiftyLinkMessageContainer.h
 Messages/NiftyLinkImageMessageHelpers.h
 Messages/NiftyLinkTrackingDataMessageHelpers.h
 Messages/NiftyLinkTransformMessageHelpers.h
-#Socket/NiftyLinkSocket.h
-#Socket/NiftyLinkClientSocket.h
-#Socket/NiftyLinkServerSocket.h
+NetworkOpenIGTLink/NiftyLinkSocket.h
+NetworkOpenIGTLink/NiftyLinkClientSocket.h
+NetworkOpenIGTLink/NiftyLinkServerSocket.h
 )
 
 #########################
