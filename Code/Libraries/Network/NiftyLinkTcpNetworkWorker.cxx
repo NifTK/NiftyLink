@@ -303,6 +303,7 @@ void NiftyLinkTcpNetworkWorker::OnSocketReadyRead()
 
     // Create a new timestamp. Again, this assumes the constructor creates a valid time.
     igtl::TimeStamp::Pointer timeFullyReceived  = igtl::TimeStamp::New();
+    timeFullyReceived->GetTime();
 
     // This is the container we eventually publish.
      NiftyLinkMessageContainer::Pointer msg = (NiftyLinkMessageContainer::Pointer(new NiftyLinkMessageContainer()));

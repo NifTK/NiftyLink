@@ -77,9 +77,13 @@ void TestTrackingClient::OnTimeOut()
   igtl::TrackingDataElement::Pointer element = igtl::TrackingDataElement::New();
   element->SetMatrix(matrix);
 
+  igtl::TimeStamp::Pointer timeCreated = igtl::TimeStamp::New();
+  timeCreated->GetTime();
+
   igtl::TrackingDataMessage::Pointer msg = igtl::TrackingDataMessage::New();
   msg->SetDeviceName("TestTrackingClient");
   msg->AddTrackingDataElement(element);
+  msg->SetTimeStamp(timeCreated);
   msg->Pack();
 
   NiftyLinkMessageContainer::Pointer m = (NiftyLinkMessageContainer::Pointer(new NiftyLinkMessageContainer()));
