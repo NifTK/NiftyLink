@@ -142,13 +142,14 @@ void NiftyLinkTcpNetworkWorker::OnOutputStats()
 {
   double mean = niftk::CalculateMean(m_ListOfLatencies) / static_cast<double>(1000000);
   double stdDev = niftk::CalculateStdDev(m_ListOfLatencies) / static_cast<double>(1000000);
+  double max = niftk::CalculateMax(m_ListOfLatencies) / static_cast<double>(1000000);
 
   igtl::TimeStamp::Pointer nowTime = igtl::TimeStamp::New();
   igtlUint64 duration = niftk::GetDifferenceInNanoSeconds(nowTime, m_StatsTimePoint);
   double durationInSeconds = duration/static_cast<double>(1000000000);
   double rate = m_TotalBytesReceived/durationInSeconds;
 
-  QLOG_INFO() << QObject::tr("%1::OnOutputStats() - Received %2 bytes, in %3 secs, %4 b/sec, mean %6, std dev %7.").arg(objectName()).arg(m_TotalBytesReceived).arg(durationInSeconds).arg(rate).arg(mean).arg(stdDev);
+  QLOG_INFO() << QObject::tr("%1::OnOutputStats() - Received %2 bytes, in %3 secs, %4 b/sec, mean %6, std %7, max %8.").arg(objectName()).arg(m_TotalBytesReceived).arg(durationInSeconds).arg(rate).arg(mean).arg(stdDev).arg(max);
 
   m_TotalBytesReceived = 0;
   m_StatsTimePoint->SetTimeInNanoseconds(nowTime->GetTimeStampInNanoseconds());

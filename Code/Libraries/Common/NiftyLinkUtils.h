@@ -46,6 +46,9 @@ extern "C++" NIFTYLINKCOMMON_WINEXPORT double CalculateMean(const QList<igtlUint
 /// \brief Used to calculate stats of latency, this one computing the standard deviation of a list of igtlUint64.
 extern "C++" NIFTYLINKCOMMON_WINEXPORT double CalculateStdDev(const QList<igtlUint64>& list);
 
+/// \brief Used to calculate stats of latency, this one computing the maximum of a list of igtlUint64.
+extern "C++" NIFTYLINKCOMMON_WINEXPORT igtlUint64 CalculateMax(const QList<igtlUint64>& list);
+
 } // end namespace niftk
 
 #endif // NiftyLinkUtils_h

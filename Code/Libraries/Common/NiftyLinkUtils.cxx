@@ -164,9 +164,9 @@ igtlUint64 GetDifferenceInNanoSeconds(igtl::TimeStamp* timeA, igtl::TimeStamp* t
 double CalculateMean(const QList<igtlUint64>& list)
 {
   double mean = 0;
-  foreach(igtlUint64 latency, list)
+  foreach(igtlUint64 item, list)
   {
-    mean += static_cast<double>(latency);
+    mean += static_cast<double>(item);
   }
   if (list.size() > 1)
   {
@@ -181,9 +181,9 @@ double CalculateStdDev(const QList<igtlUint64>& list)
 {
   double stdDev = 0;
   double mean = CalculateMean(list);
-  foreach(igtlUint64 latency, list)
+  foreach(igtlUint64 item, list)
   {
-    stdDev += ((latency-mean)*(latency-mean));
+    stdDev += ((item-mean)*(item-mean));
   }
   if (list.size() > 1)
   {
@@ -193,6 +193,20 @@ double CalculateStdDev(const QList<igtlUint64>& list)
   return stdDev;
 }
 
+
+//-----------------------------------------------------------------------------
+igtlUint64 CalculateMax(const QList<igtlUint64>& list)
+{
+  igtlUint64 max = 0;
+  foreach(igtlUint64 item, list)
+  {
+    if (item > max)
+    {
+      max = item;
+    }
+  }
+  return max;
+}
 
 } // end namespace niftk
 
