@@ -39,11 +39,11 @@ public:
                             QObject *parent = 0);
   virtual ~NiftyLinkTcpNetworkWorker();
 
-  /// \brief Returns the contained socket - be careful, breaks encapsulation.
+  /// \brief Returns the contained socket.
   QTcpSocket* GetSocket() const;
 
   /// \brief Sends an OpenIGTLink message.
-  /// The OpenIGTLink message within NiftyLinkMessageContainer should be already packed.
+  /// The OpenIGTLink message within NiftyLinkMessageContainer should be already Packed.
   void Send(NiftyLinkMessageContainer::Pointer message);
 
   /// \brief Sends a request to output some statistics to console.

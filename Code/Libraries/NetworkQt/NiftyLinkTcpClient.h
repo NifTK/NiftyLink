@@ -60,17 +60,17 @@ signals:
   /// \brief Emmitted when we have successfully connected.
   void Connected();
 
-  /// \brief Emmitted when we have disconnected.
+  /// \brief Emmitted when we have disconnected for any reason.
   void Disconnected();
 
-  /// \brief Emitted when the socket reports an error.
+  /// \brief Emitted when the underlying socket reports an error.
   void SocketError(QString hostName, int portNumber, QAbstractSocket::SocketError errorCode, QString errorString);
 
-  /// \brief Emitted when this client receives an OpenIGTLink message, messages are UnPacked.
-  /// IMPORTANT: Use a DirectConnection.
+  /// \brief Emitted when this client receives an OpenIGTLink message, messages come out UnPacked.
+  /// IMPORTANT: You must use a Qt::DirectConnection to connect to this.
   void MessageReceived(NiftyLinkMessageContainer::Pointer message);
 
-  /// \brief Emmitted when we have actually sent bytes.
+  /// \brief Emmitted by the underlying socket when we have actually sent bytes.
   void BytesSent(qint64 bytes);
 
 private slots:

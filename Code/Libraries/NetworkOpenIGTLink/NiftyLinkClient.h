@@ -27,8 +27,8 @@ class NiftyLinkClientProcess;
 
 /**
  * \class NiftyLinkClient
- * \brief Main NiftyLink Client class that users instantiate to
- * connect to a local/remote host and port, and start to send messages.
+ * \brief TCP Client class that users instantiate to connect to a
+ * local/remote host and port, and send OpenIGTLink messages.
  *
  * Note: Error handling strategy is to throw std::exception sub-classes for everything.
  */

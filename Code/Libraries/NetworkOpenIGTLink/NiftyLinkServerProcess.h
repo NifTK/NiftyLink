@@ -63,7 +63,7 @@ protected:
 
 private:
 
-  int                             m_ListenInterval;
+  int m_ListenInterval;
 
 }; // end class
 

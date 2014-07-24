@@ -27,7 +27,7 @@ class NiftyLinkServerProcess;
 
 /**
  * \class NiftyLinkServer
- * \brief Main NiftyLink Server class that users instantiate to
+ * \brief TCP Server class that users instantiate to
  * bind to a socket and start to listen for messages.
  *
  * Note: Error handling strategy is to throw std::exception sub-classes for everything.
