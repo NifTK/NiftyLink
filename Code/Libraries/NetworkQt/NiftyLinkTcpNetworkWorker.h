@@ -73,6 +73,8 @@ private:
   NiftyLinkMessageManager      *m_OutboundMessages;
   QTcpSocket                   *m_Socket;
   QString                       m_MessagePrefix;
+
+  // For parsing fractions of message.
   bool                          m_HeaderInProgress;
   bool                          m_MessageInProgress;
   igtl::MessageHeader::Pointer  m_IncomingHeader;
@@ -80,6 +82,8 @@ private:
   igtl::MessageBase::Pointer    m_IncomingMessage;
   quint64                       m_IncomingMessageBytesReceived;
   bool                          m_AbortReading;
+
+  // For stats.
   igtl::TimeStamp::Pointer      m_StatsTimePoint;
   quint64                       m_TotalBytesReceived;
   quint64                       m_NumberMessagesReceived;

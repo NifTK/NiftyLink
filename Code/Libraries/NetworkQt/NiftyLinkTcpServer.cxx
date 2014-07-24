@@ -123,6 +123,9 @@ void NiftyLinkTcpServer::OnClientDisconnected()
       m_Workers.remove(chosenWorker);
       int portNumber = sender->peerPort();
 
+      chosenWorker->disconnect();
+      sender->disconnect();
+
       delete chosenWorker;
       delete sender;
 
@@ -165,6 +168,16 @@ void NiftyLinkTcpServer::Shutdown()
   emit StartShutdown();
   QLOG_WARN() << QObject::tr("%1::Shutdown() - started.").arg(objectName());
 
+  foreach (NiftyLinkTcpNetworkWorker* worker, m_Workers)
+  {
+    QTcpSocket *socket = worker->GetSocket();
+
+    worker->disconnect();
+    socket->disconnect();
+
+    delete worker;
+    delete socket;
+  }
 
   QLOG_WARN() << QObject::tr("%1::Shutdown() - finished.").arg(objectName());
   emit EndShutdown();

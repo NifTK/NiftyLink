@@ -94,7 +94,6 @@ private:
   QMutex                           m_Mutex;
   NiftyLinkMessageManager          m_InboundMessages;
   NiftyLinkMessageManager          m_OutboundMessages;
-
 };
 
 } // end namespace niftk
