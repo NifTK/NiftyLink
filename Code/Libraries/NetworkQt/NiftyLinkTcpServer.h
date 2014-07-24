@@ -15,6 +15,7 @@
 #include <NiftyLinkCommonWin32ExportHeader.h>
 #include <NiftyLinkMessageContainer.h>
 #include <NiftyLinkMessageManager.h>
+#include <NiftyLinkMessageCounter.h>
 #include <NiftyLinkTcpNetworkWorker.h>
 
 #include <QSet>
@@ -49,6 +50,7 @@ public slots:
   /// \brief Writes some stats to console.
   ///
   /// Defined as a slot, so we can trigger it via QTimer.
+  /// This outputs from all stats counters for each worker.
   void OutputStats();
 
 signals:
@@ -94,6 +96,9 @@ private:
   QMutex                           m_Mutex;
   NiftyLinkMessageManager          m_InboundMessages;
   NiftyLinkMessageManager          m_OutboundMessages;
+
+  // For stats.
+  NiftyLinkMessageCounter          m_ReceivedCounter;
 };
 
 } // end namespace niftk

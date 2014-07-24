@@ -15,6 +15,7 @@
 #include <NiftyLinkCommonWin32ExportHeader.h>
 #include <NiftyLinkMessageContainer.h>
 #include <NiftyLinkMessageManager.h>
+#include <NiftyLinkMessageCounter.h>
 #include <igtlMessageBase.h>
 #include <igtlTimeStamp.h>
 
@@ -84,11 +85,7 @@ private:
   bool                          m_AbortReading;
 
   // For stats.
-  igtl::TimeStamp::Pointer      m_StatsTimePoint;
-  quint64                       m_TotalBytesReceived;
-  quint64                       m_NumberMessagesReceived;
-  quint64                       m_NumberMessagesSent;
-  QList<quint64>                m_ListOfLatencies;
+  NiftyLinkMessageCounter       m_ReceivedCounter;
 
 }; // end class
 

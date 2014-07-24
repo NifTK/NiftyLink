@@ -45,15 +45,10 @@ NiftyLinkTcpNetworkWorker::NiftyLinkTcpNetworkWorker(
 , m_IncomingMessage(NULL)
 , m_IncomingMessageBytesReceived(0)
 , m_AbortReading(false)
-, m_TotalBytesReceived(0)
-, m_NumberMessagesReceived(0)
-, m_NumberMessagesSent(0)
 {
   assert(m_Socket);
   assert(m_InboundMessages);
   assert(m_OutboundMessages);
-
-  m_StatsTimePoint = igtl::TimeStamp::New();
 
   QString host = m_Socket->peerName();
   if (host.size() == 0)
@@ -63,6 +58,7 @@ NiftyLinkTcpNetworkWorker::NiftyLinkTcpNetworkWorker(
 
   m_MessagePrefix = QObject::tr("NiftyLinkTcpNetworkWorker(d=%1, h=%2, p=%3)").arg(m_Socket->socketDescriptor()).arg(host).arg(m_Socket->peerPort());
   this->setObjectName(m_MessagePrefix);
+  m_ReceivedCounter.setObjectName(m_MessagePrefix);
 
   connect(this, SIGNAL(InternalStatsSignal()), this, SLOT(OnOutputStats()));
   connect(this, SIGNAL(InternalSendSignal()), this, SLOT(OnSend()));
@@ -140,19 +136,7 @@ void NiftyLinkTcpNetworkWorker::OutputStatsToConsole()
 //-----------------------------------------------------------------------------
 void NiftyLinkTcpNetworkWorker::OnOutputStats()
 {
-  double mean = niftk::CalculateMean(m_ListOfLatencies) / static_cast<double>(1000000);
-  double stdDev = niftk::CalculateStdDev(m_ListOfLatencies) / static_cast<double>(1000000);
-  double max = niftk::CalculateMax(m_ListOfLatencies) / static_cast<double>(1000000);
-
-  igtl::TimeStamp::Pointer nowTime = igtl::TimeStamp::New();
-  igtlUint64 duration = niftk::GetDifferenceInNanoSeconds(nowTime, m_StatsTimePoint);
-  double durationInSeconds = duration/static_cast<double>(1000000000);
-  double rate = m_TotalBytesReceived/durationInSeconds;
-
-  QLOG_INFO() << QObject::tr("%1::OnOutputStats() - Received %2 bytes, in %3 secs, %4 b/sec, mean %6, std %7, max %8.").arg(objectName()).arg(m_TotalBytesReceived).arg(durationInSeconds).arg(rate).arg(mean).arg(stdDev).arg(max);
-
-  m_TotalBytesReceived = 0;
-  m_StatsTimePoint->SetTimeInNanoseconds(nowTime->GetTimeStampInNanoseconds());
+  m_ReceivedCounter.OnOutputStats();
 }
 
 
@@ -328,22 +312,12 @@ void NiftyLinkTcpNetworkWorker::OnSocketReadyRead()
     msg->SetTimeReceived(timeFullyReceived);
     msg->SetMessage(m_IncomingMessage);
 
-    // In OpenIGTLink paper (Tokuda 2009), Latency is defined as the difference
-    // between last byte received and first byte sent.
-    igtl::TimeStamp::Pointer timeCreated = igtl::TimeStamp::New();
-    m_IncomingHeader->GetTimeStamp(timeCreated);
-
-    igtlUint64 latency = niftk::GetDifferenceInNanoSeconds(timeCreated, timeFullyReceived);
-    m_ListOfLatencies.append(latency);
-
-    QLOG_DEBUG() << QObject::tr("%1::OnSocketReadyRead() - id=%2, class=%3, size=%4 bytes, device='%5', latency=%6, avail=%7.")
+    QLOG_DEBUG() << QObject::tr("%1::OnSocketReadyRead() - id=%2, class=%3, size=%4 bytes, device='%5'.")
                     .arg(m_MessagePrefix)
                     .arg(msg->GetNiftyLinkMessageId())
                     .arg(m_IncomingMessage->GetNameOfClass())
                     .arg(m_IncomingMessage->GetPackSize())
                     .arg(m_IncomingMessage->GetDeviceType())
-                    .arg(latency)
-                    .arg(bytesAvailable)
                     ;
 
     // We now reset these variables.
@@ -351,7 +325,9 @@ void NiftyLinkTcpNetworkWorker::OnSocketReadyRead()
     m_HeaderInProgress = false;
     m_MessageInProgress = false;
     m_IncomingMessageBytesReceived = 0;
-    m_NumberMessagesReceived++;
+
+    // For stats.
+    m_ReceivedCounter.OnMessageReceived(msg);
 
     // Store the message in the map, and signal that we have done so.
     m_InboundMessages->InsertContainer(m_Socket->peerPort(), msg);
@@ -359,7 +335,6 @@ void NiftyLinkTcpNetworkWorker::OnSocketReadyRead()
 
   } while (bytesAvailable > 0);
 
-  m_TotalBytesReceived += bytesAtStart;
   return;
 }
 

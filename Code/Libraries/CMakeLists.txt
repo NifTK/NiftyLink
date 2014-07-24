@@ -26,6 +26,7 @@ INCLUDE(${QT_USE_FILE})
 
 SET(niftylink_SRCS
 Common/NiftyLinkUtils.cxx
+Common/NiftyLinkMessageCounter.cxx
 Common/QsDebugOutput.cxx
 Common/QsLog.cxx
 Common/QsLogDest.cxx
@@ -52,6 +53,7 @@ NetworkQt/NiftyLinkTcpClient.cxx
 # Does need moc.
 #########################
 SET(niftylink_MOC_HDRS
+Common/NiftyLinkMessageCounter.h
 Common/NiftyLinkQThread.h
 Descriptors/NiftyLinkXMLBuilder.h
 Messages/NiftyLinkMessageManager.h
@@ -69,8 +71,8 @@ NetworkQt/NiftyLinkTcpClient.h
 # Does not need moc.
 #########################
 SET(niftylink_HDRS
-Common/NiftyLinkUtils.h
 Common/NiftyLinkCommonWin32ExportHeader.h
+Common/NiftyLinkUtils.h
 Common/QsDebugOutput.h
 Common/QsLog.h
 Common/QsLogDest.h

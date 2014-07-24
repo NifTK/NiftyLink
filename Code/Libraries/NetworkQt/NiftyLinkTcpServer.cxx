@@ -30,6 +30,7 @@ NiftyLinkTcpServer::NiftyLinkTcpServer(QObject *parent)
 : QTcpServer(parent)
 {
   this->setObjectName("NiftyLinkTcpServer");
+  m_ReceivedCounter.setObjectName("NiftyLinkTcpServer");
 
   qRegisterMetaType<QAbstractSocket::SocketError>("QAbstractSocket::SocketError");
   qRegisterMetaType<NiftyLinkMessageContainer::Pointer>("NiftyLinkMessageContainer::Pointer");
@@ -81,6 +82,8 @@ void NiftyLinkTcpServer::incomingConnection(int socketDescriptor)
   this->addPendingConnection(socket);
 
   this->setObjectName(QObject::tr("NiftyLinkTcpServer(%1)").arg(this->serverPort()));
+  m_ReceivedCounter.setObjectName(QObject::tr("NiftyLinkTcpServer(%1)").arg(this->serverPort()));
+
   QLOG_INFO() << QObject::tr("%1::incomingConnection(%2) - created.").arg(objectName()).arg(socketDescriptor);
 }
 
@@ -89,6 +92,7 @@ void NiftyLinkTcpServer::incomingConnection(int socketDescriptor)
 void NiftyLinkTcpServer::OnMessageReceived(int portNumber)
 {
   NiftyLinkMessageContainer::Pointer msg = m_InboundMessages.GetContainer(portNumber);
+  m_ReceivedCounter.OnMessageReceived(msg);
   emit MessageReceived(portNumber, msg);
 }
 
@@ -159,6 +163,7 @@ void NiftyLinkTcpServer::OutputStats()
   {
     worker->OutputStatsToConsole();
   }
+  m_ReceivedCounter.OnOutputStats();
 }
 
 
