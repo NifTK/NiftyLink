@@ -129,6 +129,7 @@ void NiftyLinkTcpClient::Send(NiftyLinkMessageContainer::Pointer message)
 void NiftyLinkTcpClient::OutputStats()
 {
   m_Worker->OutputStatsToConsole();
+  m_Worker->RequestStats(); // to get the remote end to dump stats.
 }
 
 

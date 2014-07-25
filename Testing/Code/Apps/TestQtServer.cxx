@@ -19,9 +19,14 @@ namespace niftk
 {
 
 //-----------------------------------------------------------------------------
-TestQtServer::TestQtServer(const int& portNumber, const bool& isEchoing, const int threshold, QObject *parent)
+TestQtServer::TestQtServer(const int& portNumber,
+                           const bool& isEchoing,
+                           const bool &doStats,
+                           const int threshold,
+                           QObject *parent)
 : m_PortNumber(portNumber)
 , m_IsEchoing(isEchoing)
+, m_DoStats(doStats)
 , m_StatsThreshold(threshold)
 , m_Server(new NiftyLinkTcpServer(parent))
 {
@@ -58,17 +63,18 @@ void TestQtServer::Start()
     QLOG_ERROR() << QObject::tr("%1::Start() - Unable to start server, error code %2, error string %3").arg(objectName()).arg(m_Server->serverError()).arg(m_Server->errorString());
   }
 
-  if (m_StatsThreshold > 1)
+  if (m_DoStats)
   {
-    m_Server->SetNumberMessageReceivedThreshold(m_StatsThreshold);
+    if (m_StatsThreshold > 1)
+    {
+      m_Server->SetNumberMessageReceivedThreshold(m_StatsThreshold);
+    }
+    else
+    {
+      connect(m_StatsTimer, SIGNAL(timeout()), m_Server, SLOT(OutputStats()));
+      m_StatsTimer->start();
+    }
   }
-  else
-  {
-    connect(m_StatsTimer, SIGNAL(timeout()), m_Server, SLOT(OutputStats()));
-    m_StatsTimer->start();
-  }
-  m_Server->SetKeepAliveOn(true);
-  m_Server->SetCheckForNoIncomingData(true);
 }
 
 
@@ -121,22 +127,25 @@ int main(int argc, char** argv)
   //------------------------------------------------------------
   // Parse Arguments
 
-  if (argc < 4) // check number of arguments
+  if (argc != 5) // check number of arguments
   {
     // If not correct, print usage
     std::cerr << "Usage: " << argv[0] << " <port>"    << std::endl;
     std::cerr << "    <port>      : Port #"            << std::endl;
     std::cerr << "    <bool>      : is echoing [0|1]"  << std::endl;
+    std::cerr << "    <bool>      : do stats [0|1]"    << std::endl;
     std::cerr << "    <threshold> : stats every <threshold> number of messages [-1=off]" << std::endl;
     exit(0);
   }
 
   int    port       = atoi(argv[1]);
   int    isEcho     = atoi(argv[2]);
-  int    threshold  = atoi(argv[3]);
+  int    doStats    = atoi(argv[3]);
+  int    threshold  = atoi(argv[4]);
 
   std::cout << "TestQtServer: port = " << port << "." << std::endl;
   std::cout << "TestQtServer: echo = " << isEcho << "." << std::endl;
+  std::cout << "TestQtServer: stats = " << doStats << "." << std::endl;
   std::cout << "TestQtServer: threshold = " << threshold << "." << std::endl;
   std::cout << "TestQtServer: Instantiating server." << std::endl;
 
@@ -148,7 +157,8 @@ int main(int argc, char** argv)
 
   // Start server.
   bool isEchoing = (isEcho == 1 ? true : false);
-  niftk::TestQtServer server(port, isEchoing, threshold);
+  bool doStatistics = (doStats == 1 ? true : false);
+  niftk::TestQtServer server(port, isEchoing, doStatistics, threshold);
   QApplication app(argc, argv);
   QTimer::singleShot(220, &server, SLOT(Start()));
   int ret = app.exec();

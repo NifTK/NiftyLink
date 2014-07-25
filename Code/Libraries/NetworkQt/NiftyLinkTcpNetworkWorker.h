@@ -66,6 +66,10 @@ public:
   /// \brief Sends a request to output some statistics to console.
   void OutputStatsToConsole();
 
+  /// \brief Called from within OutputStatsToConsole(), will also send
+  /// a message via the socket to request stats at the other end.
+  void RequestStats();
+
 signals:
 
   void SocketError(int portNumber, QAbstractSocket::SocketError errorCode, QString errorString);

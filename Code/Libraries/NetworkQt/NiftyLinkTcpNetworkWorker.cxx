@@ -154,6 +154,27 @@ void NiftyLinkTcpNetworkWorker::Send(NiftyLinkMessageContainer::Pointer message)
 
 
 //-----------------------------------------------------------------------------
+void NiftyLinkTcpNetworkWorker::RequestStats()
+{
+  // Notice that this method calls Send above, is part of the public API,
+  // and hence can be called from other threads than
+  igtl::StringMessage::Pointer msg = igtl::StringMessage::New();
+  msg->SetDeviceName("NiftyLinkTcpNetworkWorker");
+  msg->SetString("STATS");
+  msg->Pack();
+
+  NiftyLinkMessageContainer::Pointer m = (NiftyLinkMessageContainer::Pointer(new NiftyLinkMessageContainer()));
+  m->SetMessage(msg.GetPointer());
+  m->SetOwnerName("NiftyLinkTcpNetworkWorker");
+  m->SetSenderHostName(m_Socket->peerName());
+  m->SetSenderPortNumber(m_Socket->peerPort());
+
+  this->Send(m);
+  QLOG_INFO() << QObject::tr("%1::RequestStats() - sent.").arg(m_MessagePrefix);
+}
+
+
+//-----------------------------------------------------------------------------
 void NiftyLinkTcpNetworkWorker::OutputStatsToConsole()
 {
   // This is done, as the actual send stats should be running in a different thread.
@@ -351,6 +372,7 @@ void NiftyLinkTcpNetworkWorker::OnSocketReadyRead()
         else if (tmp->GetString() == std::string("STATS"))
         {
           QLOG_DEBUG() << QObject::tr("%1::OnSocketReadyRead() - Stats request received.").arg(m_MessagePrefix);
+          this->OnOutputStats();
         }
         // Throw away the message and header
         m_HeaderInProgress = false;
@@ -416,6 +438,26 @@ void NiftyLinkTcpNetworkWorker::OnSend()
 
 
 //-----------------------------------------------------------------------------
+void NiftyLinkTcpNetworkWorker::SendMessage(igtl::MessageBase::Pointer msg)
+{
+  // This doubly double checks we are running in our own thread.
+  niftk::NiftyLinkQThread *p = dynamic_cast<niftk::NiftyLinkQThread*>(QThread::currentThread());
+  assert(p != NULL);
+
+  int bytesWritten = m_Socket->write(static_cast<const char*>(msg->GetPackPointer()), msg->GetPackSize());
+  if (bytesWritten != msg->GetPackSize())
+  {
+    QLOG_ERROR() << QObject::tr("%1::OnSendMessage() - only written %2 bytes instead of %3").arg(m_MessagePrefix).arg(bytesWritten).arg(msg->GetPackSize());
+  }
+
+  // Store the time where we last sent a message.
+  m_LastMessageSentTime->GetTime();
+
+  QLOG_DEBUG() << QObject::tr("%1::OnSendMessage() - written %2 bytes.").arg(m_MessagePrefix).arg(bytesWritten);
+}
+
+
+//-----------------------------------------------------------------------------
 void NiftyLinkTcpNetworkWorker::OnSendInternalPing()
 {
   // Check if we can avoid sending this message, just to save on network traffic.
@@ -433,29 +475,9 @@ void NiftyLinkTcpNetworkWorker::OnSendInternalPing()
   msg->Pack();
 
   this->SendMessage(msg.GetPointer());
-  QLOG_DEBUG() << QObject::tr("%1::OnSendInternalPing() - sent keep-alive.").arg(m_MessagePrefix);
+  QLOG_DEBUG() << QObject::tr("%1::OnSendInternalPing() - sent.").arg(m_MessagePrefix);
 
   emit SentKeepAlive();
-}
-
-
-//-----------------------------------------------------------------------------
-void NiftyLinkTcpNetworkWorker::SendMessage(igtl::MessageBase::Pointer msg)
-{
-  // This doubly double checks we are running in our own thread.
-  niftk::NiftyLinkQThread *p = dynamic_cast<niftk::NiftyLinkQThread*>(QThread::currentThread());
-  assert(p != NULL);
-
-  int bytesWritten = m_Socket->write(static_cast<const char*>(msg->GetPackPointer()), msg->GetPackSize());
-  if (bytesWritten != msg->GetPackSize())
-  {
-    QLOG_ERROR() << QObject::tr("%1::OnSendMessage() - only written %2 bytes instead of %3").arg(m_MessagePrefix).arg(bytesWritten).arg(msg->GetPackSize());
-  }
-
-  // Store the time where we last sent a message.
-  m_LastMessageSentTime->GetTime();
-
-  QLOG_DEBUG() << QObject::tr("%1::OnSendMessage() - written %2 bytes.").arg(m_MessagePrefix).arg(bytesWritten);
 }
 
 
