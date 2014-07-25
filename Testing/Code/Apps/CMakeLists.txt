@@ -27,6 +27,7 @@ SET(APPS
   TestOIGTLinkTrackingClient
   TestNifTKOIGTLinkTrackingClient
   TestNifTKQtTrackingClient
+  TestNifTKQtImagingClient
 )
 
 FOREACH(APP ${APPS})
