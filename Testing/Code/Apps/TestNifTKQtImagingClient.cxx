@@ -73,9 +73,13 @@ void TestNifTKQtImagingClient::RunTest()
   int nanosecondsBetweenMessages = 1000000000 / m_FramesPerSecond;
   QLOG_INFO() << QObject::tr("%1::RunTest() - %2 fps = %3 ns between messages.").arg(objectName()).arg(m_FramesPerSecond).arg(nanosecondsBetweenMessages);
 
+  int imgSize[3];
+  m_ImageMessage->GetDimensions(imgSize);
+
   igtl::ImageMessage::Pointer  localImage = igtl::ImageMessage::New();
-  localImage->Copy(m_ImageMessage);
-  localImage->AllocatePack();
+  localImage->InitPack();
+  localImage->SetDimensions(imgSize[0], imgSize[1], imgSize[2]);
+  localImage->SetScalarType(igtl::ImageMessage::TYPE_UINT8);
   localImage->AllocateScalars();
 
   igtl::TimeStamp::Pointer timeLastMessage = igtl::TimeStamp::New();
@@ -106,7 +110,7 @@ void TestNifTKQtImagingClient::RunTest()
       // So, we must be aiming to simulate a realistic example, whereby at each iteration we have to
       // copy data in, and then call Pack each time. At the moment, we don't care what the data is,
       // just that we are fairly testing the speed of the connection.
-      memcpy(localImage->GetScalarPointer(), m_ImageMessage->GetScalarPointer(), m_ImageMessage->GetScalarSize());
+      memcpy(localImage->GetScalarPointer(), m_ImageMessage->GetScalarPointer(), imgSize[0]*imgSize[1]);
       localImage->Pack();
 
       m_Client->Send(m);
