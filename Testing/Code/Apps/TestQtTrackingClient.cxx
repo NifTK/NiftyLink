@@ -10,7 +10,7 @@
   See LICENSE.txt in the top level directory for details.
 =============================================================================*/
 
-#include "TestTrackingClient.h"
+#include "TestQtTrackingClient.h"
 #include <QsLog.h>
 #include <QsLogDest.h>
 #include <QApplication>
@@ -24,7 +24,7 @@ namespace niftk
 {
 
 //-----------------------------------------------------------------------------
-TestTrackingClient::TestTrackingClient(const std::string& hostName, const int& portNumber, const int& fps, const int& numberMessages, QObject *parent)
+TestQtTrackingClient::TestQtTrackingClient(const std::string& hostName, const int& portNumber, const int& fps, const int& numberMessages, QObject *parent)
 : m_HostName(QString::fromStdString(hostName))
 , m_PortNumber(portNumber)
 , m_IntendedNumberMessages(numberMessages)
@@ -33,7 +33,7 @@ TestTrackingClient::TestTrackingClient(const std::string& hostName, const int& p
   qRegisterMetaType<QAbstractSocket::SocketError>("QAbstractSocket::SocketError");
   qRegisterMetaType<NiftyLinkMessageContainer::Pointer>("NiftyLinkMessageContainer::Pointer");
 
-  this->setObjectName("TestTrackingClient");
+  this->setObjectName("TestQtTrackingClient");
 
   m_NumberMessagesSent = 0;
 
@@ -47,13 +47,13 @@ TestTrackingClient::TestTrackingClient(const std::string& hostName, const int& p
 
 
 //-----------------------------------------------------------------------------
-TestTrackingClient::~TestTrackingClient()
+TestQtTrackingClient::~TestQtTrackingClient()
 {
 }
 
 
 //-----------------------------------------------------------------------------
-void TestTrackingClient::Start()
+void TestQtTrackingClient::Start()
 {
   QLOG_INFO() << QObject::tr("%1::Start() - started.").arg(objectName());
   m_Client->ConnectToHost(m_HostName, m_PortNumber);
@@ -61,7 +61,7 @@ void TestTrackingClient::Start()
 
 
 //-----------------------------------------------------------------------------
-void TestTrackingClient::OnConnectedToServer()
+void TestQtTrackingClient::OnConnectedToServer()
 {
   QLOG_INFO() << QObject::tr("%1::OnConnectedToServer().").arg(objectName());
   m_Timer->start();
@@ -69,7 +69,7 @@ void TestTrackingClient::OnConnectedToServer()
 
 
 //-----------------------------------------------------------------------------
-void TestTrackingClient::OnTimeOut()
+void TestQtTrackingClient::OnTimeOut()
 {
   igtl::Matrix4x4 matrix;
   niftk::CreateRandomTransformMatrix(matrix);
@@ -81,14 +81,14 @@ void TestTrackingClient::OnTimeOut()
   timeCreated->GetTime();
 
   igtl::TrackingDataMessage::Pointer msg = igtl::TrackingDataMessage::New();
-  msg->SetDeviceName("TestTrackingClient");
+  msg->SetDeviceName("TestQtTrackingClient");
   msg->AddTrackingDataElement(element);
   msg->SetTimeStamp(timeCreated);
   msg->Pack();
 
   NiftyLinkMessageContainer::Pointer m = (NiftyLinkMessageContainer::Pointer(new NiftyLinkMessageContainer()));
   m->SetMessage(msg.GetPointer());
-  m->SetOwnerName("TestTrackingClient");
+  m->SetOwnerName("TestQtTrackingClient");
   m->SetSenderHostName("123.456.789.012");  // NiftyLink should provide easy way to access the machine name.
   m->SetSenderPortNumber(1234);
 
@@ -105,7 +105,7 @@ void TestTrackingClient::OnTimeOut()
 
 
 //-----------------------------------------------------------------------------
-void TestTrackingClient::OnBytesSent(qint64 bytes)
+void TestQtTrackingClient::OnBytesSent(qint64 bytes)
 {
   QLOG_DEBUG() << QObject::tr("%1::OnBytesSent(%2).").arg(objectName()).arg(bytes);
 }
@@ -135,11 +135,11 @@ int main(int argc, char** argv)
   int         fps      = atoi(argv[3]);
   int         total    = atoi(argv[4]);
 
-  std::cout << "TestTrackingClient: host = " << hostName << "." << std::endl;
-  std::cout << "TestTrackingClient: port = " << port << "." << std::endl;
-  std::cout << "TestTrackingClient: fps = " << fps << "." << std::endl;
-  std::cout << "TestTrackingClient: total = " << total << "." << std::endl;
-  std::cout << "TestTrackingClient: Instantiating client." << std::endl;
+  std::cout << "TestQtTrackingClient: host = " << hostName << "." << std::endl;
+  std::cout << "TestQtTrackingClient: port = " << port << "." << std::endl;
+  std::cout << "TestQtTrackingClient: fps = " << fps << "." << std::endl;
+  std::cout << "TestQtTrackingClient: total = " << total << "." << std::endl;
+  std::cout << "TestQtTrackingClient: Instantiating client." << std::endl;
 
   // Init the logging mechanism.
   QsLogging::Logger& logger = QsLogging::Logger::instance();
@@ -148,13 +148,13 @@ int main(int argc, char** argv)
   logger.addDestination(debugDestination.get());
 
   // Start client.
-  niftk::TestTrackingClient client(hostName, port, fps, total);
+  niftk::TestQtTrackingClient client(hostName, port, fps, total);
 
-  std::cout << "TestTrackingClient: Creating app." << std::endl;
+  std::cout << "TestQtTrackingClient: Creating app." << std::endl;
 
   QApplication app(argc, argv);
 
-  std::cout << "TestTrackingClient: Launching app." << std::endl;
+  std::cout << "TestQtTrackingClient: Launching app." << std::endl;
 
   QTimer::singleShot(220, &client, SLOT(Start()));
   int ret = app.exec();

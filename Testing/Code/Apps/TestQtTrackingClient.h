@@ -10,8 +10,8 @@
   See LICENSE.txt in the top level directory for details.
 =============================================================================*/
 
-#ifndef TestTrackingClient_h
-#define TestTrackingClient_h
+#ifndef TestQtTrackingClient_h
+#define TestQtTrackingClient_h
 
 #include <NiftyLinkMessageContainer.h>
 #include <NiftyLinkTcpClient.h>
@@ -24,14 +24,14 @@
 namespace niftk
 {
 
-class TestTrackingClient : public QObject
+class TestQtTrackingClient : public QObject
 {
 
   Q_OBJECT
 
 public:
-  TestTrackingClient(const std::string& hostName, const int& portNumber, const int& fps, const int& numberMessages, QObject *parent=0);
-  virtual ~TestTrackingClient();
+  TestQtTrackingClient(const std::string& hostName, const int& portNumber, const int& fps, const int& numberMessages, QObject *parent=0);
+  virtual ~TestQtTrackingClient();
 
 private slots:
 
@@ -51,4 +51,4 @@ private:
 
 } // end namespace niftk
 
-#endif // TestTrackingClient_h
+#endif // TestQtTrackingClient_h

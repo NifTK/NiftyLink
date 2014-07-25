@@ -10,7 +10,7 @@
   See LICENSE.txt in the top level directory for details.
 =============================================================================*/
 
-#include "TestServer.h"
+#include "TestQtServer.h"
 #include <QsLog.h>
 #include <QsLogDest.h>
 #include <QApplication>
@@ -19,13 +19,13 @@ namespace niftk
 {
 
 //-----------------------------------------------------------------------------
-TestServer::TestServer(const int& portNumber, const bool& isEchoing, const int threshold, QObject *parent)
+TestQtServer::TestQtServer(const int& portNumber, const bool& isEchoing, const int threshold, QObject *parent)
 : m_PortNumber(portNumber)
 , m_IsEchoing(isEchoing)
 , m_StatsThreshold(threshold)
 , m_Server(new NiftyLinkTcpServer(parent))
 {
-  this->setObjectName("TestServer");
+  this->setObjectName("TestQtServer");
 
   qRegisterMetaType<QAbstractSocket::SocketError>("QAbstractSocket::SocketError");
   qRegisterMetaType<NiftyLinkMessageContainer::Pointer>("NiftyLinkMessageContainer::Pointer");
@@ -36,7 +36,7 @@ TestServer::TestServer(const int& portNumber, const bool& isEchoing, const int t
 
 
 //-----------------------------------------------------------------------------
-TestServer::~TestServer()
+TestQtServer::~TestQtServer()
 {
   m_StatsTimer->disconnect();
   delete m_StatsTimer;
@@ -45,7 +45,7 @@ TestServer::~TestServer()
 
 
 //-----------------------------------------------------------------------------
-void TestServer::Start()
+void TestQtServer::Start()
 {
   connect(m_Server, SIGNAL(MessageReceived(int,NiftyLinkMessageContainer::Pointer)), this, SLOT(OnMessageReceived(int,NiftyLinkMessageContainer::Pointer)), Qt::DirectConnection);
   connect(m_Server, SIGNAL(SocketError(int,QAbstractSocket::SocketError, QString)), this, SLOT(OnSocketError(int,QAbstractSocket::SocketError, QString)));
@@ -69,21 +69,21 @@ void TestServer::Start()
 
 
 //-----------------------------------------------------------------------------
-void TestServer::OnClientConnected(int portNumber)
+void TestQtServer::OnClientConnected(int portNumber)
 {
   QLOG_INFO() << QObject::tr("%1::OnClientConnected(%2).").arg(objectName()).arg(portNumber);
 }
 
 
 //-----------------------------------------------------------------------------
-void TestServer::OnSocketError(int portNumber, QAbstractSocket::SocketError errorCode, QString errorString)
+void TestQtServer::OnSocketError(int portNumber, QAbstractSocket::SocketError errorCode, QString errorString)
 {
   QLOG_ERROR() << QObject::tr("%1::OnSocketError(port=%2, code=%3, string=%4).").arg(objectName()).arg(portNumber).arg(errorCode).arg(errorString);
 }
 
 
 //-----------------------------------------------------------------------------
-void TestServer::OnMessageReceived(int portNumber, NiftyLinkMessageContainer::Pointer message)
+void TestQtServer::OnMessageReceived(int portNumber, NiftyLinkMessageContainer::Pointer message)
 {
   QLOG_DEBUG() << QObject::tr("%1::OnMessageReceived(%2, %3), type=%4").arg(objectName()).arg(portNumber).arg(message->GetNiftyLinkMessageId()).arg(message->GetMessage()->GetDeviceType());
 
@@ -117,10 +117,10 @@ int main(int argc, char** argv)
   int    isEcho     = atoi(argv[2]);
   int    threshold  = atoi(argv[3]);
 
-  std::cout << "TestServer: port = " << port << "." << std::endl;
-  std::cout << "TestServer: echo = " << isEcho << "." << std::endl;
-  std::cout << "TestServer: threshold = " << threshold << "." << std::endl;
-  std::cout << "TestServer: Instantiating server." << std::endl;
+  std::cout << "TestQtServer: port = " << port << "." << std::endl;
+  std::cout << "TestQtServer: echo = " << isEcho << "." << std::endl;
+  std::cout << "TestQtServer: threshold = " << threshold << "." << std::endl;
+  std::cout << "TestQtServer: Instantiating server." << std::endl;
 
   // Init the logging mechanism.
   QsLogging::Logger& logger = QsLogging::Logger::instance();
@@ -130,7 +130,7 @@ int main(int argc, char** argv)
 
   // Start server.
   bool isEchoing = (isEcho == 1 ? true : false);
-  niftk::TestServer server(port, isEchoing, threshold);
+  niftk::TestQtServer server(port, isEchoing, threshold);
   QApplication app(argc, argv);
   QTimer::singleShot(220, &server, SLOT(Start()));
   int ret = app.exec();
