@@ -18,6 +18,9 @@
 
 #include <QImage>
 
+/**
+ * \file Helper methods to load/save images, initialise with random test data, and set/get from QImage.
+ */
 namespace niftk
 {
 

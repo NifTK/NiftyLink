@@ -50,11 +50,14 @@ public:
   void Send(NiftyLinkMessageContainer::Pointer message);
 
   /// \brief Set a threshold for the number of messages, so that you
-  /// get stats every X number of messages. Set to -1 to turn this off.
-  /// Defaults to off.
+  /// get stats every X number of messages. Set <em>threshold</em>
+  /// to -1 to turn this feature off. Defaults to off.
   void SetNumberMessageReceivedThreshold(qint64 threshold);
 
   /// \brief Set this object to either send or not send keep alive messages.
+  /// In this Qt implementation, this is optional, and depends on requirements.
+  /// If you need to know whether something has stopped sending data, then
+  /// you should set this to true on both ends (client and server) of the socket.
   void SetKeepAliveOn(bool isOn);
 
   /// \brief Set this object to monitor for no incoming data.
@@ -65,7 +68,7 @@ public:
 
 public slots:
 
-  /// \brief Writes some stats to console.
+  /// \brief Writes some stats to console, see NiftyLinkMessageCounter.
   /// Defined as a slot, so we can trigger it via QTimer.
   void OutputStats();
 
@@ -98,7 +101,7 @@ private slots:
   /// \brief When the socket successfully connects, we move all processing to another thread.
   void OnConnected();
 
-  /// \brief We listen to all socket errors from the moment we create it.
+  /// \brief We need to listen to all socket errors from the moment we create it.
   void OnError();
 
   /// \brief At the moment, just log, and emmit the Disconnected signal.

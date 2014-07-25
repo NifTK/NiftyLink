@@ -51,6 +51,9 @@ public:
   void SetNumberMessageReceivedThreshold(qint64 threshold);
 
   /// \brief Set this object to either send or not send keep alive messages.
+  /// In this Qt implementation, this is optional, and depends on requirements.
+  /// If you need to know whether something has stopped sending data, then
+  /// you should set this to true on both ends (client and server) of the socket.
   void SetKeepAliveOn(bool isOn);
 
   /// \brief Set this object to monitor for no incoming data.
@@ -61,7 +64,7 @@ public:
 
 public slots:
 
-  /// \brief Writes some stats to console.
+  /// \brief Writes some stats to console, see NiftyLinkMessageCounter.
   ///
   /// Defined as a slot, so we can trigger it via QTimer.
   /// This outputs from all stats counters for each worker.

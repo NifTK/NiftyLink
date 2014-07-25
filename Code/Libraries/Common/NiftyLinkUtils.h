@@ -21,11 +21,15 @@
 
 #include <QString>
 
+/**
+ * \file NiftyLinkUtils.h
+ * \brief Various utility functions for stats, test data, IP validation etc.
+ */
 namespace niftk
 {
 
 /// \brief Simple function which validates if an IP address is valid or not,
-/// by checking for 4 numbers [0-255] separated by dot.
+/// by checking for 4 numbers [0-255], each separated by a single dot.
 extern "C++" NIFTYLINKCOMMON_WINEXPORT bool ValidateIp(const QString &inputIP);
 
 /// \brief This function returns the local IP address.
@@ -45,13 +49,13 @@ extern "C++" NIFTYLINKCOMMON_WINEXPORT NiftyLinkMessageContainer::Pointer Create
 /// \param timeB must be not-NULL
 extern "C++" NIFTYLINKCOMMON_WINEXPORT igtlUint64 GetDifferenceInNanoSeconds(igtl::TimeStamp* timeA, igtl::TimeStamp* timeB);
 
-/// \brief Used to calculate stats of latency, this one computing the mean of a list of igtlUint64.
+/// \brief Used to calculate stats of latency, this method computes the mean of a list of igtlUint64.
 extern "C++" NIFTYLINKCOMMON_WINEXPORT double CalculateMean(const QList<igtlUint64>& list);
 
-/// \brief Used to calculate stats of latency, this one computing the standard deviation of a list of igtlUint64.
+/// \brief Used to calculate stats of latency, this method computes the standard deviation of a list of igtlUint64.
 extern "C++" NIFTYLINKCOMMON_WINEXPORT double CalculateStdDev(const QList<igtlUint64>& list);
 
-/// \brief Used to calculate stats of latency, this one computing the maximum of a list of igtlUint64.
+/// \brief Used to calculate stats of latency, this method computes the maximum of a list of igtlUint64.
 extern "C++" NIFTYLINKCOMMON_WINEXPORT igtlUint64 CalculateMax(const QList<igtlUint64>& list);
 
 } // end namespace niftk

@@ -17,6 +17,9 @@
 #include <QString>
 #include <QStringList>
 
+/**
+ * \file XML message builders, shared between NifTK and NiftyGuide.
+ */
 namespace niftk
 {
 
@@ -24,17 +27,17 @@ namespace niftk
 * \class XMLBuilderBase
 * \brief Base class for the XML based descriptor builder classes.
 *
-* In NiftyLink the non-standard requests and commands are done through string messages.
-* These messages are stored in an XML descriptor format which is then wrapped into a
-* string message and sent across the network. Both the descriptor's creation and parsing
+* In NiftyGuide the non-standard requests and commands are done through OpenIGTLink string messages.
+* These messages are defined in an XML descriptor format which is then transmitted using an
+* igtl::StringMessage and sent across the network. Both the descriptor's creation and parsing
 * is done via "Builder" objects. XMLBuilderBase is the base class for the family of
 * different XML descriptor builders.
 *
 * Usage: all the adjustable features are set via member functions as a string (QString)
 * then the XML is composed by calling GetXMLAsString(), which returns the descriptor in
-* text format as QString. To parse an existing XML descriptor the SetXMLString() method
+* text format as QString of valid XML. To parse an existing XML descriptor the SetXMLString() method
 * can be used, which parses the XML descriptor and sets the member variables accordingly.
-* The values can then be queried by calling the get... member functions.
+* The values can then be queried by calling the getters.
 */
 class NIFTYLINKCOMMON_WINEXPORT XMLBuilderBase : public QObject
 {

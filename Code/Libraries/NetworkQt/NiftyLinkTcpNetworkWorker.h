@@ -27,6 +27,8 @@ namespace niftk
 /**
  * \class NiftyLinkTcpNetworkWorker
  * \brief Worker object, to be run in a separate QThread by NiftyLinkTcpServer or NiftyLinkTcpClient.
+ *
+ * Third parties should not need to use this class, hence it is deliberately not exported.
  */
 class NiftyLinkTcpNetworkWorker : public QObject
 {

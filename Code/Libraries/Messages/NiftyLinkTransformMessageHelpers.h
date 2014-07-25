@@ -18,6 +18,9 @@
 
 #include <QString>
 
+/**
+ * \file Helper methods to initialise TRANSORM messages.
+ */
 namespace niftk
 {
 

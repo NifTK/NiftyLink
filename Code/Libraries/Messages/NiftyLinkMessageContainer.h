@@ -30,14 +30,12 @@
 
 namespace niftk
 {
-
 /**
 * \class NiftyLinkMessageContainer
 * \brief Wrapper for OpenIGTLink message types.
 *
 * The aim of this class is to provide any additional information
 * that we require on an image, that is not present in OpenIGTLink.
-*
 * It should wrap ANY OpenIGTLink message type, and should not refer
 * to any specific OpenIGTLink message type, so that if OpenIGTLink
 * introduces more message types derived from igtl::MessageBase,

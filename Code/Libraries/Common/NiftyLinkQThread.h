@@ -37,13 +37,14 @@ class NIFTYLINKCOMMON_WINEXPORT NiftyLinkQThread : public QThread
 
 public:
 
-  /// \brief Simple constructor.
+  /// \brief Constructor.
   inline NiftyLinkQThread(QObject *parent = 0) : QThread(parent)
   , m_IsEventLoopRunning(false)
   {
   }
 
   /// \brief Member function to put the calling thread into sleep.
+  /// Note: This puts the calling thread to sleep, not the thread that this QThread subclass represents.
   static void SleepCallingThread(int msec)
   {
     QThread::msleep(msec);
