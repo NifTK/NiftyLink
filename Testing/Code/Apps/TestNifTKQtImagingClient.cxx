@@ -70,20 +70,25 @@ void TestNifTKQtImagingClient::OnConnectedToServer()
 //-----------------------------------------------------------------------------
 void TestNifTKQtImagingClient::RunTest()
 {
+  int nanosecondsBetweenMessages = 1000000000 / m_FramesPerSecond;
+  QLOG_INFO() << QObject::tr("%1::RunTest() - %2 fps = %3 ns between messages.").arg(objectName()).arg(m_FramesPerSecond).arg(nanosecondsBetweenMessages);
+
+  igtl::ImageMessage::Pointer  localImage = igtl::ImageMessage::New();
+  localImage->Copy(m_ImageMessage);
+  localImage->AllocatePack();
+  localImage->AllocateScalars();
+
   igtl::TimeStamp::Pointer timeLastMessage = igtl::TimeStamp::New();
   timeLastMessage->GetTime();
 
   igtl::TimeStamp::Pointer timeNow = igtl::TimeStamp::New();
   timeNow->GetTime();
 
-  int nanosecondsBetweenMessages = 1000000000 / m_FramesPerSecond;
-  QLOG_INFO() << QObject::tr("%1::RunTest() - %2 fps = %3 ns between messages.").arg(objectName()).arg(m_FramesPerSecond).arg(nanosecondsBetweenMessages);
-
   NiftyLinkMessageContainer::Pointer m = (NiftyLinkMessageContainer::Pointer(new NiftyLinkMessageContainer()));
   m->SetOwnerName("TestNifTKQtImagingClient");
   m->SetSenderHostName("123.456.789.012");
   m->SetSenderPortNumber(1234);
-  m->SetMessage(m_ImageMessage.GetPointer());
+  m->SetMessage(localImage.GetPointer());
 
   // This will occupy a lot of CPU, but we have multi-cpu machines, so no problem.
   while(m_NumberMessagesSent < m_IntendedNumberMessages)
@@ -91,6 +96,19 @@ void TestNifTKQtImagingClient::RunTest()
     timeNow->GetTime();
     if (niftk::GetDifferenceInNanoSeconds(timeNow, timeLastMessage) > nanosecondsBetweenMessages)
     {
+      igtl::TimeStamp::Pointer timeCreated = igtl::TimeStamp::New();
+      timeCreated->GetTime();
+      localImage->SetTimeStamp(timeCreated);
+
+      // Copy data from buffer.
+      // Tokuda 2009 paper says latency is measure from time between the start of copying data into the
+      // buffer, and the time to deserialise. So we record the time stamp just above this line.
+      // So, we must be aiming to simulate a realistic example, whereby at each iteration we have to
+      // copy data in, and then call Pack each time. At the moment, we don't care what the data is,
+      // just that we are fairly testing the speed of the connection.
+      memcpy(localImage->GetScalarPointer(), m_ImageMessage->GetScalarPointer(), m_ImageMessage->GetScalarSize());
+      localImage->Pack();
+
       m_Client->Send(m);
       m_NumberMessagesSent++;
       timeLastMessage->SetTimeInNanoseconds(timeNow->GetTimeStampInNanoseconds());
