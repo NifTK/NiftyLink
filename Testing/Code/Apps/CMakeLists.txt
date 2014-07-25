@@ -21,8 +21,6 @@ SET(LIBS
 )
 
 SET(APPS
-#  TestImagingSender
-#  TestImagingReceiver
   TestQtServer
   TestOIGTLinkTrackingClient
   TestNifTKOIGTLinkTrackingClient
