@@ -24,7 +24,9 @@ SET(APPS
 #  TestImagingSender
 #  TestImagingReceiver
   TestQtServer
-  TestQtTrackingClient
+  TestOIGTLinkTrackingClient
+  TestNifTKOIGTLinkTrackingClient
+  TestNifTKQtTrackingClient
 )
 
 FOREACH(APP ${APPS})

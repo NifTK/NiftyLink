@@ -11,6 +11,8 @@
 =============================================================================*/
 #include "NiftyLinkUtils.h"
 
+#include <igtlTrackingDataMessage.h>
+
 #include <QUrl>
 #include <QHostInfo>
 #include <QHostAddress>
@@ -206,6 +208,41 @@ igtlUint64 CalculateMax(const QList<igtlUint64>& list)
     }
   }
   return max;
+}
+
+
+
+//-----------------------------------------------------------------------------
+NiftyLinkMessageContainer::Pointer CreateTestTrackingDataMessage(int matricesPerMessage)
+{
+  igtl::Matrix4x4 matrix;
+
+  igtl::TrackingDataMessage::Pointer msg = igtl::TrackingDataMessage::New();
+  msg->SetDeviceName("NiftyLinkUtils");
+
+  for (int i = 0; i < matricesPerMessage; i++)
+  {
+    niftk::CreateRandomTransformMatrix(matrix);
+
+    igtl::TrackingDataElement::Pointer element = igtl::TrackingDataElement::New();
+    element->SetMatrix(matrix);
+
+    msg->AddTrackingDataElement(element);
+  }
+
+  igtl::TimeStamp::Pointer timeCreated = igtl::TimeStamp::New();
+  timeCreated->GetTime();
+
+  msg->SetTimeStamp(timeCreated);
+  msg->Pack();
+
+  NiftyLinkMessageContainer::Pointer m = (NiftyLinkMessageContainer::Pointer(new NiftyLinkMessageContainer()));
+  m->SetMessage(msg.GetPointer());
+  m->SetOwnerName("CreateTestTrackingDataMessage");
+  m->SetSenderHostName("123.456.789.012");
+  m->SetSenderPortNumber(1234);
+
+  return m;
 }
 
 } // end namespace niftk

@@ -13,9 +13,11 @@
 #define NiftyLinkUtils_h
 
 #include "NiftyLinkCommonWin32ExportHeader.h"
+#include <NiftyLinkMessageContainer.h>
 
 #include <igtlMath.h>
 #include <igtlTimeStamp.h>
+#include <igtlStringMessage.h>
 
 #include <QString>
 
@@ -32,8 +34,11 @@ extern "C++" NIFTYLINKCOMMON_WINEXPORT QString GetLocalHostAddress(void);
 /// \brief This function resolves a given hostname to IP.
 extern "C++" NIFTYLINKCOMMON_WINEXPORT QString ResolveHostName(const QString &input);
 
-/// \brief This function creates a random 4x4 test matrix.
+/// \brief For testing, this function creates a random 4x4 test matrix.
 extern "C++" NIFTYLINKCOMMON_WINEXPORT void CreateRandomTransformMatrix(igtl::Matrix4x4& matrix);
+
+/// \brief For testing, this function creates a test message containing a configurable number of tracking matrix elements.
+extern "C++" NIFTYLINKCOMMON_WINEXPORT NiftyLinkMessageContainer::Pointer CreateTestTrackingDataMessage(int matricesPerMessage);
 
 /// \brief Returns the difference in nanoseconds.
 /// \param timeA must be not-NULL

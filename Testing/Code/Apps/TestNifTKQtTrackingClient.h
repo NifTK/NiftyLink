@@ -10,8 +10,8 @@
   See LICENSE.txt in the top level directory for details.
 =============================================================================*/
 
-#ifndef TestQtTrackingClient_h
-#define TestQtTrackingClient_h
+#ifndef TestNifTKQtTrackingClient_h
+#define TestNifTKQtTrackingClient_h
 
 #include <NiftyLinkMessageContainer.h>
 #include <NiftyLinkTcpClient.h>
@@ -25,23 +25,23 @@ namespace niftk
 {
 
 /**
- * \class TestQtTrackingClient
+ * \class TestNifTKQtTrackingClient
  * \brief Qt based tracking client to send/receive data from an OpenIGTLink server.
  */
-class TestQtTrackingClient : public QObject
+class TestNifTKQtTrackingClient : public QObject
 {
 
   Q_OBJECT
 
 public:
-  TestQtTrackingClient(const std::string& hostName,
+  TestNifTKQtTrackingClient(const std::string& hostName,
                        const int& portNumber,
                        const int& fps,
                        const int& totalNumberMessages,
                        const int& trackedObjectsPerMessage,
                        QObject *parent=0
                       );
-  virtual ~TestQtTrackingClient();
+  virtual ~TestNifTKQtTrackingClient();
 
 private slots:
 
@@ -51,7 +51,6 @@ private slots:
 private:
 
   void RunTest();
-  NiftyLinkMessageContainer::Pointer CreateTrackingData();
 
   QString             m_HostName;
   int                 m_PortNumber;
@@ -65,4 +64,4 @@ private:
 
 } // end namespace niftk
 
-#endif // TestQtTrackingClient_h
+#endif // TestNifTKQtTrackingClient_h

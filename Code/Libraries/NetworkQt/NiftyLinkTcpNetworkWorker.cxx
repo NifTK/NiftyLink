@@ -244,7 +244,6 @@ void NiftyLinkTcpNetworkWorker::OnSocketReadyRead()
 
   // Storing this locally, incase the socket gets updated.
   quint64 bytesAvailable = m_Socket->bytesAvailable();
-  quint64 bytesAtStart = bytesAvailable;
   quint64 bytesReceived = 0;
 
   QLOG_DEBUG() << QObject::tr("%1::OnSocketReadyRead() - Starting to read data, bytes available=%2.").arg(m_MessagePrefix).arg(bytesAvailable);
