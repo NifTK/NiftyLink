@@ -46,7 +46,11 @@ NiftyLinkTcpNetworkWorker::NiftyLinkTcpNetworkWorker(
 , m_IncomingMessageBytesReceived(0)
 , m_AbortReading(false)
 , m_KeepAliveTimer(NULL)
-, m_KeepAliveInterval(500)
+, m_KeepAliveInterval(1000)
+, m_LastMessageSentTime(NULL)
+, m_NoIncomingDataTimer(NULL)
+, m_NoIncomingDataInterval(2000)
+, m_LastMessageReceivedTime(NULL)
 {
   assert(m_Socket);
   assert(m_InboundMessages);
@@ -58,9 +62,13 @@ NiftyLinkTcpNetworkWorker::NiftyLinkTcpNetworkWorker(
     host = "localhost";
   }
 
-  m_LastMessageProcessedTime = igtl::TimeStamp::New();
   m_KeepAliveTimer = new QTimer();
   m_KeepAliveTimer->setInterval(m_KeepAliveInterval);
+  m_LastMessageSentTime = igtl::TimeStamp::New();
+
+  m_NoIncomingDataTimer = new QTimer();
+  m_NoIncomingDataTimer->setInterval(m_NoIncomingDataInterval);
+  m_LastMessageReceivedTime = igtl::TimeStamp::New();
 
   m_MessagePrefix = QObject::tr("NiftyLinkTcpNetworkWorker(d=%1, h=%2, p=%3)").arg(m_Socket->socketDescriptor()).arg(host).arg(m_Socket->peerPort());
   this->setObjectName(m_MessagePrefix);
@@ -68,6 +76,7 @@ NiftyLinkTcpNetworkWorker::NiftyLinkTcpNetworkWorker(
 
   connect(this, SIGNAL(InternalStatsSignal()), this, SLOT(OnOutputStats()));
   connect(this, SIGNAL(InternalSendSignal()), this, SLOT(OnSend()));
+  connect(m_NoIncomingDataTimer, SIGNAL(timeout()), this, SLOT(OnCheckForIncomingData()));
   connect(m_KeepAliveTimer, SIGNAL(timeout()), this, SLOT(OnSendInternalPing()));
   connect(m_Socket, SIGNAL(bytesWritten(qint64)), this, SIGNAL(BytesSent(qint64)));
   connect(m_Socket, SIGNAL(disconnected()), this, SLOT(OnSocketDisconnected()));
@@ -82,6 +91,18 @@ NiftyLinkTcpNetworkWorker::NiftyLinkTcpNetworkWorker(
 NiftyLinkTcpNetworkWorker::~NiftyLinkTcpNetworkWorker()
 {
   QLOG_INFO() << QObject::tr("%1::~NiftyLinkTcpNetworkWorker() - destroying").arg(m_MessagePrefix);
+
+  if (m_KeepAliveTimer != NULL)
+  {
+    m_KeepAliveTimer->disconnect();
+    delete m_KeepAliveTimer;
+  }
+
+  if (m_NoIncomingDataTimer != NULL)
+  {
+    m_NoIncomingDataTimer->disconnect();
+    delete m_NoIncomingDataTimer;
+  }
 
   m_Socket->close();
   while (m_Socket->isOpen())
@@ -150,13 +171,27 @@ void NiftyLinkTcpNetworkWorker::SetNumberMessageReceivedThreshold(qint64 thresho
 //-----------------------------------------------------------------------------
 void NiftyLinkTcpNetworkWorker::SetKeepAliveOn(bool isOn)
 {
-  if (isOn && this->m_Socket->isWritable() && this->m_Socket->isOpen())
+  if (isOn)
   {
     m_KeepAliveTimer->start();
   }
   else
   {
     m_KeepAliveTimer->stop();
+  }
+}
+
+
+//-----------------------------------------------------------------------------
+void NiftyLinkTcpNetworkWorker::SetCheckForNoIncomingData(bool isOn)
+{
+  if (isOn)
+  {
+    m_NoIncomingDataTimer->start();
+  }
+  else
+  {
+    m_NoIncomingDataTimer->stop();
   }
 }
 
@@ -311,11 +346,11 @@ void NiftyLinkTcpNetworkWorker::OnSocketReadyRead()
       {
         if (tmp->GetString() == std::string("POKE"))
         {
-          QLOG_INFO() << QObject::tr("%1::OnSocketReadyRead() - Keep-alive received, restarting the timeouter.").arg(m_MessagePrefix);
+          QLOG_DEBUG() << QObject::tr("%1::OnSocketReadyRead() - Keep-alive received.").arg(m_MessagePrefix);
         }
         else if (tmp->GetString() == std::string("STATS"))
         {
-          QLOG_INFO() << QObject::tr("%1::OnSocketReadyRead() - Stats request received.").arg(m_MessagePrefix);
+          QLOG_DEBUG() << QObject::tr("%1::OnSocketReadyRead() - Stats request received.").arg(m_MessagePrefix);
         }
         // Throw away the message and header
         m_HeaderInProgress = false;
@@ -357,6 +392,9 @@ void NiftyLinkTcpNetworkWorker::OnSocketReadyRead()
     // For stats.
     m_ReceivedCounter.OnMessageReceived(msg);
 
+    // For monitoring.
+    m_LastMessageReceivedTime->GetTime();
+
     // Store the message in the map, and signal that we have done so.
     m_InboundMessages->InsertContainer(m_Socket->peerPort(), msg);
     emit MessageReceived(m_Socket->peerPort());
@@ -382,7 +420,7 @@ void NiftyLinkTcpNetworkWorker::OnSendInternalPing()
 {
   // Check if we can avoid sending this message, just to save on network traffic.
   igtl::TimeStamp::Pointer sendStarted = igtl::TimeStamp::New();
-  igtlUint64 diff = GetDifferenceInNanoSeconds(sendStarted, m_LastMessageProcessedTime) / 1000000; // convert nano to milliseconds.
+  igtlUint64 diff = GetDifferenceInNanoSeconds(sendStarted, m_LastMessageSentTime) / 1000000; // convert nano to milliseconds.
   if (diff < m_KeepAliveInterval/2)
   {
     QLOG_DEBUG() << QObject::tr("%1::OnSendInternalPing() - No real need to send a keep-alive as we have recently processed a message.").arg(objectName());
@@ -395,7 +433,8 @@ void NiftyLinkTcpNetworkWorker::OnSendInternalPing()
   msg->Pack();
 
   this->SendMessage(msg.GetPointer());
-  QLOG_INFO() << QObject::tr("%1::OnSendInternalPing() - sent keep-alive.").arg(m_MessagePrefix);
+  QLOG_DEBUG() << QObject::tr("%1::OnSendInternalPing() - sent keep-alive.").arg(m_MessagePrefix);
+
   emit SentKeepAlive();
 }
 
@@ -414,9 +453,22 @@ void NiftyLinkTcpNetworkWorker::SendMessage(igtl::MessageBase::Pointer msg)
   }
 
   // Store the time where we last sent a message.
-  m_LastMessageProcessedTime->GetTime();
+  m_LastMessageSentTime->GetTime();
 
   QLOG_DEBUG() << QObject::tr("%1::OnSendMessage() - written %2 bytes.").arg(m_MessagePrefix).arg(bytesWritten);
+}
+
+
+//-----------------------------------------------------------------------------
+void NiftyLinkTcpNetworkWorker::OnCheckForIncomingData()
+{
+  igtl::TimeStamp::Pointer timeNow = igtl::TimeStamp::New();
+  double millisecondsSinceLastData = niftk::GetDifferenceInNanoSeconds(timeNow, m_LastMessageReceivedTime) / static_cast<double>(1000000);
+  if (millisecondsSinceLastData > m_KeepAliveInterval)
+  {
+    QLOG_DEBUG() << QObject::tr("%1::OnCheckForIncomingData() - no incoming data.").arg(m_MessagePrefix);
+    emit NoIncomingData();
+  }
 }
 
 } // end niftk namespace

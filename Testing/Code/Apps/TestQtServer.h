@@ -40,6 +40,7 @@ private slots:
   void OnMessageReceived(int portNumber, NiftyLinkMessageContainer::Pointer message);
   void OnClientConnected(int portNumber);
   void OnKeepAliveSent();
+  void OnNoIncomingData();
 
 private:
   int                 m_PortNumber;

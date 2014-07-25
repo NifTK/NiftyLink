@@ -75,6 +75,7 @@ void NiftyLinkTcpClient::OnConnected()
   m_Socket->moveToThread(thread);
 
   connect(m_Socket, SIGNAL(disconnected()), this, SLOT(OnDisconnected()));
+  connect(m_Worker, SIGNAL(NoIncomingData()), this, SIGNAL(NoIncomingData()));
   connect(m_Worker, SIGNAL(SentKeepAlive()), this, SIGNAL(SentKeepAlive()));
   connect(m_Worker, SIGNAL(BytesSent(qint64)), this, SIGNAL(BytesSent(qint64)));
   connect(m_Worker, SIGNAL(MessageReceived(int)), this, SLOT(OnMessageReceived(int)), Qt::BlockingQueuedConnection);
@@ -142,6 +143,13 @@ void NiftyLinkTcpClient::SetNumberMessageReceivedThreshold(qint64 threshold)
 void NiftyLinkTcpClient::SetKeepAliveOn(bool isOn)
 {
   m_Worker->SetKeepAliveOn(isOn);
+}
+
+
+//-----------------------------------------------------------------------------
+void NiftyLinkTcpClient::SetCheckForNoIncomingData(bool isOn)
+{
+  m_Worker->SetCheckForNoIncomingData(isOn);
 }
 
 

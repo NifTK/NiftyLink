@@ -51,6 +51,7 @@ void TestQtServer::Start()
   connect(m_Server, SIGNAL(SocketError(int,QAbstractSocket::SocketError, QString)), this, SLOT(OnSocketError(int,QAbstractSocket::SocketError, QString)));
   connect(m_Server, SIGNAL(ClientConnected(int)), this, SLOT(OnClientConnected(int)));
   connect(m_Server, SIGNAL(SentKeepAlive()), this, SLOT(OnKeepAliveSent()));
+  connect(m_Server, SIGNAL(NoIncomingData()), this, SLOT(OnNoIncomingData()));
 
   if (!m_Server->listen(QHostAddress::LocalHost, m_PortNumber))
   {
@@ -67,6 +68,7 @@ void TestQtServer::Start()
     m_StatsTimer->start();
   }
   m_Server->SetKeepAliveOn(true);
+  m_Server->SetCheckForNoIncomingData(true);
 }
 
 
@@ -100,7 +102,14 @@ void TestQtServer::OnMessageReceived(int portNumber, NiftyLinkMessageContainer::
 //-----------------------------------------------------------------------------
 void TestQtServer::OnKeepAliveSent()
 {
-  QLOG_INFO() << QObject::tr("%1::OnKeepAliveSent()");
+  QLOG_INFO() << QObject::tr("%1::OnKeepAliveSent()").arg(objectName());
+}
+
+
+//-----------------------------------------------------------------------------
+void TestQtServer::OnNoIncomingData()
+{
+  QLOG_INFO() << QObject::tr("%1::OnNoIncomingData()").arg(objectName());
 }
 
 } // end namespace niftk

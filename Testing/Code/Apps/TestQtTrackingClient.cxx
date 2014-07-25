@@ -99,6 +99,7 @@ void TestQtTrackingClient::OnTimeOut()
   if (m_NumberMessagesSent == m_IntendedNumberMessages)
   {
     m_Client->OutputStats();
+    m_Timer->stop();
     m_NumberMessagesSent = 0;
   }
 }

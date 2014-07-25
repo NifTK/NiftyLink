@@ -57,6 +57,12 @@ public:
   /// \brief Set this object to either send or not send keep alive messages.
   void SetKeepAliveOn(bool isOn);
 
+  /// \brief Set this object to monitor for no incoming data.
+  /// Use in conjunction with SetKeepAliveOn().
+  /// eg. One end sends keep alive messages, the other end
+  /// expects to receive data regularly.
+  void SetCheckForNoIncomingData(bool isOn);
+
 public slots:
 
   /// \brief Writes some stats to console.
@@ -83,6 +89,9 @@ signals:
 
   /// \brief Emmitted when a keep alive message was sent.
   void SentKeepAlive();
+
+  /// \brief Emmitted when any of the connected clients is failing to send data.
+  void NoIncomingData();
 
 private slots:
 

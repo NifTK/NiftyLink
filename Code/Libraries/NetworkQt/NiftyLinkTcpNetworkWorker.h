@@ -57,6 +57,12 @@ public:
   /// \brief Set this object to either send or not send keep alive messages.
   void SetKeepAliveOn(bool isOn);
 
+  /// \brief Set this object to monitor for no incoming data.
+  /// Use in conjunction with SetKeepAliveOn().
+  /// eg. One end sends keep alive messages, the other end
+  /// expects to receive data regularly.
+  void SetCheckForNoIncomingData(bool isOn);
+
   /// \brief Sends a request to output some statistics to console.
   void OutputStatsToConsole();
 
@@ -66,6 +72,7 @@ signals:
   void MessageReceived(int portNumber);
   void BytesSent(qint64 bytes);
   void SentKeepAlive();
+  void NoIncomingData();
   void InternalSendSignal();
   void InternalStatsSignal();
 
@@ -76,6 +83,7 @@ private slots:
   void OnSocketReadyRead();
   void OnSend();
   void OnSendInternalPing();
+  void OnCheckForIncomingData();
   void OnOutputStats();
 
 private:
@@ -102,9 +110,12 @@ private:
   // For internal 'keep-alive' message
   QTimer                        *m_KeepAliveTimer;
   int                            m_KeepAliveInterval;
+  igtl::TimeStamp::Pointer       m_LastMessageSentTime;
 
-  // We track the last time we processed a real message (not a 'keep-alive'), so we can avoid sending 'keep-alive' if not needed.
-  igtl::TimeStamp::Pointer       m_LastMessageProcessedTime;
+  // For monitoring for no incoming data.
+  QTimer                        *m_NoIncomingDataTimer;
+  int                            m_NoIncomingDataInterval;
+  igtl::TimeStamp::Pointer       m_LastMessageReceivedTime;
 
 }; // end class
 

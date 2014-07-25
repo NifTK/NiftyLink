@@ -28,6 +28,8 @@ namespace niftk
 //-----------------------------------------------------------------------------
 NiftyLinkTcpServer::NiftyLinkTcpServer(QObject *parent)
 : QTcpServer(parent)
+, m_SendKeepAlive(false)
+, m_CheckNoIncoming(false)
 {
   this->setObjectName("NiftyLinkTcpServer");
   m_ReceivedCounter.setObjectName("NiftyLinkTcpServer");
@@ -52,21 +54,28 @@ void NiftyLinkTcpServer::incomingConnection(int socketDescriptor)
   QLOG_INFO() << QObject::tr("%1::incomingConnection(%2) - creating socket.").arg(objectName()).arg(socketDescriptor);
 
   QTcpSocket *socket = new QTcpSocket();
+  connect(socket, SIGNAL(connected()), this, SLOT(OnClientConnected()));
+
   if (socket->setSocketDescriptor(socketDescriptor))
   {
     socket->setSocketOption(QAbstractSocket::LowDelayOption, 1);
 
     NiftyLinkQThread *thread = new NiftyLinkQThread(this);
     NiftyLinkTcpNetworkWorker *worker = new NiftyLinkTcpNetworkWorker(&m_InboundMessages, &m_OutboundMessages, socket);
+
     worker->moveToThread(thread);
     socket->moveToThread(thread);
 
-    connect(socket, SIGNAL(disconnected()), this, SLOT(OnClientDisconnected()));
-    connect(socket, SIGNAL(connected()), this, SLOT(OnClientConnected()));
+    worker->SetNumberMessageReceivedThreshold(m_ReceivedCounter.GetNumberMessageReceivedThreshold());
+    worker->SetKeepAliveOn(m_SendKeepAlive);
+    worker->SetCheckForNoIncomingData(m_CheckNoIncoming);
+
+    connect(worker, SIGNAL(NoIncomingData()), this, SIGNAL(NoIncomingData()));
     connect(worker, SIGNAL(SentKeepAlive()), this, SIGNAL(SentKeepAlive()));
     connect(worker, SIGNAL(BytesSent(qint64)), this, SIGNAL(BytesSent(qint64)));
     connect(worker, SIGNAL(SocketError(int,QAbstractSocket::SocketError,QString)), this, SIGNAL(SocketError(int,QAbstractSocket::SocketError,QString)), Qt::BlockingQueuedConnection);
     connect(worker, SIGNAL(MessageReceived(int)), this, SLOT(OnMessageReceived(int)), Qt::BlockingQueuedConnection); // as the worker is in another thread.
+    connect(socket, SIGNAL(disconnected()), this, SLOT(OnClientDisconnected()));
     connect(thread, SIGNAL(finished()), thread, SLOT(deleteLater())); // i.e. the event loop of thread deletes it when control returns to this event loop.
 
     QMutexLocker locker(&m_Mutex);
@@ -93,10 +102,6 @@ void NiftyLinkTcpServer::incomingConnection(int socketDescriptor)
 void NiftyLinkTcpServer::OnClientConnected()
 {
   QTcpSocket *sender = qobject_cast<QTcpSocket*>(QObject::sender());
-  foreach (NiftyLinkTcpNetworkWorker* worker, m_Workers)
-  {
-    worker->SetNumberMessageReceivedThreshold(m_ReceivedCounter.GetNumberMessageReceivedThreshold());
-  }
   QLOG_INFO() << QObject::tr("%1::OnClientConnected() - client %2 connected.").arg(objectName()).arg(reinterpret_cast<qulonglong>(sender));
   emit ClientConnected(sender->peerPort());
 }
@@ -177,9 +182,21 @@ void NiftyLinkTcpServer::SetNumberMessageReceivedThreshold(qint64 threshold)
 //-----------------------------------------------------------------------------
 void NiftyLinkTcpServer::SetKeepAliveOn(bool isOn)
 {
+  m_SendKeepAlive = isOn;
   foreach (NiftyLinkTcpNetworkWorker* worker, m_Workers)
   {
-    worker->SetKeepAliveOn(isOn);
+    worker->SetKeepAliveOn(m_SendKeepAlive);
+  }
+}
+
+
+//-----------------------------------------------------------------------------
+void NiftyLinkTcpServer::SetCheckForNoIncomingData(bool isOn)
+{
+  m_CheckNoIncoming = isOn;
+  foreach (NiftyLinkTcpNetworkWorker* worker, m_Workers)
+  {
+    worker->SetCheckForNoIncomingData(m_CheckNoIncoming);
   }
 }
 
