@@ -81,6 +81,11 @@ void NiftyLinkMessageCounter::OnOutputStats()
 //-----------------------------------------------------------------------------
 void NiftyLinkMessageCounter::OnMessageReceived(NiftyLinkMessageContainer::Pointer& message)
 {
+  if (m_NumberMessagesReceived == 0)
+  {
+     m_StatsTimePoint->GetTime();
+  }
+
   m_NumberMessagesReceived++;
   m_TotalBytesReceived += message->GetMessage()->GetPackSize();
 
