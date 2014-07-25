@@ -21,11 +21,10 @@ SET(LIBS
 )
 
 SET(APPS
-  TestQtServer
-  TestOIGTLinkTrackingClient
-  TestNifTKOIGTLinkTrackingClient
-  TestNifTKQtTrackingClient
-  TestNifTKQtImagingClient
+  TestServerQt
+  TestClientNifTKOIGTLTracking
+  TestClientNifTKQtTracking
+  TestClientNifTKQtImaging
 )
 
 FOREACH(APP ${APPS})
@@ -36,7 +35,10 @@ FOREACH(APP ${APPS})
 ENDFOREACH()
 
 SET(SIMPLE_APPS
-  TestOIGTLinkServer
+  TestServerOIGTL
+  TestClientOIGTLTracking
+  TestClientOIGTLImaging
+  TestClientOIGTLTrackingAndImaging
 )
 
 FOREACH(APP ${SIMPLE_APPS})

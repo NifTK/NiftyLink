@@ -10,7 +10,7 @@
   See LICENSE.txt in the top level directory for details.
 =============================================================================*/
 
-#include "TestNifTKOIGTLinkTrackingClient.h"
+#include "TestClientNifTKOIGTLTracking.h"
 #include <NiftyLinkMessageContainer.h>
 #include <NiftyLinkUtils.h>
 #include <NiftyLinkClientSocket.h>
@@ -26,7 +26,7 @@ namespace niftk
 {
 
 //-----------------------------------------------------------------------------
-TestNifTKOIGTLinkTrackingClient::TestNifTKOIGTLinkTrackingClient(
+TestClientNifTKOIGTLTracking::TestClientNifTKOIGTLTracking(
     const std::string& hostName,
     const int& portNumber,
     const int& fps,
@@ -40,18 +40,18 @@ TestNifTKOIGTLinkTrackingClient::TestNifTKOIGTLinkTrackingClient(
 , m_TrackedObjectsPerMessage(trackedObjectsPerMessage)
 , m_NumberMessagesSent(0)
 {
-  this->setObjectName("TestNifTKOIGTLinkTrackingClient");
+  this->setObjectName("TestClientNifTKOIGTLTracking");
 }
 
 
 //-----------------------------------------------------------------------------
-TestNifTKOIGTLinkTrackingClient::~TestNifTKOIGTLinkTrackingClient()
+TestClientNifTKOIGTLTracking::~TestClientNifTKOIGTLTracking()
 {
 }
 
 
 //-----------------------------------------------------------------------------
-void TestNifTKOIGTLinkTrackingClient::Start()
+void TestClientNifTKOIGTLTracking::Start()
 {
   NiftyLinkClientSocket::Pointer socket;
   socket = NiftyLinkClientSocket::New();
@@ -99,7 +99,7 @@ void TestNifTKOIGTLinkTrackingClient::Start()
 
   // Output a stats message, just in-case in of our end-points is listening.
   igtl::StringMessage::Pointer msg = igtl::StringMessage::New();
-  msg->SetDeviceName("TestNifTKOIGTLinkTrackingClient");
+  msg->SetDeviceName("TestClientNifTKOIGTLTracking");
   msg->SetString("STATS");
   msg->Pack();
 
@@ -138,12 +138,12 @@ int main(int argc, char** argv)
   int         total    = atoi(argv[4]);
   int         objects  = atoi(argv[5]);
 
-  std::cout << "TestNifTKOIGTLinkTrackingClient: host = " << hostName << "." << std::endl;
-  std::cout << "TestNifTKOIGTLinkTrackingClient: port = " << port << "." << std::endl;
-  std::cout << "TestNifTKOIGTLinkTrackingClient: fps = " << fps << "." << std::endl;
-  std::cout << "TestNifTKOIGTLinkTrackingClient: total = " << total << "." << std::endl;
-  std::cout << "TestNifTKOIGTLinkTrackingClient: objects = " << objects << "." << std::endl;
-  std::cout << "TestNifTKOIGTLinkTrackingClient: Instantiating client." << std::endl;
+  std::cout << "TestClientNifTKOIGTLTracking: host = " << hostName << "." << std::endl;
+  std::cout << "TestClientNifTKOIGTLTracking: port = " << port << "." << std::endl;
+  std::cout << "TestClientNifTKOIGTLTracking: fps = " << fps << "." << std::endl;
+  std::cout << "TestClientNifTKOIGTLTracking: total = " << total << "." << std::endl;
+  std::cout << "TestClientNifTKOIGTLTracking: objects = " << objects << "." << std::endl;
+  std::cout << "TestClientNifTKOIGTLTracking: Instantiating client." << std::endl;
 
   // Init the logging mechanism.
   QsLogging::Logger& logger = QsLogging::Logger::instance();
@@ -152,13 +152,13 @@ int main(int argc, char** argv)
   logger.addDestination(debugDestination.get());
 
   // Start client.
-  niftk::TestNifTKOIGTLinkTrackingClient client(hostName, port, fps, total, objects);
+  niftk::TestClientNifTKOIGTLTracking client(hostName, port, fps, total, objects);
 
-  std::cout << "TestNifTKOIGTLinkTrackingClient: Creating app." << std::endl;
+  std::cout << "TestClientNifTKOIGTLTracking: Creating app." << std::endl;
 
   QApplication app(argc, argv);
 
-  std::cout << "TestNifTKOIGTLinkTrackingClient: Launching app." << std::endl;
+  std::cout << "TestClientNifTKOIGTLTracking: Launching app." << std::endl;
 
   QTimer::singleShot(220, &client, SLOT(Start()));
   int ret = app.exec();

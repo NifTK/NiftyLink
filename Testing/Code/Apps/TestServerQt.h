@@ -10,8 +10,8 @@
   See LICENSE.txt in the top level directory for details.
 =============================================================================*/
 
-#ifndef TestQtServer_h
-#define TestQtServer_h
+#ifndef TestServerQt_h
+#define TestServerQt_h
 
 #include <NiftyLinkMessageContainer.h>
 #include <NiftyLinkTcpServer.h>
@@ -24,18 +24,18 @@
 namespace niftk
 {
 
-class TestQtServer : public QObject
+class TestServerQt : public QObject
 {
 
   Q_OBJECT
 
 public:
-  TestQtServer(const int& portNumber,
+  TestServerQt(const int& portNumber,
                const bool& isEchoing,
                const bool& doStats,
                const int threshold,
                QObject *parent=0);
-  virtual ~TestQtServer();
+  virtual ~TestServerQt();
 
 private slots:
 
@@ -57,4 +57,4 @@ private:
 
 } // end namespace niftk
 
-#endif // TestQtServer_h
+#endif // TestServerQt_h

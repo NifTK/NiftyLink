@@ -10,7 +10,7 @@
   See LICENSE.txt in the top level directory for details.
 =============================================================================*/
 
-#include "TestNifTKQtTrackingClient.h"
+#include "TestClientNifTKQtTracking.h"
 #include <NiftyLinkMessageContainer.h>
 #include <NiftyLinkUtils.h>
 
@@ -24,7 +24,7 @@ namespace niftk
 {
 
 //-----------------------------------------------------------------------------
-TestNifTKQtTrackingClient::TestNifTKQtTrackingClient(
+TestClientNifTKQtTracking::TestClientNifTKQtTracking(
     const std::string& hostName,
     const int& portNumber,
     const int& fps,
@@ -39,19 +39,19 @@ TestNifTKQtTrackingClient::TestNifTKQtTrackingClient(
 , m_NumberMessagesSent(0)
 , m_Client(new NiftyLinkTcpClient(parent))
 {
-  this->setObjectName("TestNifTKQtTrackingClient");
+  this->setObjectName("TestClientNifTKQtTracking");
   connect(m_Client, SIGNAL(Connected()), this, SLOT(OnConnectedToServer()));
 }
 
 
 //-----------------------------------------------------------------------------
-TestNifTKQtTrackingClient::~TestNifTKQtTrackingClient()
+TestClientNifTKQtTracking::~TestClientNifTKQtTracking()
 {
 }
 
 
 //-----------------------------------------------------------------------------
-void TestNifTKQtTrackingClient::Start()
+void TestClientNifTKQtTracking::Start()
 {
   QLOG_INFO() << QObject::tr("%1::Start() - started.").arg(objectName());
   m_Client->ConnectToHost(m_HostName, m_PortNumber);
@@ -59,7 +59,7 @@ void TestNifTKQtTrackingClient::Start()
 
 
 //-----------------------------------------------------------------------------
-void TestNifTKQtTrackingClient::OnConnectedToServer()
+void TestClientNifTKQtTracking::OnConnectedToServer()
 {
   QLOG_INFO() << QObject::tr("%1::OnConnectedToServer().").arg(objectName());
   this->RunTest();
@@ -67,7 +67,7 @@ void TestNifTKQtTrackingClient::OnConnectedToServer()
 
 
 //-----------------------------------------------------------------------------
-void TestNifTKQtTrackingClient::RunTest()
+void TestClientNifTKQtTracking::RunTest()
 {
   igtl::TimeStamp::Pointer timeLastMessage = igtl::TimeStamp::New();
   timeLastMessage->GetTime();
@@ -120,12 +120,12 @@ int main(int argc, char** argv)
   int         total    = atoi(argv[4]);
   int         objects  = atoi(argv[5]);
 
-  std::cout << "TestNifTKQtTrackingClient: host = " << hostName << "." << std::endl;
-  std::cout << "TestNifTKQtTrackingClient: port = " << port << "." << std::endl;
-  std::cout << "TestNifTKQtTrackingClient: fps = " << fps << "." << std::endl;
-  std::cout << "TestNifTKQtTrackingClient: total = " << total << "." << std::endl;
-  std::cout << "TestNifTKQtTrackingClient: objects = " << objects << "." << std::endl;
-  std::cout << "TestNifTKQtTrackingClient: Instantiating client." << std::endl;
+  std::cout << "TestClientNifTKQtTracking: host = " << hostName << "." << std::endl;
+  std::cout << "TestClientNifTKQtTracking: port = " << port << "." << std::endl;
+  std::cout << "TestClientNifTKQtTracking: fps = " << fps << "." << std::endl;
+  std::cout << "TestClientNifTKQtTracking: total = " << total << "." << std::endl;
+  std::cout << "TestClientNifTKQtTracking: objects = " << objects << "." << std::endl;
+  std::cout << "TestClientNifTKQtTracking: Instantiating client." << std::endl;
 
   // Init the logging mechanism.
   QsLogging::Logger& logger = QsLogging::Logger::instance();
@@ -134,13 +134,13 @@ int main(int argc, char** argv)
   logger.addDestination(debugDestination.get());
 
   // Start client.
-  niftk::TestNifTKQtTrackingClient client(hostName, port, fps, total, objects);
+  niftk::TestClientNifTKQtTracking client(hostName, port, fps, total, objects);
 
-  std::cout << "TestNifTKQtTrackingClient: Creating app." << std::endl;
+  std::cout << "TestClientNifTKQtTracking: Creating app." << std::endl;
 
   QApplication app(argc, argv);
 
-  std::cout << "TestNifTKQtTrackingClient: Launching app." << std::endl;
+  std::cout << "TestClientNifTKQtTracking: Launching app." << std::endl;
 
   QTimer::singleShot(220, &client, SLOT(Start()));
   int ret = app.exec();

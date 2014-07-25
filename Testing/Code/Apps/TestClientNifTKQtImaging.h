@@ -10,8 +10,8 @@
   See LICENSE.txt in the top level directory for details.
 =============================================================================*/
 
-#ifndef TestNifTKQtImagingClient_h
-#define TestNifTKQtImagingClient_h
+#ifndef TestClientNifTKQtImaging_h
+#define TestClientNifTKQtImaging_h
 
 #include <NiftyLinkMessageContainer.h>
 #include <NiftyLinkTcpClient.h>
@@ -27,23 +27,23 @@ namespace niftk
 {
 
 /**
- * \class TestNifTKQtImagingClient
+ * \class TestClientNifTKQtImaging
  * \brief Qt based tracking client to send/receive imaging data from an OpenIGTLink server.
  */
-class TestNifTKQtImagingClient : public QObject
+class TestClientNifTKQtImaging : public QObject
 {
 
   Q_OBJECT
 
 public:
-  TestNifTKQtImagingClient(const std::string& hostName,
+  TestClientNifTKQtImaging(const std::string& hostName,
                        const int& portNumber,
                        const int& fps,
                        const int& totalNumberMessages,
                        const QString imageFileName,
                        QObject *parent=0
                       );
-  virtual ~TestNifTKQtImagingClient();
+  virtual ~TestClientNifTKQtImaging();
 
 private slots:
 
@@ -66,4 +66,4 @@ private:
 
 } // end namespace niftk
 
-#endif // TestNifTKQtImagingClient_h
+#endif // TestClientNifTKQtImaging_h
