@@ -25,6 +25,7 @@
 #include <math.h>
 #include <cstdlib>
 #include <cstring>
+#include <stdexcept>
 
 #include <igtlSocket.h>
 #include <igtlServerSocket.h>
