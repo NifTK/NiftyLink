@@ -105,26 +105,26 @@ int main(int argc, char** argv)
   if (argc != 6) // check number of arguments
   {
     // If not correct, print usage
-    std::cerr << "Usage: " << argv[0] << " <host> <port> <fps> <total>"    << std::endl;
-    std::cerr << "    <host>     : Hostname"                               << std::endl;
-    std::cerr << "    <port>     : Port #"                                 << std::endl;
-    std::cerr << "    <fps>      : Frames per second [30]"                 << std::endl;
-    std::cerr << "    <total>    : # of frames in total [1000]"            << std::endl;
-    std::cerr << "    <objects>  : # of matrices per message [1]"          << std::endl;
+    std::cerr << "Usage: " << argv[0] << " <host> <port> <fps> <total>" << std::endl;
+    std::cerr << "    <host>     : Hostname."                           << std::endl;
+    std::cerr << "    <port>     : Port #."                             << std::endl;
+    std::cerr << "    <fps>      : Frames per second."                  << std::endl;
+    std::cerr << "    <channels> : # of matrices per message."          << std::endl;
+    std::cerr << "    <total>    : # of frames in total."               << std::endl;
     exit(0);
   }
 
   std::string hostName = argv[1];
   int         port     = atoi(argv[2]);
   int         fps      = atoi(argv[3]);
-  int         total    = atoi(argv[4]);
-  int         objects  = atoi(argv[5]);
+  int         channels  = atoi(argv[4]);
+  int         total    = atoi(argv[5]);
 
   std::cout << "TestClientNifTKQtTracking: host = " << hostName << "." << std::endl;
   std::cout << "TestClientNifTKQtTracking: port = " << port << "." << std::endl;
   std::cout << "TestClientNifTKQtTracking: fps = " << fps << "." << std::endl;
   std::cout << "TestClientNifTKQtTracking: total = " << total << "." << std::endl;
-  std::cout << "TestClientNifTKQtTracking: objects = " << objects << "." << std::endl;
+  std::cout << "TestClientNifTKQtTracking: channels = " << channels << "." << std::endl;
   std::cout << "TestClientNifTKQtTracking: Instantiating client." << std::endl;
 
   // Init the logging mechanism.
@@ -134,7 +134,7 @@ int main(int argc, char** argv)
   logger.addDestination(debugDestination.get());
 
   // Start client.
-  niftk::TestClientNifTKQtTracking client(hostName, port, fps, total, objects);
+  niftk::TestClientNifTKQtTracking client(hostName, port, fps, total, channels);
 
   std::cout << "TestClientNifTKQtTracking: Creating app." << std::endl;
 
