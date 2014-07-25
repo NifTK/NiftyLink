@@ -75,6 +75,7 @@ void NiftyLinkTcpClient::OnConnected()
   m_Socket->moveToThread(thread);
 
   connect(m_Socket, SIGNAL(disconnected()), this, SLOT(OnDisconnected()));
+  connect(m_Worker, SIGNAL(SentKeepAlive()), this, SIGNAL(SentKeepAlive()));
   connect(m_Worker, SIGNAL(BytesSent(qint64)), this, SIGNAL(BytesSent(qint64)));
   connect(m_Worker, SIGNAL(MessageReceived(int)), this, SLOT(OnMessageReceived(int)), Qt::BlockingQueuedConnection);
   connect(thread, SIGNAL(finished()), thread, SLOT(deleteLater())); // i.e. the event loop of thread deletes it when control returns to this event loop.
@@ -127,6 +128,20 @@ void NiftyLinkTcpClient::Send(NiftyLinkMessageContainer::Pointer message)
 void NiftyLinkTcpClient::OutputStats()
 {
   m_Worker->OutputStatsToConsole();
+}
+
+
+//-----------------------------------------------------------------------------
+void NiftyLinkTcpClient::SetNumberMessageReceivedThreshold(qint64 threshold)
+{
+  m_Worker->SetNumberMessageReceivedThreshold(threshold);
+}
+
+
+//-----------------------------------------------------------------------------
+void NiftyLinkTcpClient::SetKeepAliveOn(bool isOn)
+{
+  m_Worker->SetKeepAliveOn(isOn);
 }
 
 

@@ -39,6 +39,7 @@ private slots:
   void OnSocketError(int portNumber, QAbstractSocket::SocketError errorCode, QString errorString);
   void OnMessageReceived(int portNumber, NiftyLinkMessageContainer::Pointer message);
   void OnClientConnected(int portNumber);
+  void OnKeepAliveSent();
 
 private:
   int                 m_PortNumber;

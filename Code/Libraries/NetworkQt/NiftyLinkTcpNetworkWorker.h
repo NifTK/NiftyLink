@@ -54,6 +54,9 @@ public:
   /// get stats every X number of messages. Set to -1 to turn this off.
   void SetNumberMessageReceivedThreshold(qint64 threshold);
 
+  /// \brief Set this object to either send or not send keep alive messages.
+  void SetKeepAliveOn(bool isOn);
+
   /// \brief Sends a request to output some statistics to console.
   void OutputStatsToConsole();
 
@@ -62,6 +65,7 @@ signals:
   void SocketError(int portNumber, QAbstractSocket::SocketError errorCode, QString errorString);
   void MessageReceived(int portNumber);
   void BytesSent(qint64 bytes);
+  void SentKeepAlive();
   void InternalSendSignal();
   void InternalStatsSignal();
 
@@ -71,9 +75,13 @@ private slots:
   void OnSocketError(QAbstractSocket::SocketError error);
   void OnSocketReadyRead();
   void OnSend();
+  void OnSendInternalPing();
   void OnOutputStats();
 
 private:
+
+  void SendMessage(igtl::MessageBase::Pointer);
+
   NiftyLinkMessageManager      *m_InboundMessages;
   NiftyLinkMessageManager      *m_OutboundMessages;
   QTcpSocket                   *m_Socket;
@@ -90,6 +98,13 @@ private:
 
   // For stats.
   NiftyLinkMessageCounter       m_ReceivedCounter;
+
+  // For internal 'keep-alive' message
+  QTimer                        *m_KeepAliveTimer;
+  int                            m_KeepAliveInterval;
+
+  // We track the last time we processed a real message (not a 'keep-alive'), so we can avoid sending 'keep-alive' if not needed.
+  igtl::TimeStamp::Pointer       m_LastMessageProcessedTime;
 
 }; // end class
 

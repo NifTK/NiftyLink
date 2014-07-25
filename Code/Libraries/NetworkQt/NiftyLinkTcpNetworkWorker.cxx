@@ -45,6 +45,8 @@ NiftyLinkTcpNetworkWorker::NiftyLinkTcpNetworkWorker(
 , m_IncomingMessage(NULL)
 , m_IncomingMessageBytesReceived(0)
 , m_AbortReading(false)
+, m_KeepAliveTimer(NULL)
+, m_KeepAliveInterval(500)
 {
   assert(m_Socket);
   assert(m_InboundMessages);
@@ -56,12 +58,17 @@ NiftyLinkTcpNetworkWorker::NiftyLinkTcpNetworkWorker(
     host = "localhost";
   }
 
+  m_LastMessageProcessedTime = igtl::TimeStamp::New();
+  m_KeepAliveTimer = new QTimer();
+  m_KeepAliveTimer->setInterval(m_KeepAliveInterval);
+
   m_MessagePrefix = QObject::tr("NiftyLinkTcpNetworkWorker(d=%1, h=%2, p=%3)").arg(m_Socket->socketDescriptor()).arg(host).arg(m_Socket->peerPort());
   this->setObjectName(m_MessagePrefix);
   m_ReceivedCounter.setObjectName(m_MessagePrefix);
 
   connect(this, SIGNAL(InternalStatsSignal()), this, SLOT(OnOutputStats()));
   connect(this, SIGNAL(InternalSendSignal()), this, SLOT(OnSend()));
+  connect(m_KeepAliveTimer, SIGNAL(timeout()), this, SLOT(OnSendInternalPing()));
   connect(m_Socket, SIGNAL(bytesWritten(qint64)), this, SIGNAL(BytesSent(qint64)));
   connect(m_Socket, SIGNAL(disconnected()), this, SLOT(OnSocketDisconnected()));
   connect(m_Socket, SIGNAL(error(QAbstractSocket::SocketError)), this, SLOT(OnSocketError(QAbstractSocket::SocketError)));
@@ -137,6 +144,20 @@ void NiftyLinkTcpNetworkWorker::OutputStatsToConsole()
 void NiftyLinkTcpNetworkWorker::SetNumberMessageReceivedThreshold(qint64 threshold)
 {
   m_ReceivedCounter.SetNumberMessageReceivedThreshold(threshold);
+}
+
+
+//-----------------------------------------------------------------------------
+void NiftyLinkTcpNetworkWorker::SetKeepAliveOn(bool isOn)
+{
+  if (isOn && this->m_Socket->isWritable() && this->m_Socket->isOpen())
+  {
+    m_KeepAliveTimer->start();
+  }
+  else
+  {
+    m_KeepAliveTimer->stop();
+  }
 }
 
 
@@ -349,19 +370,53 @@ void NiftyLinkTcpNetworkWorker::OnSocketReadyRead()
 //-----------------------------------------------------------------------------
 void NiftyLinkTcpNetworkWorker::OnSend()
 {
+  NiftyLinkMessageContainer::Pointer message = m_OutboundMessages->GetContainer();
+  igtl::MessageBase::Pointer msg = message->GetMessage();
+
+  this->SendMessage(msg);
+}
+
+
+//-----------------------------------------------------------------------------
+void NiftyLinkTcpNetworkWorker::OnSendInternalPing()
+{
+  // Check if we can avoid sending this message, just to save on network traffic.
+  igtl::TimeStamp::Pointer sendStarted = igtl::TimeStamp::New();
+  igtlUint64 diff = GetDifferenceInNanoSeconds(sendStarted, m_LastMessageProcessedTime) / 1000000; // convert nano to milliseconds.
+  if (diff < m_KeepAliveInterval/2)
+  {
+    QLOG_DEBUG() << QObject::tr("%1::OnSendInternalPing() - No real need to send a keep-alive as we have recently processed a message.").arg(objectName());
+    return;
+  }
+
+  igtl::StringMessage::Pointer msg = igtl::StringMessage::New();
+  msg->SetDeviceName("NiftyLinkTcpNetworkWorker");
+  msg->SetString("POKE");
+  msg->Pack();
+
+  this->SendMessage(msg.GetPointer());
+  QLOG_INFO() << QObject::tr("%1::OnSendInternalPing() - sent keep-alive.").arg(m_MessagePrefix);
+  emit SentKeepAlive();
+}
+
+
+//-----------------------------------------------------------------------------
+void NiftyLinkTcpNetworkWorker::SendMessage(igtl::MessageBase::Pointer msg)
+{
   // This doubly double checks we are running in our own thread.
   niftk::NiftyLinkQThread *p = dynamic_cast<niftk::NiftyLinkQThread*>(QThread::currentThread());
   assert(p != NULL);
 
-  NiftyLinkMessageContainer::Pointer message = m_OutboundMessages->GetContainer();
-  igtl::MessageBase::Pointer msg = message->GetMessage();
-
   int bytesWritten = m_Socket->write(static_cast<const char*>(msg->GetPackPointer()), msg->GetPackSize());
   if (bytesWritten != msg->GetPackSize())
   {
-    QLOG_ERROR() << QObject::tr("%1::Send() - only written %2 bytes instead of %3").arg(m_MessagePrefix).arg(bytesWritten).arg(msg->GetPackSize());
+    QLOG_ERROR() << QObject::tr("%1::OnSendMessage() - only written %2 bytes instead of %3").arg(m_MessagePrefix).arg(bytesWritten).arg(msg->GetPackSize());
   }
-  QLOG_DEBUG() << QObject::tr("%1::Send() - written %2 bytes.").arg(m_MessagePrefix).arg(bytesWritten);
+
+  // Store the time where we last sent a message.
+  m_LastMessageProcessedTime->GetTime();
+
+  QLOG_DEBUG() << QObject::tr("%1::OnSendMessage() - written %2 bytes.").arg(m_MessagePrefix).arg(bytesWritten);
 }
 
 } // end niftk namespace

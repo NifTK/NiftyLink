@@ -49,6 +49,14 @@ public:
   /// The OpenIGTLink message within NiftyLinkMessageContainer should be Packed.
   void Send(NiftyLinkMessageContainer::Pointer message);
 
+  /// \brief Set a threshold for the number of messages, so that you
+  /// get stats every X number of messages. Set to -1 to turn this off.
+  /// Defaults to off.
+  void SetNumberMessageReceivedThreshold(qint64 threshold);
+
+  /// \brief Set this object to either send or not send keep alive messages.
+  void SetKeepAliveOn(bool isOn);
+
 public slots:
 
   /// \brief Writes some stats to console.
@@ -72,6 +80,9 @@ signals:
 
   /// \brief Emmitted by the underlying socket when we have actually sent bytes.
   void BytesSent(qint64 bytes);
+
+  /// \brief Emmitted when a keep alive message was sent.
+  void SentKeepAlive();
 
 private slots:
 

@@ -63,6 +63,7 @@ void NiftyLinkTcpServer::incomingConnection(int socketDescriptor)
 
     connect(socket, SIGNAL(disconnected()), this, SLOT(OnClientDisconnected()));
     connect(socket, SIGNAL(connected()), this, SLOT(OnClientConnected()));
+    connect(worker, SIGNAL(SentKeepAlive()), this, SIGNAL(SentKeepAlive()));
     connect(worker, SIGNAL(BytesSent(qint64)), this, SIGNAL(BytesSent(qint64)));
     connect(worker, SIGNAL(SocketError(int,QAbstractSocket::SocketError,QString)), this, SIGNAL(SocketError(int,QAbstractSocket::SocketError,QString)), Qt::BlockingQueuedConnection);
     connect(worker, SIGNAL(MessageReceived(int)), this, SLOT(OnMessageReceived(int)), Qt::BlockingQueuedConnection); // as the worker is in another thread.
@@ -172,6 +173,15 @@ void NiftyLinkTcpServer::SetNumberMessageReceivedThreshold(qint64 threshold)
   m_ReceivedCounter.SetNumberMessageReceivedThreshold(threshold);
 }
 
+
+//-----------------------------------------------------------------------------
+void NiftyLinkTcpServer::SetKeepAliveOn(bool isOn)
+{
+  foreach (NiftyLinkTcpNetworkWorker* worker, m_Workers)
+  {
+    worker->SetKeepAliveOn(isOn);
+  }
+}
 
 
 //-----------------------------------------------------------------------------
