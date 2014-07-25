@@ -52,11 +52,11 @@ public slots:
 
 private:
 
-  igtl::TimeStamp::Pointer      m_StatsTimePoint;
-  quint64                       m_TotalBytesReceived;
-  quint64                       m_NumberMessagesReceived;
-  QList<quint64>                m_ListOfLatencies;
-  qint64                        m_NumberMessageReceivedThreshold;
+  igtl::TimeStamp::Pointer        m_StatsTimePoint;
+  quint64                         m_TotalBytesReceived;
+  quint64                         m_NumberMessagesReceived;
+  QMap< QString, QList<quint64> > m_ListsOfLatenciesByDeviceType;
+  qint64                          m_NumberMessageReceivedThreshold;
 
 }; // end class
 
