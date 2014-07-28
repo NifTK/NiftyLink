@@ -11,22 +11,13 @@
 =============================================================================*/
 
 #include "NiftyLinkUtilsTests.h"
-
 #include <NiftyLinkUtils.h>
-
+#include <igtlTimeStamp.h>
 #include <QDebug>
-
 #include <stdlib.h>
 
-void UtilsTests::InitTestCase()
-{
-}
-
-void UtilsTests::CleanupTestCase()
-{
-}
-
-void UtilsTests::TimeStampSetGetDifferenceTest()
+//-----------------------------------------------------------------------------
+void NiftyLinkUtilsTests::TimeStampSetGetDifferenceTest()
 {
   igtlUint32 seconds, nanoseconds;
   igtlUint32 seconds2, nanoseconds2;
@@ -34,27 +25,27 @@ void UtilsTests::TimeStampSetGetDifferenceTest()
   igtlUint64 totalTimeInNanoseconds2;
 
   igtl::TimeStamp::Pointer timeStamp = igtl::TimeStamp::New();
-  timeStamp->GetTime(&seconds, &nanoseconds);
+  timeStamp->GetTimeStamp(&seconds, &nanoseconds);
 
-  totalTimeInNanoseconds = timeStamp->GetTimeInNanoSeconds();
+  totalTimeInNanoseconds = timeStamp->GetTimeStampInNanoseconds();
   totalTimeInNanoseconds2 = (igtlUint64)((igtlUint64)seconds * (igtlUint64)1000000000 + (igtlUint64)nanoseconds);
 
   QVERIFY(totalTimeInNanoseconds == totalTimeInNanoseconds2);
 
-  timeStamp->SetTimeInNanoSeconds(totalTimeInNanoseconds);
-  totalTimeInNanoseconds2 = timeStamp->GetTimeInNanoSeconds();
+  timeStamp->SetTimeInNanoseconds(totalTimeInNanoseconds);
+  totalTimeInNanoseconds2 = timeStamp->GetTimeStampInNanoseconds();
 
   QVERIFY(totalTimeInNanoseconds == totalTimeInNanoseconds2);
 
-  timeStamp->GetTime(&seconds2, &nanoseconds2);
+  timeStamp->GetTimeStamp(&seconds2, &nanoseconds2);
 
   QVERIFY(seconds == seconds2);
   QVERIFY(nanoseconds == nanoseconds2);
 
   timeStamp->SetTime(seconds, nanoseconds + 1);
-  totalTimeInNanoseconds2 = timeStamp->GetTimeInNanoSeconds();
+  totalTimeInNanoseconds2 = timeStamp->GetTimeStampInNanoseconds();
 
   QVERIFY(totalTimeInNanoseconds2 - totalTimeInNanoseconds == 1);
 }
 
-QTEST_MAIN( UtilsTests )
+QTEST_MAIN( NiftyLinkUtilsTests )

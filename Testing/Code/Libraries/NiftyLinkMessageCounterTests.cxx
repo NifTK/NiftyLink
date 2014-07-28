@@ -10,17 +10,16 @@
   See LICENSE.txt in the top level directory for details.
 =============================================================================*/
 
-#include <QObject>
-#include <QtTest/QtTest>
+#include "NiftyLinkMessageCounterTests.h"
+#include <NiftyLinkMessageCounter.h>
+#include <igtlTimeStamp.h>
+#include <QDebug>
+#include <stdlib.h>
 
-// Taken from: http://doc.qt.nokia.com/latest/qtestlib-manual.html
-
-class UtilsTests: public QObject
+//-----------------------------------------------------------------------------
+void NiftyLinkMessageCounterTests::BasicCountingTestCase()
 {
-  Q_OBJECT
+  QVERIFY(1 == 2);
+}
 
-private slots:
-  void InitTestCase();
-  void CleanupTestCase();
-  void TimeStampSetGetDifferenceTest();
-};
+QTEST_MAIN( NiftyLinkMessageCounterTests )
