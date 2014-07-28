@@ -102,12 +102,25 @@ SOURCE_GROUP("Generated Files" FILES ${NIFTYLINK_QT_MOC_FILES})
 include_directories(${CMAKE_CURRENT_BINARY_DIR})
 include_directories(${CMAKE_CURRENT_SOURCE_DIR})
 
+IF(WIN32) 
+  SET(LINK_LIBS
+    ws2_32
+    wsock32
+  )
+ELSE() 
+  SET(LINK_LIBS
+    m
+    pthread
+  )
+ENDIF()
+
 # --------------------------------------------------------------------------
 # Build the library
 SET (NIFTYLINK_LIBS
   ${QT_LIBRARIES}
   igtlutil
   OpenIGTLink
+  ${LINK_LIBS}
   )
 
 ADD_LIBRARY(niftylink 
