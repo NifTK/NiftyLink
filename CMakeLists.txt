@@ -157,7 +157,6 @@ SET(NIFTYLINK_OPENIGTLINK_MD5 "e01e4bae5b5b6d30d356d2b273dc55fd" CACHE STRING "O
 SET(NIFTYLINK_OPENIGTLINK_LOCATION "http://cmic.cs.ucl.ac.uk/platform/dependencies/NifTK-OpenIGTLink-${NIFTYLINK_OPENIGTLINK_VERSION}.tar.gz" CACHE STRING "Location of OpenIGTLink .tar.gz" FORCE )
 SET(NIFTYLINK_OPENIGTLINK_LOCATION_DEV "git://github.com/NifTK/OpenIGTLink.git" CACHE STRING "Development version of OpenIGTLink." )
 SET(NIFTYLINK_OPENIGTLINK_LOCATION_URL "https://github.com/NifTK/OpenIGTLink" CACHE STRING "OpenIGTLink on Github" FORCE )
-SET(NIFTYLINK_QT_URL "http://cmic.cs.ucl.ac.uk/platform/dependencies/qt-everywhere-opensource-src-4.7.4.tar.gz" CACHE STRING "Example Qt download" FORCE )
 
 ######################################################################
 # Hide these variables from the user, unless they are 'advanced' :-)
@@ -247,7 +246,8 @@ SET(QT_USE_QTXMLPATTERNS 1)
 SET(QT_USE_PHONON 0)
 SET(QT_USE_QTTEST 1)    
 INCLUDE(${QT_USE_FILE})
-  
+SET(NIFTYLINK_QT_URL "http://cmic.cs.ucl.ac.uk/platform/dependencies/qt-everywhere-opensource-src-${QT_VERSION_MAJOR}.${QT_VERSION_MINOR}.${QT_VERSION_PATCH}.tar.gz" CACHE STRING "Example Qt download" FORCE )
+
 ########################################################################
 # Now, if required, do the SuperBuild
 # If we are doing SuperBuild 
@@ -295,6 +295,7 @@ MESSAGE("CMAKE_SOURCE_DIR=${CMAKE_SOURCE_DIR}")
 MESSAGE("CMAKE_BINARY_DIR=${CMAKE_BINARY_DIR}")
 MESSAGE("Qt version=${QT_VERSION_MAJOR}.${QT_VERSION_MINOR}.${QT_VERSION_PATCH}")
 MESSAGE("NiftyLink git version=${NIFTYLINK_GIT_REVISION_ID}")
+STRING(SUBSTRING ${NIFTYLINK_GIT_REVISION_ID} 0 10 NIFTYLINK_GIT_REVISION_SHORT_ID)
 
 ######################################################################
 # Test for some required system information. 
