@@ -67,7 +67,17 @@ int NiftyLinkClient::GetTimeToWaitToConnectToServer()
 
 
 //-----------------------------------------------------------------------------
-void NiftyLinkClient::Start(const QUrl& url)
+void NiftyLinkClient::ConnectToHost(const QString& hostName, quint16 portNumber)
+{
+  QUrl url;
+  url.setHost(hostName);
+  url.setPort(portNumber);
+  this->ConnectToHost(url);
+}
+
+
+//-----------------------------------------------------------------------------
+void NiftyLinkClient::ConnectToHost(const QUrl& url)
 {
   QString address;
 

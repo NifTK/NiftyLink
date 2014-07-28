@@ -46,13 +46,16 @@ public:
   /// Destructor.
   ~NiftyLinkClient();
 
+  /// \brief Starts a client, and tries to connect to the given host and port.
+  void ConnectToHost(const QString& hostName, quint16 portNumber);
+
   /// \brief Starts a client, and tries to connect to the given URL.
-  void Start(const QUrl& url);
+  void ConnectToHost(const QUrl& url);
 
   /// \brief Sends an OpenIGTLink message (blocking).
   void Send(igtl::MessageBase::Pointer msg);
 
-  /// \brief Stops this client.
+  /// \brief Stops this client. This ultimately causes the thread to die, so a new client should be created after calling this.
   void Stop();
 
   /// \brief Sets the time to wait when trying to connect to server, default = 5000 msec.
