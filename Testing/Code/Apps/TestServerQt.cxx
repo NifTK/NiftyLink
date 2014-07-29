@@ -58,7 +58,7 @@ void TestServerQt::Start()
   connect(m_Server, SIGNAL(SentKeepAlive()), this, SLOT(OnKeepAliveSent()));
   connect(m_Server, SIGNAL(NoIncomingData()), this, SLOT(OnNoIncomingData()));
 
-  if (!m_Server->listen(QHostAddress::LocalHost, m_PortNumber))
+  if (!m_Server->listen(QHostAddress::Any, m_PortNumber))
   {
     QLOG_ERROR() << QObject::tr("%1::Start() - Unable to start server, error code %2, error string %3").arg(objectName()).arg(m_Server->serverError()).arg(m_Server->errorString());
   }
