@@ -226,13 +226,11 @@ void NiftyLinkTcpNetworkWorker::OutputStatsToConsole()
 //-----------------------------------------------------------------------------
 void NiftyLinkTcpNetworkWorker::OnSocketDisconnected()
 {
-  QLOG_INFO() << QObject::tr("%1::OnSocketDisconnected() - starting.").arg(m_MessagePrefix);
+  QLOG_INFO() << QObject::tr("%1::OnSocketDisconnected().").arg(m_MessagePrefix);
 
   // If there are no socket events, then we might as well call it a day, and finish this thread.
   QCoreApplication::processEvents();
   QThread::currentThread()->quit();
-
-  QLOG_INFO() << QObject::tr("%1::OnSocketDisconnected() - finished.").arg(m_MessagePrefix);
 }
 
 

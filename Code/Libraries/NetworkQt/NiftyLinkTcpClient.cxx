@@ -44,15 +44,13 @@ NiftyLinkTcpClient::~NiftyLinkTcpClient()
 
   if (m_Socket != NULL)
   {
-    NiftyLinkTcpNetworkWorker::CloseSocket(m_Socket);
-    m_Socket->disconnect();
-    delete m_Socket;
+    m_Socket->disconnectFromHost();
+    m_Socket->deleteLater();
   }
 
   if (m_Worker != NULL)
   {
-    m_Worker->disconnect();
-    delete m_Worker;
+    m_Worker->deleteLater();
   }
 
   QLOG_INFO() << QObject::tr("%1::~NiftyLinkTcpClient() - destroyed.").arg(objectName());
@@ -120,7 +118,7 @@ void NiftyLinkTcpClient::OnConnected()
 
   m_Socket->setSocketOption(QAbstractSocket::LowDelayOption, 1);
 
-  NiftyLinkQThread *thread = new NiftyLinkQThread(this);
+  NiftyLinkQThread *thread = new NiftyLinkQThread();
   m_Worker = new NiftyLinkTcpNetworkWorker(&m_InboundMessages, &m_OutboundMessages, m_Socket);
   m_Worker->moveToThread(thread);
   m_Socket->moveToThread(thread);
@@ -143,9 +141,6 @@ void NiftyLinkTcpClient::OnConnected()
 void NiftyLinkTcpClient::OnDisconnected()
 {
   QLOG_INFO() << QObject::tr("%1::OnDisconnected() - started.").arg(objectName());
-
-  NiftyLinkTcpNetworkWorker::CloseSocket(m_Socket);
-  m_Socket->disconnect();
 
   QLOG_INFO() << QObject::tr("%1::OnDisconnected() - finished.").arg(objectName());
   emit Disconnected();

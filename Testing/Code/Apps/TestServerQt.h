@@ -40,6 +40,7 @@ public:
 private slots:
 
   void Start();
+  void Stop();
   void OnSocketError(int portNumber, QAbstractSocket::SocketError errorCode, QString errorString);
   void OnMessageReceived(int portNumber, NiftyLinkMessageContainer::Pointer message);
   void OnClientConnected(int portNumber);

@@ -45,13 +45,14 @@ TestServerQt::~TestServerQt()
 {
   m_StatsTimer->disconnect();
   delete m_StatsTimer;
-  delete m_Server;
 }
 
 
 //-----------------------------------------------------------------------------
 void TestServerQt::Start()
 {
+  QLOG_INFO() << QObject::tr("%1::Start() - starting up.").arg(objectName());
+
   connect(m_Server, SIGNAL(MessageReceived(int,NiftyLinkMessageContainer::Pointer)), this, SLOT(OnMessageReceived(int,NiftyLinkMessageContainer::Pointer)), Qt::DirectConnection);
   connect(m_Server, SIGNAL(SocketError(int,QAbstractSocket::SocketError, QString)), this, SLOT(OnSocketError(int,QAbstractSocket::SocketError, QString)));
   connect(m_Server, SIGNAL(ClientConnected(int)), this, SLOT(OnClientConnected(int)));
@@ -75,6 +76,19 @@ void TestServerQt::Start()
       m_StatsTimer->start();
     }
   }
+
+  QLOG_INFO() << QObject::tr("%1::Start() - started.").arg(objectName());
+}
+
+
+//-----------------------------------------------------------------------------
+void TestServerQt::Stop()
+{
+  QLOG_INFO() << QObject::tr("%1::Stop() - killing server.").arg(objectName());
+  delete m_Server;
+  QLOG_INFO() << QObject::tr("%1::Stop() - killed server.").arg(objectName());
+  QCoreApplication::quit();
+  QLOG_INFO() << QObject::tr("%1::Stop() - quiting app.").arg(objectName());
 }
 
 
@@ -102,6 +116,8 @@ void TestServerQt::OnMessageReceived(int portNumber, NiftyLinkMessageContainer::
     message->GetMessage()->Pack();
     m_Server->Send(message);
   }
+
+  QCoreApplication::processEvents();
 }
 
 
@@ -127,14 +143,15 @@ int main(int argc, char** argv)
   //------------------------------------------------------------
   // Parse Arguments
 
-  if (argc != 5) // check number of arguments
+  if (argc != 6) // check number of arguments
   {
     // If not correct, print usage
-    std::cerr << "Usage: " << argv[0] << " <port>"    << std::endl;
-    std::cerr << "    <port>      : Port #"            << std::endl;
-    std::cerr << "    <bool>      : is echoing [0|1]"  << std::endl;
-    std::cerr << "    <bool>      : do stats [0|1]"    << std::endl;
-    std::cerr << "    <threshold> : stats every <threshold> number of messages [-1=off]" << std::endl;
+    std::cerr << "Usage: " << argv[0] << " <port> <echo> <stats> <threshold> <totalSeconds>"    << std::endl;
+    std::cerr << "    <port>         : Port #"            << std::endl;
+    std::cerr << "    <echo>         : is echoing [0|1]"  << std::endl;
+    std::cerr << "    <stats>        : do stats [0|1]"    << std::endl;
+    std::cerr << "    <threshold>    : output stats every <threshold> number of messages [-1=off]" << std::endl;
+    std::cerr << "    <totalSeconds> : total time in seconds to run server for, [-1=forever]" << std::endl;
     exit(0);
   }
 
@@ -142,12 +159,17 @@ int main(int argc, char** argv)
   int    isEcho     = atoi(argv[2]);
   int    doStats    = atoi(argv[3]);
   int    threshold  = atoi(argv[4]);
+  int    totalSeconds = atoi(argv[5]);
 
   std::cout << "TestServerQt: port = " << port << "." << std::endl;
   std::cout << "TestServerQt: echo = " << isEcho << "." << std::endl;
   std::cout << "TestServerQt: stats = " << doStats << "." << std::endl;
   std::cout << "TestServerQt: threshold = " << threshold << "." << std::endl;
+  std::cout << "TestServerQt: totalSeconds = " << totalSeconds << "." << std::endl;
   std::cout << "TestServerQt: Instantiating server." << std::endl;
+
+  bool isEchoing = (isEcho == 1 ? true : false);
+  bool doStatistics = (doStats == 1 ? true : false);
 
   // Init the logging mechanism.
   QsLogging::Logger& logger = QsLogging::Logger::instance();
@@ -155,12 +177,18 @@ int main(int argc, char** argv)
   QsLogging::DestinationPtr debugDestination(QsLogging::DestinationFactory::MakeDebugOutputDestination() );
   logger.addDestination(debugDestination.get());
 
-  // Start server.
-  bool isEchoing = (isEcho == 1 ? true : false);
-  bool doStatistics = (doStats == 1 ? true : false);
+  // Create app.
   niftk::TestServerQt server(port, isEchoing, doStatistics, threshold);
   QApplication app(argc, argv);
+
+  // Setup timers.
   QTimer::singleShot(220, &server, SLOT(Start()));
+  if (totalSeconds > 0)
+  {
+    QTimer::singleShot(totalSeconds*1000, &server, SLOT(Stop()));
+  }
+
+  // Go!
   int ret = app.exec();
 
   return ret;
