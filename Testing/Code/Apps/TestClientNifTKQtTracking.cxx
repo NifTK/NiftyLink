@@ -60,16 +60,34 @@ void TestClientNifTKQtTracking::Start()
 
 
 //-----------------------------------------------------------------------------
+void TestClientNifTKQtTracking::Shutdown()
+{
+  QLOG_INFO() << QObject::tr("%1::Shutdown() - starting.").arg(objectName());
+
+  if (m_Client != NULL)
+  {
+    delete m_Client;
+    m_Client = NULL;
+  }
+
+  QLOG_INFO() << QObject::tr("%1::Shutdown() - finished.").arg(objectName());
+}
+
+
+//-----------------------------------------------------------------------------
 void TestClientNifTKQtTracking::OnConnectedToServer()
 {
   QLOG_INFO() << QObject::tr("%1::OnConnectedToServer().").arg(objectName());
   this->RunTest();
+  QCoreApplication::quit();
 }
 
 
 //-----------------------------------------------------------------------------
 void TestClientNifTKQtTracking::RunTest()
 {
+  QLOG_INFO() << QObject::tr("%1::RunTest() - starting.").arg(objectName());
+
   igtl::TimeStamp::Pointer timeLastMessage = igtl::TimeStamp::New();
   timeLastMessage->GetTime();
 
@@ -93,6 +111,8 @@ void TestClientNifTKQtTracking::RunTest()
     }
   }
   m_Client->RequestStats();
+
+  QLOG_INFO() << QObject::tr("%1::RunTest() - finished.").arg(objectName());
 }
 
 } // end namespace niftk
@@ -141,6 +161,7 @@ int main(int argc, char** argv)
   std::cout << "TestClientNifTKQtTracking: Creating app." << std::endl;
 
   QApplication app(argc, argv);
+  QObject::connect(&app, SIGNAL(aboutToQuit()), &client, SLOT(Shutdown()));
 
   std::cout << "TestClientNifTKQtTracking: Launching app." << std::endl;
 

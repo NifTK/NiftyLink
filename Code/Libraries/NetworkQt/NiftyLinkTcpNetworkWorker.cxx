@@ -74,8 +74,8 @@ NiftyLinkTcpNetworkWorker::NiftyLinkTcpNetworkWorker(
   this->setObjectName(m_MessagePrefix);
   m_ReceivedCounter.setObjectName(m_MessagePrefix);
 
-  connect(this, SIGNAL(InternalStatsSignal()), this, SLOT(OnOutputStats()));
-  connect(this, SIGNAL(InternalSendSignal()), this, SLOT(OnSend()));
+  connect(this, SIGNAL(InternalStatsSignal()), this, SLOT(OnOutputStats()), Qt::BlockingQueuedConnection);
+  connect(this, SIGNAL(InternalSendSignal()), this, SLOT(OnSend()), Qt::BlockingQueuedConnection);
   connect(m_NoIncomingDataTimer, SIGNAL(timeout()), this, SLOT(OnCheckForIncomingData()));
   connect(m_KeepAliveTimer, SIGNAL(timeout()), this, SLOT(OnSendInternalPing()));
   connect(m_Socket, SIGNAL(bytesWritten(qint64)), this, SIGNAL(BytesSent(qint64)));
@@ -109,6 +109,8 @@ NiftyLinkTcpNetworkWorker::~NiftyLinkTcpNetworkWorker()
   {
     QThread::currentThread()->wait(10);
   }
+
+  QCoreApplication::processEvents();
 
   QLOG_INFO() << QObject::tr("%1::~NiftyLinkTcpNetworkWorker() - destroyed").arg(m_MessagePrefix);
 }

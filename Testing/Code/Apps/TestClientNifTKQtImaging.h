@@ -48,6 +48,7 @@ public:
 private slots:
 
   void Start();
+  void Shutdown();
   void OnConnectedToServer();
 
 private:

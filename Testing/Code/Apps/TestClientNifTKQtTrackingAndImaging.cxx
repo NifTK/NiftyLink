@@ -62,6 +62,21 @@ void TestClientNifTKQtTrackingAndImaging::Start()
 
 
 //-----------------------------------------------------------------------------
+void TestClientNifTKQtTrackingAndImaging::Shutdown()
+{
+  QLOG_INFO() << QObject::tr("%1::Shutdown() - starting.").arg(objectName());
+
+  if (m_Client != NULL)
+  {
+    delete m_Client;
+    m_Client = NULL;
+  }
+
+  QLOG_INFO() << QObject::tr("%1::Shutdown() - finished.").arg(objectName());
+}
+
+
+//-----------------------------------------------------------------------------
 void TestClientNifTKQtTrackingAndImaging::OnConnectedToServer()
 {
   QLOG_INFO() << QObject::tr("%1::OnConnectedToServer().").arg(objectName());
@@ -187,6 +202,7 @@ int main(int argc, char** argv)
   std::cout << "TestClientNifTKQtTrackingAndImaging: Creating app." << std::endl;
 
   QApplication app(argc, argv);
+  QObject::connect(&app, SIGNAL(aboutToQuit()), &client, SLOT(Shutdown()));
 
   std::cout << "TestClientNifTKQtTrackingAndImaging: Launching app." << std::endl;
 

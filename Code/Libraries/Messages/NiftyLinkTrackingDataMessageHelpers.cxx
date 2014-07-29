@@ -39,7 +39,7 @@ void InitialiseTrackingDataWithTestData(const igtl::Matrix4x4& testMatrix, igtl:
   else
   {
     igtl::TrackingDataElement::Pointer tElem;
-    for (unsigned int i = 0; i < elementNum; i++)
+    for (int i = 0; i < elementNum; i++)
     {
       messageToWriteTo->GetTrackingDataElement(i, tElem);
       tElem->SetMatrix(*(const_cast<igtl::Matrix4x4*>(&testMatrix)));
@@ -85,7 +85,7 @@ QString GetMatrixAsString(const igtl::TrackingDataMessage::Pointer& message, int
   std::fixed(sstr);
   sstr << std::setprecision(5);
 
-  for (unsigned int i = 0; i < message->GetNumberOfTrackingDataElements(); i++)
+  for (int i = 0; i < message->GetNumberOfTrackingDataElements(); i++)
   {
     igtl::TrackingDataElement::Pointer tElem;
     message->GetTrackingDataElement(i, tElem);
