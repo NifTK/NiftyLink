@@ -85,9 +85,7 @@ private slots:
   void CalculateMeanTest();
 
   /**
-   * \brief Tests NiftyLinkUtils::CalculateStdDev(), returning
-   *
-   * Purpose, return the <a href="http://en.wikipedia.org/wiki/Standard_deviation>corrected sample standard deviation</a> of a QList<igtlUint64>.
+   * \brief Tests NiftyLinkUtils::CalculateStdDev(), returning the <a href="http://en.wikipedia.org/wiki/Standard_deviation>corrected sample standard deviation</a> of a QList<igtlUint64>.
    *
    * Spec:
    *   - if empty list, return zero.
