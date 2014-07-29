@@ -76,7 +76,7 @@ void NiftyLinkMessageCounter::OnOutputStats()
     double durationInSeconds = duration/static_cast<double>(1000000000);
     double rate = m_TotalBytesReceived/durationInSeconds;
 
-    QLOG_INFO() << QObject::tr("%1::OnOutputStats(%2) - Received %3 bytes, in %4 secs, %5 b/sec, mean %6, std %7, max %8.").arg(objectName()).arg(deviceType).arg(m_TotalBytesReceived).arg(durationInSeconds).arg(rate).arg(mean).arg(stdDev).arg(max);
+    QLOG_INFO() << QObject::tr("%1::OnOutputStats(%2) - Received %3 msgs, %4 bytes, in %5 secs, %6 b/sec, mean %7, std %8, max %9.").arg(objectName()).arg(deviceType).arg(m_NumberMessagesReceived).arg(m_TotalBytesReceived).arg(durationInSeconds).arg(rate).arg(mean).arg(stdDev).arg(max);
     ++i;
   }
 
