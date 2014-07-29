@@ -73,8 +73,8 @@ void NiftyLinkTcpServer::incomingConnection(int socketDescriptor)
     connect(worker, SIGNAL(NoIncomingData()), this, SIGNAL(NoIncomingData()));
     connect(worker, SIGNAL(SentKeepAlive()), this, SIGNAL(SentKeepAlive()));
     connect(worker, SIGNAL(BytesSent(qint64)), this, SIGNAL(BytesSent(qint64)));
-    connect(worker, SIGNAL(SocketError(int,QAbstractSocket::SocketError,QString)), this, SIGNAL(SocketError(int,QAbstractSocket::SocketError,QString)), Qt::BlockingQueuedConnection);
-    connect(worker, SIGNAL(MessageReceived(int)), this, SLOT(OnMessageReceived(int)), Qt::BlockingQueuedConnection); // as the worker is in another thread.
+    connect(worker, SIGNAL(SocketError(int,QAbstractSocket::SocketError,QString)), this, SIGNAL(SocketError(int,QAbstractSocket::SocketError,QString)));
+    connect(worker, SIGNAL(MessageReceived(int)), this, SLOT(OnMessageReceived(int)));
     connect(socket, SIGNAL(disconnected()), this, SLOT(OnClientDisconnected()));
     connect(thread, SIGNAL(finished()), thread, SLOT(deleteLater())); // i.e. the event loop of thread deletes it when control returns to this event loop.
 
@@ -206,6 +206,8 @@ void NiftyLinkTcpServer::OnMessageReceived(int portNumber)
 {
   NiftyLinkMessageContainer::Pointer msg = m_InboundMessages.GetContainer(portNumber);
   m_ReceivedCounter.OnMessageReceived(msg);
+
+  std::cerr << "Matt, receiving=" << msg->GetNiftyLinkMessageId() << std::endl;
   emit MessageReceived(portNumber, msg);
 }
 
