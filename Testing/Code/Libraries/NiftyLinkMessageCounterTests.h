@@ -9,9 +9,14 @@
 
   See LICENSE.txt in the top level directory for details.
 =============================================================================*/
+#ifndef NiftyLinkMessageCounterTests_h
+#define NiftyLinkMessageCounterTests_h
 
 #include <QObject>
 #include <QtTest/QtTest>
+
+namespace niftk
+{
 
 /**
  * \class NiftyLinkMessageCounterTests
@@ -26,5 +31,12 @@ class NiftyLinkMessageCounterTests: public QObject
   Q_OBJECT
 
 private slots:
+  /**
+   * \brief Tests NiftyLinkMessageCounter.
+   */
   void BasicCountingTestCase();
 };
+
+} // end namespace niftk
+
+#endif // NiftyLinkMessageCounterTests_h

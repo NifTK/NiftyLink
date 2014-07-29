@@ -16,8 +16,11 @@
 #include <QDebug>
 #include <stdlib.h>
 
+namespace niftk
+{
+
 //-----------------------------------------------------------------------------
-void NiftyLinkUtilsTests::TimeStampSetGetDifferenceTest()
+void NiftyLinkUtilsTests::GetDifferenceInNanoSecondsTest()
 {
   igtlUint32 seconds, nanoseconds;
   igtlUint32 seconds2, nanoseconds2;
@@ -48,4 +51,54 @@ void NiftyLinkUtilsTests::TimeStampSetGetDifferenceTest()
   QVERIFY(totalTimeInNanoseconds2 - totalTimeInNanoseconds == 1);
 }
 
-QTEST_MAIN( NiftyLinkUtilsTests )
+
+//-----------------------------------------------------------------------------
+void NiftyLinkUtilsTests::ValidateIpTest()
+{
+  // replace with a valid test.
+  QVERIFY(1==2);
+}
+
+
+//-----------------------------------------------------------------------------
+void NiftyLinkUtilsTests::GetLocalHostAddressTest()
+{
+  // replace with a valid test.
+  QVERIFY(1==2);
+}
+
+
+//-----------------------------------------------------------------------------
+void NiftyLinkUtilsTests::ResolveHostNameTest()
+{
+  // replace with a valid test.
+  QVERIFY(1==2);
+}
+
+
+//-----------------------------------------------------------------------------
+void NiftyLinkUtilsTests::CalculateMeanTest()
+{
+  // replace with a valid test.
+  QVERIFY(1==2);
+}
+
+
+//-----------------------------------------------------------------------------
+void NiftyLinkUtilsTests::CalculateStdDevTest()
+{
+  // replace with a valid test.
+  QVERIFY(1==2);
+}
+
+
+//-----------------------------------------------------------------------------
+void NiftyLinkUtilsTests::CalculateMaxTest()
+{
+  // replace with a valid test.
+  QVERIFY(1==2);
+}
+
+} // end namespace
+
+QTEST_MAIN( niftk::NiftyLinkUtilsTests )

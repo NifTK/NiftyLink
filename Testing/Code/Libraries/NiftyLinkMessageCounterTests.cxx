@@ -16,10 +16,16 @@
 #include <QDebug>
 #include <stdlib.h>
 
+namespace niftk
+{
+
 //-----------------------------------------------------------------------------
 void NiftyLinkMessageCounterTests::BasicCountingTestCase()
 {
+  // Note, we need to change the class/API to enable testing.
   QVERIFY(1 == 2);
 }
 
-QTEST_MAIN( NiftyLinkMessageCounterTests )
+} // end namespace niftk
+
+QTEST_MAIN( niftk::NiftyLinkMessageCounterTests )
