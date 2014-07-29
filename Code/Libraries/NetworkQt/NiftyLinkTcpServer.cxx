@@ -207,7 +207,6 @@ void NiftyLinkTcpServer::OnMessageReceived(int portNumber)
   NiftyLinkMessageContainer::Pointer msg = m_InboundMessages.GetContainer(portNumber);
   m_ReceivedCounter.OnMessageReceived(msg);
 
-  std::cerr << "Matt, receiving=" << msg->GetNiftyLinkMessageId() << std::endl;
   emit MessageReceived(portNumber, msg);
 }
 

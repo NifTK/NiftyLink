@@ -19,13 +19,16 @@ namespace niftk
 
 //-----------------------------------------------------------------------------
 NiftyLinkMessageCounter::NiftyLinkMessageCounter(QObject *parent)
-: m_StatsTimePoint(NULL)
+: m_StatsStartPoint(NULL)
+, m_StatsEndPoint(NULL)
 , m_TotalBytesReceived(0)
 , m_NumberMessagesReceived(0)
 , m_NumberMessageReceivedThreshold(-1)
 {
-  m_StatsTimePoint = igtl::TimeStamp::New();
-  m_StatsTimePoint->GetTime();
+  m_StatsStartPoint = igtl::TimeStamp::New();
+  m_StatsStartPoint->GetTime();
+  m_StatsEndPoint = igtl::TimeStamp::New();
+  m_StatsEndPoint->SetTimeInNanoseconds(m_StatsStartPoint->GetTimeStampInNanoseconds());
 }
 
 
@@ -50,9 +53,17 @@ qint64 NiftyLinkMessageCounter::GetNumberMessageReceivedThreshold() const
 
 
 //-----------------------------------------------------------------------------
+qint64 NiftyLinkMessageCounter::GetNumberOfMessages()
+{
+  return m_NumberMessagesReceived;
+}
+
+
+//-----------------------------------------------------------------------------
 void NiftyLinkMessageCounter::OnClear()
 {
-  m_StatsTimePoint->GetTime();
+  m_StatsStartPoint->GetTime();
+  m_StatsEndPoint->SetTimeInNanoseconds(m_StatsStartPoint->GetTimeStampInNanoseconds());
   m_TotalBytesReceived = 0;
   m_NumberMessagesReceived = 0;
   m_ListsOfLatenciesByDeviceType.clear();
@@ -71,8 +82,7 @@ void NiftyLinkMessageCounter::OnOutputStats()
     double stdDev = niftk::CalculateStdDev(i.value()) / static_cast<double>(1000000);
     double max = niftk::CalculateMax(i.value()) / static_cast<double>(1000000);
 
-    igtl::TimeStamp::Pointer nowTime = igtl::TimeStamp::New();
-    igtlUint64 duration = niftk::GetDifferenceInNanoSeconds(nowTime, m_StatsTimePoint);
+    igtlUint64 duration = niftk::GetDifferenceInNanoSeconds(m_StatsEndPoint, m_StatsStartPoint);
     double durationInSeconds = duration/static_cast<double>(1000000000);
     double rate = m_TotalBytesReceived/durationInSeconds;
 
@@ -90,11 +100,12 @@ void NiftyLinkMessageCounter::OnMessageReceived(NiftyLinkMessageContainer::Point
 {
   if (m_NumberMessagesReceived == 0)
   {
-     m_StatsTimePoint->GetTime();
+     m_StatsStartPoint->GetTime();
   }
 
   m_NumberMessagesReceived++;
   m_TotalBytesReceived += message->GetMessage()->GetPackSize();
+  m_StatsEndPoint->GetTime();
 
   // In OpenIGTLink paper (Tokuda 2009), Latency is defined as the difference
   // between last byte received and first byte sent.

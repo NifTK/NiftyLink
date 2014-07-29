@@ -72,6 +72,10 @@ public slots:
   /// Defined as a slot, so we can trigger it via QTimer.
   void OutputStats();
 
+  /// \brief Sends message to other end to request the other end to output stats to console.
+  /// Defined as a slot, so we can trigger it via QTimer.
+  void RequestStats();
+
 signals:
 
   /// \brief Emmitted when we have successfully connected.

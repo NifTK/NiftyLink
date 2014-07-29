@@ -107,13 +107,16 @@ void TestClientNifTKQtTrackingAndImaging::RunTest()
 
     if (niftk::GetDifferenceInNanoSeconds(timeNow, timeLastTrackingMessage) > nanosecondsBetweenTrackingMessages)
     {
+      timeLastTrackingMessage->SetTimeInNanoseconds(timeNow->GetTimeStampInNanoseconds());
+
       NiftyLinkMessageContainer::Pointer m = niftk::CreateTestTrackingDataMessage(m_Channels);
       m_Client->Send(m);
-      timeLastTrackingMessage->SetTimeInNanoseconds(timeNow->GetTimeStampInNanoseconds());
     }
 
     if (niftk::GetDifferenceInNanoSeconds(timeNow, timeLastImagingMessage) > nanosecondsBetweenImagingMessages)
     {
+      timeLastImagingMessage->SetTimeInNanoseconds(timeNow->GetTimeStampInNanoseconds());
+
       igtl::TimeStamp::Pointer timeCreated = igtl::TimeStamp::New();
       timeCreated->GetTime();
       localImage->SetTimeStamp(timeCreated);
@@ -129,10 +132,9 @@ void TestClientNifTKQtTrackingAndImaging::RunTest()
 
       m_Client->Send(m);
       m_NumberMessagesSent++;
-      timeLastImagingMessage->SetTimeInNanoseconds(timeNow->GetTimeStampInNanoseconds());
     }
   }
-  m_Client->OutputStats();
+  m_Client->RequestStats();
 }
 
 } // end namespace niftk

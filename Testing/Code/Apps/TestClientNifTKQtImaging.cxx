@@ -100,6 +100,8 @@ void TestClientNifTKQtImaging::RunTest()
     timeNow->GetTime();
     if (niftk::GetDifferenceInNanoSeconds(timeNow, timeLastMessage) > nanosecondsBetweenMessages)
     {
+      timeLastMessage->SetTimeInNanoseconds(timeNow->GetTimeStampInNanoseconds());
+
       igtl::TimeStamp::Pointer timeCreated = igtl::TimeStamp::New();
       timeCreated->GetTime();
       localImage->SetTimeStamp(timeCreated);
@@ -115,10 +117,9 @@ void TestClientNifTKQtImaging::RunTest()
 
       m_Client->Send(m);
       m_NumberMessagesSent++;
-      timeLastMessage->SetTimeInNanoseconds(timeNow->GetTimeStampInNanoseconds());
     }
   }
-  m_Client->OutputStats();
+  m_Client->RequestStats();
 }
 
 } // end namespace niftk

@@ -77,6 +77,8 @@ public:
   void SetNumberMessageReceivedThreshold(qint64 threshold);
   qint64 GetNumberMessageReceivedThreshold() const;
 
+  qint64 GetNumberOfMessages();
+
 public slots:
 
   /// \brief Writes stats to console.
@@ -90,7 +92,8 @@ public slots:
 
 private:
 
-  igtl::TimeStamp::Pointer        m_StatsTimePoint;
+  igtl::TimeStamp::Pointer        m_StatsStartPoint;
+  igtl::TimeStamp::Pointer        m_StatsEndPoint;
   quint64                         m_TotalBytesReceived;
   quint64                         m_NumberMessagesReceived;
   QMap< QString, QList<quint64> > m_ListsOfLatenciesByDeviceType;

@@ -19,6 +19,7 @@
 #include <QsLog.h>
 #include <QsLogDest.h>
 #include <QApplication>
+#include <QThread>
 
 namespace niftk
 {
@@ -84,13 +85,14 @@ void TestClientNifTKQtTracking::RunTest()
     timeNow->GetTime();
     if (niftk::GetDifferenceInNanoSeconds(timeNow, timeLastMessage) > nanosecondsBetweenMessages)
     {
+      timeLastMessage->SetTimeInNanoseconds(timeNow->GetTimeStampInNanoseconds());
+
       NiftyLinkMessageContainer::Pointer m = niftk::CreateTestTrackingDataMessage(m_TrackedObjectsPerMessage);
       m_Client->Send(m);
       m_NumberMessagesSent++;
-      timeLastMessage->SetTimeInNanoseconds(timeNow->GetTimeStampInNanoseconds());
     }
   }
-  m_Client->OutputStats();
+  m_Client->RequestStats();
 }
 
 } // end namespace niftk
