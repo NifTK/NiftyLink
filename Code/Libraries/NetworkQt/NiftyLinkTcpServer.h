@@ -40,27 +40,25 @@ public:
   NiftyLinkTcpServer(QObject *parent = 0);
   virtual ~NiftyLinkTcpServer();
 
-  /// \brief Sends an OpenIGTLink message to all clients.
-  ///
-  /// The OpenIGTLink message within NiftyLinkMessageContainer should be Packed.
-  void Send(NiftyLinkMessageContainer::Pointer message);
-
   /// \brief Set a threshold for the number of messages, so that you
-  /// get stats every X number of messages. Set to -1 to turn this off.
-  /// Defaults to off.
+  /// get stats every X number of messages. Set <em>threshold</em>
+  /// to -1 to turn this feature off. Defaults to off.
   void SetNumberMessageReceivedThreshold(qint64 threshold);
 
   /// \brief Set this object to either send or not send keep alive messages.
-  /// In this Qt implementation, this is optional, and depends on requirements.
-  /// If you need to know whether something has stopped sending data, then
-  /// you should set this to true on both ends (client and server) of the socket.
+  /// Use in conjunction with SetCheckForNoIncomingData().
+  /// eg. One end sends keep alive messages, the other end expects to receive data regularly.
   void SetKeepAliveOn(bool isOn);
 
   /// \brief Set this object to monitor for no incoming data.
   /// Use in conjunction with SetKeepAliveOn().
-  /// eg. One end sends keep alive messages, the other end
-  /// expects to receive data regularly.
+  /// eg. One end sends keep alive messages, the other end expects to receive data regularly.
   void SetCheckForNoIncomingData(bool isOn);
+
+  /// \brief Sends an OpenIGTLink message to all connected clients.
+  ///
+  /// The OpenIGTLink message within NiftyLinkMessageContainer should be Packed.
+  void Send(NiftyLinkMessageContainer::Pointer message);
 
 public slots:
 

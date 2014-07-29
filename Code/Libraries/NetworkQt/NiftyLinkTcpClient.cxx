@@ -42,19 +42,70 @@ NiftyLinkTcpClient::~NiftyLinkTcpClient()
 {
   QLOG_INFO() << QObject::tr("%1::~NiftyLinkTcpClient() - destroying.").arg(objectName());
 
+  if (m_Socket != NULL)
+  {
+    NiftyLinkTcpNetworkWorker::CloseSocket(m_Socket);
+    m_Socket->disconnect();
+    delete m_Socket;
+  }
+
   if (m_Worker != NULL)
   {
     m_Worker->disconnect();
     delete m_Worker;
   }
 
-  if (m_Socket != NULL)
-  {
-    m_Socket->disconnect();
-    delete m_Socket;
-  }
-
   QLOG_INFO() << QObject::tr("%1::~NiftyLinkTcpClient() - destroyed.").arg(objectName());
+}
+
+
+//-----------------------------------------------------------------------------
+void NiftyLinkTcpClient::SetNumberMessageReceivedThreshold(qint64 threshold)
+{
+  m_Worker->SetNumberMessageReceivedThreshold(threshold);
+}
+
+
+//-----------------------------------------------------------------------------
+void NiftyLinkTcpClient::SetKeepAliveOn(bool isOn)
+{
+  m_Worker->SetKeepAliveOn(isOn);
+}
+
+
+//-----------------------------------------------------------------------------
+void NiftyLinkTcpClient::SetCheckForNoIncomingData(bool isOn)
+{
+  m_Worker->SetCheckForNoIncomingData(isOn);
+}
+
+
+//-----------------------------------------------------------------------------
+void NiftyLinkTcpClient::ConnectToHost(const QString& hostName, quint16 portNumber)
+{
+  // There are no errors reported from this. Listen to the error signal.
+  m_Socket->connectToHost(hostName, portNumber);
+}
+
+
+//-----------------------------------------------------------------------------
+bool NiftyLinkTcpClient::Send(NiftyLinkMessageContainer::Pointer message)
+{
+  return m_Worker->Send(message);
+}
+
+
+//-----------------------------------------------------------------------------
+void NiftyLinkTcpClient::OutputStats()
+{
+  m_Worker->OutputStatsToConsole();
+}
+
+
+//-----------------------------------------------------------------------------
+bool NiftyLinkTcpClient::RequestStats()
+{
+  return m_Worker->RequestStats();
 }
 
 
@@ -91,13 +142,12 @@ void NiftyLinkTcpClient::OnConnected()
 //-----------------------------------------------------------------------------
 void NiftyLinkTcpClient::OnDisconnected()
 {
-  QLOG_INFO() << QObject::tr("%1::OnDisconnected() - disconnected.").arg(objectName());
-  m_Socket->close();
-  while (m_Socket->isOpen())
-  {
-    QThread::currentThread()->wait(10);
-  }
-  QLOG_INFO() << QObject::tr("%1::OnDisconnected() - socket closed.").arg(objectName());
+  QLOG_INFO() << QObject::tr("%1::OnDisconnected() - started.").arg(objectName());
+
+  NiftyLinkTcpNetworkWorker::CloseSocket(m_Socket);
+  m_Socket->disconnect();
+
+  QLOG_INFO() << QObject::tr("%1::OnDisconnected() - finished.").arg(objectName());
   emit Disconnected();
 }
 
@@ -107,56 +157,6 @@ void NiftyLinkTcpClient::OnError()
 {
   QLOG_INFO() << QObject::tr("%1::OnError() - code=%2, string=%3").arg(objectName()).arg(m_Socket->error()).arg(m_Socket->errorString());
   emit SocketError(m_Socket->peerName(), m_Socket->peerPort(), m_Socket->error(), m_Socket->errorString());
-}
-
-
-//-----------------------------------------------------------------------------
-void NiftyLinkTcpClient::ConnectToHost(const QString& hostName, quint16 portNumber)
-{
-  // There are no errors reported from this. Listen to the error signal.
-  m_Socket->connectToHost(hostName, portNumber);
-}
-
-
-//-----------------------------------------------------------------------------
-void NiftyLinkTcpClient::Send(NiftyLinkMessageContainer::Pointer message)
-{
-  m_Worker->Send(message);
-}
-
-
-//-----------------------------------------------------------------------------
-void NiftyLinkTcpClient::OutputStats()
-{
-  m_Worker->OutputStatsToConsole();
-}
-
-
-//-----------------------------------------------------------------------------
-void NiftyLinkTcpClient::RequestStats()
-{
-  m_Worker->RequestStats();
-}
-
-
-//-----------------------------------------------------------------------------
-void NiftyLinkTcpClient::SetNumberMessageReceivedThreshold(qint64 threshold)
-{
-  m_Worker->SetNumberMessageReceivedThreshold(threshold);
-}
-
-
-//-----------------------------------------------------------------------------
-void NiftyLinkTcpClient::SetKeepAliveOn(bool isOn)
-{
-  m_Worker->SetKeepAliveOn(isOn);
-}
-
-
-//-----------------------------------------------------------------------------
-void NiftyLinkTcpClient::SetCheckForNoIncomingData(bool isOn)
-{
-  m_Worker->SetCheckForNoIncomingData(isOn);
 }
 
 

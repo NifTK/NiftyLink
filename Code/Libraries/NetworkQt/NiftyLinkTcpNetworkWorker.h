@@ -26,7 +26,7 @@ namespace niftk
 {
 /**
  * \class NiftyLinkTcpNetworkWorker
- * \brief Worker object, to be run in a separate QThread by NiftyLinkTcpServer or NiftyLinkTcpClient.
+ * \brief Worker object, to be run in a separate NiftyLinkQThread by NiftyLinkTcpServer or NiftyLinkTcpClient.
  *
  * Third parties should not need to use this class, hence it is deliberately not exported.
  */
@@ -36,7 +36,7 @@ class NiftyLinkTcpNetworkWorker : public QObject
 
 public:
 
-  /// \brief Constructor, and this class owns none of the objects passed in.
+  /// \brief Constructor, and this class owns none of the objects passed in, so won't destroy them.
   NiftyLinkTcpNetworkWorker(NiftyLinkMessageManager* inboundMessages,
                             NiftyLinkMessageManager* outboundMessages,
                             QTcpSocket *socket,
@@ -48,29 +48,35 @@ public:
   /// \brief Returns the contained socket.
   QTcpSocket* GetSocket() const;
 
-  /// \brief Sends an OpenIGTLink message.
-  /// The OpenIGTLink message within NiftyLinkMessageContainer should be already Packed.
-  void Send(NiftyLinkMessageContainer::Pointer message);
+  /// \brief Closes the provided socket.
+  static bool CloseSocket(QTcpSocket* );
 
   /// \brief Set a threshold for the number of messages, so that you
-  /// get stats every X number of messages. Set to -1 to turn this off.
+  /// get stats printed to console every X number of messages. Set to -1 to turn this off.
   void SetNumberMessageReceivedThreshold(qint64 threshold);
 
   /// \brief Set this object to either send or not send keep alive messages.
+  /// Use in conjunction with SetCheckForNoIncomingData().
+  /// eg. One end sends keep alive messages, the other end expects to receive data regularly.
   void SetKeepAliveOn(bool isOn);
 
   /// \brief Set this object to monitor for no incoming data.
   /// Use in conjunction with SetKeepAliveOn().
-  /// eg. One end sends keep alive messages, the other end
-  /// expects to receive data regularly.
+  /// eg. One end sends keep alive messages, the other end expects to receive data regularly.
   void SetCheckForNoIncomingData(bool isOn);
+
+  /// \brief Sends an OpenIGTLink message.
+  /// The OpenIGTLink message within NiftyLinkMessageContainer should be already Packed.
+  /// \return false if socket closed or unwritable, true otherwise.
+  bool Send(NiftyLinkMessageContainer::Pointer message);
+
+  /// \brief Called from within OutputStatsToConsole(), and will also send
+  /// a message via the socket to request stats at the other end.
+  /// \return false if socket closed or unwritable, true otherwise.
+  bool RequestStats();
 
   /// \brief Sends a request to output some statistics to console.
   void OutputStatsToConsole();
-
-  /// \brief Called from within OutputStatsToConsole(), will also send
-  /// a message via the socket to request stats at the other end.
-  void RequestStats();
 
 signals:
 
@@ -86,11 +92,12 @@ private slots:
 
   void OnSocketDisconnected();
   void OnSocketError(QAbstractSocket::SocketError error);
+  void OnOutputStats();
+  void OnCheckForIncomingData();
+
   void OnSocketReadyRead();
   void OnSend();
   void OnSendInternalPing();
-  void OnCheckForIncomingData();
-  void OnOutputStats();
 
 private:
 

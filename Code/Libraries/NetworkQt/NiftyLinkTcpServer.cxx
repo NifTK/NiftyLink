@@ -49,6 +49,60 @@ NiftyLinkTcpServer::~NiftyLinkTcpServer()
 
 
 //-----------------------------------------------------------------------------
+void NiftyLinkTcpServer::SetNumberMessageReceivedThreshold(qint64 threshold)
+{
+  foreach (NiftyLinkTcpNetworkWorker* worker, m_Workers)
+  {
+    worker->SetNumberMessageReceivedThreshold(threshold);
+  }
+  m_ReceivedCounter.SetNumberMessageReceivedThreshold(threshold);
+}
+
+
+//-----------------------------------------------------------------------------
+void NiftyLinkTcpServer::SetKeepAliveOn(bool isOn)
+{
+  foreach (NiftyLinkTcpNetworkWorker* worker, m_Workers)
+  {
+    worker->SetKeepAliveOn(m_SendKeepAlive);
+  }
+  m_SendKeepAlive = isOn;
+}
+
+
+//-----------------------------------------------------------------------------
+void NiftyLinkTcpServer::SetCheckForNoIncomingData(bool isOn)
+{
+  foreach (NiftyLinkTcpNetworkWorker* worker, m_Workers)
+  {
+    worker->SetCheckForNoIncomingData(m_CheckNoIncoming);
+  }
+  m_CheckNoIncoming = isOn;
+}
+
+
+//-----------------------------------------------------------------------------
+void NiftyLinkTcpServer::Send(NiftyLinkMessageContainer::Pointer message)
+{
+  foreach (NiftyLinkTcpNetworkWorker* worker, m_Workers)
+  {
+    worker->Send(message);
+  }
+}
+
+
+//-----------------------------------------------------------------------------
+void NiftyLinkTcpServer::OutputStats()
+{
+  foreach (NiftyLinkTcpNetworkWorker* worker, m_Workers)
+  {
+    worker->OutputStatsToConsole();
+  }
+  m_ReceivedCounter.OnOutputStats();
+}
+
+
+//-----------------------------------------------------------------------------
 void NiftyLinkTcpServer::incomingConnection(int socketDescriptor)
 {
   QLOG_INFO() << QObject::tr("%1::incomingConnection(%2) - creating socket.").arg(objectName()).arg(socketDescriptor);
@@ -88,13 +142,13 @@ void NiftyLinkTcpServer::incomingConnection(int socketDescriptor)
     QLOG_ERROR() << QObject::tr("%1::incomingConnection(%2) - failed to connect.").arg(objectName()).arg(socketDescriptor);
   }
 
-  // Base class does this (regardless of errors), so as I'm re-implementing the function, so do I.
-  this->addPendingConnection(socket);
-
   this->setObjectName(QObject::tr("NiftyLinkTcpServer(%1)").arg(this->serverPort()));
   m_ReceivedCounter.setObjectName(QObject::tr("NiftyLinkTcpServer(%1)").arg(this->serverPort()));
 
-  QLOG_INFO() << QObject::tr("%1::incomingConnection(%2) - created.").arg(objectName()).arg(socketDescriptor);
+  // Base class does this (regardless of errors), so as I'm re-implementing the function, so do I.
+  this->addPendingConnection(socket);
+
+  QLOG_INFO() << QObject::tr("%1::incomingConnection(%2) - created socket.").arg(objectName()).arg(socketDescriptor);
 }
 
 
@@ -121,6 +175,7 @@ void NiftyLinkTcpServer::OnClientDisconnected()
       if (worker->GetSocket() == sender)
       {
         chosenWorker = worker;
+        break;
       }
     }
     if (chosenWorker != NULL)
@@ -129,6 +184,7 @@ void NiftyLinkTcpServer::OnClientDisconnected()
       int portNumber = sender->peerPort();
 
       chosenWorker->disconnect();
+      NiftyLinkTcpNetworkWorker::CloseSocket(sender);
       sender->disconnect();
 
       delete chosenWorker;
@@ -143,61 +199,11 @@ void NiftyLinkTcpServer::OnClientDisconnected()
       QLOG_ERROR() << QObject::tr("%1::OnClientDisconnected() - failed to remove client %2.").arg(objectName()).arg(reinterpret_cast<qulonglong>(sender));
     }
   }
+  else
+  {
+    QLOG_ERROR() << QObject::tr("%1::OnClientDisconnected() - failed to find client %2 in order to remove it.").arg(objectName()).arg(reinterpret_cast<qulonglong>(sender));
+  }
   QLOG_INFO() << QObject::tr("%1::OnClientDisconnected() - number of clients = %2.").arg(objectName()).arg(m_Workers.size());
-}
-
-
-//-----------------------------------------------------------------------------
-void NiftyLinkTcpServer::Send(NiftyLinkMessageContainer::Pointer message)
-{
-  foreach (NiftyLinkTcpNetworkWorker* worker, m_Workers)
-  {
-    worker->Send(message);
-  }
-}
-
-
-//-----------------------------------------------------------------------------
-void NiftyLinkTcpServer::OutputStats()
-{
-  foreach (NiftyLinkTcpNetworkWorker* worker, m_Workers)
-  {
-    worker->OutputStatsToConsole();
-  }
-  m_ReceivedCounter.OnOutputStats();
-}
-
-
-//-----------------------------------------------------------------------------
-void NiftyLinkTcpServer::SetNumberMessageReceivedThreshold(qint64 threshold)
-{
-  foreach (NiftyLinkTcpNetworkWorker* worker, m_Workers)
-  {
-    worker->SetNumberMessageReceivedThreshold(threshold);
-  }
-  m_ReceivedCounter.SetNumberMessageReceivedThreshold(threshold);
-}
-
-
-//-----------------------------------------------------------------------------
-void NiftyLinkTcpServer::SetKeepAliveOn(bool isOn)
-{
-  m_SendKeepAlive = isOn;
-  foreach (NiftyLinkTcpNetworkWorker* worker, m_Workers)
-  {
-    worker->SetKeepAliveOn(m_SendKeepAlive);
-  }
-}
-
-
-//-----------------------------------------------------------------------------
-void NiftyLinkTcpServer::SetCheckForNoIncomingData(bool isOn)
-{
-  m_CheckNoIncoming = isOn;
-  foreach (NiftyLinkTcpNetworkWorker* worker, m_Workers)
-  {
-    worker->SetCheckForNoIncomingData(m_CheckNoIncoming);
-  }
 }
 
 
@@ -222,6 +228,7 @@ void NiftyLinkTcpServer::Shutdown()
     QTcpSocket *socket = worker->GetSocket();
 
     worker->disconnect();
+    NiftyLinkTcpNetworkWorker::CloseSocket(socket);
     socket->disconnect();
 
     delete worker;

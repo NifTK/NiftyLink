@@ -28,8 +28,8 @@ class NiftyLinkTcpNetworkWorker;
 
 /**
  * \class NiftyLinkTcpClient
- * \brief TCP client that runs a QTcpSocket in another QThread,
- * sending and receiving OpenIGTLink messages.
+ * \brief TCP client that runs a QTcpSocket via a NiftyLinkTcpNetworkWorker
+ * in another NiftyLinkQThread, sending and receiving OpenIGTLink messages.
  */
 class NIFTYLINKCOMMON_WINEXPORT NiftyLinkTcpClient : public QObject
 {
@@ -39,6 +39,21 @@ public:
   NiftyLinkTcpClient(QObject *parent = 0);
   virtual ~NiftyLinkTcpClient();
 
+  /// \brief Set a threshold for the number of messages, so that you
+  /// get stats every X number of messages. Set <em>threshold</em>
+  /// to -1 to turn this feature off. Defaults to off.
+  void SetNumberMessageReceivedThreshold(qint64 threshold);
+
+  /// \brief Set this object to either send or not send keep alive messages.
+  /// Use in conjunction with SetCheckForNoIncomingData().
+  /// eg. One end sends keep alive messages, the other end expects to receive data regularly.
+  void SetKeepAliveOn(bool isOn);
+
+  /// \brief Set this object to monitor for no incoming data.
+  /// Use in conjunction with SetKeepAliveOn().
+  /// eg. One end sends keep alive messages, the other end expects to receive data regularly.
+  void SetCheckForNoIncomingData(bool isOn);
+
   /// \brief Connects to a host.
   ///
   /// You should register and listen to SocketError signal before calling this.
@@ -47,24 +62,8 @@ public:
   /// \brief Sends an OpenIGTLink message.
   ///
   /// The OpenIGTLink message within NiftyLinkMessageContainer should be Packed.
-  void Send(NiftyLinkMessageContainer::Pointer message);
-
-  /// \brief Set a threshold for the number of messages, so that you
-  /// get stats every X number of messages. Set <em>threshold</em>
-  /// to -1 to turn this feature off. Defaults to off.
-  void SetNumberMessageReceivedThreshold(qint64 threshold);
-
-  /// \brief Set this object to either send or not send keep alive messages.
-  /// In this Qt implementation, this is optional, and depends on requirements.
-  /// If you need to know whether something has stopped sending data, then
-  /// you should set this to true on both ends (client and server) of the socket.
-  void SetKeepAliveOn(bool isOn);
-
-  /// \brief Set this object to monitor for no incoming data.
-  /// Use in conjunction with SetKeepAliveOn().
-  /// eg. One end sends keep alive messages, the other end
-  /// expects to receive data regularly.
-  void SetCheckForNoIncomingData(bool isOn);
+  /// \return false if socket closed or unwritable, true otherwise.
+  bool Send(NiftyLinkMessageContainer::Pointer message);
 
 public slots:
 
@@ -74,7 +73,8 @@ public slots:
 
   /// \brief Sends message to other end to request the other end to output stats to console.
   /// Defined as a slot, so we can trigger it via QTimer.
-  void RequestStats();
+  /// \return false if socket closed or unwritable, true otherwise.
+  bool RequestStats();
 
 signals:
 
@@ -88,7 +88,7 @@ signals:
   void SocketError(QString hostName, int portNumber, QAbstractSocket::SocketError errorCode, QString errorString);
 
   /// \brief Emitted when this client receives an OpenIGTLink message, messages come out UnPacked.
-  /// IMPORTANT: You must use a Qt::DirectConnection to connect to this.
+  /// IMPORTANT: You must use a Qt::DirectConnection to connect to this, and not a Qt::QueuedConnection.
   void MessageReceived(NiftyLinkMessageContainer::Pointer message);
 
   /// \brief Emmitted by the underlying socket when we have actually sent bytes.
@@ -97,7 +97,7 @@ signals:
   /// \brief Emmitted when a keep alive message was sent.
   void SentKeepAlive();
 
-  /// \brief Emmitted when any of the connected clients is failing to send data.
+  /// \brief Emmitted when the other end is failing to send data.
   void NoIncomingData();
 
 private slots:
