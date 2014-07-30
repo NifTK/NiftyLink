@@ -14,9 +14,11 @@
 #include <NiftyLinkMacro.h>
 #include <NiftyLinkUtils.h>
 
-#include <sstream>
+#include <fstream>
 #include <iostream>
+#include <sstream>
 #include <iomanip>
+#include <cassert>
 
 namespace niftk
 {
@@ -103,6 +105,48 @@ QString GetMatrixAsString(const igtl::TrackingDataMessage::Pointer& message, int
 
   QString strMat = QString(sstr.str().c_str());
   return strMat;
+}
+
+
+//-----------------------------------------------------------------------------
+NiftyLinkMessageContainer::Pointer CreateTrackingDataMessage(const QString& deviceName, const QString& hostName, int portNumber, igtl::Matrix4x4& input)
+{
+  igtl::TrackingDataElement::Pointer element = igtl::TrackingDataElement::New();
+  element->SetMatrix(input);
+
+  igtl::TrackingDataMessage::Pointer msg = igtl::TrackingDataMessage::New();
+  msg->SetDeviceName(deviceName.toStdString().c_str());
+  msg->AddTrackingDataElement(element);
+
+  igtl::TimeStamp::Pointer timeCreated = igtl::TimeStamp::New();
+  timeCreated->GetTime();
+
+  msg->SetTimeStamp(timeCreated);
+  msg->Pack();
+
+  NiftyLinkMessageContainer::Pointer m = (NiftyLinkMessageContainer::Pointer(new NiftyLinkMessageContainer()));
+  m->SetMessage(msg.GetPointer());
+  m->SetOwnerName(deviceName);
+  m->SetSenderHostName(hostName);    // don't do these lookups here. They are expensive.
+  m->SetSenderPortNumber(portNumber);
+
+  return m;
+}
+
+//-----------------------------------------------------------------------------
+NiftyLinkMessageContainer::Pointer CreateTrackingDataMessage(const QString& deviceName, const QString& hostName, int portNumber,  double* input)
+{
+  assert(input);
+
+  igtl::Matrix4x4 matrix;
+  for (unsigned int r = 0; r < 4; r++)
+  {
+    for (unsigned int c = 0; c < 4; c++)
+    {
+      matrix[r][c] = input[r*4+c];
+    }
+  }
+  return CreateTrackingDataMessage(deviceName, hostName, portNumber, matrix);
 }
 
 } // end namespace niftk
