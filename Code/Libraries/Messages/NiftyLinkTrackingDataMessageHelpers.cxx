@@ -117,17 +117,17 @@ NiftyLinkMessageContainer::Pointer CreateTrackingDataMessage(const QString& devi
   msg->SetDeviceName(deviceName.toStdString().c_str());
   msg->AddTrackingDataElement(element);
 
-  igtl::TimeStamp::Pointer timeCreated = igtl::TimeStamp::New();
-  timeCreated->GetTime();
-
-  msg->SetTimeStamp(timeCreated);
-  msg->Pack();
-
   NiftyLinkMessageContainer::Pointer m = (NiftyLinkMessageContainer::Pointer(new NiftyLinkMessageContainer()));
   m->SetMessage(msg.GetPointer());
   m->SetOwnerName(deviceName);
   m->SetSenderHostName(hostName);    // don't do these lookups here. They are expensive.
   m->SetSenderPortNumber(portNumber);
+
+  igtl::TimeStamp::Pointer timeCreated = igtl::TimeStamp::New();
+  timeCreated->GetTime();
+
+  msg->SetTimeStamp(timeCreated);
+  msg->Pack();
 
   return m;
 }

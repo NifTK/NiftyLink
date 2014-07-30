@@ -40,7 +40,7 @@ extern "C++" NIFTYLINKCOMMON_WINEXPORT NiftyLinkMessageContainer::Pointer Create
 
 /// \brief Creates a transform message within a NiftyLinkMessageContainer, that is packed and ready to go.
 /// \param input should be an array of 16 doubles assumed to be in row-order.
-/// <pre>
+/// \code{.cpp}
 /// input[0][0] = input[0];
 /// input[0][1] = input[1];
 /// input[0][2] = input[2];
@@ -48,7 +48,7 @@ extern "C++" NIFTYLINKCOMMON_WINEXPORT NiftyLinkMessageContainer::Pointer Create
 /// input[1][0] = input[4];
 /// input[3][0] = input[12];
 /// etc.
-/// </pre>
+/// \endcode
 extern "C++" NIFTYLINKCOMMON_WINEXPORT NiftyLinkMessageContainer::Pointer CreateTransformMessage(const QString& deviceName, const QString& hostName, int portNumber, double* input);
 
 } // end namespace

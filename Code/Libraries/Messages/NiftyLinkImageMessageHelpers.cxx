@@ -241,4 +241,27 @@ void LoadImage(const QString& fileName, igtl::ImageMessage::Pointer& imageToWrit
   SetQImage(image, imageToWrite);
 }
 
+
+//-----------------------------------------------------------------------------
+NiftyLinkMessageContainer::Pointer CreateImageMessage(const QString& deviceName, const QString& hostName, int portNumber, const QImage& imageToRead)
+{
+  igtl::ImageMessage::Pointer msg = igtl::ImageMessage::New();
+  msg->SetDeviceName(deviceName.toStdString().c_str());
+  SetQImage(imageToRead, msg);
+
+  NiftyLinkMessageContainer::Pointer m = (NiftyLinkMessageContainer::Pointer(new NiftyLinkMessageContainer()));
+  m->SetMessage(msg.GetPointer());
+  m->SetOwnerName(deviceName);
+  m->SetSenderHostName(hostName);    // don't do these lookups here. They are expensive.
+  m->SetSenderPortNumber(portNumber);
+
+  igtl::TimeStamp::Pointer timeCreated = igtl::TimeStamp::New();
+  timeCreated->GetTime();
+
+  msg->SetTimeStamp(timeCreated);
+  msg->Pack();
+
+  return m;
+}
+
 } // end namespace

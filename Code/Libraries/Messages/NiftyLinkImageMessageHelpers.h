@@ -13,6 +13,7 @@
 #define NiftyLinkImageMessageHelpers_h
 
 #include <NiftyLinkCommonWin32ExportHeader.h>
+#include <NiftyLinkMessageContainer.h>
 
 #include <igtlImageMessage.h>
 
@@ -42,6 +43,9 @@ extern "C++" NIFTYLINKCOMMON_WINEXPORT void SaveImage(const igtl::ImageMessage::
 
 /// \brief Loads the image data from file, and writes it into the igtl::ImageMessage;
 extern "C++" NIFTYLINKCOMMON_WINEXPORT void LoadImage(const QString& fileName, igtl::ImageMessage::Pointer& imageToWrite);
+
+/// \brief Creates an image message within a NiftyLinkMessageContainer, that is packed and ready to go.
+extern "C++" NIFTYLINKCOMMON_WINEXPORT NiftyLinkMessageContainer::Pointer CreateImageMessage(const QString& deviceName, const QString& hostName, int portNumber, igtl::Matrix4x4& input);
 
 } // end namesspace niftk
 
