@@ -45,7 +45,7 @@ extern "C++" NIFTYLINKCOMMON_WINEXPORT void SaveImage(const igtl::ImageMessage::
 extern "C++" NIFTYLINKCOMMON_WINEXPORT void LoadImage(const QString& fileName, igtl::ImageMessage::Pointer& imageToWrite);
 
 /// \brief Creates an image message within a NiftyLinkMessageContainer, that is packed and ready to go.
-extern "C++" NIFTYLINKCOMMON_WINEXPORT NiftyLinkMessageContainer::Pointer CreateImageMessage(const QString& deviceName, const QString& hostName, int portNumber, igtl::Matrix4x4& input);
+extern "C++" NIFTYLINKCOMMON_WINEXPORT NiftyLinkMessageContainer::Pointer CreateImageMessage(const QString& deviceName, const QString& hostName, int portNumber, const QImage& imageToRead);
 
 } // end namesspace niftk
 
