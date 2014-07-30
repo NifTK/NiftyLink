@@ -176,4 +176,16 @@ igtlUint64 NiftyLinkMessageContainer::GetTimeCreated() const
   return tmp->GetTimeStampInNanoseconds();
 }
 
+
+//-----------------------------------------------------------------------------
+igtlUint64 NiftyLinkMessageContainer::GetLatency() const
+{
+  assert(this->m_Message.IsNotNull());
+
+  igtl::TimeStamp::Pointer tmp = igtl::TimeStamp::New();
+  this->m_Message->GetTimeStamp(tmp);
+
+  return GetDifferenceInNanoSeconds(m_TimeReceived, tmp);
+}
+
 } // end namespace niftk

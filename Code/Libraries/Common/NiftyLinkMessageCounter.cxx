@@ -109,8 +109,10 @@ void NiftyLinkMessageCounter::OnMessageReceived(NiftyLinkMessageContainer::Point
 
   // In OpenIGTLink paper (Tokuda 2009), Latency is defined as the difference
   // between last byte received and first byte sent.
-  igtlUint64 latency = message->GetTimeReceived() - message->GetTimeCreated();
+  igtlUint64 latency = message->GetLatency();
   QString deviceType(message->GetMessage()->GetDeviceType());
+
+  std::cerr << "Matt, counting message:created=" << message->GetTimeCreated() << ", received=" << message->GetTimeReceived() << ", latency=" << latency << std::endl;
 
   // Create map entry first.
   if (!m_ListsOfLatenciesByDeviceType.contains(deviceType))

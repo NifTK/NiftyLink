@@ -97,6 +97,9 @@ public:
   /// \brief Retrieves the time created, directly from the message, in nanoseconds since Unix Epoch.
   igtlUint64 GetTimeCreated() const;
 
+  /// \brief Calculates the latency as difference between time created and time received.
+  igtlUint64 GetLatency() const;
+
   /// \brief Set the host name of where the message came from.
   void SetSenderHostName(const QString &host);
 

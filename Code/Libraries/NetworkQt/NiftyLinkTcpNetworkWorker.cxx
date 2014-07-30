@@ -306,6 +306,7 @@ void NiftyLinkTcpNetworkWorker::OnSocketReadyRead()
 
       // This assumes the constructor creates a valid timestamp.
       m_IncomingHeaderTimeStamp = igtl::TimeStamp::New();
+      m_IncomingHeaderTimeStamp->GetTime();
 
       // Read header data.
       bytesReceived = in.readRawData(static_cast<char*>(m_IncomingHeader->GetPackPointer()), m_IncomingHeader->GetPackSize());
