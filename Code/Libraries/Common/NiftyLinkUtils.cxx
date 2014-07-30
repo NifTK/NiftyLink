@@ -22,6 +22,7 @@
 #include <QNetworkSession>
 
 #include <cmath>
+#include <cassert>
 
 namespace niftk
 {
@@ -243,6 +244,21 @@ NiftyLinkMessageContainer::Pointer CreateTestTrackingDataMessage(int matricesPer
   m->SetSenderPortNumber(1234);
 
   return m;
+}
+
+
+//-----------------------------------------------------------------------------
+void CopyMatrix(double *input, igtl::Matrix4x4& output)
+{
+  assert(input);
+
+  for (unsigned int r = 0; r < 4; r++)
+  {
+    for (unsigned int c = 0; c < 4; c++)
+    {
+      output[r][c] = input[r*4+c];
+    }
+  }
 }
 
 } // end namespace niftk

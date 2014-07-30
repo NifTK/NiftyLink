@@ -41,6 +41,9 @@ extern "C++" NIFTYLINKCOMMON_WINEXPORT QString ResolveHostName(const QString &in
 /// \brief For testing, this function creates a random 4x4 test matrix.
 extern "C++" NIFTYLINKCOMMON_WINEXPORT void CreateRandomTransformMatrix(igtl::Matrix4x4& matrix);
 
+/// \brief Assuming input is 16 doubles, copies to output.
+extern "C++" NIFTYLINKCOMMON_WINEXPORT void CopyMatrix(double *input, igtl::Matrix4x4& output);
+
 /// \brief For testing, this function creates a test message containing a configurable number of tracking matrix elements.
 extern "C++" NIFTYLINKCOMMON_WINEXPORT NiftyLinkMessageContainer::Pointer CreateTestTrackingDataMessage(int matricesPerMessage);
 

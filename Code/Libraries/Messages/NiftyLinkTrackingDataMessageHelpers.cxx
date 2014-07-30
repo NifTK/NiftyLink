@@ -18,7 +18,6 @@
 #include <iostream>
 #include <sstream>
 #include <iomanip>
-#include <cassert>
 
 namespace niftk
 {
@@ -136,16 +135,8 @@ NiftyLinkMessageContainer::Pointer CreateTrackingDataMessage(const QString& devi
 //-----------------------------------------------------------------------------
 NiftyLinkMessageContainer::Pointer CreateTrackingDataMessage(const QString& deviceName, const QString& hostName, int portNumber,  double* input)
 {
-  assert(input);
-
   igtl::Matrix4x4 matrix;
-  for (unsigned int r = 0; r < 4; r++)
-  {
-    for (unsigned int c = 0; c < 4; c++)
-    {
-      matrix[r][c] = input[r*4+c];
-    }
-  }
+  CopyMatrix(input, matrix);
   return CreateTrackingDataMessage(deviceName, hostName, portNumber, matrix);
 }
 

@@ -73,4 +73,35 @@ QString GetMatrixAsString(const igtl::TransformMessage::Pointer& message)
   return strMat;
 }
 
+
+//-----------------------------------------------------------------------------
+NiftyLinkMessageContainer::Pointer CreateTransformMessage(const QString& deviceName, const QString& hostName, int portNumber, igtl::Matrix4x4& input)
+{
+  igtl::TransformMessage::Pointer msg = igtl::TransformMessage::New();
+  msg->SetDeviceName(deviceName.toStdString().c_str());
+
+  igtl::TimeStamp::Pointer timeCreated = igtl::TimeStamp::New();
+  timeCreated->GetTime();
+
+  msg->SetTimeStamp(timeCreated);
+  msg->Pack();
+
+  NiftyLinkMessageContainer::Pointer m = (NiftyLinkMessageContainer::Pointer(new NiftyLinkMessageContainer()));
+  m->SetMessage(msg.GetPointer());
+  m->SetOwnerName(deviceName);
+  m->SetSenderHostName(hostName);    // don't do these lookups here. They are expensive.
+  m->SetSenderPortNumber(portNumber);
+
+  return m;
+}
+
+
+//-----------------------------------------------------------------------------
+NiftyLinkMessageContainer::Pointer CreateTransformMessage(const QString& deviceName, const QString& hostName, int portNumber, double* input)
+{
+  igtl::Matrix4x4 matrix;
+  CopyMatrix(input, matrix);
+  return CreateTransformMessage(deviceName, hostName, portNumber, matrix);
+}
+
 } // end namespace niftk
