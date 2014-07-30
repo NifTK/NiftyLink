@@ -27,7 +27,8 @@ namespace niftk
 /**
  * \class NiftyLinkTcpServer
  * \brief TCP server that processes multiple clients bound to a single port,
- * each in a separate QThread, sending and receiving OpenIGTLink messages.
+ * running each in a separate NiftyLinkQThread using NiftyLinkTcpNetworkWorker,
+ * sending and receiving OpenIGTLink messages.
  *
  * Lots of functionality is provided by the QTcpServer base class.
  */
