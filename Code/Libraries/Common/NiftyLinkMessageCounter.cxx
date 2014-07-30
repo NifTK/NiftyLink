@@ -112,8 +112,6 @@ void NiftyLinkMessageCounter::OnMessageReceived(NiftyLinkMessageContainer::Point
   igtlUint64 latency = message->GetLatency();
   QString deviceType(message->GetMessage()->GetDeviceType());
 
-  std::cerr << "Matt, counting message:created=" << message->GetTimeCreated() << ", received=" << message->GetTimeReceived() << ", latency=" << latency << std::endl;
-
   // Create map entry first.
   if (!m_ListsOfLatenciesByDeviceType.contains(deviceType))
   {
