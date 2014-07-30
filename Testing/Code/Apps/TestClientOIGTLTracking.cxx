@@ -60,6 +60,9 @@ int main(int argc, char* argv[])
   igtl::TimeStamp::Pointer timeNow = igtl::TimeStamp::New();
   timeNow->GetTime();
 
+  igtl::TimeStamp::Pointer timeCreated = igtl::TimeStamp::New();
+  timeCreated->GetTime();
+
   int nanosecondsBetweenMessages = 1000000000 / fps;
   int numberMessagesSent = 0;
   int numberMessagesRequired = totalMessages;
@@ -69,10 +72,9 @@ int main(int argc, char* argv[])
     timeNow->GetTime();
     if (niftk::GetDifferenceInNanoSeconds(timeNow, timeLastMessage) > nanosecondsBetweenMessages)
     {
-      igtl::TimeStamp::Pointer timeCreated = igtl::TimeStamp::New();
       timeCreated->GetTime();
 
-      niftk::NiftyLinkMessageContainer::Pointer m = niftk::CreateTestTrackingDataMessage(channels);
+      niftk::NiftyLinkMessageContainer::Pointer m = niftk::CreateTestTrackingDataMessage(timeCreated, channels);
       r = socket->Send(m->GetMessage()->GetPackPointer(), m->GetMessage()->GetPackSize());
       if (r == 0)
       {

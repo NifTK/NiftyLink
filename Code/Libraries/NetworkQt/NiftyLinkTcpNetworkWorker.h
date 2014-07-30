@@ -113,6 +113,7 @@ private:
   bool                          m_MessageInProgress;
   igtl::MessageHeader::Pointer  m_IncomingHeader;
   igtl::TimeStamp::Pointer      m_IncomingHeaderTimeStamp;
+  igtl::TimeStamp::Pointer      m_TimeFullyReceivedTimeStamp;
   igtl::MessageBase::Pointer    m_IncomingMessage;
   quint64                       m_IncomingMessageBytesReceived;
   bool                          m_AbortReading;
@@ -123,11 +124,13 @@ private:
   // For internal 'keep-alive' message
   QTimer                        *m_KeepAliveTimer;
   int                            m_KeepAliveInterval;
+  igtl::TimeStamp::Pointer       m_KeepAliveTimeStamp;
   igtl::TimeStamp::Pointer       m_LastMessageSentTime;
 
   // For monitoring for no incoming data.
   QTimer                        *m_NoIncomingDataTimer;
   int                            m_NoIncomingDataInterval;
+  igtl::TimeStamp::Pointer       m_NoIncomingDataTimeStamp;
   igtl::TimeStamp::Pointer       m_LastMessageReceivedTime;
 
 }; // end class

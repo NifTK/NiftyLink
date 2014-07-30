@@ -81,6 +81,9 @@ int main(int argc, char* argv[])
   igtl::TimeStamp::Pointer timeNow = igtl::TimeStamp::New();
   timeNow->GetTime();
 
+  igtl::TimeStamp::Pointer timeCreated = igtl::TimeStamp::New();
+  timeCreated->GetTime();
+
   int nanosecondsBetweenImageMessages = 1000000000 / fps;
   int nanosecondsBetweenTrackingMessages = 1000000000 / 100;  // i.e. tracking rate constant.
 
@@ -94,10 +97,7 @@ int main(int argc, char* argv[])
     // Do tracking first.
     if (niftk::GetDifferenceInNanoSeconds(timeNow, timeLastTrackingMessage) > nanosecondsBetweenTrackingMessages)
     {
-      igtl::TimeStamp::Pointer timeCreated = igtl::TimeStamp::New();
-      timeCreated->GetTime();
-
-      niftk::NiftyLinkMessageContainer::Pointer m = niftk::CreateTestTrackingDataMessage(channels);
+      niftk::NiftyLinkMessageContainer::Pointer m = niftk::CreateTestTrackingDataMessage(timeCreated, channels);
       r = socket->Send(m->GetMessage()->GetPackPointer(), m->GetMessage()->GetPackSize());
       if (r == 0)
       {
@@ -110,7 +110,6 @@ int main(int argc, char* argv[])
     // Do imaging second.
     if (niftk::GetDifferenceInNanoSeconds(timeNow, timeLastImageMessage) > nanosecondsBetweenImageMessages)
     {
-      igtl::TimeStamp::Pointer timeCreated = igtl::TimeStamp::New();
       timeCreated->GetTime();
       localImage->SetTimeStamp(timeCreated);
 

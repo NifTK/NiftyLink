@@ -62,13 +62,19 @@ NiftyLinkTcpNetworkWorker::NiftyLinkTcpNetworkWorker(
     host = "localhost";
   }
 
+  // These are expensive to create/destroy.
+  m_IncomingHeaderTimeStamp = igtl::TimeStamp::New();
+  m_TimeFullyReceivedTimeStamp = igtl::TimeStamp::New();
+  m_KeepAliveTimeStamp = igtl::TimeStamp::New();
+  m_LastMessageSentTime = igtl::TimeStamp::New();
+  m_NoIncomingDataTimeStamp = igtl::TimeStamp::New();
+  m_LastMessageReceivedTime = igtl::TimeStamp::New();
+
   m_KeepAliveTimer = new QTimer();
   m_KeepAliveTimer->setInterval(m_KeepAliveInterval);
-  m_LastMessageSentTime = igtl::TimeStamp::New();
 
   m_NoIncomingDataTimer = new QTimer();
   m_NoIncomingDataTimer->setInterval(m_NoIncomingDataInterval);
-  m_LastMessageReceivedTime = igtl::TimeStamp::New();
 
   m_MessagePrefix = QObject::tr("NiftyLinkTcpNetworkWorker(d=%1, h=%2, p=%3)").arg(m_Socket->socketDescriptor()).arg(host).arg(m_Socket->peerPort());
   this->setObjectName(m_MessagePrefix);
@@ -253,8 +259,8 @@ void NiftyLinkTcpNetworkWorker::OnOutputStats()
 //-----------------------------------------------------------------------------
 void NiftyLinkTcpNetworkWorker::OnCheckForIncomingData()
 {
-  igtl::TimeStamp::Pointer timeNow = igtl::TimeStamp::New();
-  double millisecondsSinceLastData = niftk::GetDifferenceInNanoSeconds(timeNow, m_LastMessageReceivedTime) / static_cast<double>(1000000);
+  m_NoIncomingDataTimeStamp->GetTime();
+  double millisecondsSinceLastData = niftk::GetDifferenceInNanoSeconds(m_NoIncomingDataTimeStamp, m_LastMessageReceivedTime) / static_cast<double>(1000000);
   if (millisecondsSinceLastData > m_KeepAliveInterval)
   {
     QLOG_DEBUG() << QObject::tr("%1::OnCheckForIncomingData() - signalling 'NoIncomingData'.").arg(m_MessagePrefix);
@@ -303,9 +309,6 @@ void NiftyLinkTcpNetworkWorker::OnSocketReadyRead()
       // Allocate a new header, which destroys the previous one, if no one else holds a smart-pointer to it.
       m_IncomingHeader = igtl::MessageHeader::New();
       m_IncomingHeader->InitPack();
-
-      // This assumes the constructor creates a valid timestamp.
-      m_IncomingHeaderTimeStamp = igtl::TimeStamp::New();
       m_IncomingHeaderTimeStamp->GetTime();
 
       // Read header data.
@@ -417,23 +420,20 @@ void NiftyLinkTcpNetworkWorker::OnSocketReadyRead()
         m_HeaderInProgress = false;
         m_MessageInProgress = false;
         m_IncomingHeader = NULL;
-        m_IncomingHeaderTimeStamp = NULL;
         m_IncomingMessage = NULL;
         m_IncomingMessageBytesReceived = 0;
         return;
       }
     } // end if we have a body.
 
-    // Create a new timestamp. Again, this assumes the constructor creates a valid time.
-    igtl::TimeStamp::Pointer timeFullyReceived  = igtl::TimeStamp::New();
-    timeFullyReceived->GetTime();
+    m_TimeFullyReceivedTimeStamp->GetTime();
 
     // This is the container we eventually publish.
      NiftyLinkMessageContainer::Pointer msg = (NiftyLinkMessageContainer::Pointer(new NiftyLinkMessageContainer()));
 
     // Set timestamps on NiftyLink container.
     msg->SetTimeArrived(m_IncomingHeaderTimeStamp);
-    msg->SetTimeReceived(timeFullyReceived);
+    msg->SetTimeReceived(m_TimeFullyReceivedTimeStamp);
     msg->SetMessage(m_IncomingMessage);
 
     QLOG_DEBUG() << QObject::tr("%1::OnSocketReadyRead() - id=%2, class=%3, size=%4 bytes, device='%5'.")
@@ -482,8 +482,8 @@ void NiftyLinkTcpNetworkWorker::OnSend()
 void NiftyLinkTcpNetworkWorker::OnSendInternalPing()
 {
   // Check if we can avoid sending this message, just to save on network traffic.
-  igtl::TimeStamp::Pointer sendStarted = igtl::TimeStamp::New();
-  igtlUint64 diff = GetDifferenceInNanoSeconds(sendStarted, m_LastMessageSentTime) / 1000000; // convert nano to milliseconds.
+  m_KeepAliveTimeStamp->GetTime();
+  igtlUint64 diff = GetDifferenceInNanoSeconds(m_KeepAliveTimeStamp, m_LastMessageSentTime) / 1000000; // convert nano to milliseconds.
   if (diff < m_KeepAliveInterval/2)
   {
     QLOG_DEBUG() << QObject::tr("%1::OnSendInternalPing() - No real need to send a keep-alive as we have recently processed a message.").arg(objectName());

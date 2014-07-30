@@ -71,6 +71,9 @@ void TestClientNifTKOIGTLTracking::Start()
   igtl::TimeStamp::Pointer timeNow = igtl::TimeStamp::New();
   timeNow->GetTime();
 
+  igtl::TimeStamp::Pointer timeCreated = igtl::TimeStamp::New();
+  timeCreated->GetTime();
+
   int nanosecondsBetweenMessages = 1000000000 / m_FramesPerSecond;
   QLOG_INFO() << QObject::tr("%1::Start() - %2 fps = %3 ns between messages.").arg(objectName()).arg(m_FramesPerSecond).arg(nanosecondsBetweenMessages);
 
@@ -80,7 +83,7 @@ void TestClientNifTKOIGTLTracking::Start()
     timeNow->GetTime();
     if (niftk::GetDifferenceInNanoSeconds(timeNow, timeLastMessage) > nanosecondsBetweenMessages)
     {
-      NiftyLinkMessageContainer::Pointer m = niftk::CreateTestTrackingDataMessage(m_TrackedObjectsPerMessage);
+      NiftyLinkMessageContainer::Pointer m = niftk::CreateTestTrackingDataMessage(timeCreated, m_TrackedObjectsPerMessage);
       igtl::MessageBase::Pointer msg = m->GetMessage();
 
       QLOG_DEBUG() << QObject::tr("%1::Start() - sending msg %2.").arg(objectName()).arg(m_NumberMessagesSent);

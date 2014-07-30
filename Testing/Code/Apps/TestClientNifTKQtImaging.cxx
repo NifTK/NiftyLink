@@ -103,6 +103,9 @@ void TestClientNifTKQtImaging::RunTest()
   igtl::TimeStamp::Pointer timeNow = igtl::TimeStamp::New();
   timeNow->GetTime();
 
+  igtl::TimeStamp::Pointer timeCreated = igtl::TimeStamp::New();
+  timeCreated->GetTime();
+
   NiftyLinkMessageContainer::Pointer m = (NiftyLinkMessageContainer::Pointer(new NiftyLinkMessageContainer()));
   m->SetOwnerName("TestClientNifTKQtImaging");
   m->SetSenderHostName("123.456.789.012");
@@ -117,7 +120,6 @@ void TestClientNifTKQtImaging::RunTest()
     {
       timeLastMessage->SetTimeInNanoseconds(timeNow->GetTimeStampInNanoseconds());
 
-      igtl::TimeStamp::Pointer timeCreated = igtl::TimeStamp::New();
       timeCreated->GetTime();
       localImage->SetTimeStamp(timeCreated);
 

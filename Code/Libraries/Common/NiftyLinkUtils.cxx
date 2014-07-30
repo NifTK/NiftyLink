@@ -214,7 +214,7 @@ igtlUint64 CalculateMax(const QList<igtlUint64>& list)
 
 
 //-----------------------------------------------------------------------------
-NiftyLinkMessageContainer::Pointer CreateTestTrackingDataMessage(int matricesPerMessage)
+NiftyLinkMessageContainer::Pointer CreateTestTrackingDataMessage(igtl::TimeStamp::Pointer& timeStamp, int matricesPerMessage)
 {
   igtl::Matrix4x4 matrix;
 
@@ -231,10 +231,8 @@ NiftyLinkMessageContainer::Pointer CreateTestTrackingDataMessage(int matricesPer
     msg->AddTrackingDataElement(element);
   }
 
-  igtl::TimeStamp::Pointer timeCreated = igtl::TimeStamp::New();
-  timeCreated->GetTime();
-
-  msg->SetTimeStamp(timeCreated);
+  timeStamp->GetTime();
+  msg->SetTimeStamp(timeStamp);
   msg->Pack();
 
   NiftyLinkMessageContainer::Pointer m = (NiftyLinkMessageContainer::Pointer(new NiftyLinkMessageContainer()));
