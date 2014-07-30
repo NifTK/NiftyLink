@@ -28,6 +28,7 @@ class NiftyLinkTcpNetworkWorker;
 
 /**
  * \class NiftyLinkTcpClient
+ * \file NiftyLinkTcpClient.h
  * \brief TCP client that runs a QTcpSocket via a NiftyLinkTcpNetworkWorker
  * in another NiftyLinkQThread, sending and receiving OpenIGTLink messages.
  */

@@ -26,6 +26,7 @@ namespace niftk
 
 /**
  * \class NiftyLinkServerProcess
+ * \file NiftyLinkServerProcess.h
  * \brief Represents a Process running a NiftyLinkServer socket in a separate thread.
  *
  * Note: Error handling strategy is to throw std::exception sub-classes for everything.

@@ -24,6 +24,7 @@ namespace niftk
 
 /**
  * \class NiftyLinkServerSocket
+ * \file NiftyLinkServerSocket.h
  * \brief Represents the server side of a socket connection.
  *
  * Note: Both server and client can send and receive messages.

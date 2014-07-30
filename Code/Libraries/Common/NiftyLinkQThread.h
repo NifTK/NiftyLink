@@ -23,6 +23,7 @@ namespace niftk
 
 /**
 * \class NiftyLinkQThread
+* \file NiftyLinkQThread.h
 * \brief Extends QThread and makes it sure that the event loop has started.
 *
 * NiftyLinkQThread extends the functionality of QThread. In the default

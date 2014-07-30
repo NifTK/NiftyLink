@@ -20,6 +20,7 @@ namespace niftk
 
 /**
  * \class NiftyLinkUtilsTests
+ * \file NiftyLinkUtilsTests.h
  * \brief Tests for classes in NiftyLinkUtils.h
  *
  * This test harness uses the <a href="http://qt-project.org/doc/qt-4.8/qtestlib-manual.html">QTestLib</a>

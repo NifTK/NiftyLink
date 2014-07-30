@@ -26,7 +26,7 @@ PROJECT_NUMBER        = @NIFTYLINK_VERSION_STRING@
 # for a project that appears at the top of each page and should give viewer a
 # quick idea about the purpose of the project. Keep the description short.
 
-PROJECT_BRIEF          = "A small light-weight library to facilitate communication over OpenIGTLink."
+PROJECT_BRIEF          = "A small, light-weight library to facilitate communication over OpenIGTLink."
 
 # The OUTPUT_DIRECTORY tag is used to specify the (relative or absolute) 
 # base path where the generated documentation will be put. 

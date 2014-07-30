@@ -17,14 +17,12 @@
 #include <QString>
 #include <QStringList>
 
-/**
- * \file XML message builders, shared between NifTK and NiftyGuide.
- */
 namespace niftk
 {
 
 /**
 * \class NiftyLinkXMLBuilderBase
+* \file NiftyLinkXMLBuilder.h
 * \brief Base class for the XML based descriptor builder classes.
 *
 * In NiftyGuide the non-standard requests and commands are done through OpenIGTLink string messages.

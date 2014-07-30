@@ -26,6 +26,7 @@ namespace niftk
 
 /**
  * \class TestClientNifTKOIGTLTracking
+ * \file TestClientNifTKOIGTLTracking.h
  * \brief Tracking client to send/receive data from an OpenIGTLink server,
  * using the NifTK OpenIGTLink based sockets.
  */

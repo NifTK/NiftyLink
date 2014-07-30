@@ -26,6 +26,7 @@ namespace niftk
 
 /**
  * \class TestClientNifTKQtTracking
+ * \file TestClientNifTKQtTracking.h
  * \brief Qt based tracking client to send/receive data from an OpenIGTLink server.
  */
 class TestClientNifTKQtTracking : public QObject

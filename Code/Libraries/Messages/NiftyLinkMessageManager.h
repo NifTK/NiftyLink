@@ -24,6 +24,7 @@ namespace niftk
 {
 /**
  * \class NiftyLinkMessageManager
+ * \file NiftyLinkMessageManager.h
  * \brief Helper class to avoid passing NiftyLinkMessageContainer over Qt::QueuedConnection.
  *
  * If you pass NiftyLinkMessageContainer::Pointer over a Qt::QueuedConnection,

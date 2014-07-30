@@ -27,6 +27,7 @@ class NiftyLinkServerProcess;
 
 /**
  * \class NiftyLinkServer
+ * \file NiftyLinkServer.h
  * \brief TCP Server class that users instantiate to
  * bind to a socket and start to listen for messages.
  *

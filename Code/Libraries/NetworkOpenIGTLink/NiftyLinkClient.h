@@ -27,6 +27,7 @@ class NiftyLinkClientProcess;
 
 /**
  * \class NiftyLinkClient
+ * \file NiftyLinkClient.h
  * \brief TCP Client class that users instantiate to connect to a
  * local/remote host and port, and send OpenIGTLink messages.
  *

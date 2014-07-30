@@ -19,7 +19,8 @@
 #include <QString>
 
 /**
- * \file Helper methods to initialise TDATA messages.
+ * \file NiftyLinkTrackingDataMessageHelpers.h
+ * \brief Helper methods to initialise TDATA messages.
  */
 namespace niftk
 {

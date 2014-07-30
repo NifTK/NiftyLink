@@ -19,7 +19,8 @@
 #include <QString>
 
 /**
- * \file Helper methods to initialise TRANSORM messages.
+ * \file NiftyLinkTransformMessageHelpers.h
+ * \brief Helper methods to initialise TRANSORM messages.
  */
 namespace niftk
 {

@@ -26,6 +26,7 @@ namespace niftk
 
 /**
  * \class NiftyLinkMessageCounter
+ * \file NiftyLinkMessageCounter.h
  * \brief Simple container object to work out some statistics of the messages received.
  *
  * Specifically, the OpenIGTLink paper (Tokuda 2009) measures latency as the
