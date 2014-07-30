@@ -13,6 +13,8 @@
 
 #include <NiftyLinkUtils.h>
 
+#include <igtl_util.h>
+
 #include "QsLog.h"
 #include "QsLogDest.h"
 
@@ -29,11 +31,6 @@ NiftyLinkMessageContainer::NiftyLinkMessageContainer()
 , m_SenderPortNumber(-1)
 , m_OwnerName("")
 {
-  m_TimeArrived = igtl::TimeStamp::New();
-  m_TimeArrived->GetTime();
-  m_TimeReceived = igtl::TimeStamp::New();
-  m_TimeReceived->GetTime();
-  m_Id = m_TimeReceived->GetTimeStampInNanoseconds();
 }
 
 
@@ -60,8 +57,8 @@ void NiftyLinkMessageContainer::ShallowCopy(const NiftyLinkMessageContainer& ano
   m_SenderHostName = another.m_SenderHostName;
   m_SenderPortNumber = another.m_SenderPortNumber;
   m_OwnerName = another.m_OwnerName;
-  m_TimeArrived->SetTimeInNanoseconds(another.m_TimeArrived->GetTimeStampInNanoseconds());
-  m_TimeReceived->SetTimeInNanoseconds(another.m_TimeReceived->GetTimeStampInNanoseconds());
+  m_TimeArrived = another.m_TimeArrived;
+  m_TimeReceived = another.m_TimeReceived;
 }
 
 
@@ -96,30 +93,28 @@ igtl::MessageBase::Pointer NiftyLinkMessageContainer::GetMessage() const
 //-----------------------------------------------------------------------------
 void NiftyLinkMessageContainer::SetTimeArrived(const igtl::TimeStamp::Pointer& time)
 {
-  igtlUint64 tmp = time->GetTimeStampInNanoseconds();
-  this->m_TimeArrived->SetTimeInNanoseconds(tmp);
+  m_TimeArrived = time->GetTimeStampInNanoseconds();
 }
 
 
 //-----------------------------------------------------------------------------
 igtlUint64 NiftyLinkMessageContainer::GetTimeArrived() const
 {
-  return this->m_TimeArrived->GetTimeStampInNanoseconds();
+  return m_TimeArrived;
 }
 
 
 //-----------------------------------------------------------------------------
 void NiftyLinkMessageContainer::SetTimeReceived(const igtl::TimeStamp::Pointer& time)
 {
-  igtlUint64 tmp = time->GetTimeStampInNanoseconds();
-  this->m_TimeReceived->SetTimeInNanoseconds(tmp);
+  m_TimeReceived = time->GetTimeStampInNanoseconds();
 }
 
 
 //-----------------------------------------------------------------------------
 igtlUint64 NiftyLinkMessageContainer::GetTimeReceived() const
 {
-  return this->m_TimeReceived->GetTimeStampInNanoseconds();
+  return m_TimeReceived;
 }
 
 
@@ -166,14 +161,10 @@ QString NiftyLinkMessageContainer::GetOwnerName(void)
 
 
 //-----------------------------------------------------------------------------
-igtlUint64 NiftyLinkMessageContainer::GetTimeCreated() const
+void NiftyLinkMessageContainer::GetTimeCreated(igtl::TimeStamp::Pointer& time) const
 {
   assert(this->m_Message.IsNotNull());
-
-  igtl::TimeStamp::Pointer tmp = igtl::TimeStamp::New();
-  this->m_Message->GetTimeStamp(tmp);
-
-  return tmp->GetTimeStampInNanoseconds();
+  this->m_Message->GetTimeStamp(time);
 }
 
 
@@ -182,10 +173,13 @@ igtlUint64 NiftyLinkMessageContainer::GetLatency() const
 {
   assert(this->m_Message.IsNotNull());
 
-  igtl::TimeStamp::Pointer tmp = igtl::TimeStamp::New();
-  this->m_Message->GetTimeStamp(tmp);
+  igtlUint32 secCreated;
+  igtlUint32 fracCreated;
+  this->m_Message->GetTimeStamp(&secCreated, &fracCreated);
 
-  return GetDifferenceInNanoSeconds(m_TimeReceived, tmp);
+  igtlUint64 secCreatedInNano = static_cast<igtlUint64>(secCreated)*1000000000;
+  igtlUint64 fracCreatedInNano = igtl_frac_to_nanosec(static_cast<igtlUint32>(fracCreated));
+  return m_TimeReceived - (secCreatedInNano + fracCreatedInNano);
 }
 
 } // end namespace niftk

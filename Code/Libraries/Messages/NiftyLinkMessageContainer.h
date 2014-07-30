@@ -41,8 +41,6 @@ namespace niftk
 * introduces more message types derived from igtl::MessageBase,
 * then this class does not need modifying.
 *
-* DO NOT expose access to the internal igtl::TimeStamp objects.
-*
 * This class should NOT be used across a Qt::QueuedConnection,
 * as even though there are default constructor, copy and
 * assignment operators, it does NOT survive the Qt Meta-Object system.
@@ -95,7 +93,7 @@ public:
   igtlUint64 GetTimeReceived() const;
 
   /// \brief Retrieves the time created, directly from the message, in nanoseconds since Unix Epoch.
-  igtlUint64 GetTimeCreated() const;
+  void GetTimeCreated(igtl::TimeStamp::Pointer& time) const;
 
   /// \brief Calculates the latency as difference between time created and time received.
   igtlUint64 GetLatency() const;
@@ -130,10 +128,10 @@ private:
   igtlUint64                         m_Id;
 
   // To mark when the first byte of the message arrived at the socket
-  igtl::TimeStamp::Pointer           m_TimeArrived;
+  igtlUint64                         m_TimeArrived;
 
   // To mark when the message was fully received
-  igtl::TimeStamp::Pointer           m_TimeReceived;
+  igtlUint64                         m_TimeReceived;
 
   // To indicate which host/ip address the message came from.
   QString                            m_SenderHostName;
