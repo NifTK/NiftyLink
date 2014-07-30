@@ -32,7 +32,6 @@ namespace niftk
 {
 /**
 * \class NiftyLinkMessageContainer
-* \file NiftyLinkMessageContainer.h
 * \brief Wrapper for OpenIGTLink message types.
 *
 * The aim of this class is to provide any additional information

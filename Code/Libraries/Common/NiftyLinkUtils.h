@@ -23,7 +23,7 @@
 
 /**
  * \file NiftyLinkUtils.h
- * \brief Various utility functions for stats, test data, IP validation etc.
+ * \brief Helper methods for stats, test data, IP validation etc.
  */
 namespace niftk
 {

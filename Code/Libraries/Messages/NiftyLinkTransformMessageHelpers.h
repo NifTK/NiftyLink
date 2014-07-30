@@ -20,7 +20,7 @@
 
 /**
  * \file NiftyLinkTransformMessageHelpers.h
- * \brief Helper methods to initialise TRANSORM messages.
+ * \brief Helper methods to initialise TRANSFORM messages.
  */
 namespace niftk
 {

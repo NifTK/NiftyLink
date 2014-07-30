@@ -26,7 +26,6 @@ namespace niftk
 {
 /**
  * \class NiftyLinkTcpServer
- * \file NiftyLinkTcpServer.h
  * \brief TCP server that processes multiple clients bound to a single port,
  * running each in a separate NiftyLinkQThread using NiftyLinkTcpNetworkWorker,
  * sending and receiving OpenIGTLink messages.

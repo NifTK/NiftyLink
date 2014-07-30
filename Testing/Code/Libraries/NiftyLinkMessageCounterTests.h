@@ -19,8 +19,8 @@ namespace niftk
 {
 
 /**
- * \class NiftyLinkMessageCounterTests
  * \file NiftyLinkMessageCounterTests.h
+ * \class NiftyLinkMessageCounterTests
  * \brief Tests for classes in NiftyLinkMessageCounterTests.
  *
  * This test harness uses the <a href="http://qt-project.org/doc/qt-4.8/qtestlib-manual.html">QTestLib</a>

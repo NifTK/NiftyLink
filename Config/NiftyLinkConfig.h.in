@@ -9,6 +9,8 @@
 
   See LICENSE.txt in the top level directory for details.
 =============================================================================*/
+#ifndef NiftyLinkConfig_h
+#define NiftyLinkConfig_h
 
 /* 
  * here is where system computed values get stored these values should only
@@ -96,3 +98,4 @@
 #define NIFTYLINK_OPENIGTLINK_VERSION "@OPENIGTLINK_REVISION_ID@"
 #define NIFTYLINK_GIT_REVISION_ID "@NIFTYLINK_GIT_REVISION_ID@"
 
+#endif // NiftyLinkConfig_h

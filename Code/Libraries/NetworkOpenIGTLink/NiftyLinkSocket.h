@@ -22,7 +22,6 @@ namespace niftk
 
 /**
  * \class NiftyLinkSocket
- * \file NiftyLinkSocket.h
  * \brief BSD socket encapsulation.
  *
  * This socket class was originally derived from igtlSocket, which itself

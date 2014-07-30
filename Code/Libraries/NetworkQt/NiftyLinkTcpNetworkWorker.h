@@ -26,7 +26,6 @@ namespace niftk
 {
 /**
  * \class NiftyLinkTcpNetworkWorker
- * \file NiftyLinkTcpNetworkWorker.h
  * \brief Worker object, to be run in a separate NiftyLinkQThread by NiftyLinkTcpServer or NiftyLinkTcpClient.
  *
  * Third parties should not need to use this class, hence it is deliberately not exported.

@@ -25,7 +25,6 @@ namespace niftk
 
 /**
  * \class NiftyLinkNetworkProcess
- * \file NiftyLinkNetworkProcess.h
  * \brief Abstract base class of NiftyLinkServerProcess and NiftyLinkClientProcess.
  *
  * Note: Error handling strategy is to throw std::exception sub-classes for everything.

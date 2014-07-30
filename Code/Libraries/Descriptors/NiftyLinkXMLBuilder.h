@@ -22,7 +22,6 @@ namespace niftk
 
 /**
 * \class NiftyLinkXMLBuilderBase
-* \file NiftyLinkXMLBuilder.h
 * \brief Base class for the XML based descriptor builder classes.
 *
 * In NiftyGuide the non-standard requests and commands are done through OpenIGTLink string messages.
