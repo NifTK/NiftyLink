@@ -22,6 +22,14 @@
 #include <QString>
 
 /**
+ * \namespace niftk
+ * \brief The niftk namespace should be used for all files in the NiftyLink/Code and NiftyLink/Testing folders.
+ *
+ * \namespace QsLogging
+ * \brief Namespace used in the QsLogging package, included within NiftyLink/Code/Libraries/Common folder.
+ */
+
+/**
  * \file NiftyLinkUtils.h
  * \brief Helper methods for stats, test data, IP validation etc.
  */
