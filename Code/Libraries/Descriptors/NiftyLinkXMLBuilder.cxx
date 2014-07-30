@@ -18,7 +18,7 @@ namespace niftk
 {
 
 //-----------------------------------------------------------------------------
-QString XMLBuilderBase::ParseDescriptorType(QString xmlString)
+QString NiftyLinkXMLBuilderBase::ParseDescriptorType(QString xmlString)
 {
   QDomDocument xmlDoco;
 
@@ -39,8 +39,8 @@ QString XMLBuilderBase::ParseDescriptorType(QString xmlString)
 
 
 //-----------------------------------------------------------------------------
-ClientDescriptorXMLBuilder::ClientDescriptorXMLBuilder(const ClientDescriptorXMLBuilder &other)
-  : XMLBuilderBase(other)
+NiftyLinkClientDescriptor::NiftyLinkClientDescriptor(const NiftyLinkClientDescriptor &other)
+  : NiftyLinkXMLBuilderBase(other)
 ,  m_DeviceName(other.m_DeviceName)
 ,  m_DeviceType(other.m_DeviceType)
 ,  m_CommType(other.m_CommType)
@@ -52,9 +52,9 @@ ClientDescriptorXMLBuilder::ClientDescriptorXMLBuilder(const ClientDescriptorXML
 
 
 //-----------------------------------------------------------------------------
-ClientDescriptorXMLBuilder& ClientDescriptorXMLBuilder::operator=(const ClientDescriptorXMLBuilder &other)
+NiftyLinkClientDescriptor& NiftyLinkClientDescriptor::operator=(const NiftyLinkClientDescriptor &other)
 {
-  XMLBuilderBase::operator =(other);
+  NiftyLinkXMLBuilderBase::operator =(other);
 
   m_DeviceName = other.m_DeviceName;
   m_DeviceType = other.m_DeviceType;
@@ -68,7 +68,7 @@ ClientDescriptorXMLBuilder& ClientDescriptorXMLBuilder::operator=(const ClientDe
 
 
 //-----------------------------------------------------------------------------
-QString ClientDescriptorXMLBuilder::GetXMLAsString(void)
+QString NiftyLinkClientDescriptor::GetXMLAsString(void)
 {
   QDomDocument domDocument("ClientDescriptor");
 
@@ -106,7 +106,7 @@ QString ClientDescriptorXMLBuilder::GetXMLAsString(void)
 
 
 //-----------------------------------------------------------------------------
-void ClientDescriptorXMLBuilder::SetXMLString(QString desc)
+void NiftyLinkClientDescriptor::SetXMLString(QString desc)
 {
   m_DescriptorString.clear();
   m_DescriptorString.append(desc);
@@ -163,8 +163,8 @@ void ClientDescriptorXMLBuilder::SetXMLString(QString desc)
 
 
 //-----------------------------------------------------------------------------
-CommandDescriptorXMLBuilder::CommandDescriptorXMLBuilder(const CommandDescriptorXMLBuilder &other)
-  : XMLBuilderBase(other)
+NiftyLinkCommandDescriptor::NiftyLinkCommandDescriptor(const NiftyLinkCommandDescriptor &other)
+  : NiftyLinkXMLBuilderBase(other)
 {
   m_CommandName = other.m_CommandName;
   m_NumOfParameters = other.m_NumOfParameters;
@@ -176,9 +176,9 @@ CommandDescriptorXMLBuilder::CommandDescriptorXMLBuilder(const CommandDescriptor
 
 
 //-----------------------------------------------------------------------------
-CommandDescriptorXMLBuilder & CommandDescriptorXMLBuilder::operator=(const CommandDescriptorXMLBuilder &other)
+NiftyLinkCommandDescriptor & NiftyLinkCommandDescriptor::operator=(const NiftyLinkCommandDescriptor &other)
 {
-  XMLBuilderBase::operator =(other);
+  NiftyLinkXMLBuilderBase::operator =(other);
 
   m_CommandName = other.m_CommandName;
   m_NumOfParameters = other.m_NumOfParameters;
@@ -192,7 +192,7 @@ CommandDescriptorXMLBuilder & CommandDescriptorXMLBuilder::operator=(const Comma
 
 
 //-----------------------------------------------------------------------------
-void CommandDescriptorXMLBuilder::AddParameter(QString pName, QString pType, QString pVal)
+void NiftyLinkCommandDescriptor::AddParameter(QString pName, QString pType, QString pVal)
 {
   m_ParameterNames.append(pName);
   m_ParameterTypes.append(pType);
@@ -202,7 +202,7 @@ void CommandDescriptorXMLBuilder::AddParameter(QString pName, QString pType, QSt
 
 
 //-----------------------------------------------------------------------------
-QString CommandDescriptorXMLBuilder::GetXMLAsString(void)
+QString NiftyLinkCommandDescriptor::GetXMLAsString(void)
 {
   QDomDocument domDocument("CommandDescriptor");
 
@@ -243,7 +243,7 @@ QString CommandDescriptorXMLBuilder::GetXMLAsString(void)
 
 
 //-----------------------------------------------------------------------------
-void CommandDescriptorXMLBuilder::SetXMLString(QString desc)
+void NiftyLinkCommandDescriptor::SetXMLString(QString desc)
 {
   m_DescriptorString.clear();
   m_DescriptorString.append(desc);
@@ -292,7 +292,7 @@ void CommandDescriptorXMLBuilder::SetXMLString(QString desc)
 
 
 //-----------------------------------------------------------------------------
-QString CommandDescriptorXMLBuilder::GetParameterName(int i) const
+QString NiftyLinkCommandDescriptor::GetParameterName(int i) const
 {
   if (i >= m_ParameterNames.count())
   {
@@ -312,7 +312,7 @@ QString CommandDescriptorXMLBuilder::GetParameterName(int i) const
 
 
 //-----------------------------------------------------------------------------
-QString CommandDescriptorXMLBuilder::GetParameterType(int i) const
+QString NiftyLinkCommandDescriptor::GetParameterType(int i) const
 {
   if (i >= m_ParameterTypes.count())
   {
@@ -332,7 +332,7 @@ QString CommandDescriptorXMLBuilder::GetParameterType(int i) const
 
 
 //-----------------------------------------------------------------------------
-QString CommandDescriptorXMLBuilder::GetParameterValue(int i) const
+QString NiftyLinkCommandDescriptor::GetParameterValue(int i) const
 {
   if (i >= m_ParameterValues.count())
   {
@@ -352,7 +352,7 @@ QString CommandDescriptorXMLBuilder::GetParameterValue(int i) const
 
 
 //-----------------------------------------------------------------------------
-void CommandDescriptorXMLBuilder::GetParameterAllFields(int i, QString &pName, QString &pType, QString &pValue) const
+void NiftyLinkCommandDescriptor::GetParameterAllFields(int i, QString &pName, QString &pType, QString &pValue) const
 {
   if (i >= m_ParameterValues.count())
   {
@@ -393,38 +393,38 @@ void CommandDescriptorXMLBuilder::GetParameterAllFields(int i, QString &pName, Q
 
 
 //-----------------------------------------------------------------------------
-QStringList CommandDescriptorXMLBuilder::GetParameterNames(void) const
+QStringList NiftyLinkCommandDescriptor::GetParameterNames(void) const
 {
   return m_ParameterNames;
 }
 
 
 //-----------------------------------------------------------------------------
-QStringList CommandDescriptorXMLBuilder::GetParameterTypes(void) const
+QStringList NiftyLinkCommandDescriptor::GetParameterTypes(void) const
 {
   return m_ParameterTypes;
 }
 
 
 //-----------------------------------------------------------------------------
-QStringList CommandDescriptorXMLBuilder::GetParameterValues(void) const
+QStringList NiftyLinkCommandDescriptor::GetParameterValues(void) const
 {
   return m_ParameterValues;
 }
 
 
 //-----------------------------------------------------------------------------
-TrackerClientDescriptor::TrackerClientDescriptor(const TrackerClientDescriptor &other)
-  : ClientDescriptorXMLBuilder(other)
+NiftyLinkTrackerClientDescriptor::NiftyLinkTrackerClientDescriptor(const NiftyLinkTrackerClientDescriptor &other)
+  : NiftyLinkClientDescriptor(other)
 {
   m_TrackerTools = other.m_TrackerTools;
 }
 
 
 //-----------------------------------------------------------------------------
-TrackerClientDescriptor & TrackerClientDescriptor::operator=(const TrackerClientDescriptor &other)
+NiftyLinkTrackerClientDescriptor & NiftyLinkTrackerClientDescriptor::operator=(const NiftyLinkTrackerClientDescriptor &other)
 {
-  ClientDescriptorXMLBuilder::operator=(other);
+  NiftyLinkClientDescriptor::operator=(other);
   m_TrackerTools = other.m_TrackerTools;
 
   return *this;
@@ -432,11 +432,11 @@ TrackerClientDescriptor & TrackerClientDescriptor::operator=(const TrackerClient
 
 
 //-----------------------------------------------------------------------------
-QString TrackerClientDescriptor::GetXMLAsString(void)
+QString NiftyLinkTrackerClientDescriptor::GetXMLAsString(void)
 {
-  QDomDocument domDocument("TrackerClientDescriptor");
+  QDomDocument domDocument("NiftyLinkTrackerClientDescriptor");
 
-  QDomElement root = domDocument.createElement("TrackerClientDescriptor");
+  QDomElement root = domDocument.createElement("NiftyLinkTrackerClientDescriptor");
 
   QDomElement device = domDocument.createElement("Device");
   device.setAttribute("DeviceName", m_DeviceName);
@@ -480,7 +480,7 @@ QString TrackerClientDescriptor::GetXMLAsString(void)
 
 
 //-----------------------------------------------------------------------------
-void TrackerClientDescriptor::SetXMLString(QString desc)
+void NiftyLinkTrackerClientDescriptor::SetXMLString(QString desc)
 {
   m_DescriptorString.clear();
   m_DescriptorString.append(desc);
@@ -494,7 +494,7 @@ void TrackerClientDescriptor::SetXMLString(QString desc)
     // A valid XML document was received, now it's time to parse it
     QDomElement root = xmlDoco.documentElement();
 
-    if (root.tagName() == "TrackerClientDescriptor")
+    if (root.tagName() == "NiftyLinkTrackerClientDescriptor")
     {
       QDomNode n = root.firstChild();
 

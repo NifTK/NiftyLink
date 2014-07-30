@@ -24,13 +24,13 @@ namespace niftk
 {
 
 /**
-* \class XMLBuilderBase
+* \class NiftyLinkXMLBuilderBase
 * \brief Base class for the XML based descriptor builder classes.
 *
 * In NiftyGuide the non-standard requests and commands are done through OpenIGTLink string messages.
 * These messages are defined in an XML descriptor format which is then transmitted using an
 * igtl::StringMessage and sent across the network. Both the descriptor's creation and parsing
-* is done via "Builder" objects. XMLBuilderBase is the base class for the family of
+* is done via "Builder" objects. NiftyLinkXMLBuilderBase is the base class for the family of
 * different XML descriptor builders.
 *
 * Usage: all the adjustable features are set via member functions as a string (QString)
@@ -39,31 +39,31 @@ namespace niftk
 * can be used, which parses the XML descriptor and sets the member variables accordingly.
 * The values can then be queried by calling the getters.
 */
-class NIFTYLINKCOMMON_WINEXPORT XMLBuilderBase : public QObject
+class NIFTYLINKCOMMON_WINEXPORT NiftyLinkXMLBuilderBase : public QObject
 {
   Q_OBJECT
 
 public:
 
   /// \brief No-arg Constructor.
-  XMLBuilderBase()
+  NiftyLinkXMLBuilderBase()
   : m_DescriptorString("")
   , m_MessageValid(false)
   {
   }
 
   /// \brief Copy Constructor.
-  XMLBuilderBase(const XMLBuilderBase &other)
+  NiftyLinkXMLBuilderBase(const NiftyLinkXMLBuilderBase &other)
   : m_DescriptorString(other.m_DescriptorString)
   , m_MessageValid(other.m_MessageValid)
   {
   }
 
   /// \brief Basic destructor.
-  virtual ~XMLBuilderBase() {}
+  virtual ~NiftyLinkXMLBuilderBase() {}
 
   /// \brief Assignment operator.
-  XMLBuilderBase & operator=(const XMLBuilderBase &other)
+  NiftyLinkXMLBuilderBase & operator=(const NiftyLinkXMLBuilderBase &other)
   {
     m_DescriptorString = other.m_DescriptorString;
     m_MessageValid = other.m_MessageValid;
@@ -101,35 +101,35 @@ protected:
 //-----------------------------------------------------------------------------
 
 /**
-* \class ClientDescriptorXMLBuilder
+* \class NiftyLinkClientDescriptor
 * \brief This class is able to compose or parse a client descriptor XML.
 *
 * In NiftyLink when a client is successfully connected to the remote host a client
 * descriptor is being sent to the remote, which describes the client's details and
 * capabilities. This is to help the identify the individual clients. The
-* ClientDescriptorXMLBuilder class serves as a base class for the more specified
+* NiftyLinkClientDescriptor class serves as a base class for the more specified
 * descriptor builders (like TrackerDescriptorBuilder), but it can also be used as a
 * generic stendalone descriptor. The client's features are categorized into to main
 * groups: connection related features (like IP, Port)
 * and device related features (device type, device name, etc)
 */
-class NIFTYLINKCOMMON_WINEXPORT ClientDescriptorXMLBuilder : public XMLBuilderBase
+class NIFTYLINKCOMMON_WINEXPORT NiftyLinkClientDescriptor : public NiftyLinkXMLBuilderBase
 {
   Q_OBJECT
 
 public:
 
   /// \brief Basic constructor.
-  ClientDescriptorXMLBuilder() : XMLBuilderBase() {}
+  NiftyLinkClientDescriptor() : NiftyLinkXMLBuilderBase() {}
 
   /// \brief Copy Constructor.
-  ClientDescriptorXMLBuilder(const ClientDescriptorXMLBuilder &other);
+  NiftyLinkClientDescriptor(const NiftyLinkClientDescriptor &other);
 
   /// \brief Basic destructor.
-  virtual ~ClientDescriptorXMLBuilder() {}
+  virtual ~NiftyLinkClientDescriptor() {}
 
   /// \brief Assignment operator.
-  ClientDescriptorXMLBuilder & operator=(const ClientDescriptorXMLBuilder &other);
+  NiftyLinkClientDescriptor & operator=(const NiftyLinkClientDescriptor &other);
 
   /// \brief This method composes an XML descriptor from the values of the builders member variables in a text format and returns it in a QString object.
   QString GetXMLAsString(void);
@@ -227,7 +227,7 @@ protected:
 //-----------------------------------------------------------------------------
 
 /**
-* \class CommandDescriptorXMLBuilder
+* \class NiftyLinkCommandDescriptor
 * \brief This class is able to compose a command message descriptor XML.
 *
 * In NiftyLink when custom commands are sent as igtl::StringMessage, which contains
@@ -237,25 +237,25 @@ protected:
 * and it's parameters are required in QString format.
 *
 */
-class NIFTYLINKCOMMON_WINEXPORT CommandDescriptorXMLBuilder : public XMLBuilderBase
+class NIFTYLINKCOMMON_WINEXPORT NiftyLinkCommandDescriptor : public NiftyLinkXMLBuilderBase
 {
   Q_OBJECT
 
 public:
   /// \brief Basic constructor.
-  CommandDescriptorXMLBuilder() : XMLBuilderBase()
+  NiftyLinkCommandDescriptor() : NiftyLinkXMLBuilderBase()
   , m_NumOfParameters(0)
   {
   }
 
   /// \brief Copy Constructor.
-  CommandDescriptorXMLBuilder(const CommandDescriptorXMLBuilder &other);
+  NiftyLinkCommandDescriptor(const NiftyLinkCommandDescriptor &other);
 
   /// \brief Basic destructor.
-  virtual ~CommandDescriptorXMLBuilder() {}
+  virtual ~NiftyLinkCommandDescriptor() {}
 
   /// \brief Assignment operator.
-  CommandDescriptorXMLBuilder & operator=(const CommandDescriptorXMLBuilder &other);
+  NiftyLinkCommandDescriptor & operator=(const NiftyLinkCommandDescriptor &other);
 
   /// \brief This method composes an XML descriptor from the values of the builders member variables in a text format and returns it in a QString object.
   QString GetXMLAsString(void);
@@ -318,28 +318,28 @@ private:
 //-----------------------------------------------------------------------------
 
 /**
-* \class TrackerClientDescriptor
+* \class NiftyLinkTrackerClientDescriptor
 * \brief This class is able to compose a tracker client descriptor XML
 *
-* TrackerClientDescriptor is basically a generic client descriptor with the addition of Tracker Tools descriptors.
+* NiftyLinkTrackerClientDescriptor is basically a generic client descriptor with the addition of Tracker Tools descriptors.
 *
 */
-class NIFTYLINKCOMMON_WINEXPORT TrackerClientDescriptor : public ClientDescriptorXMLBuilder
+class NIFTYLINKCOMMON_WINEXPORT NiftyLinkTrackerClientDescriptor : public NiftyLinkClientDescriptor
 {
   Q_OBJECT
 
 public:
   /// \brief Basic constructor.
-  TrackerClientDescriptor() : ClientDescriptorXMLBuilder() {}
+  NiftyLinkTrackerClientDescriptor() : NiftyLinkClientDescriptor() {}
 
   /// \brief Copy Constructor.
-  TrackerClientDescriptor(const TrackerClientDescriptor &other);
+  NiftyLinkTrackerClientDescriptor(const NiftyLinkTrackerClientDescriptor &other);
 
   /// \brief Basic destructor.
-  virtual ~TrackerClientDescriptor() {}
+  virtual ~NiftyLinkTrackerClientDescriptor() {}
 
   /// \brief Assignment operator.
-  TrackerClientDescriptor & operator=(const TrackerClientDescriptor &other);
+  NiftyLinkTrackerClientDescriptor & operator=(const NiftyLinkTrackerClientDescriptor &other);
 
   /// \brief This method composes an XML descriptor from the values of the builders member variables in a text format and returns it in a QString object.
   QString GetXMLAsString(void);
