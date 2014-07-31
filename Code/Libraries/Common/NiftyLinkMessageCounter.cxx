@@ -60,6 +60,21 @@ qint64 NiftyLinkMessageCounter::GetNumberOfMessages()
 
 
 //-----------------------------------------------------------------------------
+float NiftyLinkMessageCounter::GetMessagesPerSecond()
+{
+  qint64 diff = GetDifferenceInNanoSeconds(m_StatsEndPoint, m_StatsStartPoint);
+  if (diff == 0)
+  {
+    return 0;
+  }
+  else
+  {
+    return m_NumberMessagesReceived/(static_cast<double>(diff)/static_cast<double>(1000000000));
+  }
+}
+
+
+//-----------------------------------------------------------------------------
 void NiftyLinkMessageCounter::OnClear()
 {
   m_StatsStartPoint->GetTime();

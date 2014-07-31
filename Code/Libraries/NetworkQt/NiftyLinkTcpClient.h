@@ -65,6 +65,12 @@ public:
   /// \return false if socket closed or unwritable, true otherwise.
   bool Send(NiftyLinkMessageContainer::Pointer message);
 
+  /// \brief Disconnects.
+  void DisconnectFromHost();
+
+  /// \brief Returns true if connected and false otherwise.
+  bool IsConnected() const;
+
 public slots:
 
   /// \brief Writes some stats to console, see NiftyLinkMessageCounter.
@@ -79,10 +85,10 @@ public slots:
 signals:
 
   /// \brief Emmitted when we have successfully connected.
-  void Connected();
+  void Connected(QString hostName, int portNumber);
 
   /// \brief Emmitted when we have disconnected for any reason.
-  void Disconnected();
+  void Disconnected(QString hostName, int portNumber);
 
   /// \brief Emitted when the underlying socket reports an error.
   void SocketError(QString hostName, int portNumber, QAbstractSocket::SocketError errorCode, QString errorString);
@@ -117,6 +123,8 @@ private slots:
 private:
 
   QTcpSocket                *m_Socket;
+  QString                    m_RequestedName;
+  int                        m_RequestedPort;
   NiftyLinkTcpNetworkWorker *m_Worker;
   NiftyLinkMessageManager    m_InboundMessages;
   NiftyLinkMessageManager    m_OutboundMessages;

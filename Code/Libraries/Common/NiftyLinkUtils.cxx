@@ -10,8 +10,13 @@
   See LICENSE.txt in the top level directory for details.
 =============================================================================*/
 #include "NiftyLinkUtils.h"
+#include <NiftyLinkTrackingDataMessageHelpers.h>
+#include <NiftyLinkTransformMessageHelpers.h>
 
 #include <igtlTrackingDataMessage.h>
+#include <igtlTransformMessage.h>
+#include <igtlStringMessage.h>
+#include <igtlStatusMessage.h>
 
 #include <QUrl>
 #include <QHostInfo>
@@ -20,6 +25,8 @@
 #include <QNetworkConfigurationManager>
 #include <QNetworkInterface>
 #include <QNetworkSession>
+#include <QDesktopServices>
+#include <QDir>
 
 #include <cmath>
 #include <cassert>
@@ -255,6 +262,106 @@ void CopyMatrix(double *input, igtl::Matrix4x4& output)
     for (unsigned int c = 0; c < 4; c++)
     {
       output[r][c] = input[r*4+c];
+    }
+  }
+}
+
+
+//-----------------------------------------------------------------------------
+QString GetWritableDirectoryPath(const QString& fileName)
+{
+  QString result;
+  QDir directory;
+
+  QString path = QDesktopServices::storageLocation(QDesktopServices::HomeLocation);
+  directory.setPath(path);
+
+  if (!directory.exists())
+  {
+    path = QDesktopServices::storageLocation(QDesktopServices::CacheLocation);
+    directory.setPath(path);
+  }
+  if (!directory.exists())
+  {
+    path = QDesktopServices::storageLocation(QDesktopServices::TempLocation);
+    directory.setPath(path);
+  }
+  if (!directory.exists())
+  {
+    path = QDesktopServices::storageLocation(QDesktopServices::DesktopLocation);
+    directory.setPath(path);
+  }
+  if (!directory.exists())
+  {
+    path = QDesktopServices::storageLocation(QDesktopServices::DocumentsLocation);
+    directory.setPath(path);
+  }
+  if (!directory.exists())
+  {
+    path = QDir::currentPath();
+    directory.setPath(path);
+  }
+  if (!directory.exists())
+  {
+    path = "";
+  }
+
+  result = path;
+
+  if (fileName.length() > 0)
+  {
+    if (result.length() > 0)
+    {
+      result = result + QDir::separator() + fileName;
+    }
+    else
+    {
+      result = fileName;
+    }
+  }
+  return result;
+}
+
+
+//-----------------------------------------------------------------------------
+QString AppendPathSeparator(const QString& path)
+{
+  return path.right(1) == "/" ? path : path + "/";
+}
+
+
+//-----------------------------------------------------------------------------
+void DisplayTextBasedMessage(NiftyLinkMessageContainer::Pointer& message, QPlainTextEdit* edit)
+{
+  if (message.data() != NULL)
+  {
+    igtl::MessageBase::Pointer msg = dynamic_cast<igtl::MessageBase*>(message->GetMessage().GetPointer());
+    if (msg.IsNotNull())
+    {
+      if (QString(msg->GetDeviceType()) == QString("STRING"))
+      {
+        igtl::StringMessage::Pointer m = dynamic_cast<igtl::StringMessage*>(msg.GetPointer());
+        edit->appendPlainText(m->GetString());
+        return;
+      }
+      if (QString(msg->GetDeviceType()) == QString("STATUS"))
+      {
+        igtl::StatusMessage::Pointer m = dynamic_cast<igtl::StatusMessage*>(msg.GetPointer());
+        edit->appendPlainText(m->GetStatusString());
+        return;
+      }
+      if (QString(msg->GetDeviceType()) == QString("TRANSFORM"))
+      {
+        igtl::TransformMessage::Pointer m = dynamic_cast<igtl::TransformMessage*>(msg.GetPointer());
+        edit->appendPlainText(GetMatrixAsString(m));
+        return;
+      }
+      if (QString(msg->GetDeviceType()) == QString("TDATA"))
+      {
+        igtl::TrackingDataMessage::Pointer m = dynamic_cast<igtl::TrackingDataMessage*>(msg.GetPointer());
+        edit->appendPlainText(GetMatrixAsString(m,0));
+        return;
+      }
     }
   }
 }

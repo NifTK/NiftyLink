@@ -20,6 +20,7 @@
 #include <igtlStringMessage.h>
 
 #include <QString>
+#include <QPlainTextEdit>
 
 /**
  * \namespace niftk
@@ -68,6 +69,18 @@ extern "C++" NIFTYLINKCOMMON_WINEXPORT double CalculateStdDev(const QList<igtlUi
 
 /// \brief Used to calculate stats of latency, this method computes the maximum of a list of igtlUint64.
 extern "C++" NIFTYLINKCOMMON_WINEXPORT igtlUint64 CalculateMax(const QList<igtlUint64>& list);
+
+/// \brief Tries to create a path name where data can be saved by checking the Desktop,
+/// Documents folder, HOME folder, cache folder, or the system temporary directory.
+/// \param fileName - if specified, will be concatenated onto the path.
+extern "C++" NIFTYLINKCOMMON_WINEXPORT QString GetWritableDirectoryPath(const QString& fileName=QString());
+
+/// \brief If required will add the path separator.
+extern "C++" NIFTYLINKCOMMON_WINEXPORT QString AppendPathSeparator(const QString& path);
+
+/// \brief If its a text based message writes the message to the QPlainTextEdit.
+/// Does nothing if the message is NULL, or is not STRING, STATUS, TDATA or TRANSFORM.
+extern "C++" NIFTYLINKCOMMON_WINEXPORT void DisplayTextBasedMessage(NiftyLinkMessageContainer::Pointer& message, QPlainTextEdit* edit);
 
 } // end namespace niftk
 

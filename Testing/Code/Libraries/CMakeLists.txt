@@ -17,6 +17,9 @@ SET(LIBS niftylink ${QT_QTTEST_LIBRARY} ${QT_LIBRARIES} )
 SET(SRCS
   NiftyLinkUtilsTests
   NiftyLinkMessageCounterTests
+  NiftyLinkImageMessageHelpersTests
+  NiftyLinkTrackingDataMessageHelpersTests
+  NiftyLinkTransformMessageHelpersTests
 )
 
 FOREACH(APP ${SRCS})

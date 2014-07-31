@@ -264,4 +264,20 @@ NiftyLinkMessageContainer::Pointer CreateImageMessage(const QString& deviceName,
   return m;
 }
 
+
+//-----------------------------------------------------------------------------
+void DisplayImageMessage(NiftyLinkMessageContainer::Pointer& message, QLabel* imageLabel)
+{
+  if (message.data() != NULL)
+  {
+    igtl::ImageMessage::Pointer msg = dynamic_cast<igtl::ImageMessage*>(message->GetMessage().GetPointer());
+    if (msg.IsNotNull())
+    {
+      QImage image;
+      GetQImage(msg, image);
+      imageLabel->setPixmap(QPixmap::fromImage(image));
+    }
+  }
+}
+
 } // end namespace

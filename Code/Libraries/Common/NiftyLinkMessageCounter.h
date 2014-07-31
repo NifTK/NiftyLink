@@ -77,7 +77,11 @@ public:
   void SetNumberMessageReceivedThreshold(qint64 threshold);
   qint64 GetNumberMessageReceivedThreshold() const;
 
+  /// \brief Returns the current count of the number of messages.
   qint64 GetNumberOfMessages();
+
+  /// \brief Returns the current number of messages per second.
+  float GetMessagesPerSecond();
 
 public slots:
 

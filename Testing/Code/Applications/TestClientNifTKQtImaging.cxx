@@ -10,49 +10,49 @@
   See LICENSE.txt in the top level directory for details.
 =============================================================================*/
 
-#include "TestClientNifTKQtTracking.h"
+#include "TestClientNifTKQtImaging.h"
 #include <NiftyLinkMessageContainer.h>
+#include <NiftyLinkImageMessageHelpers.h>
 #include <NiftyLinkUtils.h>
-
-#include <igtlTrackingDataMessage.h>
 
 #include <QsLog.h>
 #include <QsLogDest.h>
 #include <QApplication>
-#include <QThread>
 
 namespace niftk
 {
 
 //-----------------------------------------------------------------------------
-TestClientNifTKQtTracking::TestClientNifTKQtTracking(
-    const std::string& hostName,
+TestClientNifTKQtImaging::TestClientNifTKQtImaging(const std::string& hostName,
     const int& portNumber,
     const int& fps,
     const int& totalNumberMessages,
-    const int& trackedObjectsPerMessage,
+    const QString imageFileName,
     QObject *parent)
 : m_HostName(QString::fromStdString(hostName))
 , m_PortNumber(portNumber)
 , m_FramesPerSecond(fps)
 , m_IntendedNumberMessages(totalNumberMessages)
-, m_TrackedObjectsPerMessage(trackedObjectsPerMessage)
 , m_NumberMessagesSent(0)
 , m_Client(new NiftyLinkTcpClient(parent))
 {
-  this->setObjectName("TestClientNifTKQtTracking");
-  connect(m_Client, SIGNAL(Connected()), this, SLOT(OnConnectedToServer()));
+  m_ImageMessage = igtl::ImageMessage::New();
+  niftk::LoadImage(imageFileName, m_ImageMessage);
+  m_ImageMessage->Pack();
+
+  this->setObjectName("TestClientNifTKQtImaging");
+  connect(m_Client, SIGNAL(Connected(QString,int)), this, SLOT(OnConnectedToServer()));
 }
 
 
 //-----------------------------------------------------------------------------
-TestClientNifTKQtTracking::~TestClientNifTKQtTracking()
+TestClientNifTKQtImaging::~TestClientNifTKQtImaging()
 {
 }
 
 
 //-----------------------------------------------------------------------------
-void TestClientNifTKQtTracking::Start()
+void TestClientNifTKQtImaging::Start()
 {
   QLOG_INFO() << QObject::tr("%1::Start() - started.").arg(objectName());
   m_Client->ConnectToHost(m_HostName, m_PortNumber);
@@ -60,7 +60,7 @@ void TestClientNifTKQtTracking::Start()
 
 
 //-----------------------------------------------------------------------------
-void TestClientNifTKQtTracking::Shutdown()
+void TestClientNifTKQtImaging::Shutdown()
 {
   QLOG_INFO() << QObject::tr("%1::Shutdown() - starting.").arg(objectName());
 
@@ -75,18 +75,27 @@ void TestClientNifTKQtTracking::Shutdown()
 
 
 //-----------------------------------------------------------------------------
-void TestClientNifTKQtTracking::OnConnectedToServer()
+void TestClientNifTKQtImaging::OnConnectedToServer()
 {
   QLOG_INFO() << QObject::tr("%1::OnConnectedToServer().").arg(objectName());
   this->RunTest();
-  QCoreApplication::quit();
 }
 
 
 //-----------------------------------------------------------------------------
-void TestClientNifTKQtTracking::RunTest()
+void TestClientNifTKQtImaging::RunTest()
 {
-  QLOG_INFO() << QObject::tr("%1::RunTest() - starting.").arg(objectName());
+  int nanosecondsBetweenMessages = 1000000000 / m_FramesPerSecond;
+  QLOG_INFO() << QObject::tr("%1::RunTest() - %2 fps = %3 ns between messages.").arg(objectName()).arg(m_FramesPerSecond).arg(nanosecondsBetweenMessages);
+
+  int imgSize[3];
+  m_ImageMessage->GetDimensions(imgSize);
+
+  igtl::ImageMessage::Pointer  localImage = igtl::ImageMessage::New();
+  localImage->InitPack();
+  localImage->SetDimensions(imgSize[0], imgSize[1], imgSize[2]);
+  localImage->SetScalarType(igtl::ImageMessage::TYPE_UINT8);
+  localImage->AllocateScalars();
 
   igtl::TimeStamp::Pointer timeLastMessage = igtl::TimeStamp::New();
   timeLastMessage->GetTime();
@@ -97,8 +106,11 @@ void TestClientNifTKQtTracking::RunTest()
   igtl::TimeStamp::Pointer timeCreated = igtl::TimeStamp::New();
   timeCreated->GetTime();
 
-  int nanosecondsBetweenMessages = 1000000000 / m_FramesPerSecond;
-  QLOG_INFO() << QObject::tr("%1::RunTest() - %2 fps = %3 ns between messages.").arg(objectName()).arg(m_FramesPerSecond).arg(nanosecondsBetweenMessages);
+  NiftyLinkMessageContainer::Pointer m = (NiftyLinkMessageContainer::Pointer(new NiftyLinkMessageContainer()));
+  m->SetOwnerName("TestClientNifTKQtImaging");
+  m->SetSenderHostName("123.456.789.012");
+  m->SetSenderPortNumber(1234);
+  m->SetMessage(localImage.GetPointer());
 
   // This will occupy a lot of CPU, but we have multi-cpu machines, so no problem.
   while(m_NumberMessagesSent < m_IntendedNumberMessages)
@@ -108,14 +120,23 @@ void TestClientNifTKQtTracking::RunTest()
     {
       timeLastMessage->SetTimeInNanoseconds(timeNow->GetTimeStampInNanoseconds());
 
-      NiftyLinkMessageContainer::Pointer m = niftk::CreateTestTrackingDataMessage(timeCreated, m_TrackedObjectsPerMessage);
+      timeCreated->GetTime();
+      localImage->SetTimeStamp(timeCreated);
+
+      // Copy data from buffer.
+      // Tokuda 2009 paper says latency is measure from time between the start of copying data into the
+      // buffer, and the time to deserialise. So we record the time stamp just above this line.
+      // So, we must be aiming to simulate a realistic example, whereby at each iteration we have to
+      // copy data in, and then call Pack each time. At the moment, we don't care what the data is,
+      // just that we are fairly testing the speed of the connection.
+      memcpy(localImage->GetScalarPointer(), m_ImageMessage->GetScalarPointer(), imgSize[0]*imgSize[1]);
+      localImage->Pack();
+
       m_Client->Send(m);
       m_NumberMessagesSent++;
     }
   }
   m_Client->RequestStats();
-
-  QLOG_INFO() << QObject::tr("%1::RunTest() - finished.").arg(objectName());
 }
 
 } // end namespace niftk
@@ -130,27 +151,27 @@ int main(int argc, char** argv)
   if (argc != 6) // check number of arguments
   {
     // If not correct, print usage
-    std::cerr << "Usage: " << argv[0] << " <host> <port> <fps> <total>" << std::endl;
-    std::cerr << "    <host>     : Hostname."                           << std::endl;
-    std::cerr << "    <port>     : Port #."                             << std::endl;
-    std::cerr << "    <fps>      : Frames per second."                  << std::endl;
-    std::cerr << "    <channels> : # of matrices per message."          << std::endl;
-    std::cerr << "    <total>    : # of frames in total."               << std::endl;
+    std::cerr << "Usage: " << argv[0] << " <host> <port> <fps> <total> <fileName>"     << std::endl;
+    std::cerr << "    <host>      : Hostname"                               << std::endl;
+    std::cerr << "    <port>      : Port #"                                 << std::endl;
+    std::cerr << "    <fps>       : Frames per second [30]"                 << std::endl;
+    std::cerr << "    <total>     : # of msgs in total [1000]"              << std::endl;
+    std::cerr << "    <fileName>  : image file (.pgm)"                      << std::endl;
     exit(0);
   }
 
   std::string hostName = argv[1];
   int         port     = atoi(argv[2]);
   int         fps      = atoi(argv[3]);
-  int         channels  = atoi(argv[4]);
-  int         total    = atoi(argv[5]);
+  int         total    = atoi(argv[4]);
+  std::string fileName = argv[5];
 
-  std::cout << "TestClientNifTKQtTracking: host = " << hostName << "." << std::endl;
-  std::cout << "TestClientNifTKQtTracking: port = " << port << "." << std::endl;
-  std::cout << "TestClientNifTKQtTracking: fps = " << fps << "." << std::endl;
-  std::cout << "TestClientNifTKQtTracking: total = " << total << "." << std::endl;
-  std::cout << "TestClientNifTKQtTracking: channels = " << channels << "." << std::endl;
-  std::cout << "TestClientNifTKQtTracking: Instantiating client." << std::endl;
+  std::cout << "TestClientNifTKQtImaging: host = " << hostName << "." << std::endl;
+  std::cout << "TestClientNifTKQtImaging: port = " << port << "." << std::endl;
+  std::cout << "TestClientNifTKQtImaging: fps = " << fps << "." << std::endl;
+  std::cout << "TestClientNifTKQtImaging: total = " << total << "." << std::endl;
+  std::cout << "TestClientNifTKQtImaging: fileName = " << fileName << "." << std::endl;
+  std::cout << "TestClientNifTKQtImaging: Instantiating client." << std::endl;
 
   // Init the logging mechanism.
   QsLogging::Logger& logger = QsLogging::Logger::instance();
@@ -159,14 +180,14 @@ int main(int argc, char** argv)
   logger.addDestination(debugDestination.get());
 
   // Start client.
-  niftk::TestClientNifTKQtTracking client(hostName, port, fps, total, channels);
+  niftk::TestClientNifTKQtImaging client(hostName, port, fps, total, QString::fromStdString(fileName));
 
-  std::cout << "TestClientNifTKQtTracking: Creating app." << std::endl;
+  std::cout << "TestClientNifTKQtImaging: Creating app." << std::endl;
 
   QApplication app(argc, argv);
   QObject::connect(&app, SIGNAL(aboutToQuit()), &client, SLOT(Shutdown()));
 
-  std::cout << "TestClientNifTKQtTracking: Launching app." << std::endl;
+  std::cout << "TestClientNifTKQtImaging: Launching app." << std::endl;
 
   QTimer::singleShot(220, &client, SLOT(Start()));
   int ret = app.exec();

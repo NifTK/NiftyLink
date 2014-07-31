@@ -43,7 +43,7 @@ TestClientNifTKQtTrackingAndImaging::TestClientNifTKQtTrackingAndImaging(const s
   m_ImageMessage->Pack();
 
   this->setObjectName("TestClientNifTKQtTrackingAndImaging");
-  connect(m_Client, SIGNAL(Connected()), this, SLOT(OnConnectedToServer()));
+  connect(m_Client, SIGNAL(Connected(QString,int)), this, SLOT(OnConnectedToServer()));
 }
 
 

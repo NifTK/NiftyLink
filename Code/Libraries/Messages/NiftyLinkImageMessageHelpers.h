@@ -18,6 +18,7 @@
 #include <igtlImageMessage.h>
 
 #include <QImage>
+#include <QLabel>
 
 /**
  * \file NiftyLinkImageMessageHelpers.h
@@ -46,6 +47,10 @@ extern "C++" NIFTYLINKCOMMON_WINEXPORT void LoadImage(const QString& fileName, i
 
 /// \brief Creates an image message within a NiftyLinkMessageContainer, that is packed and ready to go.
 extern "C++" NIFTYLINKCOMMON_WINEXPORT NiftyLinkMessageContainer::Pointer CreateImageMessage(const QString& deviceName, const QString& hostName, int portNumber, const QImage& imageToRead);
+
+/// \brief Simply paints any image data onto the QLabel.
+/// Does nothing if the message is NULL, or data can't be found etc.
+extern "C++" NIFTYLINKCOMMON_WINEXPORT void DisplayImageMessage(NiftyLinkMessageContainer::Pointer& message, QLabel* widget);
 
 } // end namesspace niftk
 

@@ -346,6 +346,7 @@ CONFIGURE_FILE(${CMAKE_SOURCE_DIR}/README.txt ${CMAKE_BINARY_DIR}/README.txt @ON
 ######################################################################
 SET(NIFTYLINK_INCLUDE_DIRS_BUILD_TREE ${NIFTYLINK_INCLUDE_DIRS_BUILD_TREE}
   ${CMAKE_BINARY_DIR}
+  ${CMAKE_BINARY_DIR}/Code/Applications
   ${CMAKE_SOURCE_DIR}/Code/Libraries
   ${CMAKE_SOURCE_DIR}/Code/Libraries/Common
   ${CMAKE_SOURCE_DIR}/Code/Libraries/Descriptors

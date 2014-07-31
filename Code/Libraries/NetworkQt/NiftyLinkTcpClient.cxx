@@ -33,7 +33,7 @@ NiftyLinkTcpClient::NiftyLinkTcpClient(QObject *parent)
   connect(m_Socket, SIGNAL(connected()), this, SLOT(OnConnected()));
   connect(m_Socket, SIGNAL(error(QAbstractSocket::SocketError)), this, SLOT(OnError()));
 
-  QLOG_INFO() << QObject::tr("%1::NiftyLinkTcpClient() - started.").arg(objectName());
+  QLOG_INFO() << QObject::tr("%1::NiftyLinkTcpClient() - constructed.").arg(objectName());
 }
 
 
@@ -82,6 +82,8 @@ void NiftyLinkTcpClient::SetCheckForNoIncomingData(bool isOn)
 void NiftyLinkTcpClient::ConnectToHost(const QString& hostName, quint16 portNumber)
 {
   // There are no errors reported from this. Listen to the error signal.
+  m_RequestedName = hostName;
+  m_RequestedPort = portNumber;
   m_Socket->connectToHost(hostName, portNumber);
 }
 
@@ -90,6 +92,20 @@ void NiftyLinkTcpClient::ConnectToHost(const QString& hostName, quint16 portNumb
 bool NiftyLinkTcpClient::Send(NiftyLinkMessageContainer::Pointer message)
 {
   return m_Worker->Send(message);
+}
+
+
+//-----------------------------------------------------------------------------
+void NiftyLinkTcpClient::DisconnectFromHost()
+{
+  m_Socket->disconnectFromHost();
+}
+
+
+//-----------------------------------------------------------------------------
+bool NiftyLinkTcpClient::IsConnected() const
+{
+  return m_Socket->isOpen();
 }
 
 
@@ -133,7 +149,7 @@ void NiftyLinkTcpClient::OnConnected()
   this->setObjectName(QObject::tr("NiftyLinkTcpClient(%1:%2)").arg(m_Socket->peerName()).arg(m_Socket->peerPort()));
 
   thread->start();
-  emit Connected();
+  emit Connected(m_Socket->peerName(), m_Socket->peerPort());
 }
 
 
@@ -143,7 +159,7 @@ void NiftyLinkTcpClient::OnDisconnected()
   QLOG_INFO() << QObject::tr("%1::OnDisconnected() - started.").arg(objectName());
 
   QLOG_INFO() << QObject::tr("%1::OnDisconnected() - finished.").arg(objectName());
-  emit Disconnected();
+  emit Disconnected(m_Socket->peerName(), m_Socket->peerPort());
 }
 
 
@@ -151,7 +167,7 @@ void NiftyLinkTcpClient::OnDisconnected()
 void NiftyLinkTcpClient::OnError()
 {
   QLOG_INFO() << QObject::tr("%1::OnError() - code=%2, string=%3").arg(objectName()).arg(m_Socket->error()).arg(m_Socket->errorString());
-  emit SocketError(m_Socket->peerName(), m_Socket->peerPort(), m_Socket->error(), m_Socket->errorString());
+  emit SocketError(this->m_RequestedName, this->m_RequestedPort, m_Socket->error(), m_Socket->errorString());
 }
 
 
