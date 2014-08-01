@@ -9,8 +9,8 @@
 
   See LICENSE.txt in the top level directory for details.
 =============================================================================*/
-#ifndef NiftyLink_h
-#define NiftyLink_h
+#ifndef NiftyLinkApp_h
+#define NiftyLinkApp_h
 
 #include <NiftyLinkMessageContainer.h>
 #include <NiftyLinkMessageCounter.h>
@@ -25,7 +25,7 @@ namespace niftk
 class NiftyLinkTcpClient;
 
 /**
- * \brief NiftyLink is a demo app to connect and stream data between two server nodes.
+ * \brief NiftyLinkApp is a demo app to connect and stream data between two server nodes.
  *
  * It was created because PLUS starts up a server. So you can use PLUS to connect
  * to various ultrasound machines, and tracking devices. You then need to connect
@@ -43,13 +43,13 @@ class NiftyLinkTcpClient;
  * this class is the main application entry point. There is currently
  * no public API because there is nothing to set.
  */
-class NiftyLink : public QMainWindow, public Ui_NiftyLink {
+class NiftyLinkApp : public QMainWindow, public Ui_NiftyLink {
 
   Q_OBJECT
 
 public:
-  NiftyLink(QObject *parent = 0);
-  virtual ~NiftyLink();
+  NiftyLinkApp(QObject *parent = 0);
+  virtual ~NiftyLinkApp();
 
 private slots:
 

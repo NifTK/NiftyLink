@@ -21,7 +21,7 @@ SET(LIBS
 )
 
 SET(APPS
-  NiftyLink
+  NiftyLinkApp
 )
 
 # For basic apps that are literally just one .ui, .h and .cxx file.

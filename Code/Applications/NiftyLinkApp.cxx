@@ -9,7 +9,7 @@
 
   See LICENSE.txt in the top level directory for details.
 =============================================================================*/
-#include "NiftyLink.h"
+#include "NiftyLinkApp.h"
 #include <NiftyLinkUtils.h>
 #include <NiftyLinkTcpClient.h>
 #include <NiftyLinkImageMessageHelpers.h>
@@ -22,7 +22,7 @@ namespace niftk
 {
 
 //-----------------------------------------------------------------------------
-NiftyLink::NiftyLink(QObject *parent)
+NiftyLinkApp::NiftyLinkApp(QObject *parent)
 : m_InboundClient(new NiftyLinkTcpClient())
 , m_OutboundClient(new NiftyLinkTcpClient())
 , m_MessagesReceived(0)
@@ -56,7 +56,7 @@ NiftyLink::NiftyLink(QObject *parent)
 
 
 //-----------------------------------------------------------------------------
-NiftyLink::~NiftyLink()
+NiftyLinkApp::~NiftyLinkApp()
 {
   QLOG_INFO() << QObject::tr("%1::NiftyLink() - destroying.").arg(objectName());
 
@@ -73,7 +73,7 @@ NiftyLink::~NiftyLink()
 
 
 //-----------------------------------------------------------------------------
-void NiftyLink::OnConnectInboundButtonPressed()
+void NiftyLinkApp::OnConnectInboundButtonPressed()
 {
   QLOG_INFO() << QObject::tr("%1::OnConnectInboundButtonPressed().").arg(objectName());
   m_InboundClient->ConnectToHost(m_IncomingAddress->text(), m_IncomingPort->value());
@@ -81,7 +81,7 @@ void NiftyLink::OnConnectInboundButtonPressed()
 
 
 //-----------------------------------------------------------------------------
-void NiftyLink::OnDisconnectInboundButtonPressed()
+void NiftyLinkApp::OnDisconnectInboundButtonPressed()
 {
   QLOG_INFO() << QObject::tr("%1::OnDisconnectInboundButtonPressed().").arg(objectName());
   m_InboundClient->DisconnectFromHost();
@@ -89,7 +89,7 @@ void NiftyLink::OnDisconnectInboundButtonPressed()
 
 
 //-----------------------------------------------------------------------------
-void NiftyLink::OnConnectOutboundButtonPressed()
+void NiftyLinkApp::OnConnectOutboundButtonPressed()
 {
   QLOG_INFO() << QObject::tr("%1::OnConnectOutboundButtonPressed().").arg(objectName());
   m_OutboundClient->ConnectToHost(m_OutgoingAddress->text(), m_OutgoingPort->value());
@@ -97,7 +97,7 @@ void NiftyLink::OnConnectOutboundButtonPressed()
 
 
 //-----------------------------------------------------------------------------
-void NiftyLink::OnDisconnectOutboundButtonPressed()
+void NiftyLinkApp::OnDisconnectOutboundButtonPressed()
 {
   QLOG_INFO() << QObject::tr("%1::OnDisconnectOutboundButtonPressed().").arg(objectName());
   m_OutboundClient->DisconnectFromHost();
@@ -105,7 +105,7 @@ void NiftyLink::OnDisconnectOutboundButtonPressed()
 
 
 //-----------------------------------------------------------------------------
-void NiftyLink::OnSocketError(QString hostName, int portNumber, QAbstractSocket::SocketError errorCode, QString errorString)
+void NiftyLinkApp::OnSocketError(QString hostName, int portNumber, QAbstractSocket::SocketError errorCode, QString errorString)
 {
   QMessageBox::critical(this->m_CentralWidget,
                         "NiftyLink - Error!",
@@ -116,7 +116,7 @@ void NiftyLink::OnSocketError(QString hostName, int portNumber, QAbstractSocket:
 
 
 //-----------------------------------------------------------------------------
-void NiftyLink::OnConnectedInbound(QString hostName, int portNumber)
+void NiftyLinkApp::OnConnectedInbound(QString hostName, int portNumber)
 {
   QMessageBox::information(this->m_CentralWidget,
                         "NiftyLink",
@@ -130,7 +130,7 @@ void NiftyLink::OnConnectedInbound(QString hostName, int portNumber)
 
 
 //-----------------------------------------------------------------------------
-void NiftyLink::OnDisconnectedInbound(QString hostName, int portNumber)
+void NiftyLinkApp::OnDisconnectedInbound(QString hostName, int portNumber)
 {
   QMessageBox::critical(this->m_CentralWidget,
                         "NiftyLink - Error!",
@@ -144,7 +144,7 @@ void NiftyLink::OnDisconnectedInbound(QString hostName, int portNumber)
 
 
 //-----------------------------------------------------------------------------
-void NiftyLink::OnConnectedOutbound(QString hostName, int portNumber)
+void NiftyLinkApp::OnConnectedOutbound(QString hostName, int portNumber)
 {
   QMessageBox::information(this->m_CentralWidget,
                         "NiftyLink",
@@ -158,7 +158,7 @@ void NiftyLink::OnConnectedOutbound(QString hostName, int portNumber)
 
 
 //-----------------------------------------------------------------------------
-void NiftyLink::OnDisconnectedOutbound(QString hostName, int portNumber)
+void NiftyLinkApp::OnDisconnectedOutbound(QString hostName, int portNumber)
 {
   QMessageBox::critical(this->m_CentralWidget,
                         "NiftyLink - Error!",
@@ -172,7 +172,7 @@ void NiftyLink::OnDisconnectedOutbound(QString hostName, int portNumber)
 
 
 //-----------------------------------------------------------------------------
-void NiftyLink::OnMessageReceived(NiftyLinkMessageContainer::Pointer message)
+void NiftyLinkApp::OnMessageReceived(NiftyLinkMessageContainer::Pointer message)
 {
   QString filterText = this->m_OutgoingFilter->text();
   m_MessagesReceived.OnMessageReceived(message);
@@ -197,7 +197,7 @@ void NiftyLink::OnMessageReceived(NiftyLinkMessageContainer::Pointer message)
 
 
 //-----------------------------------------------------------------------------
-void NiftyLink::OnUpdateStatus()
+void NiftyLinkApp::OnUpdateStatus()
 {
   QString status = QObject::tr("Received %1 (%2/sec): Sent %3 (%4/sec)")
       .arg(m_MessagesReceived.GetNumberOfMessages())
@@ -253,7 +253,7 @@ int main(int argc, char** argv)
 
   // Startup app.
   QApplication app(argc,argv);
-  niftk::NiftyLink niftyLink(&app);
+  niftk::NiftyLinkApp niftyLink(&app);
   niftyLink.showMaximized();
   niftyLink.raise();
 
