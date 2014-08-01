@@ -20,7 +20,7 @@
 
 #include <QsLog.h>
 #include <QsLogDest.h>
-#include <QApplication>
+#include <QCoreApplication>
 
 namespace niftk
 {
@@ -148,18 +148,16 @@ int main(int argc, char** argv)
   std::cout << "TestClientNifTKOIGTLTracking: objects = " << objects << "." << std::endl;
   std::cout << "TestClientNifTKOIGTLTracking: Instantiating client." << std::endl;
 
-  // Init the logging mechanism.
+  std::cout << "TestClientNifTKOIGTLTracking: Creating app." << std::endl;
+
+  QCoreApplication app(argc, argv);
+
   QsLogging::Logger& logger = QsLogging::Logger::instance();
   logger.setLoggingLevel(QsLogging::InfoLevel);
   QsLogging::DestinationPtr debugDestination(QsLogging::DestinationFactory::MakeDebugOutputDestination() );
   logger.addDestination(debugDestination.get());
 
-  // Start client.
   niftk::TestClientNifTKOIGTLTracking client(hostName, port, fps, total, objects);
-
-  std::cout << "TestClientNifTKOIGTLTracking: Creating app." << std::endl;
-
-  QApplication app(argc, argv);
 
   std::cout << "TestClientNifTKOIGTLTracking: Launching app." << std::endl;
 

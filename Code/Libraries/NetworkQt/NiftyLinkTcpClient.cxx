@@ -172,9 +172,9 @@ void NiftyLinkTcpClient::OnError()
 
 
 //-----------------------------------------------------------------------------
-void NiftyLinkTcpClient::OnMessageReceived(int /*portNumber*/)
+void NiftyLinkTcpClient::OnMessageReceived(int portNumber)
 {
-  NiftyLinkMessageContainer::Pointer msg = m_InboundMessages.GetContainer();
+  NiftyLinkMessageContainer::Pointer msg = m_InboundMessages.GetContainer(portNumber);
   emit MessageReceived(msg);
 }
 

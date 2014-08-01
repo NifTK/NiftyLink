@@ -470,9 +470,8 @@ void NiftyLinkTcpNetworkWorker::OnSocketReadyRead()
 void NiftyLinkTcpNetworkWorker::OnSend()
 {
   // So, this should ONLY be called from the NiftyLinkQThread that this object is bound to.
-  NiftyLinkMessageContainer::Pointer message = m_OutboundMessages->GetContainer();
+  NiftyLinkMessageContainer::Pointer message = m_OutboundMessages->GetContainer(m_Socket->peerPort());
   igtl::MessageBase::Pointer msg = message->GetMessage();
-
   this->SendMessage(msg);
 }
 

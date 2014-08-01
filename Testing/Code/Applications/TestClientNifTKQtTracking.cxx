@@ -18,7 +18,7 @@
 
 #include <QsLog.h>
 #include <QsLogDest.h>
-#include <QApplication>
+#include <QCoreApplication>
 #include <QThread>
 
 namespace niftk
@@ -66,6 +66,8 @@ void TestClientNifTKQtTracking::Shutdown()
 
   if (m_Client != NULL)
   {
+    m_Client->DisconnectFromHost();
+
     delete m_Client;
     m_Client = NULL;
   }
@@ -152,18 +154,16 @@ int main(int argc, char** argv)
   std::cout << "TestClientNifTKQtTracking: channels = " << channels << "." << std::endl;
   std::cout << "TestClientNifTKQtTracking: Instantiating client." << std::endl;
 
-  // Init the logging mechanism.
+  std::cout << "TestClientNifTKQtTracking: Creating app." << std::endl;
+
+  QCoreApplication app(argc, argv);
+
   QsLogging::Logger& logger = QsLogging::Logger::instance();
   logger.setLoggingLevel(QsLogging::InfoLevel);
   QsLogging::DestinationPtr debugDestination(QsLogging::DestinationFactory::MakeDebugOutputDestination() );
   logger.addDestination(debugDestination.get());
 
-  // Start client.
   niftk::TestClientNifTKQtTracking client(hostName, port, fps, total, channels);
-
-  std::cout << "TestClientNifTKQtTracking: Creating app." << std::endl;
-
-  QApplication app(argc, argv);
   QObject::connect(&app, SIGNAL(aboutToQuit()), &client, SLOT(Shutdown()));
 
   std::cout << "TestClientNifTKQtTracking: Launching app." << std::endl;

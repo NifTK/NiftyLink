@@ -13,7 +13,7 @@
 #include "TestServerQt.h"
 #include <QsLog.h>
 #include <QsLogDest.h>
-#include <QApplication>
+#include <QCoreApplication>
 
 namespace niftk
 {
@@ -171,15 +171,15 @@ int main(int argc, char** argv)
   bool isEchoing = (isEcho == 1 ? true : false);
   bool doStatistics = (doStats == 1 ? true : false);
 
-  // Init the logging mechanism.
+  QCoreApplication app(argc, argv);
+
   QsLogging::Logger& logger = QsLogging::Logger::instance();
   logger.setLoggingLevel(QsLogging::InfoLevel);
   QsLogging::DestinationPtr debugDestination(QsLogging::DestinationFactory::MakeDebugOutputDestination() );
   logger.addDestination(debugDestination.get());
 
-  // Create app.
   niftk::TestServerQt server(port, isEchoing, doStatistics, threshold);
-  QApplication app(argc, argv);
+  QObject::connect(&app, SIGNAL(aboutToQuit()), &server, SLOT(Stop()));
 
   // Setup timers.
   QTimer::singleShot(220, &server, SLOT(Start()));

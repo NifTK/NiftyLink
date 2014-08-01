@@ -17,7 +17,7 @@
 
 #include <QsLog.h>
 #include <QsLogDest.h>
-#include <QApplication>
+#include <QCoreApplication>
 
 namespace niftk
 {
@@ -66,6 +66,8 @@ void TestClientNifTKQtImaging::Shutdown()
 
   if (m_Client != NULL)
   {
+    m_Client->DisconnectFromHost();
+
     delete m_Client;
     m_Client = NULL;
   }
@@ -173,18 +175,16 @@ int main(int argc, char** argv)
   std::cout << "TestClientNifTKQtImaging: fileName = " << fileName << "." << std::endl;
   std::cout << "TestClientNifTKQtImaging: Instantiating client." << std::endl;
 
-  // Init the logging mechanism.
+  std::cout << "TestClientNifTKQtImaging: Creating app." << std::endl;
+
+  QCoreApplication app(argc, argv);
+
   QsLogging::Logger& logger = QsLogging::Logger::instance();
   logger.setLoggingLevel(QsLogging::InfoLevel);
   QsLogging::DestinationPtr debugDestination(QsLogging::DestinationFactory::MakeDebugOutputDestination() );
   logger.addDestination(debugDestination.get());
 
-  // Start client.
   niftk::TestClientNifTKQtImaging client(hostName, port, fps, total, QString::fromStdString(fileName));
-
-  std::cout << "TestClientNifTKQtImaging: Creating app." << std::endl;
-
-  QApplication app(argc, argv);
   QObject::connect(&app, SIGNAL(aboutToQuit()), &client, SLOT(Shutdown()));
 
   std::cout << "TestClientNifTKQtImaging: Launching app." << std::endl;

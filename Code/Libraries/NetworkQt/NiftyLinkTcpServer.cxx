@@ -21,6 +21,7 @@
 #include <igtlTrackingDataMessage.h>
 
 #include <iostream>
+#include <cassert>
 
 namespace niftk
 {
@@ -181,12 +182,15 @@ void NiftyLinkTcpServer::OnClientDisconnected()
     if (chosenWorker != NULL)
     {
       QMutexLocker locker(&m_Mutex);
-      m_Workers.remove(chosenWorker);
+      if (!m_Workers.remove(chosenWorker))
+      {
+        assert(false);
+      }
 
       int portNumber = sender->peerPort();
 
-      chosenWorker->deleteLater();
-      sender->deleteLater();
+      delete chosenWorker;
+      delete sender;
 
       QLOG_INFO() << QObject::tr("%1::OnClientDisconnected() - client %2 removed.").arg(objectName()).arg(reinterpret_cast<qulonglong>(sender));
 
