@@ -14,7 +14,6 @@
 
 #include <NiftyLinkMessageContainer.h>
 #include <NiftyLinkMessageCounter.h>
-#include <igtlTimeStamp.h>
 #include <QMainWindow>
 #include <QAbstractSocket>
 #include <QTimer>

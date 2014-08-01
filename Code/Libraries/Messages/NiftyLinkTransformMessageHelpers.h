@@ -26,6 +26,12 @@
 namespace niftk
 {
 
+/**
+ * \name NiftyLinkTransformMessageHelpers
+ * \brief Helper methods to initialise TRANSFORM messages.
+ */
+///@{
+
 /// \brief Initialises the transform message with the test matrix, applying the same matrix to all elements.
 extern "C++" NIFTYLINKCOMMON_WINEXPORT void InitialiseTransformWithTestData(const igtl::Matrix4x4& testMatrix, igtl::TransformMessage::Pointer& messageToWriteTo);
 
@@ -50,6 +56,8 @@ extern "C++" NIFTYLINKCOMMON_WINEXPORT NiftyLinkMessageContainer::Pointer Create
 /// etc.
 /// \endcode
 extern "C++" NIFTYLINKCOMMON_WINEXPORT NiftyLinkMessageContainer::Pointer CreateTransformMessage(const QString& deviceName, const QString& hostName, int portNumber, double* input);
+
+///@}
 
 } // end namespace
 

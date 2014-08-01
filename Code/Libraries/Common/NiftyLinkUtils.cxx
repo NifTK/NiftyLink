@@ -12,11 +12,16 @@
 #include "NiftyLinkUtils.h"
 #include <NiftyLinkTrackingDataMessageHelpers.h>
 #include <NiftyLinkTransformMessageHelpers.h>
+#include <NiftyLinkImageMessageHelpers.h>
 
 #include <igtlTrackingDataMessage.h>
 #include <igtlTransformMessage.h>
 #include <igtlStringMessage.h>
 #include <igtlStatusMessage.h>
+#include <igtlImageMessage.h>
+
+#include <QsLog.h>
+#include <QsLogDest.h>
 
 #include <QUrl>
 #include <QHostInfo>
@@ -149,6 +154,9 @@ void CreateRandomTransformMatrix(igtl::Matrix4x4& matrix)
 //-----------------------------------------------------------------------------
 igtlUint64 GetDifferenceInNanoSeconds(igtl::TimeStamp* timeA, igtl::TimeStamp* timeB)
 {
+  assert(timeA);
+  assert(timeB);
+
   igtlUint64 a = timeA->GetTimeStampInNanoseconds();
   igtlUint64 b = timeB->GetTimeStampInNanoseconds();
   igtlUint64 d;
@@ -365,6 +373,23 @@ void DisplayTextBasedMessage(NiftyLinkMessageContainer::Pointer& message, QPlain
     }
   }
 }
+
+
+//-----------------------------------------------------------------------------
+void DisplayImageMessage(NiftyLinkMessageContainer::Pointer& message, QLabel* imageLabel)
+{
+  if (message.data() != NULL)
+  {
+    igtl::ImageMessage::Pointer msg = dynamic_cast<igtl::ImageMessage*>(message->GetMessage().GetPointer());
+    if (msg.IsNotNull())
+    {
+      QImage image;
+      GetQImage(msg, image);
+      imageLabel->setPixmap(QPixmap::fromImage(image));
+    }
+  }
+}
+
 
 } // end namespace niftk
 

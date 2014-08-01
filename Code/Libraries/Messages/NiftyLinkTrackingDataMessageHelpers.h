@@ -26,6 +26,12 @@
 namespace niftk
 {
 
+/**
+ * \name NiftyLinkTrackingDataMessageHelpers
+ * \brief Helper methods to initialise TDATA messages.
+ */
+///@{
+
 /// \brief Initialises the tracking data with the test matrix, applying the same matrix to all elements in the message.
 extern "C++" NIFTYLINKCOMMON_WINEXPORT void InitialiseTrackingDataWithTestData(const igtl::Matrix4x4& testMatrix, igtl::TrackingDataMessage::Pointer& messageToWriteTo);
 
@@ -51,6 +57,8 @@ extern "C++" NIFTYLINKCOMMON_WINEXPORT NiftyLinkMessageContainer::Pointer Create
 /// etc.
 /// \endcode
 extern "C++" NIFTYLINKCOMMON_WINEXPORT NiftyLinkMessageContainer::Pointer CreateTrackingDataMessage(const QString& deviceName, const QString& hostName, int portNumber, double* input);
+
+///@}
 
 } // end namespace
 

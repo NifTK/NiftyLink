@@ -208,6 +208,10 @@ void NiftyLink::OnUpdateStatus()
 
   this->statusBar()->showMessage(status);
   QLOG_DEBUG() << QObject::tr("%1::OnUpdateStatus() - %2").arg(objectName()).arg(status);
+
+  // Clear them down, so the stats are valid for the period between timer ticks, not over all time.
+  m_MessagesReceived.OnClear();
+  m_MessagesSent.OnClear();
 }
 
 } // end namespace
@@ -216,11 +220,26 @@ void NiftyLink::OnUpdateStatus()
 //-----------------------------------------------------------------------------
 int main(int argc, char** argv)
 {
-  QApplication app(argc,argv);
+  bool isDebug = false;
+
+  for (int i = 0; i < argc; i++)
+  {
+    if (QString(argv[i]) == QString("--debug"))
+    {
+      isDebug = true;
+    }
+  }
 
   // Init the logging mechanism
   QsLogging::Logger& logger = QsLogging::Logger::instance();
-  logger.setLoggingLevel(QsLogging::InfoLevel);
+  if (isDebug)
+  {
+    logger.setLoggingLevel(QsLogging::DebugLevel);
+  }
+  else
+  {
+    logger.setLoggingLevel(QsLogging::InfoLevel);
+  }
 
   // Set the logging path
   QString logFile = niftk::GetWritableDirectoryPath(QString("NiftyLink.log"));
@@ -229,9 +248,11 @@ int main(int argc, char** argv)
   QsLogging::DestinationPtr fileDestination(QsLogging::DestinationFactory::MakeFileDestination(logPath) );
   logger.addDestination(fileDestination.get());
 
-  QsLogging::DestinationPtr debugDestination(QsLogging::DestinationFactory::MakeDebugOutputDestination() );
+  QsLogging::DestinationPtr debugDestination(QsLogging::DestinationFactory::MakeDebugOutputDestination());
   logger.addDestination(debugDestination.get());
 
+  // Startup app.
+  QApplication app(argc,argv);
   niftk::NiftyLink niftyLink(&app);
   niftyLink.showMaximized();
   niftyLink.raise();

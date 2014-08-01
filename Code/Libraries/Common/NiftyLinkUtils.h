@@ -17,12 +17,17 @@
 
 #include <igtlMath.h>
 #include <igtlTimeStamp.h>
-#include <igtlStringMessage.h>
+
+#include <QsLog.h>
 
 #include <QString>
 #include <QPlainTextEdit>
+#include <QLabel>
 
 /**
+ * \file NiftyLinkUtils.h
+ * \brief Helper methods for stats, test data, IP validation etc.
+ *
  * \namespace niftk
  * \brief The niftk namespace should be used for all files in the NiftyLink/Code and NiftyLink/Testing folders.
  *
@@ -30,12 +35,14 @@
  * \brief Namespace used in the QsLogging package, included within NiftyLink/Code/Libraries/Common folder.
  */
 
-/**
- * \file NiftyLinkUtils.h
- * \brief Helper methods for stats, test data, IP validation etc.
- */
 namespace niftk
 {
+
+/**
+ * \name NiftyLinkHostNameUtils
+ * Functions for hostname, IP lookups etc.
+ */
+///@{
 
 /// \brief Simple function which validates if an IP address is valid or not,
 /// by checking for 4 numbers [0-255], each separated by a single dot.
@@ -47,19 +54,28 @@ extern "C++" NIFTYLINKCOMMON_WINEXPORT QString GetLocalHostAddress(void);
 /// \brief This function resolves a given hostname to IP.
 extern "C++" NIFTYLINKCOMMON_WINEXPORT QString ResolveHostName(const QString &input);
 
+///@}
+
+/**
+ * \name NiftyLinkTestingUtils
+ * \brief Used mainly for testing, visible in public API just in case anyone wants them.
+ */
+///@{
+
 /// \brief For testing, this function creates a random 4x4 test matrix.
 extern "C++" NIFTYLINKCOMMON_WINEXPORT void CreateRandomTransformMatrix(igtl::Matrix4x4& matrix);
-
-/// \brief Assuming input is 16 doubles, copies to output.
-extern "C++" NIFTYLINKCOMMON_WINEXPORT void CopyMatrix(double *input, igtl::Matrix4x4& output);
 
 /// \brief For testing, this function creates a test message containing a configurable number of tracking matrix elements.
 extern "C++" NIFTYLINKCOMMON_WINEXPORT NiftyLinkMessageContainer::Pointer CreateTestTrackingDataMessage(igtl::TimeStamp::Pointer& timeStamp, int matricesPerMessage);
 
-/// \brief Returns the difference in nanoseconds.
-/// \param timeA must be not-NULL
-/// \param timeB must be not-NULL
-extern "C++" NIFTYLINKCOMMON_WINEXPORT igtlUint64 GetDifferenceInNanoSeconds(igtl::TimeStamp* timeA, igtl::TimeStamp* timeB);
+///@}
+
+
+/**
+ * \name NiftyLinkMathsUtils
+ * \brief Simple mathematical functions used throughout NiftyLink.
+ */
+///@{
 
 /// \brief Used to calculate stats of latency, this method computes the mean of a list of igtlUint64.
 extern "C++" NIFTYLINKCOMMON_WINEXPORT double CalculateMean(const QList<igtlUint64>& list);
@@ -70,6 +86,15 @@ extern "C++" NIFTYLINKCOMMON_WINEXPORT double CalculateStdDev(const QList<igtlUi
 /// \brief Used to calculate stats of latency, this method computes the maximum of a list of igtlUint64.
 extern "C++" NIFTYLINKCOMMON_WINEXPORT igtlUint64 CalculateMax(const QList<igtlUint64>& list);
 
+///@}
+
+
+/**
+ * \name NiftyLinkFileUtils
+ * \brief Helper functions for file/directory processing.
+ */
+///@{
+
 /// \brief Tries to create a path name where data can be saved by checking the Desktop,
 /// Documents folder, HOME folder, cache folder, or the system temporary directory.
 /// \param fileName - if specified, will be concatenated onto the path.
@@ -78,9 +103,34 @@ extern "C++" NIFTYLINKCOMMON_WINEXPORT QString GetWritableDirectoryPath(const QS
 /// \brief If required will add the path separator.
 extern "C++" NIFTYLINKCOMMON_WINEXPORT QString AppendPathSeparator(const QString& path);
 
+///@}
+
+
+/**
+ * \name NiftyLinkWidgetUtils
+ * \brief Helper functions for pasting data onto QWidget, mainly used by NiftyLink app.
+ */
+///@{
+
 /// \brief If its a text based message writes the message to the QPlainTextEdit.
 /// Does nothing if the message is NULL, or is not STRING, STATUS, TDATA or TRANSFORM.
 extern "C++" NIFTYLINKCOMMON_WINEXPORT void DisplayTextBasedMessage(NiftyLinkMessageContainer::Pointer& message, QPlainTextEdit* edit);
+
+/// \brief Simply paints any image data onto the QLabel.
+/// Does nothing if the message is NULL, or data can't be found etc.
+extern "C++" NIFTYLINKCOMMON_WINEXPORT void DisplayImageMessage(NiftyLinkMessageContainer::Pointer& message, QLabel* widget);
+
+///@}
+
+
+/// \brief Assuming input is 16 doubles, copies to output.
+/// \param input array of 16 doubles, row-wise, meaning row 0, left to right, then row 1, left to right, etc.
+extern "C++" NIFTYLINKCOMMON_WINEXPORT void CopyMatrix(double *input, igtl::Matrix4x4& output);
+
+/// \brief Returns the difference in nanoseconds, as a positive number.
+/// \param timeA must be not-NULL, only checked with assert()
+/// \param timeB must be not-NULL, only checked with assert()
+extern "C++" NIFTYLINKCOMMON_WINEXPORT igtlUint64 GetDifferenceInNanoSeconds(igtl::TimeStamp* timeA, igtl::TimeStamp* timeB);
 
 } // end namespace niftk
 
