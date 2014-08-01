@@ -14,6 +14,7 @@
 
 #include <NiftyLinkMessageContainer.h>
 #include <NiftyLinkMessageCounter.h>
+#include <NiftyLinkMessageManager.h>
 #include <QMainWindow>
 #include <QAbstractSocket>
 #include <QTimer>
@@ -86,13 +87,19 @@ private slots:
   /// \brief Called by timer to update the status bar once per second.
   void OnUpdateStatus();
 
+  /// \brief Called by timer to update the screen, up to 33.33 times per second.
+  void OnUpdateScreen();
+
 private:
 
   NiftyLinkTcpClient      *m_InboundClient;
   NiftyLinkTcpClient      *m_OutboundClient;
+  QImage                   m_MostRecentImage;
+  QString                  m_MostRecentString;
   NiftyLinkMessageCounter  m_MessagesReceived;
   NiftyLinkMessageCounter  m_MessagesSent;
-  QTimer                  *m_Timer;
+  QTimer                  *m_ScreenTimer;
+  QTimer                  *m_StatusTimer;
 };
 
 } // end namespace

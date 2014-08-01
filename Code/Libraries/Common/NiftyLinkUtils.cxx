@@ -339,7 +339,7 @@ QString AppendPathSeparator(const QString& path)
 
 
 //-----------------------------------------------------------------------------
-void DisplayTextBasedMessage(NiftyLinkMessageContainer::Pointer& message, QPlainTextEdit* edit)
+void ExtractTextBasedMessage(const NiftyLinkMessageContainer::Pointer& message, QString& output)
 {
   if (message.data() != NULL)
   {
@@ -349,26 +349,22 @@ void DisplayTextBasedMessage(NiftyLinkMessageContainer::Pointer& message, QPlain
       if (QString(msg->GetDeviceType()) == QString("STRING"))
       {
         igtl::StringMessage::Pointer m = dynamic_cast<igtl::StringMessage*>(msg.GetPointer());
-        edit->appendPlainText(m->GetString());
-        return;
+        output = QString(m->GetString());
       }
       if (QString(msg->GetDeviceType()) == QString("STATUS"))
       {
         igtl::StatusMessage::Pointer m = dynamic_cast<igtl::StatusMessage*>(msg.GetPointer());
-        edit->appendPlainText(m->GetStatusString());
-        return;
+        output = QString(m->GetStatusString());
       }
       if (QString(msg->GetDeviceType()) == QString("TRANSFORM"))
       {
         igtl::TransformMessage::Pointer m = dynamic_cast<igtl::TransformMessage*>(msg.GetPointer());
-        edit->appendPlainText(GetMatrixAsString(m));
-        return;
+        output = GetMatrixAsString(m);
       }
       if (QString(msg->GetDeviceType()) == QString("TDATA"))
       {
         igtl::TrackingDataMessage::Pointer m = dynamic_cast<igtl::TrackingDataMessage*>(msg.GetPointer());
-        edit->appendPlainText(GetMatrixAsString(m,0));
-        return;
+        output = GetMatrixAsString(m,0);
       }
     }
   }
@@ -376,16 +372,14 @@ void DisplayTextBasedMessage(NiftyLinkMessageContainer::Pointer& message, QPlain
 
 
 //-----------------------------------------------------------------------------
-void DisplayImageMessage(NiftyLinkMessageContainer::Pointer& message, QLabel* imageLabel)
+void ExtractImageMessage(const NiftyLinkMessageContainer::Pointer& message, QImage& image)
 {
   if (message.data() != NULL)
   {
     igtl::ImageMessage::Pointer msg = dynamic_cast<igtl::ImageMessage*>(message->GetMessage().GetPointer());
     if (msg.IsNotNull())
     {
-      QImage image;
       GetQImage(msg, image);
-      imageLabel->setPixmap(QPixmap::fromImage(image));
     }
   }
 }

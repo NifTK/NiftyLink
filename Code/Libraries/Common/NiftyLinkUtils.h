@@ -112,13 +112,11 @@ extern "C++" NIFTYLINKCOMMON_WINEXPORT QString AppendPathSeparator(const QString
  */
 ///@{
 
-/// \brief If its a text based message writes the message to the QPlainTextEdit.
-/// Does nothing if the message is NULL, or is not STRING, STATUS, TDATA or TRANSFORM.
-extern "C++" NIFTYLINKCOMMON_WINEXPORT void DisplayTextBasedMessage(NiftyLinkMessageContainer::Pointer& message, QPlainTextEdit* edit);
+/// \brief If its a STRING, STATUS, TDATA or TRANSFORM message, updates the output string, otherwise, leaves it alone.
+extern "C++" NIFTYLINKCOMMON_WINEXPORT void ExtractTextBasedMessage(const NiftyLinkMessageContainer::Pointer& message, QString& output);
 
-/// \brief Simply paints any image data onto the QLabel.
-/// Does nothing if the message is NULL, or data can't be found etc.
-extern "C++" NIFTYLINKCOMMON_WINEXPORT void DisplayImageMessage(NiftyLinkMessageContainer::Pointer& message, QLabel* widget);
+/// \brief If its an IMAGE message, updates the output image, otherwise, leaves it alone.
+extern "C++" NIFTYLINKCOMMON_WINEXPORT void ExtractImageMessage(const NiftyLinkMessageContainer::Pointer& message, QImage& output);
 
 ///@}
 

@@ -30,26 +30,31 @@ NiftyLinkApp::NiftyLinkApp(QObject *parent)
 {
   this->setupUi(this);
 
-  m_Timer = new QTimer(this);
-  m_Timer->setInterval(1000);
+  m_StatusTimer = new QTimer(this);
+  m_StatusTimer->setInterval(1000);
+
+  m_ScreenTimer = new QTimer(this);
+  m_ScreenTimer->setInterval(30);
 
   connect(this->m_IncomingConnect, SIGNAL(pressed()), this, SLOT(OnConnectInboundButtonPressed()));
   connect(this->m_IncomingDisconnect, SIGNAL(pressed()), this, SLOT(OnDisconnectInboundButtonPressed()));
   connect(this->m_InboundClient, SIGNAL(SocketError(QString,int,QAbstractSocket::SocketError,QString)), this, SLOT(OnSocketError(QString,int,QAbstractSocket::SocketError,QString)));
   connect(this->m_InboundClient, SIGNAL(Connected(QString,int)), this, SLOT(OnConnectedInbound(QString,int)));
   connect(this->m_InboundClient, SIGNAL(Disconnected(QString,int)), this, SLOT(OnDisconnectedInbound(QString,int)));
-  connect(this->m_InboundClient, SIGNAL(MessageReceived(NiftyLinkMessageContainer::Pointer)), this, SLOT(OnMessageReceived(NiftyLinkMessageContainer::Pointer)));
+  connect(this->m_InboundClient, SIGNAL(MessageReceived(NiftyLinkMessageContainer::Pointer)), this, SLOT(OnMessageReceived(NiftyLinkMessageContainer::Pointer)), Qt::DirectConnection);
   connect(this->m_OutgoingConnect, SIGNAL(pressed()), this, SLOT(OnConnectOutboundButtonPressed()));
   connect(this->m_OutgoingDisconnect, SIGNAL(pressed()), this, SLOT(OnDisconnectOutboundButtonPressed()));
   connect(this->m_OutboundClient, SIGNAL(SocketError(QString,int,QAbstractSocket::SocketError,QString)), this, SLOT(OnSocketError(QString,int,QAbstractSocket::SocketError,QString)));
   connect(this->m_OutboundClient, SIGNAL(Connected(QString,int)), this, SLOT(OnConnectedOutbound(QString,int)));
   connect(this->m_OutboundClient, SIGNAL(Disconnected(QString,int)), this, SLOT(OnDisconnectedOutbound(QString,int)));
-  connect(this->m_Timer, SIGNAL(timeout()), this, SLOT(OnUpdateStatus()));
+  connect(this->m_StatusTimer, SIGNAL(timeout()), this, SLOT(OnUpdateStatus()));
+  connect(this->m_ScreenTimer, SIGNAL(timeout()), this, SLOT(OnUpdateScreen()));
 
   this->m_IncomingDisconnect->setEnabled(false);
   this->m_OutgoingDisconnect->setEnabled(false);
 
-  m_Timer->start();
+  m_StatusTimer->start();
+  m_ScreenTimer->start();
 
   QLOG_INFO() << QObject::tr("%1::NiftyLink() - created.").arg(objectName());
 }
@@ -60,7 +65,8 @@ NiftyLinkApp::~NiftyLinkApp()
 {
   QLOG_INFO() << QObject::tr("%1::NiftyLink() - destroying.").arg(objectName());
 
-  m_Timer->stop();
+  m_StatusTimer->stop();
+  m_ScreenTimer->stop();
 
   m_InboundClient->disconnect();
   delete m_InboundClient;
@@ -174,9 +180,14 @@ void NiftyLinkApp::OnDisconnectedOutbound(QString hostName, int portNumber)
 //-----------------------------------------------------------------------------
 void NiftyLinkApp::OnMessageReceived(NiftyLinkMessageContainer::Pointer message)
 {
-  QString filterText = this->m_OutgoingFilter->text();
+  // For stats.
   m_MessagesReceived.OnMessageReceived(message);
 
+  // Extract Data, at each loop iteration.
+  ExtractImageMessage(message, m_MostRecentImage);
+  ExtractTextBasedMessage(message, m_MostRecentString);
+
+  QString filterText = this->m_OutgoingFilter->text();
   if (filterText.size() == 0
       || filterText == QString(message->GetMessage()->GetDeviceType())
       )
@@ -185,12 +196,11 @@ void NiftyLinkApp::OnMessageReceived(NiftyLinkMessageContainer::Pointer message)
     {
       message->GetMessage()->Pack();
       m_OutboundClient->Send(message);
+
+      // For stats.
       m_MessagesSent.OnMessageReceived(message);
     }
   }
-
-  DisplayTextBasedMessage(message, this->m_TextEdit);
-  DisplayImageMessage(message, this->m_ImageLabel);
 
   QLOG_DEBUG() << QObject::tr("%1::OnMessageReceived().").arg(objectName());
 }
@@ -206,12 +216,20 @@ void NiftyLinkApp::OnUpdateStatus()
       .arg(m_MessagesSent.GetMessagesPerSecond())
       ;
 
-  this->statusBar()->showMessage(status);
-  QLOG_DEBUG() << QObject::tr("%1::OnUpdateStatus() - %2").arg(objectName()).arg(status);
-
   // Clear them down, so the stats are valid for the period between timer ticks, not over all time.
   m_MessagesReceived.OnClear();
   m_MessagesSent.OnClear();
+
+  this->statusBar()->showMessage(status);
+  QLOG_DEBUG() << QObject::tr("%1::OnUpdateStatus() - %2").arg(objectName()).arg(status);
+}
+
+
+//-----------------------------------------------------------------------------
+void NiftyLinkApp::OnUpdateScreen()
+{
+  this->m_TextEdit->setPlainText(m_MostRecentString);
+  this->m_ImageLabel->setPixmap(QPixmap::fromImage(m_MostRecentImage));
 }
 
 } // end namespace
