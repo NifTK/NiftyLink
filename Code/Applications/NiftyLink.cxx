@@ -60,6 +60,8 @@ NiftyLink::~NiftyLink()
 {
   QLOG_INFO() << QObject::tr("%1::NiftyLink() - destroying.").arg(objectName());
 
+  m_Timer->stop();
+
   m_InboundClient->disconnect();
   delete m_InboundClient;
 
