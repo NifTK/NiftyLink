@@ -40,7 +40,14 @@ void NiftyLinkMessageManager::InsertContainer(int portNumber, NiftyLinkMessageCo
 NiftyLinkMessageContainer::Pointer NiftyLinkMessageManager::GetContainer(int portNumber)
 {
   QMutexLocker locker(&m_Mutex);
-  return m_Data.value(portNumber);
+  if (m_Data.isEmpty() || !m_Data.contains(portNumber))
+  {
+    return NiftyLinkMessageContainer::Pointer(NULL);
+  }
+  else
+  {
+    return m_Data.value(portNumber);
+  }
 }
 
 
@@ -48,7 +55,14 @@ NiftyLinkMessageContainer::Pointer NiftyLinkMessageManager::GetContainer(int por
 NiftyLinkMessageContainer::Pointer NiftyLinkMessageManager::GetContainer()
 {
   QMutexLocker locker(&m_Mutex);
-  return m_Data.value(m_Data.keys().first());
+  if (m_Data.isEmpty())
+  {
+    return NiftyLinkMessageContainer::Pointer(NULL);
+  }
+  else
+  {
+    return m_Data.value(m_Data.keys().first());
+  }
 }
 
 } // end namespace niftk
