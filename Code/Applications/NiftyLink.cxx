@@ -33,14 +33,14 @@ NiftyLink::NiftyLink(QObject *parent)
   m_Timer = new QTimer(this);
   m_Timer->setInterval(1000);
 
-  connect(this->m_IncomingConnect, SIGNAL(pressed()), this, SLOT(OnConnectInboundCalled()));
-  connect(this->m_IncomingDisconnect, SIGNAL(pressed()), this, SLOT(OnDisconnectInboundCalled()));
+  connect(this->m_IncomingConnect, SIGNAL(pressed()), this, SLOT(OnConnectInboundButtonPressed()));
+  connect(this->m_IncomingDisconnect, SIGNAL(pressed()), this, SLOT(OnDisconnectInboundButtonPressed()));
   connect(this->m_InboundClient, SIGNAL(SocketError(QString,int,QAbstractSocket::SocketError,QString)), this, SLOT(OnSocketError(QString,int,QAbstractSocket::SocketError,QString)));
   connect(this->m_InboundClient, SIGNAL(Connected(QString,int)), this, SLOT(OnConnectedInbound(QString,int)));
   connect(this->m_InboundClient, SIGNAL(Disconnected(QString,int)), this, SLOT(OnDisconnectedInbound(QString,int)));
   connect(this->m_InboundClient, SIGNAL(MessageReceived(NiftyLinkMessageContainer::Pointer)), this, SLOT(OnMessageReceived(NiftyLinkMessageContainer::Pointer)));
-  connect(this->m_OutgoingConnect, SIGNAL(pressed()), this, SLOT(OnConnectOutboundCalled()));
-  connect(this->m_OutgoingDisconnect, SIGNAL(pressed()), this, SLOT(OnDisconnectOutboundCalled()));
+  connect(this->m_OutgoingConnect, SIGNAL(pressed()), this, SLOT(OnConnectOutboundButtonPressed()));
+  connect(this->m_OutgoingDisconnect, SIGNAL(pressed()), this, SLOT(OnDisconnectOutboundButtonPressed()));
   connect(this->m_OutboundClient, SIGNAL(SocketError(QString,int,QAbstractSocket::SocketError,QString)), this, SLOT(OnSocketError(QString,int,QAbstractSocket::SocketError,QString)));
   connect(this->m_OutboundClient, SIGNAL(Connected(QString,int)), this, SLOT(OnConnectedOutbound(QString,int)));
   connect(this->m_OutboundClient, SIGNAL(Disconnected(QString,int)), this, SLOT(OnDisconnectedOutbound(QString,int)));
@@ -71,33 +71,33 @@ NiftyLink::~NiftyLink()
 
 
 //-----------------------------------------------------------------------------
-void NiftyLink::OnConnectInboundCalled()
+void NiftyLink::OnConnectInboundButtonPressed()
 {
-  QLOG_INFO() << QObject::tr("%1::OnConnectInboundCalled().").arg(objectName());
+  QLOG_INFO() << QObject::tr("%1::OnConnectInboundButtonPressed().").arg(objectName());
   m_InboundClient->ConnectToHost(m_IncomingAddress->text(), m_IncomingPort->value());
 }
 
 
 //-----------------------------------------------------------------------------
-void NiftyLink::OnDisconnectInboundCalled()
+void NiftyLink::OnDisconnectInboundButtonPressed()
 {
-  QLOG_INFO() << QObject::tr("%1::OnDisconnectInboundCalled().").arg(objectName());
+  QLOG_INFO() << QObject::tr("%1::OnDisconnectInboundButtonPressed().").arg(objectName());
   m_InboundClient->DisconnectFromHost();
 }
 
 
 //-----------------------------------------------------------------------------
-void NiftyLink::OnConnectOutboundCalled()
+void NiftyLink::OnConnectOutboundButtonPressed()
 {
-  QLOG_INFO() << QObject::tr("%1::OnConnectOutboundCalled().").arg(objectName());
+  QLOG_INFO() << QObject::tr("%1::OnConnectOutboundButtonPressed().").arg(objectName());
   m_OutboundClient->ConnectToHost(m_OutgoingAddress->text(), m_OutgoingPort->value());
 }
 
 
 //-----------------------------------------------------------------------------
-void NiftyLink::OnDisconnectOutboundCalled()
+void NiftyLink::OnDisconnectOutboundButtonPressed()
 {
-  QLOG_INFO() << QObject::tr("%1::OnDisconnectOutboundCalled().").arg(objectName());
+  QLOG_INFO() << QObject::tr("%1::OnDisconnectOutboundButtonPressed().").arg(objectName());
   m_OutboundClient->DisconnectFromHost();
 }
 
