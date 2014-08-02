@@ -77,8 +77,11 @@ public:
   void SetNumberMessageReceivedThreshold(qint64 threshold);
   qint64 GetNumberMessageReceivedThreshold() const;
 
-  /// \brief Returns the current count of the number of messages.
-  qint64 GetNumberOfMessages();
+  /// \brief Returns the total count of the number of messages.
+  qint64 GetTotalNumberOfMessages();
+
+  /// \brief Returns the count of the number of messages since the last call to OnClear().
+  qint64 GetNumberOfMessagesSinceClear();
 
   /// \brief Returns the current number of messages per second.
   float GetMessagesPerSecond();
@@ -99,7 +102,9 @@ private:
   igtl::TimeStamp::Pointer        m_StatsStartPoint;
   igtl::TimeStamp::Pointer        m_StatsEndPoint;
   quint64                         m_TotalBytesReceived;
-  quint64                         m_NumberMessagesReceived;
+  quint64                         m_TotalNumberMessagesReceived;
+  quint64                         m_BytesReceivedBetweemTimingPoints;
+  quint64                         m_NumberMessagesReceivedBetweenTimingPoints;
   QMap< QString, QList<quint64> > m_ListsOfLatenciesByDeviceType;
   qint64                          m_NumberMessageReceivedThreshold;
 

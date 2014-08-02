@@ -210,9 +210,9 @@ void NiftyLinkApp::OnMessageReceived(NiftyLinkMessageContainer::Pointer message)
 void NiftyLinkApp::OnUpdateStatus()
 {
   QString status = QObject::tr("Received %1 (%2/sec): Sent %3 (%4/sec)")
-      .arg(m_MessagesReceived.GetNumberOfMessages())
+      .arg(m_MessagesReceived.GetTotalNumberOfMessages())
       .arg(m_MessagesReceived.GetMessagesPerSecond())
-      .arg(m_MessagesSent.GetNumberOfMessages())
+      .arg(m_MessagesSent.GetTotalNumberOfMessages())
       .arg(m_MessagesSent.GetMessagesPerSecond())
       ;
 

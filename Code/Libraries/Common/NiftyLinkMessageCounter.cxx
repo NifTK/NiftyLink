@@ -22,7 +22,9 @@ NiftyLinkMessageCounter::NiftyLinkMessageCounter(QObject *parent)
 : m_StatsStartPoint(NULL)
 , m_StatsEndPoint(NULL)
 , m_TotalBytesReceived(0)
-, m_NumberMessagesReceived(0)
+, m_TotalNumberMessagesReceived(0)
+, m_BytesReceivedBetweemTimingPoints(0)
+, m_NumberMessagesReceivedBetweenTimingPoints(0)
 , m_NumberMessageReceivedThreshold(-1)
 {
   m_StatsStartPoint = igtl::TimeStamp::New();
@@ -53,9 +55,16 @@ qint64 NiftyLinkMessageCounter::GetNumberMessageReceivedThreshold() const
 
 
 //-----------------------------------------------------------------------------
-qint64 NiftyLinkMessageCounter::GetNumberOfMessages()
+qint64 NiftyLinkMessageCounter::GetTotalNumberOfMessages()
 {
-  return m_NumberMessagesReceived;
+  return m_TotalNumberMessagesReceived;
+}
+
+
+//-----------------------------------------------------------------------------
+qint64 NiftyLinkMessageCounter::GetNumberOfMessagesSinceClear()
+{
+  return m_NumberMessagesReceivedBetweenTimingPoints;
 }
 
 
@@ -69,7 +78,7 @@ float NiftyLinkMessageCounter::GetMessagesPerSecond()
   }
   else
   {
-    return m_NumberMessagesReceived/(static_cast<double>(diff)/static_cast<double>(1000000000));
+    return m_NumberMessagesReceivedBetweenTimingPoints/(static_cast<double>(diff)/static_cast<double>(1000000000));
   }
 }
 
@@ -79,8 +88,8 @@ void NiftyLinkMessageCounter::OnClear()
 {
   m_StatsStartPoint->GetTime();
   m_StatsEndPoint->SetTimeInNanoseconds(m_StatsStartPoint->GetTimeStampInNanoseconds());
-  m_TotalBytesReceived = 0;
-  m_NumberMessagesReceived = 0;
+  m_BytesReceivedBetweemTimingPoints = 0;
+  m_NumberMessagesReceivedBetweenTimingPoints = 0;
   m_ListsOfLatenciesByDeviceType.clear();
 }
 
@@ -99,9 +108,9 @@ void NiftyLinkMessageCounter::OnOutputStats()
 
     igtlUint64 duration = niftk::GetDifferenceInNanoSeconds(m_StatsEndPoint, m_StatsStartPoint);
     double durationInSeconds = duration/static_cast<double>(1000000000);
-    double rate = m_TotalBytesReceived/durationInSeconds;
+    double rate = m_BytesReceivedBetweemTimingPoints/durationInSeconds;
 
-    QLOG_INFO() << QObject::tr("%1::OnOutputStats(%2) - Received %3 msgs, %4 bytes, in %5 secs, %6 b/sec, mean %7, std %8, max %9.").arg(objectName()).arg(deviceType).arg(m_NumberMessagesReceived).arg(m_TotalBytesReceived).arg(durationInSeconds).arg(rate).arg(mean).arg(stdDev).arg(max);
+    QLOG_INFO() << QObject::tr("%1::OnOutputStats(%2) - Received %3 msgs, %4 bytes, in %5 secs, %6 b/sec, mean %7, std %8, max %9.").arg(objectName()).arg(deviceType).arg(m_NumberMessagesReceivedBetweenTimingPoints).arg(m_BytesReceivedBetweemTimingPoints).arg(durationInSeconds).arg(rate).arg(mean).arg(stdDev).arg(max);
     ++i;
   }
 
@@ -113,13 +122,15 @@ void NiftyLinkMessageCounter::OnOutputStats()
 //-----------------------------------------------------------------------------
 void NiftyLinkMessageCounter::OnMessageReceived(NiftyLinkMessageContainer::Pointer& message)
 {
-  if (m_NumberMessagesReceived == 0)
+  if (m_TotalNumberMessagesReceived == 0)
   {
      m_StatsStartPoint->GetTime();
   }
 
-  m_NumberMessagesReceived++;
+  m_TotalNumberMessagesReceived++;
+  m_NumberMessagesReceivedBetweenTimingPoints++;
   m_TotalBytesReceived += message->GetMessage()->GetPackSize();
+  m_BytesReceivedBetweemTimingPoints += message->GetMessage()->GetPackSize();
   m_StatsEndPoint->GetTime();
 
   // In OpenIGTLink paper (Tokuda 2009), Latency is defined as the difference
@@ -142,7 +153,7 @@ void NiftyLinkMessageCounter::OnMessageReceived(NiftyLinkMessageContainer::Point
 
   // Do this to get stats based on a fixed number of message counts.
   if (m_NumberMessageReceivedThreshold > 1
-      && (m_NumberMessagesReceived % m_NumberMessageReceivedThreshold == 0))
+      && (m_TotalNumberMessagesReceived % m_NumberMessageReceivedThreshold == 0))
   {
     this->OnOutputStats();
   }

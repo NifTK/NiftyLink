@@ -46,7 +46,7 @@ NiftyLinkTcpNetworkWorker::NiftyLinkTcpNetworkWorker(
 , m_IncomingMessageBytesReceived(0)
 , m_AbortReading(false)
 , m_KeepAliveTimer(NULL)
-, m_KeepAliveInterval(1000)
+, m_KeepAliveInterval(500)
 , m_LastMessageSentTime(NULL)
 , m_NoIncomingDataTimer(NULL)
 , m_NoIncomingDataInterval(2000)
@@ -388,7 +388,7 @@ void NiftyLinkTcpNetworkWorker::OnSocketReadyRead()
       {
         // Receive remaining data from the socket.
         bytesReceived = in.readRawData(static_cast<char *>(m_IncomingMessage->GetPackBodyPointer()) + m_IncomingMessageBytesReceived, bytesRequiredToCompleteMessage);
-        if (bytesReceived <= 0)
+        if (bytesReceived <= 0 || bytesReceived != bytesRequiredToCompleteMessage)
         {
           m_AbortReading = true;
           QString errorMessage = QObject::tr("%1::OnSocketReadyRead() - Failed to read the right size (%2) OpenIGTLink message, (bytesReceived=%3).").arg(m_MessagePrefix).arg(bytesRequiredToCompleteMessage).arg(bytesReceived);
