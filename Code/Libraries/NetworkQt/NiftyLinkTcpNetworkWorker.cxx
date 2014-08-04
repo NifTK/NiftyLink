@@ -18,6 +18,7 @@
 #include <igtlMessageBase.h>
 #include <igtlMessageFactory.h>
 #include <igtlStringMessage.h>
+#include <igtlStatusMessage.h>
 
 #include <QTcpSocket>
 #include <QsLog.h>
@@ -270,6 +271,40 @@ void NiftyLinkTcpNetworkWorker::OnCheckForIncomingData()
 
 
 //-----------------------------------------------------------------------------
+bool NiftyLinkTcpNetworkWorker::IsKeepAlive(const igtl::MessageBase::Pointer& message)
+{
+  bool isKeepAlive = false;
+  igtl::StatusMessage::Pointer msg = dynamic_cast<igtl::StatusMessage*>(message.GetPointer());
+  if (msg.IsNotNull())
+  {
+    if (msg->GetCode() == igtl::StatusMessage::STATUS_OK)
+    {
+      isKeepAlive = true;
+      QLOG_DEBUG() << QObject::tr("%1::IsKeepAlive() - received STATUS_OK as keep-alive.").arg(m_MessagePrefix);
+    }
+  }
+  return isKeepAlive;
+}
+
+
+//-----------------------------------------------------------------------------
+bool NiftyLinkTcpNetworkWorker::IsStatsRequest(const igtl::MessageBase::Pointer& message)
+{
+  bool isStats = false;
+  igtl::StringMessage::Pointer msg = dynamic_cast<igtl::StringMessage*>(message.GetPointer());
+  if (msg.IsNotNull())
+  {
+    if (msg->GetString() == std::string("POKE"))
+    {
+      isStats = true;
+      QLOG_DEBUG() << QObject::tr("%1::IsStatsRequest() - received request for statistics.").arg(m_MessagePrefix);
+    }
+  }
+  return isStats;
+}
+
+
+//-----------------------------------------------------------------------------
 void NiftyLinkTcpNetworkWorker::OnSocketReadyRead()
 {
   // This indicates a catastrophic failure, and hence no point continuing.
@@ -404,18 +439,10 @@ void NiftyLinkTcpNetworkWorker::OnSocketReadyRead()
       m_IncomingMessage->Unpack();
 
       // Check for special case messages. They are squashed here, and not delivered to client.
-      igtl::StringMessage::Pointer tmp = dynamic_cast<igtl::StringMessage*>(m_IncomingMessage.GetPointer());
-      if (tmp.IsNotNull())
+      if (   this->IsKeepAlive(m_IncomingMessage)
+          || this->IsStatsRequest(m_IncomingMessage)
+          )
       {
-        if (tmp->GetString() == std::string("POKE"))
-        {
-          QLOG_DEBUG() << QObject::tr("%1::OnSocketReadyRead() - Keep-alive received.").arg(m_MessagePrefix);
-        }
-        else if (tmp->GetString() == std::string("STATS"))
-        {
-          QLOG_DEBUG() << QObject::tr("%1::OnSocketReadyRead() - Stats request received.").arg(m_MessagePrefix);
-          this->OnOutputStats();
-        }
         // Throw away the message and header
         m_HeaderInProgress = false;
         m_MessageInProgress = false;
@@ -489,9 +516,9 @@ void NiftyLinkTcpNetworkWorker::OnSendInternalPing()
     return;
   }
 
-  igtl::StringMessage::Pointer msg = igtl::StringMessage::New();
-  msg->SetDeviceName("NiftyLinkTcpNetworkWorker");
-  msg->SetString("POKE");
+  // Note: This is deliberately the same as in PLUS.
+  igtl::StatusMessage::Pointer msg = igtl::StatusMessage::New();
+  msg->SetCode(igtl::StatusMessage::STATUS_OK);
   msg->Pack();
 
   this->SendMessage(msg.GetPointer());

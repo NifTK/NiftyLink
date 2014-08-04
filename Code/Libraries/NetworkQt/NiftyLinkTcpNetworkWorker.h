@@ -103,6 +103,9 @@ private:
 
   void SendMessage(igtl::MessageBase::Pointer);
 
+  bool IsKeepAlive(const igtl::MessageBase::Pointer&);
+  bool IsStatsRequest(const igtl::MessageBase::Pointer&);
+
   NiftyLinkMessageManager      *m_InboundMessages;
   NiftyLinkMessageManager      *m_OutboundMessages;
   QTcpSocket                   *m_Socket;
