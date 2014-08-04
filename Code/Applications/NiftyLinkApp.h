@@ -18,7 +18,7 @@
 #include <QMainWindow>
 #include <QAbstractSocket>
 #include <QTimer>
-#include "ui_NiftyLink.h"
+#include "ui_NiftyLinkApp.h"
 
 namespace niftk
 {
