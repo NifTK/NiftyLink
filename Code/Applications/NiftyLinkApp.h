@@ -44,7 +44,7 @@ class NiftyLinkTcpClient;
  * this class is the main application entry point. There is currently
  * no public API because there is nothing to set.
  */
-class NiftyLinkApp : public QMainWindow, public Ui_NiftyLink {
+class NiftyLinkApp : public QMainWindow, public Ui_NiftyLinkApp {
 
   Q_OBJECT
 
