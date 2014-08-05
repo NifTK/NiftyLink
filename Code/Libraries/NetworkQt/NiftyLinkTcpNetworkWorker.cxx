@@ -50,7 +50,7 @@ NiftyLinkTcpNetworkWorker::NiftyLinkTcpNetworkWorker(
 , m_KeepAliveInterval(500)
 , m_LastMessageSentTime(NULL)
 , m_NoIncomingDataTimer(NULL)
-, m_NoIncomingDataInterval(2000)
+, m_NoIncomingDataInterval(1000)
 , m_LastMessageReceivedTime(NULL)
 {
   assert(m_Socket);
@@ -309,7 +309,7 @@ bool NiftyLinkTcpNetworkWorker::IsStatsRequest(const igtl::MessageBase::Pointer&
   igtl::StringMessage::Pointer msg = dynamic_cast<igtl::StringMessage*>(message.GetPointer());
   if (msg.IsNotNull())
   {
-    if (msg->GetString() == std::string("POKE"))
+    if (msg->GetString() == std::string("STATS"))
     {
       isStats = true;
       QLOG_DEBUG() << QObject::tr("%1::IsStatsRequest() - received request for statistics.").arg(m_MessagePrefix);
