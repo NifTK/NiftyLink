@@ -350,10 +350,10 @@ SET(NIFTYLINK_INCLUDE_DIRS_BUILD_TREE ${NIFTYLINK_INCLUDE_DIRS_BUILD_TREE}
   ${CMAKE_SOURCE_DIR}/Code/Libraries
   ${CMAKE_SOURCE_DIR}/Code/Libraries/Common
   ${CMAKE_SOURCE_DIR}/Code/Libraries/Descriptors
-  ${CMAKE_SOURCE_DIR}/Code/Libraries/Messages
+  ${CMAKE_SOURCE_DIR}/Code/Libraries/MessageHandling
   ${CMAKE_SOURCE_DIR}/Code/Libraries/NetworkOpenIGTLink
   ${CMAKE_SOURCE_DIR}/Code/Libraries/NetworkQt
-  ${CMAKE_SOURCE_DIR}/Testing/Code/Libraries/Network
+  ${CMAKE_SOURCE_DIR}/Testing/Code/Libraries
 )
 INCLUDE_DIRECTORIES(
   ${NIFTYLINK_INCLUDE_DIRS_BUILD_TREE}
