@@ -17,6 +17,9 @@ See LICENSE.txt in the top level directory for details.
 #include "NiftyLinkUtils.h"
 #include "NiftyLinkCommonWin32ExportHeader.h"
 
+namespace niftk
+{
+
 /**
 * \class NiftyLinkStringMessage
 * \brief Message type to hold status info.
@@ -43,18 +46,6 @@ public:
   /// \brief Basic copy constructor required for this data type
   NiftyLinkStringMessage(const NiftyLinkStringMessage &other);
 
-  /// \brief Function which creates a GET_STRING message (igtl::GetStringMessage)
-  static void Create_GET(NiftyLinkMessage::Pointer &msgToCreate);
-
-  /// \brief Function which creates a STT_STRING message (igtl::STTStringMessage)
-  static void Create_STT(NiftyLinkMessage::Pointer &msgToCreate);
-
-  /// \brief Function which creates a STP_STRING message (igtl::STPStringMessage)
-  static void Create_STP(NiftyLinkMessage::Pointer &msgToCreate);
-
-  /// \brief Function which creates a RTS_STRING message (igtl::RTSStringMessage)
-  static void Create_RTS(NiftyLinkMessage::Pointer &msgToCreate);
-
   /// \brief Sets the message string
   void SetString(QString string);
 
@@ -73,5 +64,7 @@ public:
 private:
 
 };
+
+} // end namespace niftk
 
 #endif // NiftyLinkStringMessage_h

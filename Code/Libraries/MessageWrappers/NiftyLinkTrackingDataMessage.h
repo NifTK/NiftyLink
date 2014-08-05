@@ -17,6 +17,9 @@ See LICENSE.txt in the top level directory for details.
 #include "NiftyLinkUtils.h"
 #include "NiftyLinkCommonWin32ExportHeader.h"
 
+namespace niftk
+{
+
 /**
 * \class NiftyLinkTrackingDataMessage
 * \brief Message type to hold transform data.
@@ -55,18 +58,6 @@ public:
   /// \brief Basic copy constructor required for this data type
   NiftyLinkTrackingDataMessage(const NiftyLinkTrackingDataMessage &other);
 
-  /// \brief Function which creates a GET_TRACKINGDATA message (igtl::GetTrackingDataMessage)
-  static void Create_GET(NiftyLinkMessage::Pointer &msgToCreate);
-
-  /// \brief Function which creates a STT_TRACKINGDATA message (igtl::STTTrackingDataMessage)
-  static void Create_STT(NiftyLinkMessage::Pointer &msgToCreate);
-
-  /// \brief Function which creates a STP_TRACKINGDATA message (igtl::STPTrackingDataMessage)
-  static void Create_STP(NiftyLinkMessage::Pointer &msgToCreate);
-
-  /// \brief Function which creates a RTS_TRACKINGDATA message (igtl::RTSTrackingDataMessage)
-  static void Create_RTS(NiftyLinkMessage::Pointer &msgToCreate);
-
   /// \brief Sets the transformation matrix
   void SetMatrix(igtl::Matrix4x4 &matrix);
 
@@ -91,12 +82,6 @@ public:
   /// \brief Sets the tracker tool's name
   void SetTrackerToolName(QString name);
 
-  /// \brief Sets the tracking error
-  void SetError (float error);
-
-  /// \brief Gets the tracking error
-  float GetError ();
-
   /// \brief Gets the tracker tool's name
   QString GetTrackerToolName();
 
@@ -112,14 +97,10 @@ public:
   /// \brief Initializes the message with random test data
   virtual void InitializeWithRandomData(void);
 
-  /// \brief Sets the base igtltracking data type to use. If use full tracker message
-  /// is true a full 4x4 matrix + the error term can be sent, other wise the last
-  /// row of the tracker matrix and the error are discarded at pack and unpack
-  void SetUseIGTL_fulltdata (bool);
-
 private:
   float m_p[3];
-  bool m_UseIGTL_fulltdata;
 };
+
+} // end namespace niftk
 
 #endif // NiftyLinkTrackingDataMessage_h

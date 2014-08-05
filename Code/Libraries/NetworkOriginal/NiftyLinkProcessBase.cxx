@@ -12,6 +12,9 @@
 
 #include "NiftyLinkProcessBase.h"
 
+namespace niftk
+{
+
 //-----------------------------------------------------------------------------
 NiftyLinkProcessBase::NiftyLinkProcessBase(QObject *parent)
   : QObject(parent)
@@ -32,3 +35,5 @@ NiftyLinkProcessBase::NiftyLinkProcessBase(QObject *parent)
 NiftyLinkProcessBase::~NiftyLinkProcessBase(void)
 {
 }
+
+} // end namespace niftk

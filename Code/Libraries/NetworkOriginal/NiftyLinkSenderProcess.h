@@ -15,6 +15,9 @@ See LICENSE.txt in the top level directory for details.
 
 #include "NiftyLinkProcessBase.h"
 
+namespace niftk
+{
+
 class NiftyLinkSenderProcessTester;
 
 /**
@@ -60,7 +63,7 @@ protected:
   virtual ~NiftyLinkSenderProcess(void);
 
   /// \brief Initialize the Process on a given, externally created OpenIGTLink socket (igtl::Socket), while specifying the related port.
-  virtual bool Initialize(igtl::Socket::Pointer socket = 0, int port = -1);
+  virtual bool Initialize(niftk::NiftyLinkSocket::Pointer socket = 0, int port = -1);
 
   /// \brief Initialize the Process by specifying a hostname and port number.
   bool Initialize(std::string &hostname, int port = 0);
@@ -102,28 +105,16 @@ private slots:
   void OnKeepAliveTimeout(void);
 
 private:
-  igtl::ClientSocket::Pointer      m_ClientSocket;
-  std::string                      m_Hostname;
-  bool                             m_SendingOnSocket;
-  int                              m_ConnectTimeout;
-  int                              m_KeepAliveTimeout;
+  niftk::NiftyLinkClientSocket::Pointer m_ClientSocket;
+  std::string                           m_Hostname;
+  bool                                  m_SendingOnSocket;
+  int                                   m_ConnectTimeout;
+  int                                   m_KeepAliveTimeout;
 
-  QList<NiftyLinkMessage::Pointer> m_SendQue;
-  QMutex                           m_QueueMutex;
+  QList<NiftyLinkMessage::Pointer>      m_SendQue;
+  QMutex                                m_QueueMutex;
 };
 
-/**
-* \class NiftyLinkSenderProcessTester
-* \brief Class derived from NiftyLinkSenderProcess to enable unit testing.
-*/
-class NIFTYLINKCOMMON_WINEXPORT NiftyLinkSenderProcessTester : public NiftyLinkSenderProcess
-{
-  Q_OBJECT
-
-  friend class TestSenderProcess_General;
-
-  NiftyLinkSenderProcessTester(QObject *parent = 0)
-    : NiftyLinkSenderProcess(parent) {}
-};
+} // end namespace niftk
 
 #endif // NiftyLinkSenderProcess_h

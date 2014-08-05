@@ -17,16 +17,19 @@ See LICENSE.txt in the top level directory for details.
 #include "NiftyLinkUtils.h"
 #include <sstream>
 
+namespace niftk
+{
+
 //-----------------------------------------------------------------------------
 NiftyLinkMessage::NiftyLinkMessage(void)
   : m_IsPacked(false)
 {
   m_TimeCreated = igtl::TimeStamp::New();
-  m_TimeCreated->Update();
+  m_TimeCreated->GetTime();
   m_SenderPort = -1;
 
   m_SenderHostName = QString("localhost");
-  m_Id = m_TimeCreated->GetTimeInNanoSeconds();
+  m_Id = m_TimeCreated->GetTimeStampInNanoseconds();
 
   //m_TimeCreated = NULL;
   m_Resolution = 0;
@@ -223,6 +226,7 @@ void NiftyLinkMessage::SetResolution(igtlUint64 res)
     m_IsPacked = false;
   }
 
+  /*
   if (strcmp(m_Message->GetNameOfClass(), "igtl::StartTransformMessage") == 0)
   {
     igtl::StartTransformMessage::Pointer pointer = static_cast<igtl::StartTransformMessage *>(m_Message.GetPointer());
@@ -273,7 +277,7 @@ void NiftyLinkMessage::SetResolution(igtlUint64 res)
     igtl::StartBindMessage::Pointer pointer = static_cast<igtl::StartBindMessage *>(m_Message.GetPointer());
     pointer->SetResolution(res);
   }
-
+  */
   //m_Message->Pack();
 }
 
@@ -298,7 +302,7 @@ void NiftyLinkMessage::GetResolution(igtlUint64 &res)
     m_Message->Unpack();
     m_IsPacked = false;
   }
-
+  /*
   if (strcmp(m_Message->GetNameOfClass(), "igtl::StartTransformMessage") == 0)
   {
     igtl::StartTransformMessage::Pointer pointer = static_cast<igtl::StartTransformMessage *>(m_Message.GetPointer());
@@ -349,7 +353,7 @@ void NiftyLinkMessage::GetResolution(igtlUint64 &res)
     igtl::StartBindMessage::Pointer pointer = static_cast<igtl::StartBindMessage *>(m_Message.GetPointer());
     m_Resolution = pointer->GetResolution();
   }
-
+  */
   //m_Message->Pack();
 
   res = m_Resolution;
@@ -392,12 +396,12 @@ void NiftyLinkMessage::Update(QString hostname)
 
   igtl::TimeStamp::Pointer ts;
   ts = igtl::TimeStamp::New();
-  ts->Update();
+  ts->GetTime();
 
   m_TimeCreated.operator = (ts);
   m_SenderHostName = hostname;
 
-  m_Id = ts->GetTimeInNanoSeconds();
+  m_Id = ts->GetTimeStampInNanoseconds();
 
   if (m_IsPacked)
   {
@@ -425,15 +429,15 @@ QString NiftyLinkMessage::GetDetailedAccessInfo()
   std::map<std::string, igtl::TimeStamp::Pointer>::iterator it;
 
   std::stringstream times;
-  times <<"MSG_ID :" <<m_Id <<"\nTime Created: " <<m_TimeCreated->GetTimeInNanoSeconds() <<"\nMessage type: "
+  times <<"MSG_ID :" <<m_Id <<"\nTime Created: " <<m_TimeCreated->GetTimeStampInNanoseconds() <<"\nMessage type: "
     <<m_MessageType.toStdString() <<"\n\n";
 
-  igtlUint64 nullTime =  m_AccessTimes.begin()->second->GetTimeInNanoSeconds();
+  igtlUint64 nullTime =  m_AccessTimes.begin()->second->GetTimeStampInNanoseconds();
 
   for (it = m_AccessTimes.begin(); it != m_AccessTimes.end(); ++it)
   {
-    times <<it->second->GetTimeInNanoSeconds() <<"ns " <<it->first.c_str() <<"\n";
-    igtlUint64 lag = it->second->GetTimeInNanoSeconds() - nullTime;
+    times <<it->second->GetTimeStampInNanoseconds() <<"ns " <<it->first.c_str() <<"\n";
+    igtlUint64 lag = it->second->GetTimeStampInNanoseconds() - nullTime;
     times <<"Lag: " <<lag <<"ns\n\n";
   }
   return QString(times.str().c_str());
@@ -446,11 +450,11 @@ QString NiftyLinkMessage::GetAccessTimes()
 
   /// The format is: ID, TimeCreated, StartIter, EndPack, SendStart, SendFinish
   std::stringstream times;
-  times <<m_Id <<"," <<m_TimeCreated->GetTimeInNanoSeconds();
+  times <<m_Id <<"," <<m_TimeCreated->GetTimeStampInNanoseconds();
 
   for (it = m_AccessTimes.begin(); it != m_AccessTimes.end(); ++it)
   {
-    times <<"," <<it->second->GetTimeInNanoSeconds();
+    times <<"," <<it->second->GetTimeStampInNanoseconds();
   }
   return QString(times.str().c_str());
 }
@@ -475,3 +479,5 @@ void NiftyLinkMessage::Unpack()
   }
   m_IsPacked = false;
 }
+
+} // end namespace niftk

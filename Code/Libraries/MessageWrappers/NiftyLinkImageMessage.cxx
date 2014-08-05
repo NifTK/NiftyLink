@@ -20,6 +20,9 @@ See LICENSE.txt in the top level directory for details.
 
 #include <cassert>
 
+namespace niftk
+{
+
 //-----------------------------------------------------------------------------
 NiftyLinkImageMessage::NiftyLinkImageMessage(void)
   : NiftyLinkMessage()
@@ -82,20 +85,6 @@ void NiftyLinkImageMessage::GetMatrix(igtl::Matrix4x4 &matrix)
   }
   msgPointer->GetMatrix(matrix);
   //msgPointer->Pack();
-}
-
-
-//-----------------------------------------------------------------------------
-void NiftyLinkImageMessage::PreserveMatrix()
-{
-  if (m_Message.IsNull())
-  {
-    return;
-  }
-
-  igtl::ImageMessage::Pointer msgPointer;
-  msgPointer = static_cast<igtl::ImageMessage *>(m_Message.GetPointer());
-  msgPointer->PreserveMatrix();
 }
 
 
@@ -585,7 +574,7 @@ void NiftyLinkImageMessage::InitializeWithRandomData(void)
   }
 
   igtl::Matrix4x4 localMatrix;
-  CreateRandomTransformMatrix(localMatrix);
+  niftk::CreateRandomTransformMatrix(localMatrix);
 
   msgPointer->SetMatrix(localMatrix);
   //msgPointer->Pack();
@@ -672,7 +661,7 @@ void NiftyLinkImageMessage::SetQImage(const QImage& inputImage)
   if ( inputImage.format() != QImage::Format_Indexed8 )
   {
     QImage image(inputImage);
-    image.convertToFormat(QImage::Format_ARGB32);
+    image = image.convertToFormat(QImage::Format_ARGB32);
     msgPointer->SetDimensions(image.width(), image.height(), 1);
     msgPointer->SetScalarType(igtl::ImageMessage::TYPE_UINT32);
     msgPointer->AllocateScalars();
@@ -763,93 +752,4 @@ QImage NiftyLinkImageMessage::GetQImage(void)
   return image;
 }
 
-//*************************************************************
-// ASSOCIATED CONTROL MESSAGE TYPES
-//*************************************************************
-
-//-----------------------------------------------------------------------------
-void NiftyLinkImageMessage::Create_GET(NiftyLinkMessage::Pointer &msgToCreate)
-{
-  msgToCreate.operator = (NiftyLinkMessage::Pointer(new NiftyLinkMessage()));
-
-  igtl::GetImageMessage::Pointer cmdMsg;
-  cmdMsg.operator = (igtl::GetImageMessage::New());
-
-  igtl::TimeStamp::Pointer ts;
-  ts = igtl::TimeStamp::New();
-  ts->Update();
-
-  QString lhn = GetLocalHostAddress();
-
-  cmdMsg->SetTimeStamp(ts);
-  cmdMsg->SetDeviceName(lhn.toStdString().c_str());
-  cmdMsg->Pack();
-
-  msgToCreate->SetMessagePointer((igtl::MessageBase::Pointer) cmdMsg);
-}
-
-
-//-----------------------------------------------------------------------------
-void NiftyLinkImageMessage::Create_STT(NiftyLinkMessage::Pointer &msgToCreate)
-{
-  msgToCreate.operator = (NiftyLinkMessage::Pointer(new NiftyLinkMessage()));
-
-  igtl::StartImageMessage::Pointer cmdMsg;
-  cmdMsg.operator = (igtl::StartImageMessage::New());
-
-  igtl::TimeStamp::Pointer ts;
-  ts = igtl::TimeStamp::New();
-  ts->Update();
-
-  QString lhn = GetLocalHostAddress();
-
-  cmdMsg->SetTimeStamp(ts);
-  cmdMsg->SetDeviceName(lhn.toStdString().c_str());
-  cmdMsg->Pack();
-
-  msgToCreate->SetMessagePointer((igtl::MessageBase::Pointer) cmdMsg);
-}
-
-
-//-----------------------------------------------------------------------------
-void NiftyLinkImageMessage::Create_STP(NiftyLinkMessage::Pointer &msgToCreate)
-{
-  msgToCreate.operator = (NiftyLinkMessage::Pointer(new NiftyLinkMessage()));
-
-  igtl::StopImageMessage::Pointer cmdMsg;
-  cmdMsg.operator = (igtl::StopImageMessage::New());
-
-  igtl::TimeStamp::Pointer ts;
-  ts = igtl::TimeStamp::New();
-  ts->Update();
-
-  QString lhn = GetLocalHostAddress();
-
-  cmdMsg->SetTimeStamp(ts);
-  cmdMsg->SetDeviceName(lhn.toStdString().c_str());
-  cmdMsg->Pack();
-
-  msgToCreate->SetMessagePointer((igtl::MessageBase::Pointer) cmdMsg);
-}
-
-
-//-----------------------------------------------------------------------------
-void NiftyLinkImageMessage::Create_RTS(NiftyLinkMessage::Pointer &msgToCreate)
-{
-  msgToCreate.operator = (NiftyLinkMessage::Pointer(new NiftyLinkMessage()));
-
-  igtl::RTSImageMessage::Pointer cmdMsg;
-  cmdMsg.operator = (igtl::RTSImageMessage::New());
-
-  igtl::TimeStamp::Pointer ts;
-  ts = igtl::TimeStamp::New();
-  ts->Update();
-
-  QString lhn = GetLocalHostAddress();
-
-  cmdMsg->SetTimeStamp(ts);
-  cmdMsg->SetDeviceName(lhn.toStdString().c_str());
-  cmdMsg->Pack();
-
-  msgToCreate->SetMessagePointer((igtl::MessageBase::Pointer) cmdMsg);
-}
+} // end namespace niftk

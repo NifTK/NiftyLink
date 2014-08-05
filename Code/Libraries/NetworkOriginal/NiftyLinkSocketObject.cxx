@@ -12,6 +12,9 @@ See LICENSE.txt in the top level directory for details.
 
 #include "NiftyLinkSocketObject.h"
 
+namespace niftk
+{
+
 //-----------------------------------------------------------------------------
 NiftyLinkSocketObject::NiftyLinkSocketObject(QObject *parent)
   : QObject(parent)
@@ -115,8 +118,8 @@ void NiftyLinkSocketObject::InitThreads()
   m_Sender->SetMutex(m_Mutex);
   m_Listener->SetMutex(m_Mutex);
 
-  m_SenderHostThread = new QThreadEx();
-  m_ListenerHostThread = new QThreadEx();
+  m_SenderHostThread = new NiftyLinkQThread();
+  m_ListenerHostThread = new NiftyLinkQThread();
 
   m_Sender->moveToThread(m_SenderHostThread);
   m_Listener->moveToThread(m_ListenerHostThread);
@@ -219,9 +222,9 @@ bool NiftyLinkSocketObject::ListenOnPort(int port)
       m_ListenerHostThread->start();
 
       // Wait until the thread and it's event loop really started
-      while (!m_ListenerHostThread->IsEventloopRunning())
+      while (!m_ListenerHostThread->IsEventLoopRunning())
       {
-        m_ListenerHostThread->MsleepEx(100);
+        m_ListenerHostThread->SleepCallingThread(100);
 
         // Make sure that our signals are being processed
         QCoreApplication::processEvents();
@@ -292,9 +295,9 @@ bool NiftyLinkSocketObject::ConnectToRemote(QUrl url)
       // Start the thread
       m_SenderHostThread->start();
 
-      while (!m_SenderHostThread->IsEventloopRunning())
+      while (!m_SenderHostThread->IsEventLoopRunning())
       {
-        m_SenderHostThread->MsleepEx(100);
+        m_SenderHostThread->SleepCallingThread(100);
 
         // Make sure that our signals are being processed
         QCoreApplication::processEvents();
@@ -332,7 +335,7 @@ void NiftyLinkSocketObject::CloseSocket(void)
 
     while (m_Sender->IsActive())
     {
-      m_SenderHostThread->MsleepEx(250);
+      m_SenderHostThread->SleepCallingThread(250);
     }
   }
 
@@ -344,7 +347,7 @@ void NiftyLinkSocketObject::CloseSocket(void)
 
     while (m_Listener->IsActive())
     {
-      m_ListenerHostThread->MsleepEx(250);
+      m_ListenerHostThread->SleepCallingThread(250);
     }
   }
 
@@ -729,3 +732,5 @@ void NiftyLinkSocketObject::InitializeWinTimers()
 }
 
 #endif
+
+} // end namespace niftk

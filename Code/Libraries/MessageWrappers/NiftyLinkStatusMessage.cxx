@@ -11,9 +11,13 @@ See LICENSE.txt in the top level directory for details.
 =============================================================================*/
 
 #include "NiftyLinkStatusMessage.h"
+#include <NiftyLinkUtils.h>
 
 #include "QsLog.h"
 #include "QsLogDest.h"
+
+namespace niftk
+{
 
 //-----------------------------------------------------------------------------
 NiftyLinkStatusMessage::NiftyLinkStatusMessage(void)
@@ -237,94 +241,4 @@ void NiftyLinkStatusMessage::InitializeWithTestData(void)
   //msgPointer->Pack();
 }
 
-
-//-----------------------------------------------------------------------------
-void NiftyLinkStatusMessage::Create_GET(NiftyLinkMessage::Pointer &msgToCreate)
-{
-  msgToCreate.operator = (NiftyLinkMessage::Pointer(new NiftyLinkMessage()));
-
-  igtl::GetStatusMessage::Pointer cmdMsg;
-  cmdMsg.operator = (igtl::GetStatusMessage::New());
-
-  igtl::TimeStamp::Pointer ts;
-  ts = igtl::TimeStamp::New();
-  ts->Update();
-
-  QString lhn = GetLocalHostAddress();
-
-  cmdMsg->SetTimeStamp(ts);
-  cmdMsg->SetDeviceName(lhn.toStdString().c_str());
-  cmdMsg->Pack();
-
-  msgToCreate->SetMessagePointer((igtl::MessageBase::Pointer) cmdMsg);
-  msgToCreate->ChangeMessageType("GET_STATUS");
-}
-
-
-//-----------------------------------------------------------------------------
-void NiftyLinkStatusMessage::Create_STT(NiftyLinkMessage::Pointer &msgToCreate)
-{
-  msgToCreate.operator = (NiftyLinkMessage::Pointer(new NiftyLinkMessage()));
-
-  igtl::StartStatusMessage::Pointer cmdMsg;
-  cmdMsg.operator = (igtl::StartStatusMessage::New());
-
-  igtl::TimeStamp::Pointer ts;
-  ts = igtl::TimeStamp::New();
-  ts->Update();
-
-  QString lhn = GetLocalHostAddress();
-
-  cmdMsg->SetTimeStamp(ts);
-  cmdMsg->SetDeviceName(lhn.toStdString().c_str());
-  cmdMsg->Pack();
-
-  msgToCreate->SetMessagePointer((igtl::MessageBase::Pointer) cmdMsg);
-  msgToCreate->ChangeMessageType("STT_STATUS");
-}
-
-
-//-----------------------------------------------------------------------------
-void NiftyLinkStatusMessage::Create_STP(NiftyLinkMessage::Pointer &msgToCreate)
-{
-  msgToCreate.operator = (NiftyLinkMessage::Pointer(new NiftyLinkMessage()));
-
-  igtl::StopStatusMessage::Pointer cmdMsg;
-  cmdMsg.operator = (igtl::StopStatusMessage::New());
-
-  igtl::TimeStamp::Pointer ts;
-  ts = igtl::TimeStamp::New();
-  ts->Update();
-
-  QString lhn = GetLocalHostAddress();
-
-  cmdMsg->SetTimeStamp(ts);
-  cmdMsg->SetDeviceName(lhn.toStdString().c_str());
-  cmdMsg->Pack();
-
-  msgToCreate->SetMessagePointer((igtl::MessageBase::Pointer) cmdMsg);
-  msgToCreate->ChangeMessageType("STP_STATUS");
-}
-
-
-//-----------------------------------------------------------------------------
-void NiftyLinkStatusMessage::Create_RTS(NiftyLinkMessage::Pointer &msgToCreate)
-{
-  msgToCreate.operator = (NiftyLinkMessage::Pointer(new NiftyLinkMessage()));
-
-  igtl::RTSStatusMessage::Pointer cmdMsg;
-  cmdMsg.operator = (igtl::RTSStatusMessage::New());
-
-  igtl::TimeStamp::Pointer ts;
-  ts = igtl::TimeStamp::New();
-  ts->Update();
-
-  QString lhn = GetLocalHostAddress();
-
-  cmdMsg->SetTimeStamp(ts);
-  cmdMsg->SetDeviceName(lhn.toStdString().c_str());
-  cmdMsg->Pack();
-
-  msgToCreate->SetMessagePointer((igtl::MessageBase::Pointer) cmdMsg);
-  msgToCreate->ChangeMessageType("RTS_STATUS");
-}
+} // end namespace niftk

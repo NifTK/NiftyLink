@@ -17,6 +17,9 @@ See LICENSE.txt in the top level directory for details.
 #include "NiftyLinkUtils.h"
 #include "NiftyLinkCommonWin32ExportHeader.h"
 
+namespace niftk
+{
+
 /**
 * \class NiftyLinkStatusMessage
 * \brief Message type to hold status info.
@@ -43,18 +46,6 @@ public:
 
   /// \brief Basic copy constructor required for this data type
   NiftyLinkStatusMessage(const NiftyLinkStatusMessage &other);
-
-  /// \brief Function which creates a GET_STATUS message (igtl::GetStatusMessage)
-  static void Create_GET(NiftyLinkMessage::Pointer &msgToCreate);
-
-  /// \brief Function which creates a STT_STATUS message (igtl::STTStatusMessage)
-  static void Create_STT(NiftyLinkMessage::Pointer &msgToCreate);
-
-  /// \brief Function which creates a STP_STATUS message (igtl::STPStatusMessage)
-  static void Create_STP(NiftyLinkMessage::Pointer &msgToCreate);
-
-  /// \brief Function which creates a RTS_STATUS message (igtl::RTSStatusMessage)
-  static void Create_RTS(NiftyLinkMessage::Pointer &msgToCreate);
 
   /// \brief Sets the error code
   void SetErrorCode(int code);
@@ -86,5 +77,7 @@ public:
 private:
 
 };
+
+} // end namespace niftk
 
 #endif // NiftyLinkStatusMessage_h

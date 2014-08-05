@@ -132,6 +132,7 @@ IF (NOT BUILD_SHARED_LIBS)
 ENDIF()
 
 OPTION(BUILD_TESTING "Build Unit tests in NiftyLink/Testing/Code" ON)
+OPTION(BUILD_LEGACY "Build first NiftyLink version" OFF)
 OPTION(NIFTYLINK_OPENIGTLINK_DEV "Build the development version of OpenIGTLink" ON)
 OPTION(NIFTYLINK_CHECK_COVERAGE "Enable/Disable code coverage checking." OFF)
 
@@ -350,8 +351,10 @@ SET(NIFTYLINK_INCLUDE_DIRS_BUILD_TREE ${NIFTYLINK_INCLUDE_DIRS_BUILD_TREE}
   ${CMAKE_SOURCE_DIR}/Code/Libraries
   ${CMAKE_SOURCE_DIR}/Code/Libraries/Common
   ${CMAKE_SOURCE_DIR}/Code/Libraries/Descriptors
-  ${CMAKE_SOURCE_DIR}/Code/Libraries/MessageHandling
+  ${CMAKE_SOURCE_DIR}/Code/Libraries/MessageWrappers
+  ${CMAKE_SOURCE_DIR}/Code/Libraries/NetworkOriginal
   ${CMAKE_SOURCE_DIR}/Code/Libraries/NetworkOpenIGTLink
+  ${CMAKE_SOURCE_DIR}/Code/Libraries/MessageHandling
   ${CMAKE_SOURCE_DIR}/Code/Libraries/NetworkQt
   ${CMAKE_SOURCE_DIR}/Testing/Code/Libraries
 )

@@ -21,9 +21,9 @@ PROJECT(NiftyLink)
 FIND_PACKAGE(Qt4 REQUIRED)
 INCLUDE(${QT_USE_FILE})
 
-# --------------------------------------------------------------------------
+#########################
 # Sources
-
+#########################
 SET(niftylink_SRCS
 Common/NiftyLinkUtils.cxx
 Common/NiftyLinkMessageCounter.cxx
@@ -84,6 +84,38 @@ NetworkOpenIGTLink/NiftyLinkSocket.h
 NetworkOpenIGTLink/NiftyLinkClientSocket.h
 NetworkOpenIGTLink/NiftyLinkServerSocket.h
 )
+
+#####################################
+# Stuff from 1st version of NiftyLink
+#####################################
+if(BUILD_LEGACY)
+  list(APPEND niftylink_SRCS
+      MessageWrappers/NiftyLinkMessage.cxx
+      MessageWrappers/NiftyLinkTransformMessage.cxx
+      MessageWrappers/NiftyLinkImageMessage.cxx
+      MessageWrappers/NiftyLinkStatusMessage.cxx
+      MessageWrappers/NiftyLinkStringMessage.cxx
+      MessageWrappers/NiftyLinkTrackingDataMessage.cxx
+      NetworkOriginal/NiftyLinkProcessBase.cxx
+      NetworkOriginal/NiftyLinkSenderProcess.cxx
+      NetworkOriginal/NiftyLinkListenerProcess.cxx
+      NetworkOriginal/NiftyLinkSocketObject.cxx
+      )
+  list(APPEND niftylink_MOC_HDRS
+      NetworkOriginal/NiftyLinkProcessBase.h
+      NetworkOriginal/NiftyLinkSenderProcess.h
+      NetworkOriginal/NiftyLinkListenerProcess.h
+      NetworkOriginal/NiftyLinkSocketObject.h
+      )
+  list(APPEND niftylink_HDRS
+      MessageWrappers/NiftyLinkMessage.h
+      MessageWrappers/NiftyLinkTransformMessage.h
+      MessageWrappers/NiftyLinkImageMessage.h
+      MessageWrappers/NiftyLinkTrackingDataMessage.h
+      MessageWrappers/NiftyLinkStringMessage.h
+      MessageWrappers/NiftyLinkStatusMessage.h
+      )
+endif()
 
 #########################
 # Resource file.

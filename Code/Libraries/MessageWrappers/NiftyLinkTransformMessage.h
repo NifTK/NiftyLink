@@ -17,6 +17,9 @@ See LICENSE.txt in the top level directory for details.
 #include "NiftyLinkUtils.h"
 #include "NiftyLinkCommonWin32ExportHeader.h"
 
+namespace niftk
+{
+
 /**
 * \class NiftyLinkTransformMessage
 * \brief Message type to hold transform data.
@@ -43,18 +46,6 @@ public:
 
   /// \brief Basic copy constructor required for this data type
   NiftyLinkTransformMessage(const NiftyLinkTransformMessage &other);
-
-  /// \brief Function which creates a GET_TRANSFORM message (igtl::GetTransformMessage)
-  static void Create_GET(NiftyLinkMessage::Pointer &msgToCreate);
-
-  /// \brief Function which creates a STT_TRANSFORM message (igtl::STTTransformMessage)
-  static void Create_STT(NiftyLinkMessage::Pointer &msgToCreate);
-
-  /// \brief Function which creates a STP_TRANSFORM message (igtl::STPTransformMessage)
-  static void Create_STP(NiftyLinkMessage::Pointer &msgToCreate);
-
-  /// \brief Function which creates a RTS_TRANSFORM message (igtl::RTSTransformMessage)
-  static void Create_RTS(NiftyLinkMessage::Pointer &msgToCreate);
 
   /// \brief Sets the transformation matrix
   void SetMatrix(igtl::Matrix4x4 &matrix);
@@ -98,5 +89,7 @@ public:
 private:
   float m_p[3];
 };
+
+} // end namespace niftk
 
 #endif // NiftyLinkTransformMessage_h

@@ -10,7 +10,13 @@ PURPOSE.
 See LICENSE.txt in the top level directory for details.
 =============================================================================*/
 
-#include "NiftyLinkSocketObject.h"
+#include "NiftyLinkListenerProcess.h"
+#include <NiftyLinkQThread.h>
+#include "igtlOSUtil.h"
+#include <igtlPolyDataMessage.h>
+
+namespace niftk
+{
 
 //-----------------------------------------------------------------------------
 NiftyLinkListenerProcess::NiftyLinkListenerProcess(QObject *parent)
@@ -31,9 +37,9 @@ NiftyLinkListenerProcess::~NiftyLinkListenerProcess(void)
 
 
 //-----------------------------------------------------------------------------
-bool NiftyLinkListenerProcess::Initialize(igtl::Socket::Pointer socket, int port)
+bool NiftyLinkListenerProcess::Initialize(niftk::NiftyLinkSocket::Pointer socket, int port)
 {
-  if (socket.IsNull() || (socket.IsNotNull() && !socket->IsValid()) )
+  if (socket.IsNull() || (socket.IsNotNull() && !socket->GetConnected()) )
   {
     QLOG_ERROR() << objectName() << ": " << "Cannot create a listener socket, invalid external socket specified" << endl;
     return false;
@@ -77,7 +83,7 @@ bool NiftyLinkListenerProcess::Initialize(int port)
     return false;
   }
 
-  igtl::ServerSocket::Pointer ssock = igtl::ServerSocket::New();
+  niftk::NiftyLinkServerSocket::Pointer ssock = niftk::NiftyLinkServerSocket::New();
   int err = ssock->CreateServer(port);
   ssock->SetTimeout(m_SocketTimeout);
 
@@ -165,7 +171,7 @@ void NiftyLinkListenerProcess::TerminateProcess()
     try
     {
       QLOG_DEBUG() << "Terminating NiftyLinkListenerProcess, waiting for " << sleepInterval << " ms for socket on port " << m_Port << " to close\n";
-      dynamic_cast<QThreadEx *>(QThread::currentThread())->MsleepEx(sleepInterval);
+      dynamic_cast<NiftyLinkQThread *>(QThread::currentThread())->SleepCallingThread(sleepInterval);
     }
     catch (std::exception &e)
     {
@@ -196,7 +202,7 @@ void NiftyLinkListenerProcess::TerminateProcess()
     try
     {
       QLOG_DEBUG() << "Terminating NiftyLinkListenerProcess, waiting for " << sleepInterval << " ms for server socket on port " << m_Port << " to close\n";
-      dynamic_cast<QThreadEx *>(QThread::currentThread())->MsleepEx(sleepInterval);
+      dynamic_cast<NiftyLinkQThread *>(QThread::currentThread())->SleepCallingThread(sleepInterval);
     }
     catch (std::exception &e)
     {
@@ -249,7 +255,7 @@ bool NiftyLinkListenerProcess::Activate(void)
     return false;
   }
 
-  if ( (!m_ListeningOnPort && m_ExtSocket.IsNull()) || (!m_ListeningOnPort && m_ServerSocket.IsNotNull() && !m_ExtSocket->IsValid()) )
+  if ( (!m_ListeningOnPort && m_ExtSocket.IsNull()) || (!m_ListeningOnPort && m_ServerSocket.IsNotNull() && !m_ExtSocket->GetConnected()) )
   {
     QLOG_INFO() << objectName() << ": " << "Cannot activate listener, external socket is invalid" << endl;
     return false;
@@ -340,7 +346,7 @@ void NiftyLinkListenerProcess::ListenOnSocket(void)
 void NiftyLinkListenerProcess::ListenOnPort(void)
 {
   //int sleepInterval = 1; // milliseconds
-  igtl::Socket::Pointer socket;
+  niftk::NiftyLinkSocket::Pointer socket;
 
   while (m_Running == true)
   {
@@ -354,7 +360,7 @@ void NiftyLinkListenerProcess::ListenOnPort(void)
       socket = m_ServerSocket->WaitForConnection(m_ListenInterval);
       m_Mutex->unlock();
 
-      if (!socket->IsValid())
+      if (!socket->GetConnected())
       {
         QLOG_INFO() << objectName() << ": " << "No client connecting\n";
         continue;
@@ -449,292 +455,86 @@ bool NiftyLinkListenerProcess::ReceiveMessage()
   // Deserialize the header
   msgHeader->Unpack();
 
-  //Double check if message types are mapped or not
-  if (strMsgTypes.size() == 0)
-  {
-    InitMessageTypes(strMsgTypes);
-  }
-
   // Interpret message and instanciate the appropriate NiftyLink message wrapper type
-  switch (strMsgTypes[msgHeader->GetDeviceType()])
+  if (msgHeader->GetDeviceType() == std::string("BIND"))
   {
-    case BIND:
-      message = igtl::BindMessage::New();
-      break;
-    case GET_BIND:
-      message = igtl::GetBindMessage::New();
-      break;
-    case STT_BIND:
-      message = igtl::StartBindMessage::New();
-      break;
-    case STP_BIND:
-      message = igtl::StopBindMessage::New();
-      break;
-    case RTS_BIND:
-      message = igtl::RTSBindMessage::New();
-      break;
-    case COLORTABLE:
-      message = igtl::ColorTableMessage::New();
-      break;
-    case GET_COLORT:
-      message = igtl::GetColorTableMessage::New();
-      break;
-    case STT_COLORT:
-      message = igtl::StartColorTableMessage::New();
-      break;
-    case STP_COLORT:
-      message = igtl::StopColorTableMessage::New();
-      break;
-    case RTS_COLORT:
-      message = igtl::RTSColorTableMessage::New();
-      break;
-    case IMAGE:
-      message = igtl::ImageMessage::New();
-      msg.operator = (NiftyLinkImageMessage::Pointer(new NiftyLinkImageMessage()));
-      //QLOG_INFO() <<objectName() <<": " << "Message successfully recieved" <<msgHeader->GetDeviceType();
-      break;
-    case GET_IMAGE:
-      message = igtl::GetImageMessage::New();
-      NiftyLinkImageMessage::Create_GET(msg);
-      break;
-    case STT_IMAGE:
-      message = igtl::StartImageMessage::New();
-      NiftyLinkImageMessage::Create_STT(msg);
-      break;
-    case STP_IMAGE:
-      message = igtl::StopImageMessage::New();
-      NiftyLinkImageMessage::Create_STP(msg);
-      break;
-    case RTS_IMAGE:
-      message = igtl::RTSImageMessage::New();
-      NiftyLinkImageMessage::Create_RTS(msg);
-      break;
-    case IMGMETA:
-      message = igtl::ImageMetaMessage::New();
-      break;
-    case GET_IMGMETA:
-      message = igtl::GetImageMetaMessage::New();
-      break;
-    case STT_IMGMETA:
-      message = igtl::StartImageMetaMessage::New();
-      break;
-    case STP_IMGMETA:
-      message = igtl::StopImageMetaMessage::New();
-      break;
-    case RTS_IMGMETA:
-      message = igtl::RTSImageMetaMessage::New();
-      break;
-    case LBMETA:
-      message = igtl::LabelMetaMessage::New();
-      break;
-    case GET_LBMETA:
-      message = igtl::GetLabelMetaMessage::New();
-      break;
-    case STT_LBMETA:
-      message = igtl::StartLabelMetaMessage::New();
-      break;
-    case STP_LBMETA:
-      message = igtl::StopLabelMetaMessage::New();
-      break;
-    case RTS_LBMETA:
-      message = igtl::RTSLabelMetaMessage::New();
-      break;
-    case NDARRAY:
-      message = igtl::GetBindMessage::New();
-      break;
-    case GET_NDARRAY:
-      message = igtl::GetBindMessage::New();
-      break;
-    case STT_NDARRAY:
-      message = igtl::GetBindMessage::New();
-      break;
-    case STP_NDARRAY:
-      message = igtl::GetBindMessage::New();
-      break;
-    case RTS_NDARRAY:
-      message = igtl::GetBindMessage::New();
-      break;
-    case POINTMSG:
-      message = igtl::PointMessage::New();
-      break;
-    case GET_POINTMSG:
-      message = igtl::GetPointMessage::New();
-      break;
-    case STT_POINTMSG:
-      message = igtl::StartPointMessage::New();
-      break;
-    case STP_POINTMSG:
-      message = igtl::StopPointMessage::New();
-      break;
-    case RTS_POINTMSG:
-      message = igtl::RTSPointMessage::New();
-      break;
-    case POLYDATA:
-      message = igtl::PolyDataMessage::New();
-      break;
-    case GET_POLYDATA:
-      message = igtl::GetPolyDataMessage::New();
-      break;
-    case STT_POLYDATA:
-      message = igtl::StartPolyDataMessage::New();
-      break;
-    case STP_POLYDATA:
-      message = igtl::StopPolyDataMessage::New();
-      break;
-    case RTS_POLYDATA:
-      message = igtl::RTSPolyDataMessage::New();
-      break;
-    case POSITION:
-      message = igtl::PositionMessage::New();
-      break;
-    case GET_POSITION:
-      message = igtl::GetPositionMessage::New();
-      break;
-    case STT_POSITION:
-      message = igtl::StartPositionMessage::New();
-      break;
-    case STP_POSITION:
-      message = igtl::StopPositionMessage::New();
-      break;
-    case RTS_POSITION:
-      message = igtl::RTSPositionMessage::New();
-      break;
-    case QTDATA:
-      message = igtl::QuaternionTrackingDataMessage::New();
-      break;
-    case GET_QTDATA:
-      message = igtl::GetQuaternionTrackingDataMessage::New();
-      break;
-    case STT_QTDATA:
-      message = igtl::StartQuaternionTrackingDataMessage::New();
-      break;
-    case STP_QTDATA:
-      message = igtl::StopQuaternionTrackingDataMessage::New();
-      break;
-    case RTS_QTDATA:
-      message = igtl::RTSQuaternionTrackingDataMessage::New();
-      break;
-    case SENSOR:
-      message = igtl::SensorMessage::New();
-      break;
-    case GET_SENSOR:
-      message = igtl::GetSensorMessage::New();
-      break;
-    case STT_SENSOR:
-      message = igtl::StartSensorMessage::New();
-      break;
-    case STP_SENSOR:
-      message = igtl::StopSensorMessage::New();
-      break;
-    case RTS_SENSOR:
-      message = igtl::RTSSensorMessage::New();
-      break;
-    case STATUS:
-      message = igtl::StatusMessage::New();
-      msg.operator = (NiftyLinkStatusMessage::Pointer(new NiftyLinkStatusMessage()));
-      break;
-    case GET_STATUS:
-      message = igtl::GetStatusMessage::New();
-      NiftyLinkStatusMessage::Create_GET(msg);
-      break;
-    case STT_STATUS:
-      message = igtl::StartStatusMessage::New();
-      NiftyLinkStatusMessage::Create_STT(msg);
-      break;
-    case STP_STATUS:
-      message = igtl::StopStatusMessage::New();
-      NiftyLinkStatusMessage::Create_STP(msg);
-      break;
-    case RTS_STATUS:
-      message = igtl::RTSStatusMessage::New();
-      NiftyLinkStatusMessage::Create_RTS(msg);
-      break;
-    case STRING:
-      message = igtl::StringMessage::New();
-      msg.operator = (NiftyLinkStringMessage::Pointer(new NiftyLinkStringMessage()));
-      break;
-    case GET_STRING:
-      message = igtl::GetStringMessage::New();
-      NiftyLinkStringMessage::Create_GET(msg);
-      break;
-    case STT_STRING:
-      message = igtl::StartStringMessage::New();
-      NiftyLinkStringMessage::Create_STT(msg);
-      break;
-    case STP_STRING:
-      message = igtl::StopStringMessage::New();
-      NiftyLinkStringMessage::Create_STP(msg);
-      break;
-    case RTS_STRING:
-      message = igtl::RTSStringMessage::New();
-      NiftyLinkStringMessage::Create_RTS(msg);
-      break;
-    case TDATA:
-      message = igtl::TrackingDataMessage::New();
-      msg.operator = (NiftyLinkTrackingDataMessage::Pointer(new NiftyLinkTrackingDataMessage()));
-      break;
-    case GET_TDATA:
-      message = igtl::GetTrackingDataMessage::New();
-      NiftyLinkTrackingDataMessage::Create_GET(msg);
-      break;
-    case STT_TDATA:
-      message = igtl::StartTrackingDataMessage::New();
-      NiftyLinkTrackingDataMessage::Create_STT(msg);
-      break;
-    case STP_TDATA:
-      message = igtl::StopTrackingDataMessage::New();
-      NiftyLinkTrackingDataMessage::Create_STP(msg);
-      break;
-    case RTS_TDATA:
-      message = igtl::RTSTrackingDataMessage::New();
-      NiftyLinkTrackingDataMessage::Create_RTS(msg);
-      break;
-    case TRAJ:
-      message = igtl::TrajectoryMessage::New();
-      break;
-    case GET_TRAJ:
-      message = igtl::GetTrajectoryMessage::New();
-      break;
-    case STT_TRAJ:
-      message = igtl::StartTrajectoryMessage::New();
-      break;
-    case STP_TRAJ:
-      message = igtl::StopTrajectoryMessage::New();
-      break;
-    case RTS_TRAJ:
-      message = igtl::RTSTrajectoryMessage::New();
-      break;
-    case TRANSFORM:
-      message = igtl::TransformMessage::New();
-      msg.operator = (NiftyLinkTransformMessage::Pointer(new NiftyLinkTransformMessage()));
-      break;
-    case GET_TRANS:
-      message = igtl::GetTransformMessage::New();
-      NiftyLinkTransformMessage::Create_GET(msg);
-      break;
-    case STT_TRANS:
-      message = igtl::StartTransformMessage::New();
-      NiftyLinkTransformMessage::Create_STT(msg);
-      break;
-    case STP_TRANS:
-      message = igtl::StopTransformMessage::New();
-      NiftyLinkTransformMessage::Create_STP(msg);
-      break;
-    case RTS_TRANS:
-      message = igtl::RTSTransformMessage::New();
-      NiftyLinkTransformMessage::Create_RTS(msg);
-      break;
-    default:
-      // if the data type is unknown, skip reading.
-      QLOG_INFO() << objectName() << ": " << "Unknown message recieved: " << msgHeader->GetDeviceType() << endl;
+    message = igtl::BindMessage::New();
+  }
+  else if (msgHeader->GetDeviceType() == std::string("COLORTABLE"))
+  {
+    message = igtl::ColorTableMessage::New();
+  }
+  else if (msgHeader->GetDeviceType() == std::string("IMAGE"))
+  {
+    message = igtl::ImageMessage::New();
+    msg.operator = (NiftyLinkImageMessage::Pointer(new NiftyLinkImageMessage()));
+  }
+  else if (msgHeader->GetDeviceType() == std::string("IMGMETA"))
+  {
+    message = igtl::ImageMetaMessage::New();
+  }
+  else if (msgHeader->GetDeviceType() == std::string("LBMETA"))
+  {
+    message = igtl::LabelMetaMessage::New();
+  }
+  else if (msgHeader->GetDeviceType() == std::string("NDARRAY"))
+  {
+    message = igtl::GetBindMessage::New();
+  }
+  else if (msgHeader->GetDeviceType() == std::string("POINTMSG"))
+  {
+    message = igtl::PointMessage::New();
+  }
+  else if (msgHeader->GetDeviceType() == std::string("POLYDATA"))
+  {
+    message = igtl::PolyDataMessage::New();
+  }
+  else if (msgHeader->GetDeviceType() == std::string("POSITION"))
+  {
+    message = igtl::PositionMessage::New();
+  }
+  else if (msgHeader->GetDeviceType() == std::string("QTDATA"))
+  {
+    message = igtl::QuaternionTrackingDataMessage::New();
+  }
+  else if (msgHeader->GetDeviceType() == std::string("SENSOR"))
+  {
+    message = igtl::SensorMessage::New();
+  }
+  else if (msgHeader->GetDeviceType() == std::string("STATUS"))
+  {
+    message = igtl::StatusMessage::New();
+    msg.operator = (NiftyLinkStatusMessage::Pointer(new NiftyLinkStatusMessage()));
+  }
+  else if (msgHeader->GetDeviceType() == std::string("STRING"))
+  {
+    message = igtl::StringMessage::New();
+    msg.operator = (NiftyLinkStringMessage::Pointer(new NiftyLinkStringMessage()));
+  }
+  else if (msgHeader->GetDeviceType() == std::string("TDATA"))
+  {
+    message = igtl::TrackingDataMessage::New();
+    msg.operator = (NiftyLinkTrackingDataMessage::Pointer(new NiftyLinkTrackingDataMessage()));
+  }
+  else if (msgHeader->GetDeviceType() == std::string("TRAJ"))
+  {
+    message = igtl::TrajectoryMessage::New();
+  }
+  else if (msgHeader->GetDeviceType() == std::string("TRANSFORM"))
+  {
+    message = igtl::TransformMessage::New();
+    msg.operator = (NiftyLinkTransformMessage::Pointer(new NiftyLinkTransformMessage()));
+  }
+  else
+  {
+    QLOG_INFO() << objectName() << ": " << "Unknown message recieved: " << msgHeader->GetDeviceType() << endl;
+    m_Mutex->lock();
+    m_ExtSocket->Skip(msgHeader->GetBodySizeToRead(), 0);
+    m_Mutex->unlock();
 
-      m_Mutex->lock();
-      m_ExtSocket->Skip(msgHeader->GetBodySizeToRead(), 0);
-      m_Mutex->unlock();
-
-      msgHeader.operator = (NULL);
-      return true;
-    }
+    msgHeader.operator = (NULL);
+    return true;
+  }
 
   message->SetMessageHeader(msgHeader);
   message->AllocatePack();
@@ -749,7 +549,7 @@ bool NiftyLinkListenerProcess::ReceiveMessage()
     r = m_ExtSocket->Receive(message->GetPackBodyPointer(), message->GetPackBodySize());
 
     // Message fully received
-    timeReceived->Update();
+    timeReceived->GetTime();
 
     m_Mutex->unlock();
 
@@ -766,7 +566,9 @@ bool NiftyLinkListenerProcess::ReceiveMessage()
   }
 
   // Get the receive timestamp from the socket - marks when the first byte of the package arrived
-  msg->SetTimeArrived(m_ExtSocket->GetReceiveTimestamp());
+  igtl::TimeStamp::Pointer timeArrived  = igtl::TimeStamp::New();
+  timeArrived->SetTimeInNanoseconds(m_ExtSocket->GetReceiveTimestampInNanoseconds());
+  msg->SetTimeArrived(timeArrived);
   
   // Set the time when the message was fully received
   msg->SetTimeReceived(timeReceived);
@@ -817,3 +619,5 @@ void NiftyLinkListenerProcess::OnSocketTimeout(void)
   m_TimeOuter->stop();
   m_ClientConnected = false;
 }
+
+} // end namespace niftk

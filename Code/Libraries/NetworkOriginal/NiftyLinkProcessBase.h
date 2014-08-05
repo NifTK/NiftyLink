@@ -13,19 +13,15 @@ See LICENSE.txt in the top level directory for details.
 #ifndef NiftyLinkProcessBase_h
 #define NiftyLinkProcessBase_h
 
-//Qt related includes
 #include <QtCore>
 #include <QObject>
 #include <QDebug>
 #include <QMutex>
 #include <QTimer>
 
-//OpenIGTLink includes
-#include "igtlSocket.h"
-#include "igtlServerSocket.h"
-
-//NiftyLink includes
 #include "NiftyLinkMessage.h"
+#include "NiftyLinkSocket.h"
+#include "NiftyLinkServerSocket.h"
 #include "NiftyLinkTransformMessage.h"
 #include "NiftyLinkTrackingDataMessage.h"
 #include "NiftyLinkImageMessage.h"
@@ -33,11 +29,13 @@ See LICENSE.txt in the top level directory for details.
 #include "NiftyLinkStringMessage.h"
 #include "NiftyLinkUtils.h"
 
-//Logging
 #include "QsLog.h"
 #include "QsLogDest.h"
 
 #include "NiftyLinkCommonWin32ExportHeader.h"
+
+namespace niftk
+{
 
 /**
 * \class NiftyLinkProcessBase
@@ -80,7 +78,7 @@ protected:
 
   /// \brief Initialize the Process on a given, externally created OpenIGTLink socket (igtl::Socket),
   /// while specifying the related port. Process specific functionalty are defined in the derived classes.
-  virtual bool Initialize(igtl::Socket::Pointer socket = 0, int port = -1)
+  virtual bool Initialize(niftk::NiftyLinkSocket::Pointer socket = 0, int port = -1)
   {
     return false;
   }
@@ -97,7 +95,7 @@ protected:
 
   /// \brief This function returns the actual socket pointer. This is necessary in order to set up a two communication chanel:
   /// to initiate a sender Process on a socket created by a listener Process and vica versa.
-  virtual igtl::Socket::Pointer GetSocketPointer(void)
+  virtual niftk::NiftyLinkSocket::Pointer GetSocketPointer(void)
   {
     return m_ExtSocket;
   }
@@ -178,84 +176,24 @@ protected slots:
   virtual void DoProcessing(void) = 0;
 
 protected:
-  int                   m_Port;
-  int                   m_SocketTimeout;
+  int                             m_Port;
+  int                             m_SocketTimeout;
 
   //this bool is to control the running state of the process
-  bool                  m_Running;
+  bool                            m_Running;
 
   //this bool is to indicate to the outside world if the process is running or not
   //m_active is false by default, true when the process is running, and gets false again only if the process has fully stopped
-  bool                  m_Active;
+  bool                            m_Active;
 
-  bool                  m_Initialized;
-  QMutex              * m_Mutex;
-  QTimer              * m_TimeOuter;
+  bool                            m_Initialized;
+  QMutex                         *m_Mutex;
+  QTimer                         *m_TimeOuter;
 
-  unsigned long         m_MessageCounter;
-  igtl::Socket::Pointer m_ExtSocket;
+  unsigned long                   m_MessageCounter;
+  niftk::NiftyLinkSocket::Pointer m_ExtSocket;
 };
 
-/**
-* \class QThreadEx
-* \brief Extends QThread and makes it sure that the event loop has started.
-*
-* QThreadEx extends the functionality of QThread. In the default implementation of QThread there is no way to tell if the thread's event loop
-* is running or not. Therefore we subclass QThread, and add custom signals and functions to check for this. Also, we expose the thread's
-* sleep function via member function.
-*
-*/
-
-class NIFTYLINKCOMMON_WINEXPORT QThreadEx : public QThread
-{
-  Q_OBJECT
-
-signals:
-  void EventloopStarted(void);
-
-private:
-  bool m_IsEventloopRunning;
-
-public:
-  /// \brief Simple constructor
-  inline QThreadEx() : QThread()
-  {
-    m_IsEventloopRunning = false;
-  }
-
-  /// \brief Member function to put the thread into sleep
-  inline void MsleepEx(int msec)
-  {
-    this->msleep(msec);
-  }
-
-  /// \brief Member function to check if the eventloop has started
-  inline bool IsEventloopRunning(void)
-  {
-    return m_IsEventloopRunning;
-  }
-
-private slots:
-
-  /// \brief A slot to capture the internal signal after the eventloop has started
-  void CatchSignal(void)
-  {
-    //qDebug() <<"Caught the timer's signal";
-    m_IsEventloopRunning = true;
-
-    emit EventloopStarted();
-  }
-
-protected:
-
-  /// \brief Extends the default QThread::run() function by firing a signal with a QTimer, which is getting delivered after the event loop has started
-  virtual void run()
-  {
-    //qDebug() <<"Calling exec on thread" ;
-    QTimer::singleShot(0, this, SLOT(CatchSignal()));
-    QCoreApplication::processEvents();
-    exec();
-  }
-};
+} // end namespace niftk
 
 #endif // NiftyLinkProcessBase_h

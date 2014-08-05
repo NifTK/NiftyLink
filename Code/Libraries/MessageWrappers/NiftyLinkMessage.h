@@ -42,6 +42,9 @@ See LICENSE.txt in the top level directory for details.
 
 #include "NiftyLinkCommonWin32ExportHeader.h"
 
+namespace niftk
+{
+
 /**
 * \class NiftyLinkMessage
 * \brief Base class for wrapping OpenIGTLink message types, but it can be instanciated on its own too.
@@ -197,6 +200,8 @@ protected:
   std::map<std::string, igtl::TimeStamp::Pointer> m_AccessTimes;
 };
 
-Q_DECLARE_METATYPE(NiftyLinkMessage::Pointer);
+} // end namespace
+
+Q_DECLARE_METATYPE(niftk::NiftyLinkMessage::Pointer);
 
 #endif // NiftyLinkMessage_h

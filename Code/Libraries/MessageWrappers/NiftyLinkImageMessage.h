@@ -20,6 +20,9 @@ See LICENSE.txt in the top level directory for details.
 #include "NiftyLinkUtils.h"
 #include "NiftyLinkCommonWin32ExportHeader.h"
 
+namespace niftk
+{
+
 /**
 * \class NiftyLinkImageMessage
 * \brief Message type to hold image data.
@@ -47,18 +50,6 @@ public:
 
   /// \brief Basic copy constructor required for this data type
   NiftyLinkImageMessage(const NiftyLinkImageMessage &other);
-
-  /// \brief Function which creates a GET_IMAGE message (igtl::GetImageMessage)
-  static void Create_GET(NiftyLinkMessage::Pointer &msgToCreate);
-
-  /// \brief Function which creates a STT_IMAGE message (igtl::STTImageMessage)
-  static void Create_STT(NiftyLinkMessage::Pointer &msgToCreate);
-
-  /// \brief Function which creates a STP_IMAGE message (igtl::STPImageMessage)
-  static void Create_STP(NiftyLinkMessage::Pointer &msgToCreate);
-
-  /// \brief Function which creates a RTS_IMAGE message (igtl::RTSImageMessage)
-  static void Create_RTS(NiftyLinkMessage::Pointer &msgToCreate);
 
   /// \brief Set the image dimensions
   /// SetDimensions() should be called prior to SetSubVolume(), since SetDimensions()
@@ -106,10 +97,6 @@ public:
 
   /// \brief Returns the image's origin / orientation matrix
   void GetMatrix(igtl::Matrix4x4 &matrix);
-
-  /// \brief Set the matrixset flag to true to prevent the image matrix being
-  /// destroyed during pack and unpack. This should be done when messages are received.
-  void PreserveMatrix();
 
   /// \brief Sets the image's normals
   void SetNormals(float t[3], float s[3], float n[3]);
@@ -166,5 +153,7 @@ protected:
 private:
 
 };
+
+} // end namespace niftk
 
 #endif // NiftyLinkImageMessage_h

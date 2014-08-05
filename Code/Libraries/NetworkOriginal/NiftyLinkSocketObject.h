@@ -16,6 +16,7 @@ See LICENSE.txt in the top level directory for details.
 #include "NiftyLinkSenderProcess.h"
 #include "NiftyLinkListenerProcess.h"
 #include "NiftyLinkProcessBase.h"
+#include <NiftyLinkQThread.h>
 
 #include "NiftyLinkCommonWin32ExportHeader.h"
 
@@ -30,6 +31,9 @@ See LICENSE.txt in the top level directory for details.
 typedef NTSTATUS (__stdcall *FunctionPtr_SETRES) (ULONG, BOOLEAN, PULONG);
 typedef NTSTATUS (__stdcall *FunctionPtr_GETRES) (PULONG, PULONG, PULONG);
 #endif
+
+namespace niftk
+{
 
 /**
 * \class NiftyLinkSocketObject
@@ -207,8 +211,8 @@ private:
   NiftyLinkSenderProcess   * m_Sender;
   NiftyLinkListenerProcess * m_Listener;
 
-  QThreadEx            * m_SenderHostThread;
-  QThreadEx            * m_ListenerHostThread;
+  NiftyLinkQThread     * m_SenderHostThread;
+  NiftyLinkQThread     * m_ListenerHostThread;
 
   bool                   m_Active;
   bool                   m_Initialized;
@@ -220,5 +224,7 @@ private:
   bool                   m_AbleToSend;
 
 };
+
+} // end namespace niftk
 
 #endif // NiftyLinkSocketObject_h
