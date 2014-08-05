@@ -28,6 +28,8 @@ NiftyLinkApp::NiftyLinkApp(QObject *parent)
 , m_MessagesReceived(0)
 , m_MessagesSent(0)
 {
+  QLOG_INFO() << QObject::tr("%1::NiftyLink() - creating.").arg(objectName());
+
   this->setupUi(this);
 
   m_StatusTimer = new QTimer(this);
@@ -55,6 +57,11 @@ NiftyLinkApp::NiftyLinkApp(QObject *parent)
 
   m_StatusTimer->start();
   m_ScreenTimer->start();
+
+  // This is to make sure we have the best possible system timer.
+#if defined(_WIN32) && !defined(__CYGWIN__)
+  niftk::InitializeWinTimers();
+#endif
 
   QLOG_INFO() << QObject::tr("%1::NiftyLink() - created.").arg(objectName());
 }

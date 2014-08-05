@@ -44,6 +44,11 @@ int main(int argc, char* argv[])
   std::cout << "channels=" << channels << std::endl;
   std::cout << "totalMessages=" << totalMessages << std::endl;
 
+  // This is to make sure we have the best possible system timer.
+#if defined(_WIN32) && !defined(__CYGWIN__)
+  niftk::InitializeWinTimers();
+#endif
+
   // Setup socket.
   igtl::ClientSocket::Pointer socket;
   socket = igtl::ClientSocket::New();

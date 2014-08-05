@@ -49,6 +49,11 @@ int main(int argc, char* argv[])
   std::cout << "totalMessages=" << totalMessages << std::endl;
   std::cout << "fileName=" << fileName.toStdString() << std::endl;
 
+  // This is to make sure we have the best possible system timer.
+#if defined(_WIN32) && !defined(__CYGWIN__)
+  niftk::InitializeWinTimers();
+#endif
+
   // Load Image.
   igtl::ImageMessage::Pointer imageMessage = igtl::ImageMessage::New();
   niftk::LoadImage(fileName, imageMessage);

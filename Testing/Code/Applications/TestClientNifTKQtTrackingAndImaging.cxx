@@ -201,6 +201,11 @@ int main(int argc, char** argv)
   QsLogging::DestinationPtr debugDestination(QsLogging::DestinationFactory::MakeDebugOutputDestination() );
   logger.addDestination(debugDestination.get());
 
+  // This is to make sure we have the best possible system timer.
+#if defined(_WIN32) && !defined(__CYGWIN__)
+  niftk::InitializeWinTimers();
+#endif
+
   niftk::TestClientNifTKQtTrackingAndImaging client(hostName, port, fps, channels, total, QString::fromStdString(fileName));
   QObject::connect(&app, SIGNAL(aboutToQuit()), &client, SLOT(Shutdown()));
 

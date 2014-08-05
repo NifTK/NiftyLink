@@ -11,6 +11,7 @@
 =============================================================================*/
 
 #include "TestServerQt.h"
+#include <NiftyLinkUtils.h>
 #include <QsLog.h>
 #include <QsLogDest.h>
 #include <QCoreApplication>

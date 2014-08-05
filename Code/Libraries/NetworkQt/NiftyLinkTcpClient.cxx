@@ -12,6 +12,7 @@
 #include "NiftyLinkTcpClient.h"
 #include "NiftyLinkTcpNetworkWorker.h"
 #include <NiftyLinkQThread.h>
+#include <NiftyLinkUtils.h>
 
 #include <igtlMessageBase.h>
 #include <QsLog.h>
@@ -32,6 +33,11 @@ NiftyLinkTcpClient::NiftyLinkTcpClient(QObject *parent)
 
   connect(m_Socket, SIGNAL(connected()), this, SLOT(OnConnected()));
   connect(m_Socket, SIGNAL(error(QAbstractSocket::SocketError)), this, SLOT(OnError()));
+
+  // This is to make sure we have the best possible system timer.
+#if defined(_WIN32) && !defined(__CYGWIN__)
+  niftk::InitializeWinTimers();
+#endif
 
   QLOG_INFO() << QObject::tr("%1::NiftyLinkTcpClient() - constructed.").arg(objectName());
 }

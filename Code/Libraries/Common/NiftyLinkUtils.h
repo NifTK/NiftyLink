@@ -24,6 +24,16 @@
 #include <QPlainTextEdit>
 #include <QLabel>
 
+#if defined(_WIN32) && !defined(__CYGWIN__)
+  #include <windows.h>
+  #include <bcrypt.h>
+  #define WINAPI __stdcall
+
+  // Function pointers that will be used for the DLL functions.
+  typedef NTSTATUS (__stdcall *FunctionPtr_SETRES) (ULONG, BOOLEAN, PULONG);
+  typedef NTSTATUS (__stdcall *FunctionPtr_GETRES) (PULONG, PULONG, PULONG);
+#endif
+
 /**
  * \file NiftyLinkUtils.h
  * \brief Helper methods for stats, test data, IP validation etc.
@@ -37,6 +47,16 @@
 
 namespace niftk
 {
+
+/**
+ * \name WindowsSpecificFunctions
+ * As few as possible please.
+ */
+///@{
+#if defined(_WIN32) && !defined(__CYGWIN__)
+  extern "C++" NIFTYLINKCOMMON_WINEXPORT void InitializeWinTimers();
+#endif
+///@}
 
 /**
  * \name NiftyLinkHostNameUtils

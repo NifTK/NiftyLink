@@ -16,6 +16,7 @@
 
 #include <NiftyLinkMessageCounter.h>
 #include <NiftyLinkMessageContainer.h>
+#include <NiftyLinkUtils.h>
 
 #include <QsLog.h>
 #include <QsLogDest.h>
@@ -60,6 +61,11 @@ int main(int argc, char* argv[])
     }
 
   int    port     = atoi(argv[1]);
+
+  // This is to make sure we have the best possible system timer.
+#if defined(_WIN32) && !defined(__CYGWIN__)
+  niftk::InitializeWinTimers();
+#endif
 
   igtl::ServerSocket::Pointer serverSocket;
   serverSocket = igtl::ServerSocket::New();

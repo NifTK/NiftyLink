@@ -20,18 +20,6 @@ See LICENSE.txt in the top level directory for details.
 
 #include "NiftyLinkCommonWin32ExportHeader.h"
 
-#if defined(_WIN32) && !defined(__CYGWIN__)
-#include <windows.h>
-#include <bcrypt.h>
-//#include "tsctime/TSCtime.h"
-
-#define WINAPI __stdcall
-
-// Function pointers that will be used for the DLL functions.
-typedef NTSTATUS (__stdcall *FunctionPtr_SETRES) (ULONG, BOOLEAN, PULONG);
-typedef NTSTATUS (__stdcall *FunctionPtr_GETRES) (PULONG, PULONG, PULONG);
-#endif
-
 namespace niftk
 {
 
@@ -176,11 +164,6 @@ public slots:
 
   /// \brief Returns the currently applied timeout in msec
   int GetSocketTimeOut(void);
-
-  /// \brief Initialises the windows tsc timer when required
-#if defined(WIN32) || defined(_WIN32) || defined(_WIN64)
-  static void InitializeWinTimers();
-#endif
 
 private:
   /// \brief Instantiates the sender and listener threads and the shared mutex, and sets up the signal - slot connections
