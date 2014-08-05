@@ -39,6 +39,7 @@
 namespace niftk
 {
 
+#if defined(_WIN32) && !defined(__CYGWIN__)
 //-----------------------------------------------------------------------------
 void InitializeWinTimers()
 {
@@ -79,7 +80,7 @@ void InitializeWinTimers()
     QLOG_ERROR() << "Failed to load ntdll.dll to set timer resolution.";
   }
 }
-
+#endif
 
 //-----------------------------------------------------------------------------
 bool ValidateIp(const QString &inputIP)
