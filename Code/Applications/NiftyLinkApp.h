@@ -90,6 +90,9 @@ private slots:
   /// \brief Called by timer to update the screen, up to 33.33 times per second.
   void OnUpdateScreen();
 
+  /// \brief Called by timer to output stats to console.
+  void OnOutputStats();
+
 private:
 
   NiftyLinkTcpClient      *m_InboundClient;
@@ -100,6 +103,7 @@ private:
   NiftyLinkMessageCounter  m_MessagesSent;
   QTimer                  *m_ScreenTimer;
   QTimer                  *m_StatusTimer;
+  QTimer                  *m_StatsTimer;
 };
 
 } // end namespace

@@ -38,6 +38,9 @@ NiftyLinkApp::NiftyLinkApp(QObject *parent)
   m_ScreenTimer = new QTimer(this);
   m_ScreenTimer->setInterval(30);
 
+  m_StatsTimer = new QTimer(this);
+  m_StatsTimer->setInterval(10000);
+
   connect(this->m_IncomingConnect, SIGNAL(pressed()), this, SLOT(OnConnectInboundButtonPressed()));
   connect(this->m_IncomingDisconnect, SIGNAL(pressed()), this, SLOT(OnDisconnectInboundButtonPressed()));
   connect(this->m_InboundClient, SIGNAL(SocketError(QString,int,QAbstractSocket::SocketError,QString)), this, SLOT(OnSocketError(QString,int,QAbstractSocket::SocketError,QString)));
@@ -51,12 +54,14 @@ NiftyLinkApp::NiftyLinkApp(QObject *parent)
   connect(this->m_OutboundClient, SIGNAL(Disconnected(QString,int)), this, SLOT(OnDisconnectedOutbound(QString,int)));
   connect(this->m_StatusTimer, SIGNAL(timeout()), this, SLOT(OnUpdateStatus()));
   connect(this->m_ScreenTimer, SIGNAL(timeout()), this, SLOT(OnUpdateScreen()));
+  connect(this->m_StatsTimer, SIGNAL(timeout()), this, SLOT(OnOutputStats()));
 
   this->m_IncomingDisconnect->setEnabled(false);
   this->m_OutgoingDisconnect->setEnabled(false);
 
   m_StatusTimer->start();
   m_ScreenTimer->start();
+  m_StatsTimer->start();
 
   // This is to make sure we have the best possible system timer.
 #if defined(_WIN32) && !defined(__CYGWIN__)
@@ -74,6 +79,7 @@ NiftyLinkApp::~NiftyLinkApp()
 
   m_StatusTimer->stop();
   m_ScreenTimer->stop();
+  m_StatsTimer->stop();
 
   m_InboundClient->disconnect();
   delete m_InboundClient;
@@ -237,6 +243,13 @@ void NiftyLinkApp::OnUpdateScreen()
 {
   this->m_TextEdit->setPlainText(m_MostRecentString);
   this->m_ImageLabel->setPixmap(QPixmap::fromImage(m_MostRecentImage));
+}
+
+
+//-----------------------------------------------------------------------------
+void NiftyLinkApp::OnOutputStats()
+{
+  m_InboundClient->OutputStats();
 }
 
 } // end namespace
