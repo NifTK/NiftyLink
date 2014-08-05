@@ -449,7 +449,7 @@ void NiftyLinkTcpNetworkWorker::OnSocketReadyRead()
         m_IncomingHeader = NULL;
         m_IncomingMessage = NULL;
         m_IncomingMessageBytesReceived = 0;
-        return;
+        continue;
       }
     } // end if we have a body.
 
