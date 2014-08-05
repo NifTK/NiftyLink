@@ -90,12 +90,30 @@ void NiftyLinkTcpServer::SetCheckForNoIncomingData(bool isOn)
 
 
 //-----------------------------------------------------------------------------
-void NiftyLinkTcpServer::Send(NiftyLinkMessageContainer::Pointer message)
+int NiftyLinkTcpServer::GetNumberOfClientsConnected()
 {
+  QMutexLocker locker(&m_Mutex);
+  return m_Workers.size(); // items are only added/removed to this QSet on connection/disconnection.
+}
+
+
+//-----------------------------------------------------------------------------
+int NiftyLinkTcpServer::Send(NiftyLinkMessageContainer::Pointer message)
+{
+  int numberSentTo = 0;
   foreach (NiftyLinkTcpNetworkWorker* worker, m_Workers)
   {
-    worker->Send(message);
+    if (worker->IsOpen())
+    {
+      worker->Send(message);
+      numberSentTo++;
+    }
+    else
+    {
+      QLOG_ERROR() << QObject::tr("%1::Send() - discovered non-Open socket. This should not happen.").arg(objectName());
+    }
   }
+  return numberSentTo;
 }
 
 

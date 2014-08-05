@@ -123,6 +123,13 @@ QTcpSocket* NiftyLinkTcpNetworkWorker::GetSocket() const
 
 
 //-----------------------------------------------------------------------------
+bool NiftyLinkTcpNetworkWorker::IsOpen() const
+{
+  return m_Socket != NULL && m_Socket->isOpen();
+}
+
+
+//-----------------------------------------------------------------------------
 void NiftyLinkTcpNetworkWorker::CloseSocket()
 {
   // This doubly double checks we are running in our own NiftyLinkQThread.

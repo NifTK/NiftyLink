@@ -48,6 +48,9 @@ public:
   /// \brief Returns the contained socket.
   QTcpSocket* GetSocket() const;
 
+  /// \brief Returns true if the socket exists, and the socket says its open, and false otherwise.
+  bool IsOpen() const;
+
   /// \brief Set a threshold for the number of messages, so that you
   /// get stats printed to console every X number of messages. Set to -1 to turn this off.
   void SetNumberMessageReceivedThreshold(qint64 threshold);

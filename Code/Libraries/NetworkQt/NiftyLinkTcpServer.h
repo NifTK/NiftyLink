@@ -56,10 +56,13 @@ public:
   /// eg. One end sends keep alive messages, the other end expects to receive data regularly.
   void SetCheckForNoIncomingData(bool isOn);
 
+  /// \brief Returns the number of connected clients.
+  int GetNumberOfClientsConnected();
+
   /// \brief Sends an OpenIGTLink message to all connected clients.
-  ///
+  /// \return the number of clients sent to.
   /// The OpenIGTLink message within NiftyLinkMessageContainer should be Packed.
-  void Send(NiftyLinkMessageContainer::Pointer message);
+  int Send(NiftyLinkMessageContainer::Pointer message);
 
 public slots:
 
