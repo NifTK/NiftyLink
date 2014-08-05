@@ -61,7 +61,6 @@ NiftyLinkApp::NiftyLinkApp(QObject *parent)
 
   m_StatusTimer->start();
   m_ScreenTimer->start();
-  m_StatsTimer->start();
 
   // This is to make sure we have the best possible system timer.
 #if defined(_WIN32) && !defined(__CYGWIN__)
@@ -127,7 +126,7 @@ void NiftyLinkApp::OnDisconnectOutboundButtonPressed()
 void NiftyLinkApp::OnSocketError(QString hostName, int portNumber, QAbstractSocket::SocketError errorCode, QString errorString)
 {
   QMessageBox::critical(this->m_CentralWidget,
-                        "NiftyLink - Error!",
+                        "NiftyLink - Socket Error!",
                         QObject::tr("(%1:%2):%3.").arg(hostName).arg(portNumber).arg(errorString),
                         QMessageBox::Ok
                         );
@@ -145,6 +144,7 @@ void NiftyLinkApp::OnConnectedInbound(QString hostName, int portNumber)
 
   this->m_IncomingConnect->setEnabled(false);
   this->m_IncomingDisconnect->setEnabled(true);
+  m_StatsTimer->start();
 }
 
 
@@ -152,13 +152,14 @@ void NiftyLinkApp::OnConnectedInbound(QString hostName, int portNumber)
 void NiftyLinkApp::OnDisconnectedInbound(QString hostName, int portNumber)
 {
   QMessageBox::critical(this->m_CentralWidget,
-                        "NiftyLink - Error!",
+                        "NiftyLink",
                         QObject::tr("(%1:%2):Disconnected!").arg(hostName).arg(portNumber),
                         QMessageBox::Ok
                         );
 
   this->m_IncomingConnect->setEnabled(true);
   this->m_IncomingDisconnect->setEnabled(false);
+  m_StatsTimer->stop();
 }
 
 
@@ -180,7 +181,7 @@ void NiftyLinkApp::OnConnectedOutbound(QString hostName, int portNumber)
 void NiftyLinkApp::OnDisconnectedOutbound(QString hostName, int portNumber)
 {
   QMessageBox::critical(this->m_CentralWidget,
-                        "NiftyLink - Error!",
+                        "NiftyLink",
                         QObject::tr("(%1:%2):Disconnected!").arg(hostName).arg(portNumber),
                         QMessageBox::Ok
                         );

@@ -165,7 +165,7 @@ void NiftyLinkTcpClient::OnDisconnected()
   QLOG_INFO() << QObject::tr("%1::OnDisconnected() - started.").arg(objectName());
 
   QLOG_INFO() << QObject::tr("%1::OnDisconnected() - finished.").arg(objectName());
-  emit Disconnected(m_Socket->peerName(), m_Socket->peerPort());
+  emit Disconnected(this->m_RequestedName, this->m_RequestedPort);
 }
 
 
