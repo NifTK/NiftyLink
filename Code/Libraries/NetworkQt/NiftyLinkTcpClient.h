@@ -106,6 +106,12 @@ signals:
   /// \brief Emmitted when the other end is failing to send data.
   void NoIncomingData();
 
+  /// \brief Internal use only.
+  void InternalCloseSocketSignal();
+
+    /// \brief Internal use only.
+  void InternalShutdownThreadSignal();
+
 private slots:
 
   /// \brief When the socket successfully connects, we move all processing to another thread.

@@ -48,9 +48,6 @@ public:
   /// \brief Returns the contained socket.
   QTcpSocket* GetSocket() const;
 
-  /// \brief Closes the provided socket.
-  static bool CloseSocket(QTcpSocket* );
-
   /// \brief Set a threshold for the number of messages, so that you
   /// get stats printed to console every X number of messages. Set to -1 to turn this off.
   void SetNumberMessageReceivedThreshold(qint64 threshold);
@@ -77,6 +74,14 @@ public:
 
   /// \brief Sends a request to output some statistics to console.
   void OutputStatsToConsole();
+
+public slots:
+
+  /// \brief Asks socket to disconnect.
+  void CloseSocket();
+
+  /// \brief Asks the containing thread to quit.
+  void ShutdownThread();
 
 signals:
 

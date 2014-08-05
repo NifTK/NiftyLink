@@ -123,27 +123,35 @@ QTcpSocket* NiftyLinkTcpNetworkWorker::GetSocket() const
 
 
 //-----------------------------------------------------------------------------
-bool NiftyLinkTcpNetworkWorker::CloseSocket(QTcpSocket* socket)
+void NiftyLinkTcpNetworkWorker::CloseSocket()
 {
-  if(socket == NULL)
-  {
-    QLOG_ERROR() << QObject::tr("NiftyLinkTcpNetworkWorker::CloseSocket() - requesting to close a NULL socket?.");
-    return false;
-  }
+  // This doubly double checks we are running in our own NiftyLinkQThread.
+  NiftyLinkQThread *p = dynamic_cast<NiftyLinkQThread*>(QThread::currentThread());
+  assert(p != NULL);
 
-  if (!socket->isOpen())
+  if (m_Socket != NULL)
   {
-    QLOG_DEBUG() << QObject::tr("NiftyLinkTcpNetworkWorker::CloseSocket() - requesting to close a closed socket?.");
-    return false;
+    m_Socket->close();
+    while(m_Socket->isOpen())
+    {
+      p->wait(10);
+    }
   }
+}
 
-  socket->close();
-  while(socket->isOpen())
+
+//-----------------------------------------------------------------------------
+void NiftyLinkTcpNetworkWorker::ShutdownThread()
+{
+  // This doubly double checks we are running in our own NiftyLinkQThread.
+  NiftyLinkQThread *p = dynamic_cast<NiftyLinkQThread*>(QThread::currentThread());
+  assert(p != NULL);
+
+  p->quit();
+  while(!p->isFinished())
   {
-    QThread::currentThread()->wait(10);
+    p->wait(10);
   }
-
-  return !socket->isOpen();
 }
 
 
