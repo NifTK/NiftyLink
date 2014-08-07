@@ -123,7 +123,7 @@ QTcpSocket* NiftyLinkTcpNetworkWorker::GetSocket() const
 
 
 //-----------------------------------------------------------------------------
-bool NiftyLinkTcpNetworkWorker::IsOpen() const
+bool NiftyLinkTcpNetworkWorker::IsSocketOpen() const
 {
   return m_Socket != NULL && m_Socket->isOpen();
 }

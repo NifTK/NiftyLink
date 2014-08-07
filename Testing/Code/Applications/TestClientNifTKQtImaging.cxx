@@ -81,6 +81,7 @@ void TestClientNifTKQtImaging::OnConnectedToServer()
 {
   QLOG_INFO() << QObject::tr("%1::OnConnectedToServer().").arg(objectName());
   this->RunTest();
+  QCoreApplication::exit();
 }
 
 
@@ -136,9 +137,12 @@ void TestClientNifTKQtImaging::RunTest()
 
       m_Client->Send(m);
       m_NumberMessagesSent++;
+
+      QLOG_INFO() << QObject::tr("%1::RunTest() - %2").arg(objectName()).arg(m_NumberMessagesSent);
     }
   }
   m_Client->RequestStats();
+  QLOG_INFO() << QObject::tr("%1::RunTest() - stats requested.").arg(objectName());
 }
 
 } // end namespace niftk

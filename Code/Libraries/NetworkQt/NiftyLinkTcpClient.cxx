@@ -46,18 +46,7 @@ NiftyLinkTcpClient::~NiftyLinkTcpClient()
 {
   QLOG_INFO() << QObject::tr("%1::~NiftyLinkTcpClient() - destroying.").arg(objectName());
 
-  if (m_Socket != NULL)
-  {
-    emit this->InternalCloseSocketSignal();
-    m_Socket->deleteLater();
-  }
-
-  if (m_Worker != NULL)
-  {
-    emit this->InternalShutdownThreadSignal();
-    m_Worker->disconnect();
-    m_Worker->deleteLater();
-  }
+  // Nothing to do, as socket, worker and thread all sorted out by "deleteLater()".
 
   QLOG_INFO() << QObject::tr("%1::~NiftyLinkTcpClient() - destroyed.").arg(objectName());
 }
@@ -85,43 +74,6 @@ void NiftyLinkTcpClient::SetCheckForNoIncomingData(bool isOn)
 
 
 //-----------------------------------------------------------------------------
-void NiftyLinkTcpClient::ConnectToHost(const QString& hostName, quint16 portNumber)
-{
-  // There are no errors reported from this. Listen to the error signal.
-  m_RequestedName = hostName;
-  m_RequestedPort = portNumber;
-  if (m_Socket == NULL)
-  {
-    m_Socket = new QTcpSocket();
-    connect(m_Socket, SIGNAL(connected()), this, SLOT(OnConnected()));
-    connect(m_Socket, SIGNAL(error(QAbstractSocket::SocketError)), this, SLOT(OnError()));
-  }
-  m_Socket->connectToHost(m_RequestedName, m_RequestedPort);
-}
-
-
-//-----------------------------------------------------------------------------
-bool NiftyLinkTcpClient::Send(NiftyLinkMessageContainer::Pointer message)
-{
-  return m_Worker->Send(message);
-}
-
-
-//-----------------------------------------------------------------------------
-void NiftyLinkTcpClient::DisconnectFromHost()
-{
-  emit InternalCloseSocketSignal();
-}
-
-
-//-----------------------------------------------------------------------------
-bool NiftyLinkTcpClient::IsConnected() const
-{
-  return m_Socket != NULL && m_Socket->isOpen();
-}
-
-
-//-----------------------------------------------------------------------------
 void NiftyLinkTcpClient::OutputStats()
 {
   m_Worker->OutputStatsToConsole();
@@ -136,57 +88,48 @@ bool NiftyLinkTcpClient::RequestStats()
 
 
 //-----------------------------------------------------------------------------
-void NiftyLinkTcpClient::OnConnected()
+bool NiftyLinkTcpClient::IsConnected() const
 {
-  if (m_Worker != NULL)
-  {
-    m_Worker->disconnect();
-    delete m_Worker;
-  }
-
-  m_Socket->setSocketOption(QAbstractSocket::LowDelayOption, 1);
-
-  NiftyLinkQThread *thread = new NiftyLinkQThread();
-  m_Worker = new NiftyLinkTcpNetworkWorker(&m_InboundMessages, &m_OutboundMessages, m_Socket);
-  m_Worker->moveToThread(thread);
-  m_Socket->moveToThread(thread);
-
-  connect(this, SIGNAL(InternalCloseSocketSignal()), m_Worker, SLOT(CloseSocket()), Qt::BlockingQueuedConnection);
-  connect(this, SIGNAL(InternalShutdownThreadSignal()), m_Worker, SLOT(ShutdownThread()));
-  connect(m_Socket, SIGNAL(disconnected()), this, SLOT(OnDisconnected()));
-  connect(m_Worker, SIGNAL(NoIncomingData()), this, SIGNAL(NoIncomingData()));
-  connect(m_Worker, SIGNAL(SentKeepAlive()), this, SIGNAL(SentKeepAlive()));
-  connect(m_Worker, SIGNAL(BytesSent(qint64)), this, SIGNAL(BytesSent(qint64)));
-  connect(m_Worker, SIGNAL(MessageReceived(int)), this, SLOT(OnMessageReceived(int)));
-  connect(thread, SIGNAL(finished()), thread, SLOT(deleteLater())); // i.e. the event loop of thread deletes it when control returns to this event loop.
-
-  this->setObjectName(QObject::tr("NiftyLinkTcpClient(%1:%2)").arg(m_Socket->peerName()).arg(m_Socket->peerPort()));
-
-  thread->start();
-  emit Connected(m_Socket->peerName(), m_Socket->peerPort());
+  return m_Worker->IsSocketOpen();
 }
 
 
 //-----------------------------------------------------------------------------
-void NiftyLinkTcpClient::OnDisconnected()
+void NiftyLinkTcpClient::DisconnectFromHost()
 {
-  QLOG_INFO() << QObject::tr("%1::OnDisconnected() - started.").arg(objectName());
+  m_Socket->disconnectFromHost();
+}
 
-  if (m_Socket != NULL)
-  {
-    delete m_Socket;
-    m_Socket = NULL;
-  }
 
-  if (m_Worker != NULL)
-  {
-    emit this->InternalShutdownThreadSignal();
-    delete m_Worker;
-    m_Worker = NULL;
-  }
+//-----------------------------------------------------------------------------
+bool NiftyLinkTcpClient::Send(NiftyLinkMessageContainer::Pointer message)
+{
+  return m_Worker->Send(message);
+}
 
-  QLOG_INFO() << QObject::tr("%1::OnDisconnected() - finished.").arg(objectName());
-  emit Disconnected(this->m_RequestedName, this->m_RequestedPort);
+
+//-----------------------------------------------------------------------------
+void NiftyLinkTcpClient::OnMessageReceived(int portNumber)
+{
+  NiftyLinkMessageContainer::Pointer msg = m_InboundMessages.GetContainer(portNumber);
+  emit MessageReceived(msg);
+}
+
+
+//-----------------------------------------------------------------------------
+void NiftyLinkTcpClient::ConnectToHost(const QString& hostName, quint16 portNumber)
+{
+  m_RequestedName = hostName;
+  m_RequestedPort = portNumber;
+
+  m_Socket = new QTcpSocket();
+  connect(m_Socket, SIGNAL(error(QAbstractSocket::SocketError)), this, SLOT(OnError()));
+  connect(m_Socket, SIGNAL(disconnected()), this, SLOT(OnDisconnected()));
+  connect(m_Socket, SIGNAL(disconnected()), m_Socket, SLOT(deleteLater()));
+  connect(m_Socket, SIGNAL(connected()), this, SLOT(OnConnected()));
+
+  // There are no errors reported from this. Listen to the error signal.
+  m_Socket->connectToHost(m_RequestedName, m_RequestedPort);
 }
 
 
@@ -199,10 +142,34 @@ void NiftyLinkTcpClient::OnError()
 
 
 //-----------------------------------------------------------------------------
-void NiftyLinkTcpClient::OnMessageReceived(int portNumber)
+void NiftyLinkTcpClient::OnDisconnected()
 {
-  NiftyLinkMessageContainer::Pointer msg = m_InboundMessages.GetContainer(portNumber);
-  emit MessageReceived(msg);
+  emit Disconnected(this->m_RequestedName, this->m_RequestedPort);
 }
+
+
+//-----------------------------------------------------------------------------
+void NiftyLinkTcpClient::OnConnected()
+{
+  this->setObjectName(QObject::tr("NiftyLinkTcpClient(%1:%2)").arg(m_Socket->peerName()).arg(m_Socket->peerPort()));
+  m_Socket->setSocketOption(QAbstractSocket::LowDelayOption, 1);
+
+  m_Worker = new NiftyLinkTcpNetworkWorker(&m_InboundMessages, &m_OutboundMessages, m_Socket);
+  connect(m_Worker, SIGNAL(NoIncomingData()), this, SIGNAL(NoIncomingData()));
+  connect(m_Worker, SIGNAL(SentKeepAlive()), this, SIGNAL(SentKeepAlive()));
+  connect(m_Worker, SIGNAL(BytesSent(qint64)), this, SIGNAL(BytesSent(qint64)));
+  connect(m_Worker, SIGNAL(MessageReceived(int)), this, SLOT(OnMessageReceived(int)));
+
+  NiftyLinkQThread *thread = new NiftyLinkQThread();
+  connect(thread, SIGNAL(finished()), thread, SLOT(deleteLater())); // i.e. the event loop of thread deletes it when control returns to this event loop.
+  connect(thread, SIGNAL(finished()), m_Worker, SLOT(deleteLater()));
+
+  m_Worker->moveToThread(thread);
+  m_Socket->moveToThread(thread);
+  thread->start();
+
+  emit Connected(m_Socket->peerName(), m_Socket->peerPort());
+}
+
 
 } // end niftk namespace
