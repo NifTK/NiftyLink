@@ -169,7 +169,7 @@ void NiftyLinkMessageContainer::GetTimeCreated(igtl::TimeStamp::Pointer& time) c
 
 
 //-----------------------------------------------------------------------------
-igtlUint64 NiftyLinkMessageContainer::GetLatency() const
+igtlInt64 NiftyLinkMessageContainer::GetLatency() const
 {
   assert(this->m_Message.IsNotNull());
 
@@ -179,7 +179,9 @@ igtlUint64 NiftyLinkMessageContainer::GetLatency() const
 
   igtlUint64 secCreatedInNano = static_cast<igtlUint64>(secCreated)*1000000000;
   igtlUint64 fracCreatedInNano = igtl_frac_to_nanosec(static_cast<igtlUint32>(fracCreated));
-  return m_TimeReceived - (secCreatedInNano + fracCreatedInNano);
+  igtlUint64 timeCreated = secCreatedInNano + fracCreatedInNano;
+  igtlInt64 latency = m_TimeReceived - timeCreated; // may be negative if clock shifts.
+  return latency;
 }
 
 } // end namespace niftk

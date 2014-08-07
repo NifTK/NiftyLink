@@ -23,6 +23,7 @@ NiftyLinkMessageCounter::NiftyLinkMessageCounter(QObject *parent)
 , m_StatsEndPoint(NULL)
 , m_NumberMessageReceivedThreshold(-1)
 {
+  this->setObjectName("NiftyLinkMessageCounter");
   m_StatsStartPoint = igtl::TimeStamp::New();
   m_StatsStartPoint->GetTime();
   m_StatsEndPoint = igtl::TimeStamp::New();
@@ -97,12 +98,21 @@ void NiftyLinkMessageCounter::OnMessageReceived(NiftyLinkMessageContainer::Point
      m_StatsStartPoint->GetTime();
   }
 
-  // Increment container
-  m_StatsContainer.Increment(
-        message->GetMessage()->GetDeviceType(),
-        message->GetMessage()->GetPackSize(),
-        message->GetLatency()
-        );
+  // Increment container.
+  // Latency however may be negative, if clocks differ.
+  igtlInt64 latency = message->GetLatency();
+  if (latency > 0)
+  {
+    m_StatsContainer.Increment(
+          message->GetMessage()->GetDeviceType(),
+          message->GetMessage()->GetPackSize(),
+          latency
+          );
+  }
+  else
+  {
+    QLOG_DEBUG() << QObject::tr("%1:OnMessageReceived() - negative latency detected, not counting message");
+  }
 
   // Update this for each call, so we are measuring the end-point of a given period.
   m_StatsEndPoint->GetTime();

@@ -96,7 +96,7 @@ public:
   void GetTimeCreated(igtl::TimeStamp::Pointer& time) const;
 
   /// \brief Calculates the latency as difference between time created and time received.
-  igtlUint64 GetLatency() const;
+  igtlInt64 GetLatency() const;
 
   /// \brief Set the host name of where the message came from.
   void SetSenderHostName(const QString &host);
