@@ -143,10 +143,6 @@ void NiftyLinkTcpNetworkWorker::ShutdownThread()
   if (!p->isFinished())
   {
     p->exit(0);
-    if(!p->wait(10000))
-    {
-      QLOG_ERROR() << QObject::tr("%1::ShutdownThread() - failed to shutdown worker thread.").arg(objectName());
-    }
   }
 }
 

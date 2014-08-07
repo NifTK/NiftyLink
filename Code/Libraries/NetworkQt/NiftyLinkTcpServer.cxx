@@ -143,7 +143,6 @@ void NiftyLinkTcpServer::incomingConnection(int socketDescriptor)
   if (socket->setSocketDescriptor(socketDescriptor))
   {
     socket->setSocketOption(QAbstractSocket::LowDelayOption, 1);
-    connect(socket, SIGNAL(disconnected()), this, SLOT(OnClientDisconnected()));
 
     NiftyLinkTcpNetworkWorker *worker = new NiftyLinkTcpNetworkWorker(&m_InboundMessages, &m_OutboundMessages, socket);
     worker->SetNumberMessageReceivedThreshold(m_ReceivedCounter.GetNumberMessageReceivedThreshold());
@@ -154,6 +153,7 @@ void NiftyLinkTcpServer::incomingConnection(int socketDescriptor)
     connect(worker, SIGNAL(BytesSent(qint64)), this, SIGNAL(BytesSent(qint64)));
     connect(worker, SIGNAL(SocketError(int,QAbstractSocket::SocketError,QString)), this, SIGNAL(SocketError(int,QAbstractSocket::SocketError,QString)));
     connect(worker, SIGNAL(MessageReceived(int)), this, SLOT(OnMessageReceived(int)));
+    connect(socket, SIGNAL(disconnected()), this, SLOT(OnClientDisconnected()));
 
     QMutexLocker locker(&m_Mutex);
     m_Workers.insert(worker);
@@ -161,7 +161,6 @@ void NiftyLinkTcpServer::incomingConnection(int socketDescriptor)
     NiftyLinkQThread *thread = new NiftyLinkQThread();
     connect(thread, SIGNAL(finished()), thread, SLOT(deleteLater())); // i.e. the event loop of thread deletes it when control returns to this event loop.
     connect(thread, SIGNAL(finished()), worker, SLOT(deleteLater()));
-    connect(socket, SIGNAL(disconnected()), socket, SLOT(deleteLater()));
 
     worker->moveToThread(thread);
     socket->moveToThread(thread);
@@ -218,6 +217,8 @@ void NiftyLinkTcpServer::OnClientDisconnected()
       int portNumber = sender->peerPort();
       emit ClientDisconnected(portNumber);
 
+      sender->deleteLater();
+
       QLOG_INFO() << QObject::tr("%1::OnClientDisconnected() - client %2 removed.").arg(objectName()).arg(reinterpret_cast<qulonglong>(sender));
 
     }
@@ -248,7 +249,7 @@ void NiftyLinkTcpServer::OnMessageReceived(int portNumber)
 void NiftyLinkTcpServer::Shutdown()
 {
   emit StartShutdown();
-  QLOG_WARN() << QObject::tr("%1::Shutdown() - started.").arg(objectName());
+  QLOG_INFO() << QObject::tr("%1::Shutdown() - started.").arg(objectName());
 
   QList<NiftyLinkTcpNetworkWorker*> copyOfSet = m_Workers.toList();
   foreach (NiftyLinkTcpNetworkWorker* worker, copyOfSet)
@@ -257,7 +258,7 @@ void NiftyLinkTcpServer::Shutdown()
     socket->disconnectFromHost();
   }
 
-  QLOG_WARN() << QObject::tr("%1::Shutdown() - finished.").arg(objectName());
+  QLOG_INFO() << QObject::tr("%1::Shutdown() - finished.").arg(objectName());
   emit EndShutdown();
 }
 

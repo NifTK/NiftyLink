@@ -66,8 +66,6 @@ void TestClientNifTKQtImaging::Shutdown()
 
   if (m_Client != NULL)
   {
-    m_Client->DisconnectFromHost();
-
     delete m_Client;
     m_Client = NULL;
   }
@@ -81,6 +79,8 @@ void TestClientNifTKQtImaging::OnConnectedToServer()
 {
   QLOG_INFO() << QObject::tr("%1::OnConnectedToServer().").arg(objectName());
   this->RunTest();
+  QTimer::singleShot(500, this, SLOT(Shutdown()));
+  QCoreApplication::quit();
 }
 
 
@@ -192,12 +192,11 @@ int main(int argc, char** argv)
   niftk::InitializeWinTimers();
 #endif
 
-  niftk::TestClientNifTKQtImaging client(hostName, port, fps, total, QString::fromStdString(fileName));
-  QObject::connect(&app, SIGNAL(aboutToQuit()), &client, SLOT(Shutdown()));
-
   std::cout << "TestClientNifTKQtImaging: Launching app." << std::endl;
 
+  niftk::TestClientNifTKQtImaging client(hostName, port, fps, total, QString::fromStdString(fileName));
   QTimer::singleShot(220, &client, SLOT(Start()));
+
   int ret = app.exec();
 
   return ret;

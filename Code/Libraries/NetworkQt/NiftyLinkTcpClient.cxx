@@ -47,6 +47,12 @@ NiftyLinkTcpClient::~NiftyLinkTcpClient()
 {
   QLOG_INFO() << QObject::tr("%1::~NiftyLinkTcpClient() - destroying.").arg(objectName());
 
+  // Try to force disconnect.
+  if (this->IsConnected())
+  {
+    this->DisconnectFromHost();
+  }
+
   // This NiftyLinkTcpClient may be deleted by something external.
   // So, the thread that we create inside this class needs explicitly asking to stop its event loop.
   if (!m_Thread->isFinished())

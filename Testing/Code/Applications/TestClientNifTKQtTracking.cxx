@@ -66,8 +66,6 @@ void TestClientNifTKQtTracking::Shutdown()
 
   if (m_Client != NULL)
   {
-    m_Client->DisconnectFromHost();
-
     delete m_Client;
     m_Client = NULL;
   }
@@ -81,6 +79,7 @@ void TestClientNifTKQtTracking::OnConnectedToServer()
 {
   QLOG_INFO() << QObject::tr("%1::OnConnectedToServer().").arg(objectName());
   this->RunTest();
+  QTimer::singleShot(500, this, SLOT(Shutdown()));
   QCoreApplication::quit();
 }
 
@@ -169,12 +168,11 @@ int main(int argc, char** argv)
   niftk::InitializeWinTimers();
 #endif
 
-  niftk::TestClientNifTKQtTracking client(hostName, port, fps, total, channels);
-  QObject::connect(&app, SIGNAL(aboutToQuit()), &client, SLOT(Shutdown()));
-
   std::cout << "TestClientNifTKQtTracking: Launching app." << std::endl;
 
+  niftk::TestClientNifTKQtTracking client(hostName, port, fps, total, channels);
   QTimer::singleShot(220, &client, SLOT(Start()));
+
   int ret = app.exec();
 
   return ret;
