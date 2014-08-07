@@ -19,10 +19,28 @@
 namespace niftk
 {
 
+
 //-----------------------------------------------------------------------------
-void NiftyLinkMessageCounterTests::BasicCountingTestCase()
+void NiftyLinkMessageCounterTests::QMapCopyingTest()
 {
-  // Note, we need to change the class/API to enable testing.
+  QMap<QString, quint64> map1;
+  map1.insert("TDATA", 1);
+  map1.insert("IMAGE", 2);
+
+  QMap<QString, quint64> map2(map1);
+  QVERIFY(map2 == map1);
+
+  QMap<QString, quint64> map3;
+  QVERIFY(map3 != map1);
+
+  map3 = map1;
+  QVERIFY(map3 == map1);
+}
+
+
+//-----------------------------------------------------------------------------
+void NiftyLinkMessageCounterTests::BasicStatsCountingTestCase()
+{
   QVERIFY(1 == 2);
 }
 

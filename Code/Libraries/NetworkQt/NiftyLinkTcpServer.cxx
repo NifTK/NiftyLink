@@ -32,16 +32,20 @@ NiftyLinkTcpServer::NiftyLinkTcpServer(QObject *parent)
 , m_SendKeepAlive(false)
 , m_CheckNoIncoming(false)
 {
-  this->setObjectName("NiftyLinkTcpServer");
-  m_ReceivedCounter.setObjectName("NiftyLinkTcpServer");
-
   qRegisterMetaType<QAbstractSocket::SocketError>("QAbstractSocket::SocketError");
   qRegisterMetaType<NiftyLinkMessageContainer::Pointer>("NiftyLinkMessageContainer::Pointer");
+  qRegisterMetaType<NiftyLinkMessageStatsContainer>("NiftyLinkMessageStatsContainer");
 
   // This is to make sure we have the best possible system timer.
 #if defined(_WIN32) && !defined(__CYGWIN__)
   niftk::InitializeWinTimers();
 #endif
+
+  this->setObjectName("NiftyLinkTcpServer");
+
+  m_ReceivedCounter.setObjectName("NiftyLinkTcpServer");
+  connect(&m_ReceivedCounter, SIGNAL(StatsProduced(NiftyLinkMessageStatsContainer)), this, SIGNAL(StatsProduced(NiftyLinkMessageStatsContainer)));
+  connect(&m_ReceivedCounter, SIGNAL(StatsMessageProduced(QString)), this, SIGNAL(StatsMessageProduced(QString)));
 
   QLOG_INFO() << QObject::tr("%1::NiftyLinkTcpServer() - created.").arg(objectName());
 }

@@ -26,15 +26,16 @@ NiftyLinkTcpClient::NiftyLinkTcpClient(QObject *parent)
 , m_Socket(NULL)
 , m_Worker(NULL)
 {
-  this->setObjectName("NiftyLinkTcpClient");
-
   qRegisterMetaType<QAbstractSocket::SocketError>("QAbstractSocket::SocketError");
   qRegisterMetaType<NiftyLinkMessageContainer::Pointer>("NiftyLinkMessageContainer::Pointer");
+  qRegisterMetaType<NiftyLinkMessageStatsContainer>("NiftyLinkMessageStatsContainer");
 
   // This is to make sure we have the best possible system timer.
 #if defined(_WIN32) && !defined(__CYGWIN__)
   niftk::InitializeWinTimers();
 #endif
+
+  this->setObjectName("NiftyLinkTcpClient");
 
   QLOG_INFO() << QObject::tr("%1::NiftyLinkTcpClient() - constructed.").arg(objectName());
 }

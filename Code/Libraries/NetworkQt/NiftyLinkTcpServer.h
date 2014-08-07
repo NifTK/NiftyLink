@@ -102,6 +102,12 @@ signals:
   /// \brief Emmitted when we have finished all the shut down stuff.
   void EndShutdown();
 
+  /// \brief Emmitted every time stats were computed.
+  void StatsProduced(NiftyLinkMessageStatsContainer stats);
+
+  /// \brief Emmitted every time stats were computed.
+  void StatsMessageProduced(QString stringRepresentation);
+
 protected:
 
   // Override the base class method.

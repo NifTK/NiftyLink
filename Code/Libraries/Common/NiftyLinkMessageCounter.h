@@ -14,7 +14,7 @@
 
 #include "NiftyLinkCommonWin32ExportHeader.h"
 #include <NiftyLinkMessageContainer.h>
-
+#include <NiftyLinkMessageStatsContainer.h>
 #include <igtlTimeStamp.h>
 
 #include <QObject>
@@ -84,7 +84,15 @@ public:
   qint64 GetNumberOfMessagesSinceClear();
 
   /// \brief Returns the current number of messages per second.
-  float GetMessagesPerSecond();
+  double GetMessagesPerSecond();
+
+  /// \brief Returns a copy of the stats container.
+  NiftyLinkMessageStatsContainer GetStatsContainer();
+
+signals:
+
+  void StatsProduced(NiftyLinkMessageStatsContainer stats);
+  void StatsMessageProduced(QString stringRepresentation);
 
 public slots:
 
@@ -101,13 +109,8 @@ private:
 
   igtl::TimeStamp::Pointer        m_StatsStartPoint;
   igtl::TimeStamp::Pointer        m_StatsEndPoint;
-  quint64                         m_TotalBytesReceived;
-  quint64                         m_TotalNumberMessagesReceived;
-  quint64                         m_BytesReceivedBetweemTimingPoints;
-  quint64                         m_NumberMessagesReceivedBetweenTimingPoints;
-  QMap< QString, QList<quint64> > m_ListsOfLatenciesByDeviceType;
+  NiftyLinkMessageStatsContainer  m_StatsContainer;
   qint64                          m_NumberMessageReceivedThreshold;
-
 }; // end class
 
 } // end namespace
