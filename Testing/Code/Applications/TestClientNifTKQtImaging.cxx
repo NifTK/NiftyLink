@@ -70,6 +70,7 @@ void TestClientNifTKQtImaging::Shutdown()
     m_Client = NULL;
   }
 
+  QCoreApplication::quit();
   QLOG_INFO() << QObject::tr("%1::Shutdown() - finished.").arg(objectName());
 }
 
@@ -79,8 +80,7 @@ void TestClientNifTKQtImaging::OnConnectedToServer()
 {
   QLOG_INFO() << QObject::tr("%1::OnConnectedToServer().").arg(objectName());
   this->RunTest();
-  QTimer::singleShot(500, this, SLOT(Shutdown()));
-  QCoreApplication::quit();
+  QTimer::singleShot(1000, this, SLOT(Shutdown()));
 }
 
 
