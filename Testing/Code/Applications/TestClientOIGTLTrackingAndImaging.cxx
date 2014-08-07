@@ -102,6 +102,8 @@ int main(int argc, char* argv[])
     // Do tracking first.
     if (niftk::GetDifferenceInNanoSeconds(timeNow, timeLastTrackingMessage) > nanosecondsBetweenTrackingMessages)
     {
+      timeLastTrackingMessage->SetTimeInNanoseconds(timeNow->GetTimeStampInNanoseconds());
+
       niftk::NiftyLinkMessageContainer::Pointer m = niftk::CreateTestTrackingDataMessage(timeCreated, channels);
       r = socket->Send(m->GetMessage()->GetPackPointer(), m->GetMessage()->GetPackSize());
       if (r == 0)
@@ -109,12 +111,13 @@ int main(int argc, char* argv[])
         std::cerr << "Failed to send message." << std::endl;
         exit(0);
       }
-      timeLastTrackingMessage->SetTimeInNanoseconds(timeNow->GetTimeStampInNanoseconds());
     }
 
     // Do imaging second.
     if (niftk::GetDifferenceInNanoSeconds(timeNow, timeLastImageMessage) > nanosecondsBetweenImageMessages)
     {
+      timeLastImageMessage->SetTimeInNanoseconds(timeNow->GetTimeStampInNanoseconds());
+
       timeCreated->GetTime();
       localImage->SetTimeStamp(timeCreated);
 
@@ -129,7 +132,6 @@ int main(int argc, char* argv[])
       }
 
       numberMessagesSent++;
-      timeLastImageMessage->SetTimeInNanoseconds(timeNow->GetTimeStampInNanoseconds());
     }
   }
 

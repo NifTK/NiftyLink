@@ -106,6 +106,7 @@ void TestClientNifTKQtTracking::RunTest()
   while(m_NumberMessagesSent < m_IntendedNumberMessages)
   {
     timeNow->GetTime();
+
     if (niftk::GetDifferenceInNanoSeconds(timeNow, timeLastMessage) > nanosecondsBetweenMessages)
     {
       timeLastMessage->SetTimeInNanoseconds(timeNow->GetTimeStampInNanoseconds());
