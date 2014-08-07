@@ -248,7 +248,7 @@ double CalculateStdDev(const QList<igtlUint64>& list)
   }
   if (list.size() > 1)
   {
-    stdDev /= static_cast<double>(list.size());
+    stdDev /= static_cast<double>(list.size() - 1);
   }
   stdDev = sqrt(stdDev);
   return stdDev;
@@ -269,6 +269,19 @@ igtlUint64 CalculateMax(const QList<igtlUint64>& list)
   return max;
 }
 
+
+//-----------------------------------------------------------------------------
+bool IsCloseEnoughTo(double valueA, double valueB, double tolerance)
+{
+  return fabs(valueA - valueB) < tolerance;
+}
+
+
+//-----------------------------------------------------------------------------
+bool IsCloseEnoughToZero(double valueA, double tolerance)
+{
+  return IsCloseEnoughTo(valueA, 0, tolerance);
+}
 
 
 //-----------------------------------------------------------------------------

@@ -63,6 +63,11 @@ private slots:
    *   - returns a valid IP address.
    *   - should not return 127.0.0.1.
    *   - otherwise (if fails) return "UNKNOWN".
+   *
+   * Note: the third point is un-tested by this unit test.
+   * How do we make Qt fail to return a network address?
+   *
+   * As a compromise, we just check for UNKNOWN, or a valid IP address in that order.
    */
   void GetLocalHostAddressTest();
 
@@ -102,6 +107,14 @@ private slots:
    *   - otherwise return the largest member in the QList.
    */
   void CalculateMaxTest();
+
+  /**
+   * \brief Tests NiftyLinkUtils::IsCloseEnoughTo() and NiftyLinkUtils::IsCloseEnoughToZero()
+   *
+   * Spec:
+   *   - if absolute diff between two numbers is strictly less than the tolerance.
+   */
+  void CalculateCloseEnoughToTest();
 };
 
 } // end namespace

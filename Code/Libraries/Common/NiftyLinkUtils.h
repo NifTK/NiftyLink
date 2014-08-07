@@ -100,11 +100,17 @@ extern "C++" NIFTYLINKCOMMON_WINEXPORT NiftyLinkMessageContainer::Pointer Create
 /// \brief Used to calculate stats of latency, this method computes the mean of a list of igtlUint64.
 extern "C++" NIFTYLINKCOMMON_WINEXPORT double CalculateMean(const QList<igtlUint64>& list);
 
-/// \brief Used to calculate stats of latency, this method computes the standard deviation of a list of igtlUint64.
+/// \brief Used to calculate stats of latency, this method computes the standard deviation (of the sample) of a list of igtlUint64.
 extern "C++" NIFTYLINKCOMMON_WINEXPORT double CalculateStdDev(const QList<igtlUint64>& list);
 
 /// \brief Used to calculate stats of latency, this method computes the maximum of a list of igtlUint64.
 extern "C++" NIFTYLINKCOMMON_WINEXPORT igtlUint64 CalculateMax(const QList<igtlUint64>& list);
+
+/// \brief Returns true if the absolute difference between valueA and valueB is less than tolerance.
+extern "C++" NIFTYLINKCOMMON_WINEXPORT bool IsCloseEnoughTo(double valueA, double valueB, double tolerance=0.00001);
+
+/// \brief Returns true if valueA is closer than tolerance to zero.
+extern "C++" NIFTYLINKCOMMON_WINEXPORT bool IsCloseEnoughToZero(double valueA, double tolerance=0.00001);
 
 ///@}
 
