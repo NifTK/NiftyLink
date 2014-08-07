@@ -15,6 +15,7 @@
 #include <NiftyLinkCommonWin32ExportHeader.h>
 #include <NiftyLinkMessageContainer.h>
 #include <NiftyLinkMessageManager.h>
+#include <NiftyLinkQThread.h>
 
 #include <QObject>
 #include <QTcpSocket>
@@ -97,7 +98,7 @@ signals:
   /// IMPORTANT: You must use a Qt::DirectConnection to connect to this, and not a Qt::QueuedConnection.
   void MessageReceived(NiftyLinkMessageContainer::Pointer message);
 
-  /// \brief Emmitted by the underlying socket when we have actually sent bytes.
+  /// \brief Emitted by the underlying socket when we have actually sent bytes.
   void BytesSent(qint64 bytes);
 
   /// \brief Emmitted when a keep alive message was sent.
@@ -129,9 +130,10 @@ private slots:
 private:
 
   QTcpSocket                *m_Socket;
+  NiftyLinkTcpNetworkWorker *m_Worker;
+  NiftyLinkQThread          *m_Thread;
   QString                    m_RequestedName;
   int                        m_RequestedPort;
-  NiftyLinkTcpNetworkWorker *m_Worker;
   NiftyLinkMessageManager    m_InboundMessages;
   NiftyLinkMessageManager    m_OutboundMessages;
 

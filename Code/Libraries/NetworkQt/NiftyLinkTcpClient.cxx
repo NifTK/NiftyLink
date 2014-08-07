@@ -25,6 +25,7 @@ NiftyLinkTcpClient::NiftyLinkTcpClient(QObject *parent)
 : QObject(parent)
 , m_Socket(NULL)
 , m_Worker(NULL)
+, m_Thread(NULL)
 {
   qRegisterMetaType<QAbstractSocket::SocketError>("QAbstractSocket::SocketError");
   qRegisterMetaType<NiftyLinkMessageContainer::Pointer>("NiftyLinkMessageContainer::Pointer");
@@ -46,7 +47,16 @@ NiftyLinkTcpClient::~NiftyLinkTcpClient()
 {
   QLOG_INFO() << QObject::tr("%1::~NiftyLinkTcpClient() - destroying.").arg(objectName());
 
-  // Nothing to do, as socket, worker and thread all sorted out by "deleteLater()".
+  // This NiftyLinkTcpClient may be deleted by something external.
+  // So, the thread that we create inside this class needs explicitly asking to stop its event loop.
+  if (!m_Thread->isFinished())
+  {
+    m_Thread->exit(0);
+    if(!m_Thread->wait(10000))
+    {
+      QLOG_ERROR() << QObject::tr("%1::~NiftyLinkTcpClient() - failed to shutdown worker thread.").arg(objectName());
+    }
+  }
 
   QLOG_INFO() << QObject::tr("%1::~NiftyLinkTcpClient() - destroyed.").arg(objectName());
 }
@@ -160,13 +170,13 @@ void NiftyLinkTcpClient::OnConnected()
   connect(m_Worker, SIGNAL(BytesSent(qint64)), this, SIGNAL(BytesSent(qint64)));
   connect(m_Worker, SIGNAL(MessageReceived(int)), this, SLOT(OnMessageReceived(int)));
 
-  NiftyLinkQThread *thread = new NiftyLinkQThread();
-  connect(thread, SIGNAL(finished()), thread, SLOT(deleteLater())); // i.e. the event loop of thread deletes it when control returns to this event loop.
-  connect(thread, SIGNAL(finished()), m_Worker, SLOT(deleteLater()));
+  m_Thread = new NiftyLinkQThread();
+  connect(m_Thread, SIGNAL(finished()), m_Thread, SLOT(deleteLater())); // i.e. the event loop of thread deletes it when control returns to this event loop.
+  connect(m_Thread, SIGNAL(finished()), m_Worker, SLOT(deleteLater()));
 
-  m_Worker->moveToThread(thread);
-  m_Socket->moveToThread(thread);
-  thread->start();
+  m_Worker->moveToThread(m_Thread);
+  m_Socket->moveToThread(m_Thread);
+  m_Thread->start();
 
   emit Connected(m_Socket->peerName(), m_Socket->peerPort());
 }

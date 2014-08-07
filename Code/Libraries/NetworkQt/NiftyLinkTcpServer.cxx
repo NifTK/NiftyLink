@@ -143,33 +143,34 @@ void NiftyLinkTcpServer::incomingConnection(int socketDescriptor)
   if (socket->setSocketDescriptor(socketDescriptor))
   {
     socket->setSocketOption(QAbstractSocket::LowDelayOption, 1);
+    connect(socket, SIGNAL(disconnected()), this, SLOT(OnClientDisconnected()));
 
-    NiftyLinkQThread *thread = new NiftyLinkQThread();
     NiftyLinkTcpNetworkWorker *worker = new NiftyLinkTcpNetworkWorker(&m_InboundMessages, &m_OutboundMessages, socket);
-
-    worker->moveToThread(thread);
-    socket->moveToThread(thread);
-
     worker->SetNumberMessageReceivedThreshold(m_ReceivedCounter.GetNumberMessageReceivedThreshold());
     worker->SetKeepAliveOn(m_SendKeepAlive);
     worker->SetCheckForNoIncomingData(m_CheckNoIncoming);
-
     connect(worker, SIGNAL(NoIncomingData()), this, SIGNAL(NoIncomingData()));
     connect(worker, SIGNAL(SentKeepAlive()), this, SIGNAL(SentKeepAlive()));
     connect(worker, SIGNAL(BytesSent(qint64)), this, SIGNAL(BytesSent(qint64)));
     connect(worker, SIGNAL(SocketError(int,QAbstractSocket::SocketError,QString)), this, SIGNAL(SocketError(int,QAbstractSocket::SocketError,QString)));
     connect(worker, SIGNAL(MessageReceived(int)), this, SLOT(OnMessageReceived(int)));
-    connect(socket, SIGNAL(disconnected()), this, SLOT(OnClientDisconnected()));
-    connect(thread, SIGNAL(finished()), thread, SLOT(deleteLater())); // i.e. the event loop of thread deletes it when control returns to this event loop.
 
     QMutexLocker locker(&m_Mutex);
     m_Workers.insert(worker);
+
+    NiftyLinkQThread *thread = new NiftyLinkQThread();
+    connect(thread, SIGNAL(finished()), thread, SLOT(deleteLater())); // i.e. the event loop of thread deletes it when control returns to this event loop.
+    connect(thread, SIGNAL(finished()), worker, SLOT(deleteLater()));
+    connect(socket, SIGNAL(disconnected()), socket, SLOT(deleteLater()));
+
+    worker->moveToThread(thread);
+    socket->moveToThread(thread);
 
     thread->start();
   }
   else
   {
-    QLOG_ERROR() << QObject::tr("%1::incomingConnection(%2) - failed to connect.").arg(objectName()).arg(socketDescriptor);
+    QLOG_ERROR() << QObject::tr("%1::incomingConnection(%2) - failed to set socket descriptor.").arg(objectName()).arg(socketDescriptor);
   }
 
   this->setObjectName(QObject::tr("NiftyLinkTcpServer(%1)").arg(this->serverPort()));
@@ -215,13 +216,10 @@ void NiftyLinkTcpServer::OnClientDisconnected()
       }
 
       int portNumber = sender->peerPort();
-
-      delete chosenWorker;
-      delete sender;
+      emit ClientDisconnected(portNumber);
 
       QLOG_INFO() << QObject::tr("%1::OnClientDisconnected() - client %2 removed.").arg(objectName()).arg(reinterpret_cast<qulonglong>(sender));
 
-      emit ClientDisconnected(portNumber);
     }
     else
     {

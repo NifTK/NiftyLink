@@ -21,6 +21,8 @@
 
 #include <QThread>
 #include <QTcpSocket>
+#include <QMutex>
+#include <QWaitCondition>
 
 namespace niftk
 {
@@ -36,7 +38,7 @@ class NiftyLinkTcpNetworkWorker : public QObject
 
 public:
 
-  /// \brief Constructor, and this class owns none of the objects passed in, so won't destroy them.
+  /// \brief Constructor.
   NiftyLinkTcpNetworkWorker(NiftyLinkMessageManager* inboundMessages,
                             NiftyLinkMessageManager* outboundMessages,
                             QTcpSocket *socket,
@@ -50,6 +52,12 @@ public:
 
   /// \brief Returns true if the socket exists, and the socket says its open, and false otherwise.
   bool IsSocketOpen() const;
+
+  /// \brief Disconnects the socket.
+  void DisconnectSocket();
+
+  /// \brief Asks the containing thread to quit.
+  void ShutdownThread();
 
   /// \brief Set a threshold for the number of messages, so that you
   /// get stats printed to console every X number of messages. Set to -1 to turn this off.
@@ -80,12 +88,6 @@ public:
 
 public slots:
 
-  /// \brief Asks socket to disconnect.
-  void CloseSocket();
-
-  /// \brief Asks the containing thread to quit.
-  void ShutdownThread();
-
 signals:
 
   void SocketError(int portNumber, QAbstractSocket::SocketError errorCode, QString errorString);
@@ -102,15 +104,15 @@ private slots:
   void OnSocketError(QAbstractSocket::SocketError error);
   void OnOutputStats();
   void OnCheckForIncomingData();
+  void OnBytesSent(qint64);
 
   void OnSocketReadyRead();
-  void OnSend();
+  void OnSendMessage();
   void OnSendInternalPing();
 
 private:
 
-  void SendMessage(igtl::MessageBase::Pointer);
-
+  void InternalSendMessage(igtl::MessageBase::Pointer);
   bool IsKeepAlive(const igtl::MessageBase::Pointer&);
   bool IsStatsRequest(const igtl::MessageBase::Pointer&);
 
@@ -143,6 +145,9 @@ private:
   int                            m_NoIncomingDataInterval;
   igtl::TimeStamp::Pointer       m_NoIncomingDataTimeStamp;
   igtl::TimeStamp::Pointer       m_LastMessageReceivedTime;
+
+  // For providing a blocking send.
+  QWaitCondition                 m_WaitForSend;
 
 }; // end class
 

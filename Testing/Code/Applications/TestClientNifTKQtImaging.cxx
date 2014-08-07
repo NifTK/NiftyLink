@@ -81,7 +81,6 @@ void TestClientNifTKQtImaging::OnConnectedToServer()
 {
   QLOG_INFO() << QObject::tr("%1::OnConnectedToServer().").arg(objectName());
   this->RunTest();
-  QCoreApplication::exit();
 }
 
 
