@@ -180,7 +180,6 @@ int main(int argc, char** argv)
   logger.addDestination(debugDestination.get());
 
   niftk::TestServerQt server(port, isEchoing, doStatistics, threshold);
-  QObject::connect(&app, SIGNAL(aboutToQuit()), &server, SLOT(Stop()));
 
   // Setup timers.
   QTimer::singleShot(220, &server, SLOT(Start()));

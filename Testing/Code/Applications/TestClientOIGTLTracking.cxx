@@ -75,9 +75,10 @@ int main(int argc, char* argv[])
   while (numberMessagesSent < numberMessagesRequired)
   {
     timeNow->GetTime();
+
     if (niftk::GetDifferenceInNanoSeconds(timeNow, timeLastMessage) > nanosecondsBetweenMessages)
     {
-      timeCreated->GetTime();
+      timeLastMessage->SetTimeInNanoseconds(timeNow->GetTimeStampInNanoseconds());
 
       niftk::NiftyLinkMessageContainer::Pointer m = niftk::CreateTestTrackingDataMessage(timeCreated, channels);
       r = socket->Send(m->GetMessage()->GetPackPointer(), m->GetMessage()->GetPackSize());
@@ -88,7 +89,6 @@ int main(int argc, char* argv[])
       }
 
       numberMessagesSent++;
-      timeLastMessage->SetTimeInNanoseconds(timeNow->GetTimeStampInNanoseconds());
     }
   }
 

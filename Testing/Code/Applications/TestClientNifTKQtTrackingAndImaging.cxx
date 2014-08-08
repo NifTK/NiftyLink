@@ -68,12 +68,11 @@ void TestClientNifTKQtTrackingAndImaging::Shutdown()
 
   if (m_Client != NULL)
   {
-    m_Client->DisconnectFromHost();
-
     delete m_Client;
     m_Client = NULL;
   }
 
+  QCoreApplication::quit();
   QLOG_INFO() << QObject::tr("%1::Shutdown() - finished.").arg(objectName());
 }
 
@@ -83,6 +82,7 @@ void TestClientNifTKQtTrackingAndImaging::OnConnectedToServer()
 {
   QLOG_INFO() << QObject::tr("%1::OnConnectedToServer().").arg(objectName());
   this->RunTest();
+  QTimer::singleShot(1000, this, SLOT(Shutdown()));
 }
 
 
@@ -154,6 +154,7 @@ void TestClientNifTKQtTrackingAndImaging::RunTest()
     }
   }
   m_Client->RequestStats();
+  QLOG_INFO() << QObject::tr("%1::RunTest() - stats requested.").arg(objectName());
 }
 
 } // end namespace niftk
@@ -206,12 +207,11 @@ int main(int argc, char** argv)
   niftk::InitializeWinTimers();
 #endif
 
-  niftk::TestClientNifTKQtTrackingAndImaging client(hostName, port, fps, channels, total, QString::fromStdString(fileName));
-  QObject::connect(&app, SIGNAL(aboutToQuit()), &client, SLOT(Shutdown()));
-
   std::cout << "TestClientNifTKQtTrackingAndImaging: Launching app." << std::endl;
 
+  niftk::TestClientNifTKQtTrackingAndImaging client(hostName, port, fps, channels, total, QString::fromStdString(fileName));
   QTimer::singleShot(220, &client, SLOT(Start()));
+
   int ret = app.exec();
 
   return ret;

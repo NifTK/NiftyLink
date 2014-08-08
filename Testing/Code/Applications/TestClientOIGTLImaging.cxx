@@ -88,8 +88,11 @@ int main(int argc, char* argv[])
   while (numberMessagesSent < numberMessagesRequired)
   {
     timeNow->GetTime();
+
     if (niftk::GetDifferenceInNanoSeconds(timeNow, timeLastMessage) > nanosecondsBetweenMessages)
     {
+      timeLastMessage->SetTimeInNanoseconds(timeNow->GetTimeStampInNanoseconds());
+
       timeCreated->GetTime();
       localImage->SetTimeStamp(timeCreated);
 
@@ -104,7 +107,6 @@ int main(int argc, char* argv[])
       }
 
       numberMessagesSent++;
-      timeLastMessage->SetTimeInNanoseconds(timeNow->GetTimeStampInNanoseconds());
     }
   }
 

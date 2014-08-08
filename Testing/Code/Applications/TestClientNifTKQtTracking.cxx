@@ -66,12 +66,11 @@ void TestClientNifTKQtTracking::Shutdown()
 
   if (m_Client != NULL)
   {
-    m_Client->DisconnectFromHost();
-
     delete m_Client;
     m_Client = NULL;
   }
 
+  QCoreApplication::quit();
   QLOG_INFO() << QObject::tr("%1::Shutdown() - finished.").arg(objectName());
 }
 
@@ -81,7 +80,7 @@ void TestClientNifTKQtTracking::OnConnectedToServer()
 {
   QLOG_INFO() << QObject::tr("%1::OnConnectedToServer().").arg(objectName());
   this->RunTest();
-  QCoreApplication::quit();
+  QTimer::singleShot(1000, this, SLOT(Shutdown()));
 }
 
 
@@ -106,6 +105,7 @@ void TestClientNifTKQtTracking::RunTest()
   while(m_NumberMessagesSent < m_IntendedNumberMessages)
   {
     timeNow->GetTime();
+
     if (niftk::GetDifferenceInNanoSeconds(timeNow, timeLastMessage) > nanosecondsBetweenMessages)
     {
       timeLastMessage->SetTimeInNanoseconds(timeNow->GetTimeStampInNanoseconds());
@@ -116,8 +116,7 @@ void TestClientNifTKQtTracking::RunTest()
     }
   }
   m_Client->RequestStats();
-
-  QLOG_INFO() << QObject::tr("%1::RunTest() - finished.").arg(objectName());
+  QLOG_INFO() << QObject::tr("%1::RunTest() - stats requested.").arg(objectName());
 }
 
 } // end namespace niftk
@@ -168,12 +167,11 @@ int main(int argc, char** argv)
   niftk::InitializeWinTimers();
 #endif
 
-  niftk::TestClientNifTKQtTracking client(hostName, port, fps, total, channels);
-  QObject::connect(&app, SIGNAL(aboutToQuit()), &client, SLOT(Shutdown()));
-
   std::cout << "TestClientNifTKQtTracking: Launching app." << std::endl;
 
+  niftk::TestClientNifTKQtTracking client(hostName, port, fps, total, channels);
   QTimer::singleShot(220, &client, SLOT(Start()));
+
   int ret = app.exec();
 
   return ret;

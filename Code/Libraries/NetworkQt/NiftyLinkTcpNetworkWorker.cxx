@@ -63,7 +63,7 @@ NiftyLinkTcpNetworkWorker::NiftyLinkTcpNetworkWorker(
     host = "localhost";
   }
 
-  // These are expensive to create/destroy.
+  // These are expensive to create/destroy, so do it once.
   m_IncomingHeaderTimeStamp = igtl::TimeStamp::New();
   m_TimeFullyReceivedTimeStamp = igtl::TimeStamp::New();
   m_KeepAliveTimeStamp = igtl::TimeStamp::New();
@@ -71,21 +71,23 @@ NiftyLinkTcpNetworkWorker::NiftyLinkTcpNetworkWorker(
   m_NoIncomingDataTimeStamp = igtl::TimeStamp::New();
   m_LastMessageReceivedTime = igtl::TimeStamp::New();
 
-  m_KeepAliveTimer = new QTimer();
+  // Timers for internal monitoring.
+  m_KeepAliveTimer = new QTimer(this);
   m_KeepAliveTimer->setInterval(m_KeepAliveInterval);
 
-  m_NoIncomingDataTimer = new QTimer();
+  m_NoIncomingDataTimer = new QTimer(this);
   m_NoIncomingDataTimer->setInterval(m_NoIncomingDataInterval);
 
+  // Set object names for error messages.
   m_MessagePrefix = QObject::tr("NiftyLinkTcpNetworkWorker(d=%1, h=%2, p=%3)").arg(m_Socket->socketDescriptor()).arg(host).arg(m_Socket->peerPort());
   this->setObjectName(m_MessagePrefix);
   m_ReceivedCounter.setObjectName(m_MessagePrefix);
 
-  connect(this, SIGNAL(InternalStatsSignal()), this, SLOT(OnOutputStats()));
-  connect(this, SIGNAL(InternalSendSignal()), this, SLOT(OnSend()), Qt::BlockingQueuedConnection);
+  connect(this, SIGNAL(InternalStatsSignal()), this, SLOT(OnOutputStats()), Qt::BlockingQueuedConnection);
+  connect(this, SIGNAL(InternalSendSignal()), this, SLOT(OnSendMessage()), Qt::BlockingQueuedConnection);
   connect(m_NoIncomingDataTimer, SIGNAL(timeout()), this, SLOT(OnCheckForIncomingData()));
   connect(m_KeepAliveTimer, SIGNAL(timeout()), this, SLOT(OnSendInternalPing()));
-  connect(m_Socket, SIGNAL(bytesWritten(qint64)), this, SIGNAL(BytesSent(qint64)));
+  connect(m_Socket, SIGNAL(bytesWritten(qint64)), this, SLOT(OnBytesSent(qint64)));
   connect(m_Socket, SIGNAL(disconnected()), this, SLOT(OnSocketDisconnected()));
   connect(m_Socket, SIGNAL(error(QAbstractSocket::SocketError)), this, SLOT(OnSocketError(QAbstractSocket::SocketError)));
   connect(m_Socket, SIGNAL(readyRead()), this, SLOT(OnSocketReadyRead()));
@@ -99,17 +101,11 @@ NiftyLinkTcpNetworkWorker::~NiftyLinkTcpNetworkWorker()
 {
   QLOG_INFO() << QObject::tr("%1::~NiftyLinkTcpNetworkWorker() - destroying.").arg(m_MessagePrefix);
 
-  if (m_KeepAliveTimer != NULL)
-  {
-    m_KeepAliveTimer->disconnect();
-    delete m_KeepAliveTimer;
-  }
-
-  if (m_NoIncomingDataTimer != NULL)
-  {
-    m_NoIncomingDataTimer->disconnect();
-    delete m_NoIncomingDataTimer;
-  }
+  // These objects created with this as parent. So Qt can clean them up when this object is deleted.
+  m_KeepAliveTimer->stop();
+  m_KeepAliveTimer->disconnect();
+  m_NoIncomingDataTimer->stop();
+  m_NoIncomingDataTimer->disconnect();
 
   QLOG_INFO() << QObject::tr("%1::~NiftyLinkTcpNetworkWorker() - destroyed.").arg(m_MessagePrefix);
 }
@@ -123,27 +119,16 @@ QTcpSocket* NiftyLinkTcpNetworkWorker::GetSocket() const
 
 
 //-----------------------------------------------------------------------------
-bool NiftyLinkTcpNetworkWorker::IsOpen() const
+bool NiftyLinkTcpNetworkWorker::IsSocketOpen() const
 {
   return m_Socket != NULL && m_Socket->isOpen();
 }
 
 
 //-----------------------------------------------------------------------------
-void NiftyLinkTcpNetworkWorker::CloseSocket()
+void NiftyLinkTcpNetworkWorker::DisconnectSocket()
 {
-  // This doubly double checks we are running in our own NiftyLinkQThread.
-  NiftyLinkQThread *p = dynamic_cast<NiftyLinkQThread*>(QThread::currentThread());
-  assert(p != NULL);
-
-  if (m_Socket != NULL)
-  {
-    m_Socket->close();
-    while(m_Socket->isOpen())
-    {
-      p->wait(10);
-    }
-  }
+  m_Socket->disconnectFromHost();
 }
 
 
@@ -151,13 +136,13 @@ void NiftyLinkTcpNetworkWorker::CloseSocket()
 void NiftyLinkTcpNetworkWorker::ShutdownThread()
 {
   // This doubly double checks we are running in our own NiftyLinkQThread.
-  NiftyLinkQThread *p = dynamic_cast<NiftyLinkQThread*>(QThread::currentThread());
+  NiftyLinkQThread *p = dynamic_cast<NiftyLinkQThread*>(this->thread());
   assert(p != NULL);
 
-  p->quit();
-  while(!p->isFinished())
+  // We only need to try shutting down, if we have not already finished.
+  if (!p->isFinished())
   {
-    p->wait(10);
+    p->exit(0);
   }
 }
 
@@ -200,25 +185,27 @@ void NiftyLinkTcpNetworkWorker::SetCheckForNoIncomingData(bool isOn)
 //-----------------------------------------------------------------------------
 bool NiftyLinkTcpNetworkWorker::Send(NiftyLinkMessageContainer::Pointer message)
 {
-  if (!m_Socket->isOpen() || !m_Socket->isWritable())
+  if (!this->IsSocketOpen() || !m_Socket->isWritable())
   {
     return false;
   }
 
-  m_OutboundMessages->InsertContainer(m_Socket->peerPort(), message);
-
   // This is done, as this can be called from an external thread (eg. GUI thread),
   // but the sending of the messages is done from the thread that this object is bound to (NiftyLinkQThread).
+  m_OutboundMessages->InsertContainer(m_Socket->peerPort(), message);
   emit this->InternalSendSignal();
 
   return true;
 }
 
 
-
 //-----------------------------------------------------------------------------
 bool NiftyLinkTcpNetworkWorker::RequestStats()
 {
+  // This is a convenience method so client code doesn't have to know
+  // what this message format is. So, they can call RequestStats, and then
+  // this method calls the Send method above.
+
   igtl::StringMessage::Pointer msg = igtl::StringMessage::New();
   msg->SetDeviceName("NiftyLinkTcpNetworkWorker");
   msg->SetString("STATS");
@@ -230,8 +217,6 @@ bool NiftyLinkTcpNetworkWorker::RequestStats()
   m->SetSenderHostName(m_Socket->peerName());
   m->SetSenderPortNumber(m_Socket->peerPort());
 
-  // Note: Calling Send(NiftyLinkMessageContainer::Pointer message) above.
-  // So, the sending of the messages is done from the thread that this object is bound to (NiftyLinkQThread).
   return this->Send(m);
 }
 
@@ -248,11 +233,9 @@ void NiftyLinkTcpNetworkWorker::OutputStatsToConsole()
 //-----------------------------------------------------------------------------
 void NiftyLinkTcpNetworkWorker::OnSocketDisconnected()
 {
-  QLOG_INFO() << QObject::tr("%1::OnSocketDisconnected().").arg(m_MessagePrefix);
-
-  // If there are no socket events, then we might as well call it a day, and finish this thread.
-  QCoreApplication::processEvents();
-  QThread::currentThread()->quit();
+  QLOG_INFO() << QObject::tr("%1::OnSocketDisconnected() - requesting thread shutdown.").arg(m_MessagePrefix);
+  this->ShutdownThread();
+  QLOG_INFO() << QObject::tr("%1::OnSocketDisconnected() - thread is shut down.").arg(m_MessagePrefix);
 }
 
 
@@ -320,18 +303,29 @@ bool NiftyLinkTcpNetworkWorker::IsStatsRequest(const igtl::MessageBase::Pointer&
 
 
 //-----------------------------------------------------------------------------
+void NiftyLinkTcpNetworkWorker::OnBytesSent(qint64 bytes)
+{
+  emit BytesSent(bytes);
+  if (m_Socket->bytesToWrite() == 0)
+  {
+    m_WaitForSend.wakeOne();
+  }
+}
+
+
+//-----------------------------------------------------------------------------
 void NiftyLinkTcpNetworkWorker::OnSocketReadyRead()
 {
+  // This doubly double checks we are running in our own thread.
+  NiftyLinkQThread *p = dynamic_cast<NiftyLinkQThread*>(QThread::currentThread());
+  assert(p != NULL);
+
   // This indicates a catastrophic failure, and hence no point continuing.
   if (m_AbortReading)
   {
     QLOG_ERROR() << QObject::tr("%1::OnSocketReadyRead() - Abort reading. Giving up.").arg(m_MessagePrefix);
     return;
   }
-
-  // This doubly double checks we are running in our own thread.
-  NiftyLinkQThread *p = dynamic_cast<NiftyLinkQThread*>(QThread::currentThread());
-  assert(p != NULL);
 
   // Create stream outside of loop ... maybe more efficient.
   QDataStream in(m_Socket);
@@ -452,6 +446,14 @@ void NiftyLinkTcpNetworkWorker::OnSocketReadyRead()
       // Don't forget to Unpack!
       m_IncomingMessage->Unpack();
 
+      bool isKeepAlive = this->IsKeepAlive(m_IncomingMessage);
+      bool isStatsRequest = this->IsStatsRequest(m_IncomingMessage);
+
+      if (isStatsRequest)
+      {
+        this->OnOutputStats();
+      }
+
       // Check for special case messages. They are squashed here, and not delivered to client.
       bool isKeepAlive = this->IsKeepAlive(m_IncomingMessage);
       bool isStatsRequest = this->IsStatsRequest(m_IncomingMessage);
@@ -518,19 +520,27 @@ void NiftyLinkTcpNetworkWorker::OnSocketReadyRead()
 
 
 //-----------------------------------------------------------------------------
-void NiftyLinkTcpNetworkWorker::OnSend()
+void NiftyLinkTcpNetworkWorker::OnSendMessage()
 {
-  // So, this should ONLY be called from the NiftyLinkQThread that this object is bound to.
+  // This doubly double checks we are running in our own thread.
+  NiftyLinkQThread *p = dynamic_cast<NiftyLinkQThread*>(QThread::currentThread());
+  assert(p != NULL);
+
   NiftyLinkMessageContainer::Pointer message = m_OutboundMessages->GetContainer(m_Socket->peerPort());
   igtl::MessageBase::Pointer msg = message->GetMessage();
-  this->SendMessage(msg);
-}
+  this->InternalSendMessage(msg);
 
+  QLOG_DEBUG() << QObject::tr("%1::OnSendMessage() - sent.").arg(m_MessagePrefix);
+}
 
 
 //-----------------------------------------------------------------------------
 void NiftyLinkTcpNetworkWorker::OnSendInternalPing()
 {
+  // This doubly double checks we are running in our own thread.
+  NiftyLinkQThread *p = dynamic_cast<NiftyLinkQThread*>(QThread::currentThread());
+  assert(p != NULL);
+
   // Check if we can avoid sending this message, just to save on network traffic.
   m_KeepAliveTimeStamp->GetTime();
   igtlUint64 diff = GetDifferenceInNanoSeconds(m_KeepAliveTimeStamp, m_LastMessageSentTime) / 1000000; // convert nano to milliseconds.
@@ -545,15 +555,15 @@ void NiftyLinkTcpNetworkWorker::OnSendInternalPing()
   msg->SetCode(igtl::StatusMessage::STATUS_OK);
   msg->Pack();
 
-  this->SendMessage(msg.GetPointer());
-  QLOG_DEBUG() << QObject::tr("%1::OnSendInternalPing() - sent.").arg(m_MessagePrefix);
-
+  this->InternalSendMessage(msg.GetPointer());
   emit SentKeepAlive();
+
+  QLOG_DEBUG() << QObject::tr("%1::OnSendInternalPing() - sent.").arg(m_MessagePrefix);
 }
 
 
 //-----------------------------------------------------------------------------
-void NiftyLinkTcpNetworkWorker::SendMessage(igtl::MessageBase::Pointer msg)
+void NiftyLinkTcpNetworkWorker::InternalSendMessage(igtl::MessageBase::Pointer msg)
 {
   // This doubly double checks we are running in our own thread.
   niftk::NiftyLinkQThread *p = dynamic_cast<niftk::NiftyLinkQThread*>(QThread::currentThread());
