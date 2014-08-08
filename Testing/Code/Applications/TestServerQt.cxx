@@ -85,11 +85,20 @@ void TestServerQt::Start()
 //-----------------------------------------------------------------------------
 void TestServerQt::Stop()
 {
-  QLOG_INFO() << QObject::tr("%1::Stop() - killing server.").arg(objectName());
-  delete m_Server;
-  QLOG_INFO() << QObject::tr("%1::Stop() - killed server.").arg(objectName());
+  QLOG_INFO() << QObject::tr("%1::Stop() - Shutting down server.").arg(objectName());
+
+  m_Server->Shutdown();
+  QTimer::singleShot(2000, this, SLOT(KillApp()));
+
+  QLOG_INFO() << QObject::tr("%1::Stop() - Shut down server.").arg(objectName());
+}
+
+
+//-----------------------------------------------------------------------------
+void TestServerQt::KillApp()
+{
+  QLOG_INFO() << QObject::tr("%1::KillApp() - Killing app.").arg(objectName());
   QCoreApplication::quit();
-  QLOG_INFO() << QObject::tr("%1::Stop() - quiting app.").arg(objectName());
 }
 
 

@@ -41,6 +41,9 @@ public:
   NiftyLinkTcpServer(QObject *parent = 0);
   virtual ~NiftyLinkTcpServer();
 
+  /// \brief Call this to shut down, and then periodically check the number of connected clients.
+  void Shutdown();
+
   /// \brief Set a threshold for the number of messages, so that you
   /// get stats every X number of messages. Set <em>threshold</em>
   /// to -1 to turn this feature off. Defaults to off.
@@ -120,8 +123,6 @@ private slots:
   void OnMessageReceived(int portNumber);
 
 private:
-
-  void Shutdown();
 
   QSet<NiftyLinkTcpNetworkWorker*> m_Workers;
   QMutex                           m_Mutex;

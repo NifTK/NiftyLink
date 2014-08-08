@@ -88,6 +88,7 @@ NiftyLinkTcpNetworkWorker::NiftyLinkTcpNetworkWorker(
 
   connect(this, SIGNAL(InternalStatsSignal()), this, SLOT(OnOutputStats()));
   connect(this, SIGNAL(InternalSendSignal()), this, SLOT(OnSendMessage()), Qt::BlockingQueuedConnection);
+  connect(this, SIGNAL(InternalDisconnectedSocketSignal()), this, SLOT(OnRequestSocketDisconnected()), Qt::QueuedConnection);
   connect(m_NoIncomingDataTimer, SIGNAL(timeout()), this, SLOT(OnCheckForIncomingData()));
   connect(m_KeepAliveTimer, SIGNAL(timeout()), this, SLOT(OnSendInternalPing()));
   connect(m_Socket, SIGNAL(disconnected()), this, SLOT(OnSocketDisconnected()));
@@ -129,24 +130,15 @@ bool NiftyLinkTcpNetworkWorker::IsSocketConnected() const
 
 
 //-----------------------------------------------------------------------------
-void NiftyLinkTcpNetworkWorker::DisconnectSocket()
+void NiftyLinkTcpNetworkWorker::RequestDisconnectSocket()
 {
-  m_Socket->disconnectFromHost();
-}
+  QLOG_WARN() << QObject::tr("%1::RequestDisconnectSocket() - Requesting...").arg(objectName());
 
+  // This is done, as this can be called from an external thread (eg. GUI thread),
+  // but the processing of the request is done from the thread that this object is bound to (NiftyLinkQThread).
+  emit InternalDisconnectedSocketSignal();
 
-//-----------------------------------------------------------------------------
-void NiftyLinkTcpNetworkWorker::ShutdownThread()
-{
-  // This doubly double checks we are running in our own NiftyLinkQThread.
-  NiftyLinkQThread *p = dynamic_cast<NiftyLinkQThread*>(this->thread());
-  assert(p != NULL);
-
-  // We only need to try shutting down, if we have not already finished.
-  if (!p->isFinished())
-  {
-    p->exit(0);
-  }
+  QLOG_WARN() << QObject::tr("%1::OnRequestSocketDisconnected() - Requested.").arg(objectName());
 }
 
 
@@ -234,13 +226,32 @@ void NiftyLinkTcpNetworkWorker::OutputStatsToConsole()
 
 
 //-----------------------------------------------------------------------------
+void NiftyLinkTcpNetworkWorker::OnRequestSocketDisconnected()
+{
+  if (this->IsSocketConnected())
+  {
+    m_Socket->disconnectFromHost();
+  }
+  else
+  {
+    QLOG_WARN() << QObject::tr("%1::OnRequestSocketDisconnected() - socket wasn't actually connected, so nothing to do.").arg(objectName());
+  }
+}
+
+
+//-----------------------------------------------------------------------------
 void NiftyLinkTcpNetworkWorker::OnSocketDisconnected()
 {
+  QLOG_WARN() << QObject::tr("%1::OnSocketDisconnected() - starting to disconnect.").arg(objectName());
+
   emit SocketDisconnected();
+
   m_Disconnecting = true;
   m_Socket->deleteLater();
   this->deleteLater();
   this->ShutdownThread();
+
+  QLOG_WARN() << QObject::tr("%1::OnSocketDisconnected() - finished disconnection stuff in this method.").arg(objectName());
 }
 
 
@@ -292,6 +303,13 @@ void NiftyLinkTcpNetworkWorker::OnSocketReadyRead()
   if (m_AbortReading)
   {
     QLOG_ERROR() << QObject::tr("%1::OnSocketReadyRead() - Abort reading. Giving up.").arg(m_MessagePrefix);
+    return;
+  }
+
+  // This indicates a catastrophic failure, and hence no point continuing.
+  if (m_Disconnecting)
+  {
+    QLOG_WARN() << QObject::tr("%1::OnSocketReadyRead() - Shutting down, so stopping reading.").arg(m_MessagePrefix);
     return;
   }
 
@@ -550,6 +568,22 @@ void NiftyLinkTcpNetworkWorker::InternalSendMessage(igtl::MessageBase::Pointer m
   m_LastMessageSentTime->GetTime();
 
   QLOG_DEBUG() << QObject::tr("%1::SendMessage() - written %2 bytes.").arg(m_MessagePrefix).arg(bytesWritten);
+}
+
+
+
+//-----------------------------------------------------------------------------
+void NiftyLinkTcpNetworkWorker::ShutdownThread()
+{
+  // This doubly double checks we are running in our own NiftyLinkQThread.
+  NiftyLinkQThread *p = dynamic_cast<NiftyLinkQThread*>(this->thread());
+  assert(p != NULL);
+
+  // We only need to try shutting down, if we have not already finished.
+  if (!p->isFinished())
+  {
+    p->exit(0);
+  }
 }
 
 } // end niftk namespace

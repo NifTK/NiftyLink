@@ -56,11 +56,9 @@ public:
   /// \brief Returns true if the socket exists, and the socket says its open, and false otherwise.
   bool IsSocketConnected() const;
 
-  /// \brief Disconnects the socket.
-  void DisconnectSocket();
-
-  /// \brief Asks the containing thread to quit.
-  void ShutdownThread();
+  /// \brief Requests the socket is disconnected.
+  /// This will be processed by the event loop containing this object.
+  void RequestDisconnectSocket();
 
   /// \brief Set a threshold for the number of messages, so that you
   /// get stats printed to console every X number of messages. Set to -1 to turn this off.
@@ -115,7 +113,13 @@ signals:
   /// \brief Internal use only.
   void InternalStatsSignal();
 
+  /// \brief Internal use only.
+  void InternalDisconnectedSocketSignal();
+
 private slots:
+
+  /// \brief Internal slot that actually tells the socket to disconnect.
+  void OnRequestSocketDisconnected();
 
   /// \brief Triggered by socket when disconnected.
   /// This has knock on effects, effectively scheduling the socket, the worker (this class), and the thread to shutdown and delete.
@@ -150,6 +154,9 @@ private:
 
   /// \brief Actually sends a message out the socket, so don't expose this publically.
   void InternalSendMessage(igtl::MessageBase::Pointer);
+
+  /// \brief Asks the containing thread to quit.
+  void ShutdownThread();
 
   QTcpSocket                   *m_Socket;
   QString                       m_MessagePrefix;

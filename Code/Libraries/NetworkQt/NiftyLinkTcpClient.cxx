@@ -116,7 +116,7 @@ void NiftyLinkTcpClient::RequestStats()
 void NiftyLinkTcpClient::DisconnectFromHost()
 {
   assert(this->IsConnected());
-  m_Worker->DisconnectSocket();
+  m_Worker->RequestDisconnectSocket();
 }
 
 
