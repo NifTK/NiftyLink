@@ -66,7 +66,7 @@ private:
   int                          m_IntendedNumberMessages;
   int                          m_NumberMessagesSent;
   NiftyLinkTcpClient          *m_Client;
-
+  bool                         m_ShuttingDown;
 };
 
 } // end namespace niftk

@@ -39,6 +39,7 @@ TestClientNifTKQtTracking::TestClientNifTKQtTracking(
 , m_TrackedObjectsPerMessage(trackedObjectsPerMessage)
 , m_NumberMessagesSent(0)
 , m_Client(new NiftyLinkTcpClient(parent))
+, m_ShuttingDown(false)
 {
   this->setObjectName("TestClientNifTKQtTracking");
   connect(m_Client, SIGNAL(Connected(QString,int)), this, SLOT(OnConnectedToServer()));
@@ -64,6 +65,7 @@ void TestClientNifTKQtTracking::Start()
 void TestClientNifTKQtTracking::Shutdown()
 {
   QLOG_INFO() << QObject::tr("%1::Shutdown() - starting.").arg(objectName());
+  m_ShuttingDown = true;
 
   if (m_Client != NULL)
   {
@@ -71,8 +73,8 @@ void TestClientNifTKQtTracking::Shutdown()
     m_Client = NULL;
   }
 
-  QCoreApplication::quit();
   QLOG_INFO() << QObject::tr("%1::Shutdown() - finished.").arg(objectName());
+  QCoreApplication::quit();
 }
 
 
@@ -81,14 +83,17 @@ void TestClientNifTKQtTracking::OnConnectedToServer()
 {
   QLOG_INFO() << QObject::tr("%1::OnConnectedToServer().").arg(objectName());
   this->RunTest();
-  QTimer::singleShot(1000, this, SLOT(Shutdown()));
+  QTimer::singleShot(1000, m_Client, SLOT(DisconnectFromHost()));
 }
 
 
 //-----------------------------------------------------------------------------
 void TestClientNifTKQtTracking::OnDisconnected()
 {
-  this->Shutdown();
+  if (!m_ShuttingDown)
+  {
+    this->Shutdown();
+  }
 }
 
 

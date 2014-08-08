@@ -37,6 +37,7 @@ TestClientNifTKQtTrackingAndImaging::TestClientNifTKQtTrackingAndImaging(const s
 , m_IntendedNumberMessages(totalNumberMessages)
 , m_NumberMessagesSent(0)
 , m_Client(new NiftyLinkTcpClient(parent))
+, m_ShuttingDown(false)
 {
   m_ImageMessage = igtl::ImageMessage::New();
   niftk::LoadImage(imageFileName, m_ImageMessage);
@@ -83,14 +84,17 @@ void TestClientNifTKQtTrackingAndImaging::OnConnectedToServer()
 {
   QLOG_INFO() << QObject::tr("%1::OnConnectedToServer().").arg(objectName());
   this->RunTest();
-  QTimer::singleShot(1000, this, SLOT(Shutdown()));
+  QTimer::singleShot(1000, m_Client, SLOT(DisconnectFromHost()));
 }
 
 
 //-----------------------------------------------------------------------------
 void TestClientNifTKQtTrackingAndImaging::OnDisconnected()
 {
-  this->Shutdown();
+  if (!m_ShuttingDown)
+  {
+    this->Shutdown();
+  }
 }
 
 

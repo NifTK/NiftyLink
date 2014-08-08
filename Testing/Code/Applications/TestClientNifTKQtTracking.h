@@ -62,6 +62,7 @@ private:
   int                 m_TrackedObjectsPerMessage;
   int                 m_NumberMessagesSent;
   NiftyLinkTcpClient *m_Client;
+  bool                m_ShuttingDown;
 
 };
 

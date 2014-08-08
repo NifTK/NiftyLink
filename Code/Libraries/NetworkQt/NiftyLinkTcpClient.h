@@ -60,9 +60,6 @@ public:
   /// You should register and listen to SocketError signal before calling this.
   void ConnectToHost(const QString& hostName, quint16 portNumber);
 
-  /// \brief Disconnects.
-  void DisconnectFromHost();
-
   /// \brief Returns true if connected and false otherwise.
   bool IsConnected() const;
 
@@ -73,6 +70,9 @@ public:
   bool Send(NiftyLinkMessageContainer::Pointer message);
 
 public slots:
+
+  /// \brief Disconnects.
+  void DisconnectFromHost();
 
   /// \brief Writes some stats to console, see NiftyLinkMessageCounter.
   /// Defined as a slot, so we can trigger it via QTimer for instance.
