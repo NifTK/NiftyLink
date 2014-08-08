@@ -105,10 +105,10 @@ void NiftyLinkTcpClient::OutputStats()
 
 
 //-----------------------------------------------------------------------------
-bool NiftyLinkTcpClient::RequestStats()
+void NiftyLinkTcpClient::RequestStats()
 {
   assert(this->IsConnected());
-  return m_Worker->RequestStats();
+  m_Worker->RequestStats();
 }
 
 
@@ -177,7 +177,6 @@ void NiftyLinkTcpClient::ConnectToHost(const QString& hostName, quint16 portNumb
   // There are no errors reported from this. Listen to the error signal, see OnError().
   m_Socket->connectToHost(m_RequestedName, m_RequestedPort);
 }
-
 
 
 //-----------------------------------------------------------------------------

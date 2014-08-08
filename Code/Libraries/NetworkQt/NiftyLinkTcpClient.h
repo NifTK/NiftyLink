@@ -75,13 +75,12 @@ public:
 public slots:
 
   /// \brief Writes some stats to console, see NiftyLinkMessageCounter.
-  /// Defined as a slot, so we can trigger it via QTimer.
+  /// Defined as a slot, so we can trigger it via QTimer for instance.
   void OutputStats();
 
   /// \brief Sends message to other end to request the other end to output stats to console.
-  /// Defined as a slot, so we can trigger it via QTimer.
-  /// \return false if socket closed or unwritable, true otherwise.
-  bool RequestStats();
+  /// Defined as a slot, so we can trigger it via QTimer for instance.
+  void RequestStats();
 
 signals:
 
@@ -121,7 +120,7 @@ private slots:
   /// \brief When the socket successfully connects, we move all processing to another thread.
   void OnConnected();
 
-  /// \brief At the moment, just log, and emmit this classes Disconnected signal.
+  /// \brief At the moment, just log, and emmit this class's Disconnected signal.
   void OnDisconnected();
 
   /// \brief We need to listen to all socket errors from the moment we create it.

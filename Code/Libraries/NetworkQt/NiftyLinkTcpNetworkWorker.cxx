@@ -36,13 +36,15 @@ NiftyLinkTcpNetworkWorker::NiftyLinkTcpNetworkWorker(
     QTcpSocket *socket,
     QObject *parent)
 : QObject(parent)
+, m_Socket(socket)
+, m_MessagePrefix("")
 , m_InboundMessages(inboundMessages)
 , m_OutboundMessages(outboundMessages)
-, m_Socket(socket)
 , m_HeaderInProgress(false)
 , m_MessageInProgress(false)
 , m_IncomingHeader(NULL)
 , m_IncomingHeaderTimeStamp(NULL)
+, m_TimeFullyReceivedTimeStamp(NULL)
 , m_IncomingMessage(NULL)
 , m_IncomingMessageBytesReceived(0)
 , m_AbortReading(false)
@@ -263,6 +265,7 @@ void NiftyLinkTcpNetworkWorker::OnCheckForIncomingData()
 {
   m_NoIncomingDataTimeStamp->GetTime();
   double millisecondsSinceLastData = niftk::GetDifferenceInNanoSeconds(m_NoIncomingDataTimeStamp, m_LastMessageReceivedTime) / static_cast<double>(1000000);
+
   if (millisecondsSinceLastData > m_KeepAliveInterval)
   {
     QLOG_DEBUG() << QObject::tr("%1::OnCheckForIncomingData() - signalling 'NoIncomingData'.").arg(m_MessagePrefix);
