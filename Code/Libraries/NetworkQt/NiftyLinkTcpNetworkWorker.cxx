@@ -432,14 +432,6 @@ void NiftyLinkTcpNetworkWorker::OnSocketReadyRead()
       }
 
       // Check for special case messages. They are squashed here, and not delivered to client.
-      bool isKeepAlive = this->IsKeepAlive(m_IncomingMessage);
-      bool isStatsRequest = this->IsStatsRequest(m_IncomingMessage);
-      
-      if (isStatsRequest)
-      {
-        this->OnOutputStats();
-      }
-      
       if (isKeepAlive || isStatsRequest)
       {
         
