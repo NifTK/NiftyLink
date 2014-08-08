@@ -17,6 +17,8 @@
 #include <igtlMessageBase.h>
 #include <QsLog.h>
 
+#include <cassert>
+
 namespace niftk
 {
 
@@ -55,7 +57,7 @@ NiftyLinkTcpClient::~NiftyLinkTcpClient()
 
   // This NiftyLinkTcpClient may be deleted by something external.
   // So, the thread that we create inside this class needs explicitly asking to stop its event loop.
-  if (!m_Thread->isFinished())
+  if (m_Thread != NULL && !m_Thread->isFinished())
   {
     m_Thread->exit(0);
     if(!m_Thread->wait(10000))
@@ -69,8 +71,16 @@ NiftyLinkTcpClient::~NiftyLinkTcpClient()
 
 
 //-----------------------------------------------------------------------------
+bool NiftyLinkTcpClient::IsConnected() const
+{
+  return m_Socket != NULL && m_Worker != NULL && m_Worker->IsSocketOpen();
+}
+
+
+//-----------------------------------------------------------------------------
 void NiftyLinkTcpClient::SetNumberMessageReceivedThreshold(qint64 threshold)
 {
+  assert(this->IsConnected());
   m_Worker->SetNumberMessageReceivedThreshold(threshold);
 }
 
@@ -78,6 +88,7 @@ void NiftyLinkTcpClient::SetNumberMessageReceivedThreshold(qint64 threshold)
 //-----------------------------------------------------------------------------
 void NiftyLinkTcpClient::SetKeepAliveOn(bool isOn)
 {
+  assert(this->IsConnected());
   m_Worker->SetKeepAliveOn(isOn);
 }
 
@@ -85,6 +96,7 @@ void NiftyLinkTcpClient::SetKeepAliveOn(bool isOn)
 //-----------------------------------------------------------------------------
 void NiftyLinkTcpClient::SetCheckForNoIncomingData(bool isOn)
 {
+  assert(this->IsConnected());
   m_Worker->SetCheckForNoIncomingData(isOn);
 }
 
@@ -92,6 +104,7 @@ void NiftyLinkTcpClient::SetCheckForNoIncomingData(bool isOn)
 //-----------------------------------------------------------------------------
 void NiftyLinkTcpClient::OutputStats()
 {
+  assert(this->IsConnected());
   m_Worker->OutputStatsToConsole();
 }
 
@@ -99,20 +112,15 @@ void NiftyLinkTcpClient::OutputStats()
 //-----------------------------------------------------------------------------
 bool NiftyLinkTcpClient::RequestStats()
 {
+  assert(this->IsConnected());
   return m_Worker->RequestStats();
-}
-
-
-//-----------------------------------------------------------------------------
-bool NiftyLinkTcpClient::IsConnected() const
-{
-  return m_Worker->IsSocketOpen();
 }
 
 
 //-----------------------------------------------------------------------------
 void NiftyLinkTcpClient::DisconnectFromHost()
 {
+  assert(this->IsConnected());
   m_Socket->disconnectFromHost();
 }
 
@@ -120,6 +128,7 @@ void NiftyLinkTcpClient::DisconnectFromHost()
 //-----------------------------------------------------------------------------
 bool NiftyLinkTcpClient::Send(NiftyLinkMessageContainer::Pointer message)
 {
+  assert(this->IsConnected());
   return m_Worker->Send(message);
 }
 
@@ -139,6 +148,7 @@ void NiftyLinkTcpClient::ConnectToHost(const QString& hostName, quint16 portNumb
   m_RequestedPort = portNumber;
 
   m_Socket = new QTcpSocket();
+
   connect(m_Socket, SIGNAL(error(QAbstractSocket::SocketError)), this, SLOT(OnError()));
   connect(m_Socket, SIGNAL(disconnected()), this, SLOT(OnDisconnected()));
   connect(m_Socket, SIGNAL(disconnected()), m_Socket, SLOT(deleteLater()));
