@@ -183,9 +183,6 @@ private:
   igtl::TimeStamp::Pointer       m_NoIncomingDataTimeStamp;
   igtl::TimeStamp::Pointer       m_LastMessageReceivedTime;
 
-  // For providing a blocking send.
-  QWaitCondition                 m_WaitForSend;
-
   // Disconnecting in progress.
   bool                           m_Disconnecting;
 

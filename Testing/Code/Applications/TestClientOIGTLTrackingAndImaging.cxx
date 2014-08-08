@@ -77,33 +77,32 @@ int main(int argc, char* argv[])
   localImage->SetScalarType(igtl::ImageMessage::TYPE_UINT8);
   localImage->AllocateScalars();
 
-  igtl::TimeStamp::Pointer timeLastImageMessage = igtl::TimeStamp::New();
-  timeLastImageMessage->GetTime();
+  igtlUint64 nanosecondsBetweenImageMessages = 1000000000 / fps;
+  igtlUint64 nanosecondsBetweenTrackingMessages = 1000000000 / 100;  // i.e. tracking rate constant.
 
-  igtl::TimeStamp::Pointer timeLastTrackingMessage = igtl::TimeStamp::New();
-  timeLastTrackingMessage->GetTime();
-
-  igtl::TimeStamp::Pointer timeNow = igtl::TimeStamp::New();
-  timeNow->GetTime();
+  igtlUint64 numberTrackingMessagesSent = 0;
+  igtlUint64 numberImagingMessagesSent = 0;
+  igtlUint64 numberMessagesRequired = totalMessages;
 
   igtl::TimeStamp::Pointer timeCreated = igtl::TimeStamp::New();
   timeCreated->GetTime();
 
-  int nanosecondsBetweenImageMessages = 1000000000 / fps;
-  int nanosecondsBetweenTrackingMessages = 1000000000 / 100;  // i.e. tracking rate constant.
+  igtl::TimeStamp::Pointer timeNow = igtl::TimeStamp::New();
+  timeNow->GetTime();
 
-  int numberMessagesSent = 0;
-  int numberMessagesRequired = totalMessages;
+  igtl::TimeStamp::Pointer timeStarted = igtl::TimeStamp::New();
+  timeStarted->SetTimeInNanoseconds(timeNow->GetTimeStampInNanoseconds());
 
-  while (numberMessagesSent < numberMessagesRequired)
+  // This will occupy a lot of CPU, but we have multi-cpu machines, so assumed to be no problem.
+  while(numberImagingMessagesSent < numberMessagesRequired)
   {
+
     timeNow->GetTime();
+    igtlUint64 diff = niftk::GetDifferenceInNanoSeconds(timeNow, timeStarted);
 
     // Do tracking first.
-    if (niftk::GetDifferenceInNanoSeconds(timeNow, timeLastTrackingMessage) > nanosecondsBetweenTrackingMessages)
+    if (diff >= nanosecondsBetweenTrackingMessages*numberTrackingMessagesSent)
     {
-      timeLastTrackingMessage->SetTimeInNanoseconds(timeNow->GetTimeStampInNanoseconds());
-
       niftk::NiftyLinkMessageContainer::Pointer m = niftk::CreateTestTrackingDataMessage(timeCreated, channels);
       r = socket->Send(m->GetMessage()->GetPackPointer(), m->GetMessage()->GetPackSize());
       if (r == 0)
@@ -111,13 +110,12 @@ int main(int argc, char* argv[])
         std::cerr << "Failed to send message." << std::endl;
         exit(0);
       }
+      numberTrackingMessagesSent++;
     }
 
     // Do imaging second.
-    if (niftk::GetDifferenceInNanoSeconds(timeNow, timeLastImageMessage) > nanosecondsBetweenImageMessages)
+    if (diff >= nanosecondsBetweenImageMessages*numberImagingMessagesSent)
     {
-      timeLastImageMessage->SetTimeInNanoseconds(timeNow->GetTimeStampInNanoseconds());
-
       timeCreated->GetTime();
       localImage->SetTimeStamp(timeCreated);
 
@@ -131,7 +129,7 @@ int main(int argc, char* argv[])
         exit(0);
       }
 
-      numberMessagesSent++;
+      numberImagingMessagesSent++;
     }
   }
 

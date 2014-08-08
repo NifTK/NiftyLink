@@ -86,7 +86,7 @@ NiftyLinkTcpNetworkWorker::NiftyLinkTcpNetworkWorker(
   this->setObjectName(m_MessagePrefix);
   m_ReceivedCounter.setObjectName(m_MessagePrefix);
 
-  connect(this, SIGNAL(InternalStatsSignal()), this, SLOT(OnOutputStats()), Qt::BlockingQueuedConnection);
+  connect(this, SIGNAL(InternalStatsSignal()), this, SLOT(OnOutputStats()));
   connect(this, SIGNAL(InternalSendSignal()), this, SLOT(OnSendMessage()), Qt::BlockingQueuedConnection);
   connect(m_NoIncomingDataTimer, SIGNAL(timeout()), this, SLOT(OnCheckForIncomingData()));
   connect(m_KeepAliveTimer, SIGNAL(timeout()), this, SLOT(OnSendInternalPing()));
@@ -278,10 +278,6 @@ void NiftyLinkTcpNetworkWorker::OnCheckForIncomingData()
 void NiftyLinkTcpNetworkWorker::OnBytesSent(qint64 bytes)
 {
   emit BytesSent(bytes);
-  if (m_Socket->bytesToWrite() == 0)
-  {
-    m_WaitForSend.wakeOne();
-  }
 }
 
 

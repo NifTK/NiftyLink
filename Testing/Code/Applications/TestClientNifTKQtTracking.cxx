@@ -95,37 +95,33 @@ void TestClientNifTKQtTracking::OnDisconnected()
 //-----------------------------------------------------------------------------
 void TestClientNifTKQtTracking::RunTest()
 {
-  QLOG_INFO() << QObject::tr("%1::RunTest() - starting.").arg(objectName());
-
-  igtl::TimeStamp::Pointer timeLastMessage = igtl::TimeStamp::New();
-  timeLastMessage->GetTime();
-
-  igtl::TimeStamp::Pointer timeNow = igtl::TimeStamp::New();
-  timeNow->GetTime();
+  igtlUint64 nanosecondsBetweenMessages = 1000000000 / m_FramesPerSecond;
+  QLOG_INFO() << QObject::tr("%1::RunTest() - %2 fps = %3 ns between messages.").arg(objectName()).arg(m_FramesPerSecond).arg(nanosecondsBetweenMessages);
 
   igtl::TimeStamp::Pointer timeCreated = igtl::TimeStamp::New();
   timeCreated->GetTime();
 
-  int nanosecondsBetweenMessages = 1000000000 / m_FramesPerSecond;
-  QLOG_INFO() << QObject::tr("%1::RunTest() - %2 fps = %3 ns between messages.").arg(objectName()).arg(m_FramesPerSecond).arg(nanosecondsBetweenMessages);
+  igtl::TimeStamp::Pointer timeNow = igtl::TimeStamp::New();
+  timeNow->GetTime();
 
-  // This will occupy a lot of CPU, but we have multi-cpu machines, so no problem.
+  igtl::TimeStamp::Pointer timeStarted = igtl::TimeStamp::New();
+  timeStarted->SetTimeInNanoseconds(timeNow->GetTimeStampInNanoseconds());
+
+  // This will occupy a lot of CPU, but we have multi-cpu machines, so assumed to be no problem.
   while(m_NumberMessagesSent < m_IntendedNumberMessages)
   {
-    timeNow->GetTime();
-
-    if (niftk::GetDifferenceInNanoSeconds(timeNow, timeLastMessage) > nanosecondsBetweenMessages)
+    if (!m_Client->IsConnected())
     {
-      timeLastMessage->SetTimeInNanoseconds(timeNow->GetTimeStampInNanoseconds());
+      QLOG_ERROR() << QObject::tr("%1::RunTest() - Early exit, client disconnected.").arg(objectName());
+      return;
+    }
 
+    timeNow->GetTime();
+    igtlUint64 diff = niftk::GetDifferenceInNanoSeconds(timeNow, timeStarted);
+
+    if (diff >= nanosecondsBetweenMessages*m_NumberMessagesSent)
+    {
       NiftyLinkMessageContainer::Pointer m = niftk::CreateTestTrackingDataMessage(timeCreated, m_TrackedObjectsPerMessage);
-
-      if (!m_Client->IsConnected())
-      {
-        QLOG_ERROR() << QObject::tr("%1::RunTest() - Early exit, client disconnected.").arg(objectName());
-        return;
-      }
-
       m_Client->Send(m);
       m_NumberMessagesSent++;
     }

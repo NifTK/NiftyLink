@@ -72,27 +72,29 @@ int main(int argc, char* argv[])
   localImage->SetScalarType(igtl::ImageMessage::TYPE_UINT8);
   localImage->AllocateScalars();
 
-  igtl::TimeStamp::Pointer timeLastMessage = igtl::TimeStamp::New();
-  timeLastMessage->GetTime();
+  int numberMessagesSent = 0;
+  int numberMessagesRequired = totalMessages;
 
-  igtl::TimeStamp::Pointer timeNow = igtl::TimeStamp::New();
-  timeNow->GetTime();
+  igtlUint64 nanosecondsBetweenMessages = 1000000000 / fps;
 
   igtl::TimeStamp::Pointer timeCreated = igtl::TimeStamp::New();
   timeCreated->GetTime();
 
-  int nanosecondsBetweenMessages = 1000000000 / fps;
-  int numberMessagesSent = 0;
-  int numberMessagesRequired = totalMessages;
+  igtl::TimeStamp::Pointer timeNow = igtl::TimeStamp::New();
+  timeNow->GetTime();
 
-  while (numberMessagesSent < numberMessagesRequired)
+  igtl::TimeStamp::Pointer timeStarted = igtl::TimeStamp::New();
+  timeStarted->SetTimeInNanoseconds(timeNow->GetTimeStampInNanoseconds());
+
+  // This will occupy a lot of CPU, but we have multi-cpu machines, so assumed to be no problem.
+  while(numberMessagesSent < numberMessagesRequired)
   {
+
     timeNow->GetTime();
+    igtlUint64 diff = niftk::GetDifferenceInNanoSeconds(timeNow, timeStarted);
 
-    if (niftk::GetDifferenceInNanoSeconds(timeNow, timeLastMessage) > nanosecondsBetweenMessages)
+    if (diff >= nanosecondsBetweenMessages*numberMessagesSent)
     {
-      timeLastMessage->SetTimeInNanoseconds(timeNow->GetTimeStampInNanoseconds());
-
       timeCreated->GetTime();
       localImage->SetTimeStamp(timeCreated);
 

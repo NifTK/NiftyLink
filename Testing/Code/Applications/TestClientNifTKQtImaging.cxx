@@ -96,7 +96,7 @@ void TestClientNifTKQtImaging::OnDisconnected()
 //-----------------------------------------------------------------------------
 void TestClientNifTKQtImaging::RunTest()
 {
-  int nanosecondsBetweenMessages = 1000000000 / m_FramesPerSecond;
+  igtlUint64 nanosecondsBetweenMessages = 1000000000 / m_FramesPerSecond;
   QLOG_INFO() << QObject::tr("%1::RunTest() - %2 fps = %3 ns between messages.").arg(objectName()).arg(m_FramesPerSecond).arg(nanosecondsBetweenMessages);
 
   int imgSize[3];
@@ -108,51 +108,43 @@ void TestClientNifTKQtImaging::RunTest()
   localImage->SetScalarType(igtl::ImageMessage::TYPE_UINT8);
   localImage->AllocateScalars();
 
-  igtl::TimeStamp::Pointer timeLastMessage = igtl::TimeStamp::New();
-  timeLastMessage->GetTime();
-
-  igtl::TimeStamp::Pointer timeNow = igtl::TimeStamp::New();
-  timeNow->GetTime();
-
-  igtl::TimeStamp::Pointer timeCreated = igtl::TimeStamp::New();
-  timeCreated->GetTime();
-
   NiftyLinkMessageContainer::Pointer m = (NiftyLinkMessageContainer::Pointer(new NiftyLinkMessageContainer()));
   m->SetOwnerName("TestClientNifTKQtImaging");
   m->SetSenderHostName("123.456.789.012");
   m->SetSenderPortNumber(1234);
   m->SetMessage(localImage.GetPointer());
 
-  // This will occupy a lot of CPU, but we have multi-cpu machines, so no problem.
+  igtl::TimeStamp::Pointer timeCreated = igtl::TimeStamp::New();
+  timeCreated->GetTime();
+
+  igtl::TimeStamp::Pointer timeNow = igtl::TimeStamp::New();
+  timeNow->GetTime();
+
+  igtl::TimeStamp::Pointer timeStarted = igtl::TimeStamp::New();
+  timeStarted->SetTimeInNanoseconds(timeNow->GetTimeStampInNanoseconds());
+
+  // This will occupy a lot of CPU, but we have multi-cpu machines, so assumed to be no problem.
   while(m_NumberMessagesSent < m_IntendedNumberMessages)
   {
-    timeNow->GetTime();
-    if (niftk::GetDifferenceInNanoSeconds(timeNow, timeLastMessage) > nanosecondsBetweenMessages)
+    if (!m_Client->IsConnected())
     {
-      timeLastMessage->SetTimeInNanoseconds(timeNow->GetTimeStampInNanoseconds());
+      QLOG_ERROR() << QObject::tr("%1::RunTest() - Early exit, client disconnected.").arg(objectName());
+      return;
+    }
 
+    timeNow->GetTime();
+    igtlUint64 diff = niftk::GetDifferenceInNanoSeconds(timeNow, timeStarted);
+
+    if (diff >= nanosecondsBetweenMessages*m_NumberMessagesSent)
+    {
       timeCreated->GetTime();
       localImage->SetTimeStamp(timeCreated);
 
-      // Copy data from buffer.
-      // Tokuda 2009 paper says latency is measure from time between the start of copying data into the
-      // buffer, and the time to deserialise. So we record the time stamp just above this line.
-      // So, we must be aiming to simulate a realistic example, whereby at each iteration we have to
-      // copy data in, and then call Pack each time. At the moment, we don't care what the data is,
-      // just that we are fairly testing the speed of the connection.
       memcpy(localImage->GetScalarPointer(), m_ImageMessage->GetScalarPointer(), imgSize[0]*imgSize[1]);
       localImage->Pack();
 
-      if (!m_Client->IsConnected())
-      {
-        QLOG_ERROR() << QObject::tr("%1::RunTest() - Early exit, client disconnected.").arg(objectName());
-        return;
-      }
-
       m_Client->Send(m);
       m_NumberMessagesSent++;
-
-      QLOG_INFO() << QObject::tr("%1::RunTest() - %2").arg(objectName()).arg(m_NumberMessagesSent);
     }
   }
   m_Client->RequestStats();
@@ -174,9 +166,9 @@ int main(int argc, char** argv)
     std::cerr << "Usage: " << argv[0] << " <host> <port> <fps> <total> <fileName>"     << std::endl;
     std::cerr << "    <host>      : Hostname"                               << std::endl;
     std::cerr << "    <port>      : Port #"                                 << std::endl;
-    std::cerr << "    <fps>       : Frames per second [30]"                 << std::endl;
-    std::cerr << "    <total>     : # of msgs in total [1000]"              << std::endl;
-    std::cerr << "    <fileName>  : image file (.pgm)"                      << std::endl;
+    std::cerr << "    <fps>       : Frames per second."                     << std::endl;
+    std::cerr << "    <total>     : # of msgs in total."                    << std::endl;
+    std::cerr << "    <fileName>  : image file (.pgm)."                     << std::endl;
     exit(0);
   }
 
