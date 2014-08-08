@@ -156,6 +156,12 @@ extern "C++" NIFTYLINKCOMMON_WINEXPORT void CopyMatrix(double *input, igtl::Matr
 /// \param timeB must be not-NULL, only checked with assert()
 extern "C++" NIFTYLINKCOMMON_WINEXPORT igtlUint64 GetDifferenceInNanoSeconds(igtl::TimeStamp* timeA, igtl::TimeStamp* timeB);
 
+/// \brief Returns true if the message is a STATUS_OK and false otherwise.
+extern "C++" NIFTYLINKCOMMON_WINEXPORT bool IsKeepAlive(const igtl::MessageBase::Pointer&);
+
+/// \brief Returns true if the message is an igtl::StringMessage containing just the text "STATS".
+extern "C++" NIFTYLINKCOMMON_WINEXPORT bool IsStatsRequest(const igtl::MessageBase::Pointer&);
+
 } // end namespace niftk
 
 #endif // NiftyLinkUtils_h

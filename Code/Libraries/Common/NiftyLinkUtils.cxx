@@ -441,5 +441,38 @@ void ExtractImageMessage(const NiftyLinkMessageContainer::Pointer& message, QIma
 }
 
 
+//-----------------------------------------------------------------------------
+bool IsKeepAlive(const igtl::MessageBase::Pointer& message)
+{
+  bool isKeepAlive = false;
+  igtl::StatusMessage::Pointer msg = dynamic_cast<igtl::StatusMessage*>(message.GetPointer());
+  if (msg.IsNotNull())
+  {
+    if (msg->GetCode() == igtl::StatusMessage::STATUS_OK)
+    {
+      isKeepAlive = true;
+    }
+  }
+  return isKeepAlive;
+}
+
+
+//-----------------------------------------------------------------------------
+bool IsStatsRequest(const igtl::MessageBase::Pointer& message)
+{
+  bool isStats = false;
+  igtl::StringMessage::Pointer msg = dynamic_cast<igtl::StringMessage*>(message.GetPointer());
+  if (msg.IsNotNull())
+  {
+    if (msg->GetString() == std::string("STATS"))
+    {
+      isStats = true;
+    }
+  }
+  return isStats;
+}
+
+
+
 } // end namespace niftk
 
