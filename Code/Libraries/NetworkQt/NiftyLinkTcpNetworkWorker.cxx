@@ -59,7 +59,7 @@ NiftyLinkTcpNetworkWorker::NiftyLinkTcpNetworkWorker(
   assert(m_Socket);
   assert(m_InboundMessages);
   assert(m_OutboundMessages);
-
+  
   QString host = m_Socket->peerName();
   if (host.size() == 0)
   {
@@ -302,7 +302,7 @@ void NiftyLinkTcpNetworkWorker::OnSocketReadyRead()
   // Create stream outside of loop ... maybe more efficient.
   QDataStream in(m_Socket);
   in.setVersion(QDataStream::Qt_4_0);
-
+  
   // Storing this locally, incase the socket gets updated.
   quint64 bytesAvailable = m_Socket->bytesAvailable();
   quint64 bytesReceived = 0;
@@ -386,7 +386,6 @@ void NiftyLinkTcpNetworkWorker::OnSocketReadyRead()
       if (bytesAvailable < bytesRequiredToCompleteMessage)
       {
         QLOG_DEBUG() << QObject::tr("%1::OnSocketReadyRead() - Message suggests there should be %2 bytes of data, but only %3 are available. Fragmentation has occurred.").arg(m_MessagePrefix).arg(m_IncomingMessage->GetPackBodySize()).arg(bytesAvailable);
-
         bytesReceived = in.readRawData(static_cast<char *>(m_IncomingMessage->GetPackBodyPointer()) + m_IncomingMessageBytesReceived, bytesAvailable);
         if (bytesReceived <= 0 || bytesReceived != bytesAvailable)
         {
@@ -433,9 +432,20 @@ void NiftyLinkTcpNetworkWorker::OnSocketReadyRead()
       }
 
       // Check for special case messages. They are squashed here, and not delivered to client.
+      bool isKeepAlive = this->IsKeepAlive(m_IncomingMessage);
+      bool isStatsRequest = this->IsStatsRequest(m_IncomingMessage);
+      
+      if (isStatsRequest)
+      {
+        this->OnOutputStats();
+      }
+      
       if (isKeepAlive || isStatsRequest)
       {
-        // Throw away the message and header
+        
+        m_LastMessageReceivedTime->GetTime();
+        
+        // Throw away the message and header, and bail out.
         m_HeaderInProgress = false;
         m_MessageInProgress = false;
         m_IncomingHeader = NULL;
@@ -455,12 +465,13 @@ void NiftyLinkTcpNetworkWorker::OnSocketReadyRead()
     msg->SetTimeReceived(m_TimeFullyReceivedTimeStamp);
     msg->SetMessage(m_IncomingMessage);
 
-    QLOG_DEBUG() << QObject::tr("%1::OnSocketReadyRead() - id=%2, class=%3, size=%4 bytes, device='%5'.")
+    QLOG_DEBUG() << QObject::tr("%1::OnSocketReadyRead() - id=%2, class=%3, size=%4 bytes, device='%5', avail=%6")
                     .arg(m_MessagePrefix)
                     .arg(msg->GetNiftyLinkMessageId())
                     .arg(m_IncomingMessage->GetNameOfClass())
                     .arg(m_IncomingMessage->GetPackSize())
                     .arg(m_IncomingMessage->GetDeviceType())
+                    .arg(bytesAvailable)
                     ;
 
     // We now reset these variables.
