@@ -42,6 +42,7 @@ TestClientNifTKQtTracking::TestClientNifTKQtTracking(
 {
   this->setObjectName("TestClientNifTKQtTracking");
   connect(m_Client, SIGNAL(Connected(QString,int)), this, SLOT(OnConnectedToServer()));
+  connect(m_Client, SIGNAL(Disconnected(QString,int)), this, SLOT(OnDisconnected()));
 }
 
 
@@ -85,6 +86,13 @@ void TestClientNifTKQtTracking::OnConnectedToServer()
 
 
 //-----------------------------------------------------------------------------
+void TestClientNifTKQtTracking::OnDisconnected()
+{
+  this->Shutdown();
+}
+
+
+//-----------------------------------------------------------------------------
 void TestClientNifTKQtTracking::RunTest()
 {
   QLOG_INFO() << QObject::tr("%1::RunTest() - starting.").arg(objectName());
@@ -115,6 +123,7 @@ void TestClientNifTKQtTracking::RunTest()
       if (!m_Client->IsConnected())
       {
         QLOG_ERROR() << QObject::tr("%1::RunTest() - Early exit, client disconnected.").arg(objectName());
+        return;
       }
 
       m_Client->Send(m);

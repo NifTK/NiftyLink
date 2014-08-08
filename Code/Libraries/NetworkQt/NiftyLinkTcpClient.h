@@ -60,17 +60,17 @@ public:
   /// You should register and listen to SocketError signal before calling this.
   void ConnectToHost(const QString& hostName, quint16 portNumber);
 
-  /// \brief Sends an OpenIGTLink message.
-  ///
-  /// The OpenIGTLink message within NiftyLinkMessageContainer should be Packed.
-  /// \return false if socket closed or unwritable, true otherwise.
-  bool Send(NiftyLinkMessageContainer::Pointer message);
-
   /// \brief Disconnects.
   void DisconnectFromHost();
 
   /// \brief Returns true if connected and false otherwise.
   bool IsConnected() const;
+
+  /// \brief Sends an OpenIGTLink message.
+  ///
+  /// The OpenIGTLink message within NiftyLinkMessageContainer should be Packed.
+  /// \return false if socket closed or unwritable, true otherwise.
+  bool Send(NiftyLinkMessageContainer::Pointer message);
 
 public slots:
 
@@ -93,6 +93,9 @@ signals:
 
   /// \brief Emitted when the underlying socket reports an error.
   void SocketError(QString hostName, int portNumber, QAbstractSocket::SocketError errorCode, QString errorString);
+
+  /// \brief Emitted by this class when an error has occured (eg. usage error).
+  void ClientError(QString hostName, int portNumber, QString errorString);
 
   /// \brief Emitted when this client receives an OpenIGTLink message, messages come out UnPacked.
   /// IMPORTANT: You must use a Qt::DirectConnection to connect to this, and not a Qt::QueuedConnection.
@@ -118,16 +121,21 @@ private slots:
   /// \brief When the socket successfully connects, we move all processing to another thread.
   void OnConnected();
 
+  /// \brief At the moment, just log, and emmit this classes Disconnected signal.
+  void OnDisconnected();
+
   /// \brief We need to listen to all socket errors from the moment we create it.
   void OnError();
 
-  /// \brief At the moment, just log, and emmit the Disconnected signal.
-  void OnDisconnected();
+  /// \brief Once the worker takes over, we listen to his reports of the socket errors.
+  void OnWorkerSocketError(int portNumber, QAbstractSocket::SocketError errorCode, QString errorString);
 
   /// \brief At the moment, this just copes with the different number of arguments, and passes the message on.
   void OnMessageReceived(int portNumber);
 
 private:
+
+  void RaiseInternalError(const QString& errorMessage);
 
   QTcpSocket                *m_Socket;
   NiftyLinkTcpNetworkWorker *m_Worker;
@@ -136,6 +144,7 @@ private:
   int                        m_RequestedPort;
   NiftyLinkMessageManager    m_InboundMessages;
   NiftyLinkMessageManager    m_OutboundMessages;
+  bool                       m_Connected;
 
 }; // end class
 

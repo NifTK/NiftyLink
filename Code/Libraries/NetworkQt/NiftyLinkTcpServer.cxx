@@ -107,7 +107,7 @@ int NiftyLinkTcpServer::Send(NiftyLinkMessageContainer::Pointer message)
   int numberSentTo = 0;
   foreach (NiftyLinkTcpNetworkWorker* worker, m_Workers)
   {
-    if (worker->IsSocketOpen())
+    if (worker->IsSocketConnected())
     {
       worker->Send(message);
       numberSentTo++;

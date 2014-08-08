@@ -52,6 +52,7 @@ NiftyLinkTcpNetworkWorker::NiftyLinkTcpNetworkWorker(
 , m_NoIncomingDataTimer(NULL)
 , m_NoIncomingDataInterval(1000)
 , m_LastMessageReceivedTime(NULL)
+, m_Disconnecting(false)
 {
   assert(m_Socket);
   assert(m_InboundMessages);
@@ -87,8 +88,8 @@ NiftyLinkTcpNetworkWorker::NiftyLinkTcpNetworkWorker(
   connect(this, SIGNAL(InternalSendSignal()), this, SLOT(OnSendMessage()), Qt::BlockingQueuedConnection);
   connect(m_NoIncomingDataTimer, SIGNAL(timeout()), this, SLOT(OnCheckForIncomingData()));
   connect(m_KeepAliveTimer, SIGNAL(timeout()), this, SLOT(OnSendInternalPing()));
-  connect(m_Socket, SIGNAL(bytesWritten(qint64)), this, SLOT(OnBytesSent(qint64)));
   connect(m_Socket, SIGNAL(disconnected()), this, SLOT(OnSocketDisconnected()));
+  connect(m_Socket, SIGNAL(bytesWritten(qint64)), this, SLOT(OnBytesSent(qint64)));
   connect(m_Socket, SIGNAL(error(QAbstractSocket::SocketError)), this, SLOT(OnSocketError(QAbstractSocket::SocketError)));
   connect(m_Socket, SIGNAL(readyRead()), this, SLOT(OnSocketReadyRead()));
 
@@ -119,9 +120,9 @@ QTcpSocket* NiftyLinkTcpNetworkWorker::GetSocket() const
 
 
 //-----------------------------------------------------------------------------
-bool NiftyLinkTcpNetworkWorker::IsSocketOpen() const
+bool NiftyLinkTcpNetworkWorker::IsSocketConnected() const
 {
-  return m_Socket != NULL && m_Socket->isOpen();
+  return !m_Disconnecting && m_Socket != NULL && m_Socket->isOpen();
 }
 
 
@@ -185,7 +186,7 @@ void NiftyLinkTcpNetworkWorker::SetCheckForNoIncomingData(bool isOn)
 //-----------------------------------------------------------------------------
 bool NiftyLinkTcpNetworkWorker::Send(NiftyLinkMessageContainer::Pointer message)
 {
-  if (!this->IsSocketOpen() || !m_Socket->isWritable())
+  if (!this->IsSocketConnected())
   {
     return false;
   }
@@ -233,9 +234,11 @@ void NiftyLinkTcpNetworkWorker::OutputStatsToConsole()
 //-----------------------------------------------------------------------------
 void NiftyLinkTcpNetworkWorker::OnSocketDisconnected()
 {
-  QLOG_INFO() << QObject::tr("%1::OnSocketDisconnected() - requesting thread shutdown.").arg(m_MessagePrefix);
+  emit SocketDisconnected();
+  m_Disconnecting = true;
+  m_Socket->deleteLater();
+  this->deleteLater();
   this->ShutdownThread();
-  QLOG_INFO() << QObject::tr("%1::OnSocketDisconnected() - thread is shut down.").arg(m_MessagePrefix);
 }
 
 
@@ -265,40 +268,6 @@ void NiftyLinkTcpNetworkWorker::OnCheckForIncomingData()
     QLOG_DEBUG() << QObject::tr("%1::OnCheckForIncomingData() - signalling 'NoIncomingData'.").arg(m_MessagePrefix);
     emit NoIncomingData();
   }
-}
-
-
-//-----------------------------------------------------------------------------
-bool NiftyLinkTcpNetworkWorker::IsKeepAlive(const igtl::MessageBase::Pointer& message)
-{
-  bool isKeepAlive = false;
-  igtl::StatusMessage::Pointer msg = dynamic_cast<igtl::StatusMessage*>(message.GetPointer());
-  if (msg.IsNotNull())
-  {
-    if (msg->GetCode() == igtl::StatusMessage::STATUS_OK)
-    {
-      isKeepAlive = true;
-      QLOG_DEBUG() << QObject::tr("%1::IsKeepAlive() - received STATUS_OK as keep-alive.").arg(m_MessagePrefix);
-    }
-  }
-  return isKeepAlive;
-}
-
-
-//-----------------------------------------------------------------------------
-bool NiftyLinkTcpNetworkWorker::IsStatsRequest(const igtl::MessageBase::Pointer& message)
-{
-  bool isStats = false;
-  igtl::StringMessage::Pointer msg = dynamic_cast<igtl::StringMessage*>(message.GetPointer());
-  if (msg.IsNotNull())
-  {
-    if (msg->GetString() == std::string("STATS"))
-    {
-      isStats = true;
-      QLOG_DEBUG() << QObject::tr("%1::IsStatsRequest() - received request for statistics.").arg(m_MessagePrefix);
-    }
-  }
-  return isStats;
 }
 
 
@@ -447,11 +416,16 @@ void NiftyLinkTcpNetworkWorker::OnSocketReadyRead()
       // Don't forget to Unpack!
       m_IncomingMessage->Unpack();
 
-      bool isKeepAlive = this->IsKeepAlive(m_IncomingMessage);
-      bool isStatsRequest = this->IsStatsRequest(m_IncomingMessage);
+      bool isKeepAlive = niftk::IsKeepAlive(m_IncomingMessage);
+      if (isKeepAlive)
+      {
+        QLOG_DEBUG() << QObject::tr("%1::IsKeepAlive() - received STATUS_OK as keep-alive.").arg(m_MessagePrefix);
+      }
 
+      bool isStatsRequest = niftk::IsStatsRequest(m_IncomingMessage);
       if (isStatsRequest)
       {
+        QLOG_DEBUG() << QObject::tr("%1::IsStatsRequest() - received request for statistics.").arg(m_MessagePrefix);
         this->OnOutputStats();
       }
 
@@ -557,6 +531,12 @@ void NiftyLinkTcpNetworkWorker::InternalSendMessage(igtl::MessageBase::Pointer m
   // This doubly double checks we are running in our own thread.
   niftk::NiftyLinkQThread *p = dynamic_cast<niftk::NiftyLinkQThread*>(QThread::currentThread());
   assert(p != NULL);
+
+  if (!this->IsSocketConnected())
+  {
+    QLOG_ERROR() << QObject::tr("%1::SendMessage() - Socket appears to be unconnected.").arg(m_MessagePrefix);
+    return;
+  }
 
   int bytesWritten = m_Socket->write(static_cast<const char*>(msg->GetPackPointer()), msg->GetPackSize());
   if (bytesWritten != msg->GetPackSize())

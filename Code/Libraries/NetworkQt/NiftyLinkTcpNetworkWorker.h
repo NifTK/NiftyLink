@@ -51,7 +51,7 @@ public:
   QTcpSocket* GetSocket() const;
 
   /// \brief Returns true if the socket exists, and the socket says its open, and false otherwise.
-  bool IsSocketOpen() const;
+  bool IsSocketConnected() const;
 
   /// \brief Disconnects the socket.
   void DisconnectSocket();
@@ -90,6 +90,7 @@ public slots:
 
 signals:
 
+  void SocketDisconnected();
   void SocketError(int portNumber, QAbstractSocket::SocketError errorCode, QString errorString);
   void MessageReceived(int portNumber);
   void BytesSent(qint64 bytes);
@@ -113,8 +114,6 @@ private slots:
 private:
 
   void InternalSendMessage(igtl::MessageBase::Pointer);
-  bool IsKeepAlive(const igtl::MessageBase::Pointer&);
-  bool IsStatsRequest(const igtl::MessageBase::Pointer&);
 
   NiftyLinkMessageManager      *m_InboundMessages;
   NiftyLinkMessageManager      *m_OutboundMessages;
@@ -148,6 +147,9 @@ private:
 
   // For providing a blocking send.
   QWaitCondition                 m_WaitForSend;
+
+  // Disconnecting in progress.
+  bool                           m_Disconnecting;
 
 }; // end class
 

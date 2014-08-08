@@ -42,6 +42,7 @@ TestClientNifTKQtImaging::TestClientNifTKQtImaging(const std::string& hostName,
 
   this->setObjectName("TestClientNifTKQtImaging");
   connect(m_Client, SIGNAL(Connected(QString,int)), this, SLOT(OnConnectedToServer()));
+  connect(m_Client, SIGNAL(Disconnected(QString,int)), this, SLOT(OnDisconnected()));
 }
 
 
@@ -81,6 +82,14 @@ void TestClientNifTKQtImaging::OnConnectedToServer()
   QLOG_INFO() << QObject::tr("%1::OnConnectedToServer().").arg(objectName());
   this->RunTest();
   QTimer::singleShot(1000, this, SLOT(Shutdown()));
+}
+
+
+
+//-----------------------------------------------------------------------------
+void TestClientNifTKQtImaging::OnDisconnected()
+{
+  this->Shutdown();
 }
 
 
@@ -137,6 +146,7 @@ void TestClientNifTKQtImaging::RunTest()
       if (!m_Client->IsConnected())
       {
         QLOG_ERROR() << QObject::tr("%1::RunTest() - Early exit, client disconnected.").arg(objectName());
+        return;
       }
 
       m_Client->Send(m);

@@ -52,6 +52,7 @@ private slots:
   void Start();
   void Shutdown();
   void OnConnectedToServer();
+  void OnDisconnected();
 
 private:
 

@@ -44,6 +44,7 @@ TestClientNifTKQtTrackingAndImaging::TestClientNifTKQtTrackingAndImaging(const s
 
   this->setObjectName("TestClientNifTKQtTrackingAndImaging");
   connect(m_Client, SIGNAL(Connected(QString,int)), this, SLOT(OnConnectedToServer()));
+  connect(m_Client, SIGNAL(Disconnected(QString,int)), this, SLOT(OnDisconnected()));
 }
 
 
@@ -83,6 +84,13 @@ void TestClientNifTKQtTrackingAndImaging::OnConnectedToServer()
   QLOG_INFO() << QObject::tr("%1::OnConnectedToServer().").arg(objectName());
   this->RunTest();
   QTimer::singleShot(1000, this, SLOT(Shutdown()));
+}
+
+
+//-----------------------------------------------------------------------------
+void TestClientNifTKQtTrackingAndImaging::OnDisconnected()
+{
+  this->Shutdown();
 }
 
 
@@ -134,6 +142,7 @@ void TestClientNifTKQtTrackingAndImaging::RunTest()
       if (!m_Client->IsConnected())
       {
         QLOG_ERROR() << QObject::tr("%1::RunTest() - Early exit, client disconnected when I was trying to send tracking.").arg(objectName());
+        return;
       }
 
       m_Client->Send(m);
@@ -158,6 +167,7 @@ void TestClientNifTKQtTrackingAndImaging::RunTest()
       if (!m_Client->IsConnected())
       {
         QLOG_ERROR() << QObject::tr("%1::RunTest() - Early exit, client disconnected when I was trying to send image.").arg(objectName());
+        return;
       }
 
       m_Client->Send(m);
