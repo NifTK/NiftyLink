@@ -111,6 +111,12 @@ void TestClientNifTKQtTracking::RunTest()
       timeLastMessage->SetTimeInNanoseconds(timeNow->GetTimeStampInNanoseconds());
 
       NiftyLinkMessageContainer::Pointer m = niftk::CreateTestTrackingDataMessage(timeCreated, m_TrackedObjectsPerMessage);
+
+      if (!m_Client->IsConnected())
+      {
+        QLOG_ERROR() << QObject::tr("%1::RunTest() - Early exit, client disconnected.").arg(objectName());
+      }
+
       m_Client->Send(m);
       m_NumberMessagesSent++;
     }

@@ -134,6 +134,11 @@ void TestClientNifTKQtImaging::RunTest()
       memcpy(localImage->GetScalarPointer(), m_ImageMessage->GetScalarPointer(), imgSize[0]*imgSize[1]);
       localImage->Pack();
 
+      if (!m_Client->IsConnected())
+      {
+        QLOG_ERROR() << QObject::tr("%1::RunTest() - Early exit, client disconnected.").arg(objectName());
+      }
+
       m_Client->Send(m);
       m_NumberMessagesSent++;
 

@@ -130,6 +130,12 @@ void TestClientNifTKQtTrackingAndImaging::RunTest()
       timeLastTrackingMessage->SetTimeInNanoseconds(timeNow->GetTimeStampInNanoseconds());
 
       NiftyLinkMessageContainer::Pointer m = niftk::CreateTestTrackingDataMessage(timeCreated, m_Channels);
+
+      if (!m_Client->IsConnected())
+      {
+        QLOG_ERROR() << QObject::tr("%1::RunTest() - Early exit, client disconnected when I was trying to send tracking.").arg(objectName());
+      }
+
       m_Client->Send(m);
     }
 
@@ -148,6 +154,11 @@ void TestClientNifTKQtTrackingAndImaging::RunTest()
       // just that we are fairly testing the speed of the connection.
       memcpy(localImage->GetScalarPointer(), m_ImageMessage->GetScalarPointer(), imgSize[0]*imgSize[1]);
       localImage->Pack();
+
+      if (!m_Client->IsConnected())
+      {
+        QLOG_ERROR() << QObject::tr("%1::RunTest() - Early exit, client disconnected when I was trying to send image.").arg(objectName());
+      }
 
       m_Client->Send(m);
       m_NumberMessagesSent++;
