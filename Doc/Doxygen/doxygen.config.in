@@ -273,7 +273,7 @@ RECURSIVE             = YES
 # excluded from the INPUT source files. This way you can easily exclude a 
 # subdirectory from a directory tree whose root is specified with the INPUT tag. 
 
-EXCLUDE               = @CMAKE_SOURCE_DIR@/Code/Libraries/MessageWrappers @CMAKE_SOURCE_DIR@/Code/Libraries/NetworkOpenIGTLink @CMAKE_SOURCE_DIR@/Code/Libraries/NetworkOriginal @CMAKE_SOURCE_DIR@/Testing/Code/Applications @CMAKE_SOURCE_DIR@/Testing/Code/Libraries/Old
+EXCLUDE               = @CMAKE_SOURCE_DIR@/Code/Libraries/Descriptors @CMAKE_SOURCE_DIR@/Code/Libraries/MessageWrappers @CMAKE_SOURCE_DIR@/Code/Libraries/NetworkOpenIGTLink @CMAKE_SOURCE_DIR@/Code/Libraries/NetworkOriginal @CMAKE_SOURCE_DIR@/Testing/Code/Applications @CMAKE_SOURCE_DIR@/Testing/Code/Libraries/Old
               
 # If the value of the INPUT tag contains directories, you can use the 
 # EXCLUDE_PATTERNS tag to specify one or more wildcard patterns to exclude 
