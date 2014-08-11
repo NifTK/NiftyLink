@@ -244,7 +244,7 @@ double CalculateStdDev(const QList<igtlUint64>& list)
   double mean = CalculateMean(list);
   foreach(igtlUint64 item, list)
   {
-    stdDev += ((item-mean)*(item-mean));
+    stdDev += ((static_cast<double>(item)-mean)*(static_cast<double>(item)-mean));
   }
   if (list.size() > 1)
   {
@@ -311,7 +311,8 @@ NiftyLinkMessageContainer::Pointer CreateTestTrackingDataMessage(igtl::TimeStamp
   m->SetOwnerName("CreateTestTrackingDataMessage");
   m->SetSenderHostName("123.456.789.012");
   m->SetSenderPortNumber(1234);
-
+  m->SetTimeArrived(timeStamp);
+  m->SetTimeReceived(timeStamp);
   return m;
 }
 

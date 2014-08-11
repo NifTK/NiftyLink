@@ -78,10 +78,10 @@ public:
   qint64 GetNumberMessageReceivedThreshold() const;
 
   /// \brief Returns the total count of the number of messages.
-  qint64 GetTotalNumberOfMessages();
+  quint64 GetTotalNumberOfMessages();
 
   /// \brief Returns the count of the number of messages since the last call to OnClear().
-  qint64 GetNumberOfMessagesSinceClear();
+  quint64 GetNumberOfMessagesSinceClear();
 
   /// \brief Returns the current number of messages per second.
   double GetMessagesPerSecond();
@@ -96,19 +96,18 @@ signals:
 
 public slots:
 
-  /// \brief Writes stats to console.
-  void OnOutputStats();
+  /// \brief Increment internal counters, i.e. accumulate statistics.
+  void OnMessageReceived(NiftyLinkMessageContainer::Pointer& message);
 
   /// \brief Clear the stats containers down.
   void OnClear();
 
-  /// \brief Increment internal counters, i.e. accumulate statistics.
-  void OnMessageReceived(NiftyLinkMessageContainer::Pointer& message);
+  /// \brief Writes stats to console.
+  void OnOutputStats();
 
 private:
 
-  igtl::TimeStamp::Pointer        m_StatsStartPoint;
-  igtl::TimeStamp::Pointer        m_StatsEndPoint;
+  igtl::TimeStamp::Pointer        m_TimeStamp;
   NiftyLinkMessageStatsContainer  m_StatsContainer;
   qint64                          m_NumberMessageReceivedThreshold;
 }; // end class

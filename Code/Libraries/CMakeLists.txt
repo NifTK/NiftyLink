@@ -26,8 +26,8 @@ INCLUDE(${QT_USE_FILE})
 #########################
 SET(niftylink_SRCS
 Common/NiftyLinkUtils.cxx
-Common/NiftyLinkMessageCounter.cxx
 Common/NiftyLinkMessageStatsContainer.cxx
+Common/NiftyLinkMessageCounter.cxx
 Common/QsDebugOutput.cxx
 Common/QsLog.cxx
 Common/QsLogDest.cxx

@@ -34,7 +34,9 @@ class NiftyLinkMessageCounterTests: public QObject
 private slots:
 
   /**
-   * \brief QMap<QString, quint64> must be a value type with copy/assignment semantics.
+   * \brief QMap<QString, quint64> must be a Value Type with copy and assignment semantics.
+   *
+   * We believe it should be, as part of the spec of QMap, but its worth double checking!
    *
    * Spec:
    *   - Create QMap map1, populate.
@@ -45,15 +47,40 @@ private slots:
   void QMapCopyingTest();
 
   /**
+   * \brief NiftyLinkMessageStatsContainer must be a Value Type with copy and assignment semantics.
+   *
+   * Spec:
+   *   - Create NiftyLinkMessageStatsContainer container1, populate.
+   *   - Create a copy constructed NiftyLinkMessageStatsContainer container2 from container1, check container2 == container1.
+   *   - Create NiftyLinkMessageStatsContainer container3, default, check container3 != container1.
+   *   - Assign container3 = container1, check container3 == container1.
+   */
+  void StatsContainerCopyAssignmentTest();
+
+  /**
    * \brief Tests NiftyLinkMessageStatsContainer.
    *
    * Spec:
-   *   - NiftyLinkMessageStatsContainer starts empty, so check getters return zero.
-   *   - Add 2 messages, one IMAGE, one TDATA, check two entries in GetNumberOfMessagesByType, check total bytes, number received etc.
-   *   - ResetPeriod should reset variables that relevant to timing points, but not the all time total.
-   *   - ResetAll should reset everything back to zero.
+   *   - NiftyLinkMessageStatsContainer starts empty, so check all getters return zero.
+   *   - Add 2 messages, one STATUS, one STRING, check two entries in GetNumberOfMessagesByType, check total bytes, number received etc.
+   *   - Check conversions between nanoseconds, milliseconds and seconds (see method descriptions).
+   *   - ResetPeriod should reset variables that are relevant to timing points, but not the all time totals in GetTotalBytesReceived() and GetTotalNumberMessagesReceived().
+   *   - ResetAll should reset everything back to zero, including the all time totals in GetTotalBytesReceived() and GetTotalNumberMessagesReceived().
    */
-  void BasicStatsCountingTestCase();
+  void BasicStatsContainerCountingTest();
+
+  /**
+   * \brief Tests NiftyLinkMessageCounter.
+   *
+   * Spec:
+   *   - Set/Get just set the threshold member variable (m_NumberMessageReceivedThreshold).
+   *   - After construction, GetNumberOfMessagesSinceClear() and GetTotalNumberOfMessages() returns 0.
+   *   - Adding two messages, and GetNumberOfMessagesSinceClear() returns 2 and GetTotalNumberOfMessages() returns 2.
+   *   - Call OnClear() and GetNumberOfMessagesSinceClear() returns 0 and GetTotalNumberOfMessages() returns 2.
+   *   - If a message has a negative latency, it should be ignored from statistics.
+   */
+  void BasicStatsCounterTest();
+
 };
 
 } // end namespace niftk
