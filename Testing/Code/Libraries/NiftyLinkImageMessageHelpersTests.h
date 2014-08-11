@@ -34,15 +34,38 @@ class NiftyLinkImageMessageHelpersTests: public QObject
 private slots:
 
   /**
-   * \brief Tests NiftyLinkImageMessageHelpers::SetQImage and NiftyLinkImageMessageHelpers::GetQImage
+   * \brief Tests NiftyLinkImageMessageHelpers::SetQImage and NiftyLinkImageMessageHelpers::GetQImage with grey scale image.
    *
    * Spec:
-   *   - Load an image
-   *   - Set it into an image message
-   *   - Get it from an image message
-   *   - Should be the same result as you started with
+   *   - Load a grey scale image using QImage.load().
+   *   - Set it into an image message.
+   *   - Get it from an image message.
+   *   - Should be the same result as you started with.
    */
-  void SetGetQImageTest();
+  void SetGetQImageGreyScaleTest();
+
+  /**
+   * \brief As SetGetQImageGreyScaleTest(), but with 4 channel image.
+   *
+   * Spec:
+   *   - Load a 4 channel (RGBA) image using QImage.load().
+   *   - Set it into an image message.
+   *   - Get it from an image message.
+   *   - Should be the same result as you started with.
+   */
+  void SetGetQImage4ChannelTest();
+
+  /**
+   * \brief Tests, NiftyLinkImageMessageHelpers::SaveImage and LoadImage.
+   *
+   * Spec:
+   *   - Generate an RGBA test image as QImage.
+   *   - Write to temporary folder.
+   *   - Read it back in.
+   *   - Convert to QImage
+   *   - Should be the same as the result you started with.
+   */
+  void ReadWriteImageTest();
 
 };
 

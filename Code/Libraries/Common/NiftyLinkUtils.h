@@ -126,6 +126,9 @@ extern "C++" NIFTYLINKCOMMON_WINEXPORT bool IsCloseEnoughToZero(double valueA, d
 /// \param fileName - if specified, will be concatenated onto the path.
 extern "C++" NIFTYLINKCOMMON_WINEXPORT QString GetWritableDirectoryPath(const QString& fileName=QString());
 
+/// \brief Used to get a temporary folder, determined by QDesktopServices.
+extern "C++" NIFTYLINKCOMMON_WINEXPORT QString GetTempDirectoryPath();
+
 /// \brief If required will add the path separator.
 extern "C++" NIFTYLINKCOMMON_WINEXPORT QString AppendPathSeparator(const QString& path);
 

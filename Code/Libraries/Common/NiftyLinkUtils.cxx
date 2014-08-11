@@ -333,6 +333,13 @@ void CopyMatrix(double *input, igtl::Matrix4x4& output)
 
 
 //-----------------------------------------------------------------------------
+QString GetTempDirectoryPath()
+{
+  return QDesktopServices::storageLocation(QDesktopServices::TempLocation);
+}
+
+
+//-----------------------------------------------------------------------------
 QString GetWritableDirectoryPath(const QString& fileName)
 {
   QString result;
