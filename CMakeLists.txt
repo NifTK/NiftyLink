@@ -17,7 +17,7 @@
 # However, be warned, you need to set CMAKE_INSTALL_PREFIX manually.
 ######################################################################
 SET(NIFTYLINK_VERSION_MAJOR 14 CACHE STRING "Major version number" )
-SET(NIFTYLINK_VERSION_MINOR 07 CACHE STRING "Minor version number" )
+SET(NIFTYLINK_VERSION_MINOR 08 CACHE STRING "Minor version number" )
 SET(NIFTYLINK_VERSION_PATCH 0 CACHE STRING "Patch version number" )
 MARK_AS_ADVANCED(NIFTYLINK_VERSION_MAJOR)
 MARK_AS_ADVANCED(NIFTYLINK_VERSION_MINOR)
