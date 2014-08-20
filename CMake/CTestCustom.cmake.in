@@ -33,7 +33,7 @@ set(CTEST_CUSTOM_COVERAGE_EXCLUDE
   ".*/Code/Libraries/MessageWrappers/.*"
 
   # We don't want coverage for this, it isn't ours.
-  ".*/Code/Libraries/CommonQs*
+  ".*/Code/Libraries/CommonQs*"
 
   # This is a GUI client, which is just a thin wrapper around other classes, so will ignore for now.
   ".*/Code/Applications/.*"
