@@ -438,7 +438,6 @@ void NiftyLinkNetworkProcess::Send(igtl::MessageBase::Pointer msg)
 }
 
 
-
 //-----------------------------------------------------------------------------
 void NiftyLinkNetworkProcess::OnKeepAliveTimerTimedOut()
 {
@@ -561,7 +560,8 @@ void NiftyLinkNetworkProcess::TerminateProcess()
     int err = m_CommsSocket->CloseSocket();
     if (err == -1)
     {
-      QLOG_ERROR() << QObject::tr("%1::TerminateProcess() - failed to close client side of server socket, call returned %2, check log file.").arg(objectName()).arg(err);
+      QLOG_ERROR() << QObject::tr("%1::TerminateProcess() - failed to close client side of server socket, call returned %2, check log file.")
+                      .arg(objectName()).arg(err);
     }
     QLOG_INFO() << QObject::tr("%1::TerminateProcess() - Closing client side returned %2, now sleeping for %3 msec.")
                    .arg(objectName()).arg(err).arg(sleepInterval);

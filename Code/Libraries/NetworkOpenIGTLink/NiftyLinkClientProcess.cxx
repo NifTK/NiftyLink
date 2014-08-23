@@ -119,7 +119,9 @@ void NiftyLinkClientProcess::DoProcessing()
   int err = csock->ConnectToServer(m_HostName.toStdString().c_str(), m_Port);
   if (err < 0)
   {
-    QString errorMessage = QObject::tr("%1::DoProcessing() - Error connecting to server (%2:%3). Check console/log file.").arg(objectName()).arg(m_HostName).arg(m_Port);
+    QString errorMessage = QObject::tr("%1::DoProcessing() - Error connecting to server (%2:%3). Check console/log file.")
+        .arg(objectName()).arg(m_HostName).arg(m_Port);
+
     QLOG_ERROR() << errorMessage;
     NiftyLinkStdExceptionMacro(std::runtime_error, << errorMessage.toStdString());
   }
