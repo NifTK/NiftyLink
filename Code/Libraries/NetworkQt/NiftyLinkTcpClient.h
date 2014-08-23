@@ -9,8 +9,8 @@
 
   See LICENSE.txt in the top level directory for details.
 =============================================================================*/
-#ifndef NiftyLinkTcpServer_h
-#define NiftyLinkTcpServer_h
+#ifndef NiftyLinkTcpClient_h
+#define NiftyLinkTcpClient_h
 
 #include <NiftyLinkCommonWin32ExportHeader.h>
 #include <NiftyLinkMessageContainer.h>

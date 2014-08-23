@@ -16,8 +16,8 @@
 namespace niftk
 {
 
-const double NiftyLinkMessageStatsContainer::NANO_TO_MILLI_DIVISOR(1000000);
-const double NiftyLinkMessageStatsContainer::NANO_TO_SECONDS_DIVISOR(1000000000);
+const double NiftyLinkMessageStatsContainer::m_NANO_TO_MILLI_DIVISOR(1000000);
+const double NiftyLinkMessageStatsContainer::m_NANO_TO_SECONDS_DIVISOR(1000000000);
 
 //-----------------------------------------------------------------------------
 NiftyLinkMessageStatsContainer::NiftyLinkMessageStatsContainer()
@@ -151,7 +151,7 @@ double NiftyLinkMessageStatsContainer::GetMeanLatencySinceCheckpoint() const
 //-----------------------------------------------------------------------------
 double NiftyLinkMessageStatsContainer::GetMeanLatencySinceCheckpointInMilliseconds() const
 {
-  return this->GetMeanLatencySinceCheckpoint()/NANO_TO_MILLI_DIVISOR;
+  return this->GetMeanLatencySinceCheckpoint()/m_NANO_TO_MILLI_DIVISOR;
 }
 
 
@@ -165,7 +165,7 @@ double NiftyLinkMessageStatsContainer::GetStdDevLatencySinceCheckpoint() const
 //-----------------------------------------------------------------------------
 double NiftyLinkMessageStatsContainer::GetStdDevLatencySinceCheckpointInMilliseconds() const
 {
-  return this->GetStdDevLatencySinceCheckpoint()/NANO_TO_MILLI_DIVISOR;
+  return this->GetStdDevLatencySinceCheckpoint()/m_NANO_TO_MILLI_DIVISOR;
 }
 
 
@@ -179,7 +179,7 @@ double NiftyLinkMessageStatsContainer::GetMaxLatencySinceCheckpoint() const
 //-----------------------------------------------------------------------------
 double NiftyLinkMessageStatsContainer::GetMaxLatencySinceCheckpointInMilliseconds() const
 {
-  return this->GetMaxLatencySinceCheckpoint()/NANO_TO_MILLI_DIVISOR;
+  return this->GetMaxLatencySinceCheckpoint()/m_NANO_TO_MILLI_DIVISOR;
 }
 
 
@@ -194,7 +194,7 @@ double NiftyLinkMessageStatsContainer::GetDurationSinceLastCheckpoint() const
 //-----------------------------------------------------------------------------
 double NiftyLinkMessageStatsContainer::GetDurationSinceLastCheckpointInSeconds() const
 {
-  return this->GetDurationSinceLastCheckpoint()/NANO_TO_SECONDS_DIVISOR;
+  return this->GetDurationSinceLastCheckpoint()/m_NANO_TO_SECONDS_DIVISOR;
 }
 
 

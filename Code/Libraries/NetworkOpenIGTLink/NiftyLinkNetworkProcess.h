@@ -165,10 +165,10 @@ private:
   void TerminateProcess();
 
   /// \brief Contains the system level, standard keep-alive message.
-  static const std::string KEEP_ALIVE_MESSAGE;
+  static const std::string m_KEEP_ALIVE_MESSAGE;
 
   /// \brief Contains the system level, standard message, to extract stats;
-  static const std::string STATS_MESSAGE;
+  static const std::string m_STATS_MESSAGE;
 
   // The timeout in milliseconds passed onto the socket object.
   int                            m_SocketTimeout;

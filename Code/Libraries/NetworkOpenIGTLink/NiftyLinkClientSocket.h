@@ -44,7 +44,7 @@ public:
   int SetConnectionTimeout(int timeout);
 
   /// Connects to a server. Returns 0 on success, -1 on error.
-  int ConnectToServer(const char* hostname, int port); 
+  int ConnectToServer(const char* hostname, int port);
 
 protected:
   NiftyLinkClientSocket();
@@ -69,4 +69,3 @@ private:
 } // end namespace niftk
 
 #endif
-

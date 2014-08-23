@@ -30,8 +30,8 @@
 namespace niftk
 {
 
-const std::string NiftyLinkNetworkProcess::KEEP_ALIVE_MESSAGE("POKE");
-const std::string NiftyLinkNetworkProcess::STATS_MESSAGE("STATS");
+const std::string NiftyLinkNetworkProcess::m_KEEP_ALIVE_MESSAGE("POKE");
+const std::string NiftyLinkNetworkProcess::m_STATS_MESSAGE("STATS");
 
 //-----------------------------------------------------------------------------
 NiftyLinkNetworkProcess::NiftyLinkNetworkProcess(QObject *parent)
@@ -323,13 +323,13 @@ bool NiftyLinkNetworkProcess::ReceiveMessage()
 
     // Check for special case messages. They are squashed here, and not delivered to client.
     igtl::StringMessage::Pointer tmp = dynamic_cast<igtl::StringMessage*>(message.GetPointer());
-    if (tmp.IsNotNull() && tmp->GetString() == KEEP_ALIVE_MESSAGE)
+    if (tmp.IsNotNull() && tmp->GetString() == m_KEEP_ALIVE_MESSAGE)
     {
       QLOG_DEBUG() << QObject::tr("%1::ReceiveMessage() - Keep-alive received, restarting the timeouter.").arg(objectName());
       this->StartNoResponseTimer();
       return true;
     }
-    else if (tmp.IsNotNull() && tmp->GetString() == STATS_MESSAGE)
+    else if (tmp.IsNotNull() && tmp->GetString() == m_STATS_MESSAGE)
     {
       QLOG_INFO() << QObject::tr("%1::ReceiveMessage() - Stats request received.").arg(objectName());
       this->StartNoResponseTimer();
@@ -449,7 +449,7 @@ void NiftyLinkNetworkProcess::OnKeepAliveTimerTimedOut()
     return;
   }
 
-  std::string tmpMsg(KEEP_ALIVE_MESSAGE);
+  std::string tmpMsg(m_KEEP_ALIVE_MESSAGE);
   igtl::StringMessage::Pointer stringMessage = igtl::StringMessage::New();
   stringMessage->SetDeviceName(objectName().toStdString().c_str());
   stringMessage->SetString(tmpMsg);
@@ -567,7 +567,7 @@ void NiftyLinkNetworkProcess::DumpStats()
 void NiftyLinkNetworkProcess::RequestRemoteStats()
 {
   // Send message to other end to get stats out of other end.
-  std::string tmpMsg = STATS_MESSAGE;
+  std::string tmpMsg = m_STATS_MESSAGE;
   igtl::StringMessage::Pointer statsMessage = igtl::StringMessage::New();
   statsMessage->SetDeviceName(objectName().toStdString().c_str());
   statsMessage->SetString(tmpMsg);

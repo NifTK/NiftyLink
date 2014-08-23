@@ -66,4 +66,3 @@ private:
 } // end namespace niftk
 
 #endif
-

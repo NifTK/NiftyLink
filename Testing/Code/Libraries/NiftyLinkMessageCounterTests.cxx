@@ -97,10 +97,10 @@ void NiftyLinkMessageCounterTests::BasicStatsContainerCountingTest()
   container.Increment("STATUS", 2, 2, 2);
 
   QVERIFY(container.GetMeanLatencySinceCheckpoint() == 1.5);
-  QVERIFY(container.GetMeanLatencySinceCheckpointInMilliseconds() == container.GetMeanLatencySinceCheckpoint()/static_cast<double>(NiftyLinkMessageStatsContainer::NANO_TO_MILLI_DIVISOR));
+  QVERIFY(container.GetMeanLatencySinceCheckpointInMilliseconds() == container.GetMeanLatencySinceCheckpoint()/static_cast<double>(NiftyLinkMessageStatsContainer::m_NANO_TO_MILLI_DIVISOR));
   QVERIFY(niftk::IsCloseEnoughTo(container.GetStdDevLatencySinceCheckpoint(), 0.707106781));
-  QVERIFY(container.GetStdDevLatencySinceCheckpointInMilliseconds() == container.GetStdDevLatencySinceCheckpoint()/static_cast<double>(NiftyLinkMessageStatsContainer::NANO_TO_MILLI_DIVISOR));
-  QVERIFY(container.GetMaxLatencySinceCheckpointInMilliseconds() == container.GetMaxLatencySinceCheckpoint()/static_cast<double>(NiftyLinkMessageStatsContainer::NANO_TO_MILLI_DIVISOR));
+  QVERIFY(container.GetStdDevLatencySinceCheckpointInMilliseconds() == container.GetStdDevLatencySinceCheckpoint()/static_cast<double>(NiftyLinkMessageStatsContainer::m_NANO_TO_MILLI_DIVISOR));
+  QVERIFY(container.GetMaxLatencySinceCheckpointInMilliseconds() == container.GetMaxLatencySinceCheckpoint()/static_cast<double>(NiftyLinkMessageStatsContainer::m_NANO_TO_MILLI_DIVISOR));
 
   QVERIFY(container.GetBytesReceivedSinceCheckpoint() == 3); // 1+2 from the last two calls to Increment.
   QVERIFY(container.GetNumberMessagesReceivedSinceCheckpoint() == 2);
@@ -110,7 +110,7 @@ void NiftyLinkMessageCounterTests::BasicStatsContainerCountingTest()
   QVERIFY(container.GetTotalBytesReceived() == 3);
   QVERIFY(container.GetTotalNumberMessagesReceived() == 2);
   QVERIFY(container.GetDurationSinceLastCheckpoint() == 1);
-  QVERIFY(container.GetDurationSinceLastCheckpointInSeconds() == container.GetDurationSinceLastCheckpoint()/static_cast<double>(NiftyLinkMessageStatsContainer::NANO_TO_SECONDS_DIVISOR));
+  QVERIFY(container.GetDurationSinceLastCheckpointInSeconds() == container.GetDurationSinceLastCheckpoint()/static_cast<double>(NiftyLinkMessageStatsContainer::m_NANO_TO_SECONDS_DIVISOR));
 
   container.Checkpoint();
 

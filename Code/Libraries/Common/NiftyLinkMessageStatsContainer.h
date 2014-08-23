@@ -57,10 +57,10 @@ public:
   bool operator==(const NiftyLinkMessageStatsContainer& another) const;
 
   /// \brief Equals 1000000.
-  static const double NANO_TO_MILLI_DIVISOR;
+  static const double m_NANO_TO_MILLI_DIVISOR;
 
   /// \brief Equals 1000000000.
-  static const double NANO_TO_SECONDS_DIVISOR;
+  static const double m_NANO_TO_SECONDS_DIVISOR;
 
   /// \brief Increments the main data.
   /// \param latency This must be non-negative, hence the use of unsigned int.
