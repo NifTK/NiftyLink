@@ -26,12 +26,12 @@ class NiftyLinkQThread;
 class NiftyLinkServerProcess;
 
 /**
- * \class NiftyLinkServer
- * \brief TCP Server class that users instantiate to
- * bind to a socket and start to listen for messages.
- *
- * Note: Error handling strategy is to throw std::exception sub-classes for everything.
- */
+* \class NiftyLinkServer
+* \brief TCP Server class that users instantiate to
+* bind to a socket and start to listen for messages.
+*
+* Note: Error handling strategy is to throw std::exception sub-classes for everything.
+*/
 class NIFTYLINKCOMMON_WINEXPORT NiftyLinkServer : public QObject {
 
   Q_OBJECT

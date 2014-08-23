@@ -25,11 +25,11 @@ namespace niftk
 {
 
 /**
- * \class NiftyLinkServerProcess
- * \brief Represents a Process running a NiftyLinkServer socket in a separate thread.
- *
- * Note: Error handling strategy is to throw std::exception sub-classes for everything.
- */
+* \class NiftyLinkServerProcess
+* \brief Represents a Process running a NiftyLinkServer socket in a separate thread.
+*
+* Note: Error handling strategy is to throw std::exception sub-classes for everything.
+*/
 class NIFTYLINKCOMMON_WINEXPORT NiftyLinkServerProcess : public NiftyLinkNetworkProcess {
 
   Q_OBJECT

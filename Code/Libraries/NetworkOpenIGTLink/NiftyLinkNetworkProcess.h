@@ -24,16 +24,16 @@ namespace niftk
 {
 
 /**
- * \class NiftyLinkNetworkProcess
- * \brief Abstract base class of NiftyLinkServerProcess and NiftyLinkClientProcess.
- *
- * Note: Error handling strategy is to throw std::exception sub-classes for everything.
- *
- * This class is designed to work in a separate thread, so effectively the DoProcessing
- * virtual method is implemented by subclasses, and logically is equivalent to the
- * 'run' method on QThread. So when DoProcessing is finished, the object should
- * be discarded, and cannot be re-used.
- */
+* \class NiftyLinkNetworkProcess
+* \brief Abstract base class of NiftyLinkServerProcess and NiftyLinkClientProcess.
+*
+* Note: Error handling strategy is to throw std::exception sub-classes for everything.
+*
+* This class is designed to work in a separate thread, so effectively the DoProcessing
+* virtual method is implemented by subclasses, and logically is equivalent to the
+* 'run' method on QThread. So when DoProcessing is finished, the object should
+* be discarded, and cannot be re-used.
+*/
 class NIFTYLINKCOMMON_WINEXPORT NiftyLinkNetworkProcess : public QObject {
 
   Q_OBJECT

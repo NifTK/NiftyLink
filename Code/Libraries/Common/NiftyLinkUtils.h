@@ -76,9 +76,9 @@ extern "C++" NIFTYLINKCOMMON_WINEXPORT QString ResolveHostName(const QString &in
 ///@}
 
 /**
- * \name NiftyLinkTestingUtils
- * \brief Used mainly for testing, visible in public API just in case anyone wants them.
- */
+* \name NiftyLinkTestingUtils
+* \brief Used mainly for testing, visible in public API just in case anyone wants them.
+*/
 ///@{
 
 /// \brief For testing, this function creates a random 4x4 test matrix.
@@ -92,9 +92,9 @@ extern "C++" NIFTYLINKCOMMON_WINEXPORT NiftyLinkMessageContainer::Pointer Create
 
 
 /**
- * \name NiftyLinkMathsUtils
- * \brief Simple mathematical functions used throughout NiftyLink.
- */
+* \name NiftyLinkMathsUtils
+* \brief Simple mathematical functions used throughout NiftyLink.
+*/
 ///@{
 
 /// \brief Used to calculate stats of latency, this method computes the mean of a list of igtlUint64.
@@ -116,9 +116,9 @@ extern "C++" NIFTYLINKCOMMON_WINEXPORT bool IsCloseEnoughToZero(double valueA, d
 
 
 /**
- * \name NiftyLinkFileUtils
- * \brief Helper functions for file/directory processing.
- */
+* \name NiftyLinkFileUtils
+* \brief Helper functions for file/directory processing.
+*/
 ///@{
 
 /// \brief Tries to create a path name where data can be saved by checking the Desktop,
@@ -136,9 +136,9 @@ extern "C++" NIFTYLINKCOMMON_WINEXPORT QString AppendPathSeparator(const QString
 
 
 /**
- * \name NiftyLinkWidgetUtils
- * \brief Helper functions for pasting data onto QWidget, mainly used by NiftyLink app.
- */
+* \name NiftyLinkWidgetUtils
+* \brief Helper functions for pasting data onto QWidget, mainly used by NiftyLink app.
+*/
 ///@{
 
 /// \brief If its a STRING, STATUS, TDATA or TRANSFORM message, updates the output string, otherwise, leaves it alone.

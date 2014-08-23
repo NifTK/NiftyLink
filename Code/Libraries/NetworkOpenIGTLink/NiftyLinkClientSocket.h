@@ -20,13 +20,13 @@ namespace niftk
 {
 
 /**
- * \class NiftyLinkClientSocket
- * \brief Represents the client side of a socket connection.
- *
- * Note: Both server and client can send and receive messages.
- * The main conceptual difference is that a server starts up,
- * binds and listens on a port, and the client connects to it.
- */
+* \class NiftyLinkClientSocket
+* \brief Represents the client side of a socket connection.
+*
+* Note: Both server and client can send and receive messages.
+* The main conceptual difference is that a server starts up,
+* binds and listens on a port, and the client connects to it.
+*/
 class NIFTYLINKCOMMON_WINEXPORT NiftyLinkClientSocket : public NiftyLinkSocket
 {
 public:

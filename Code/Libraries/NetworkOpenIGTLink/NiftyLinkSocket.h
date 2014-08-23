@@ -21,25 +21,25 @@ namespace niftk
 {
 
 /**
- * \class NiftyLinkSocket
- * \brief BSD socket encapsulation.
- *
- * This socket class was originally derived from igtlSocket, which itself
- * was largely based on the socket class in the Visualization Toolkit VTK.
- *
- * In order to integrate into the OpenIGTLink project, the
- * igtlAbstractSocket base class was created within the OpenIGTLink
- * project to contain common functionality, then the two derived classes
- * igtlSocket (in OpenIGTLink project) and NiftyLinkSocket (here)
- * factored out to contain original OpenIGTLink and NiftyLink functionality
- * respectively. So this class contains functions that are NiftyLink specific,
- * and almost a complete re-write of the corresponding functions in the OpenIGTLink base class.
- *
- * Error handling: Note that in keeping with OpenIGTLink, which has a 'c' layer,
- * and a 'c++' layer, the OpenIGTLink 'c++' layer is just a thin wrapper
- * over the c-style functionality. So, in OpenIGTLink, the error handling is
- * to return error codes to the client. This is kept here.
- */
+* \class NiftyLinkSocket
+* \brief BSD socket encapsulation.
+*
+* This socket class was originally derived from igtlSocket, which itself
+* was largely based on the socket class in the Visualization Toolkit VTK.
+*
+* In order to integrate into the OpenIGTLink project, the
+* igtlAbstractSocket base class was created within the OpenIGTLink
+* project to contain common functionality, then the two derived classes
+* igtlSocket (in OpenIGTLink project) and NiftyLinkSocket (here)
+* factored out to contain original OpenIGTLink and NiftyLink functionality
+* respectively. So this class contains functions that are NiftyLink specific,
+* and almost a complete re-write of the corresponding functions in the OpenIGTLink base class.
+*
+* Error handling: Note that in keeping with OpenIGTLink, which has a 'c' layer,
+* and a 'c++' layer, the OpenIGTLink 'c++' layer is just a thin wrapper
+* over the c-style functionality. So, in OpenIGTLink, the error handling is
+* to return error codes to the client. This is kept here.
+*/
 class NIFTYLINKCOMMON_WINEXPORT NiftyLinkSocket : public igtl::AbstractSocket
 {
  public:
