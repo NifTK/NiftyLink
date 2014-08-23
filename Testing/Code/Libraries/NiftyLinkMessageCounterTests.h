@@ -12,8 +12,7 @@
 #ifndef NiftyLinkMessageCounterTests_h
 #define NiftyLinkMessageCounterTests_h
 
-#include <QObject>
-#include <QtTest/QtTest>
+#include <NiftyLinkTestingMacros.h>
 
 namespace niftk
 {

@@ -150,4 +150,4 @@ void NiftyLinkUtilsTests::CalculateCloseEnoughToTest()
 
 } // end namespace
 
-QTEST_MAIN( niftk::NiftyLinkUtilsTests )
+NIFTYLINK_QTEST_MAIN( niftk::NiftyLinkUtilsTests )

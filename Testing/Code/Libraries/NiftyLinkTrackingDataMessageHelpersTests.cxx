@@ -13,7 +13,6 @@
 #include "NiftyLinkTrackingDataMessageHelpersTests.h"
 #include <NiftyLinkTrackingDataMessageHelpers.h>
 #include <NiftyLinkUtils.h>
-#include <QDebug>
 
 namespace niftk
 {
@@ -59,4 +58,4 @@ void NiftyLinkTrackingDataMessageHelpersTests::SetGetTrackingDataTest()
 
 } // end namespace
 
-QTEST_MAIN( niftk::NiftyLinkTrackingDataMessageHelpersTests )
+NIFTYLINK_QTEST_MAIN( niftk::NiftyLinkTrackingDataMessageHelpersTests )

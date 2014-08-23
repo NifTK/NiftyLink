@@ -12,8 +12,7 @@
 #ifndef NiftyLinkTransformMessageHelpersTests_h
 #define NiftyLinkTransformMessageHelpersTests_h
 
-#include <QObject>
-#include <QtTest/QtTest>
+#include <NiftyLinkTestingMacros.h>
 
 namespace niftk
 {

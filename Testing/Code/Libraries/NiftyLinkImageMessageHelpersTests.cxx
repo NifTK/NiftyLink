@@ -13,7 +13,6 @@
 #include "NiftyLinkImageMessageHelpersTests.h"
 #include <NiftyLinkUtils.h>
 #include <NiftyLinkImageMessageHelpers.h>
-#include <QDebug>
 #include <igtl_image.h>
 
 namespace niftk
@@ -75,4 +74,4 @@ void NiftyLinkImageMessageHelpersTests::ReadWriteImageTest()
 
 } // end namespace
 
-QTEST_MAIN( niftk::NiftyLinkImageMessageHelpersTests )
+NIFTYLINK_QTEST_MAIN( niftk::NiftyLinkImageMessageHelpersTests )

@@ -13,7 +13,6 @@
 #include "NiftyLinkTransformMessageHelpersTests.h"
 #include <NiftyLinkTransformMessageHelpers.h>
 #include <NiftyLinkUtils.h>
-#include <QDebug>
 
 namespace niftk
 {
@@ -55,4 +54,4 @@ void NiftyLinkTransformMessageHelpersTests::SetGetTransformTest()
 
 } // end namespace
 
-QTEST_MAIN( niftk::NiftyLinkTransformMessageHelpersTests )
+NIFTYLINK_QTEST_MAIN( niftk::NiftyLinkTransformMessageHelpersTests )

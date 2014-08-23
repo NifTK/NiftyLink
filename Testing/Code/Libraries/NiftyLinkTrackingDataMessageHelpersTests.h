@@ -12,8 +12,7 @@
 #ifndef NiftyLinkTrackingDataMessageHelpersTests_h
 #define NiftyLinkTrackingDataMessageHelpersTests_h
 
-#include <QObject>
-#include <QtTest/QtTest>
+#include <NiftyLinkTestingMacros.h>
 
 namespace niftk
 {

@@ -12,8 +12,7 @@
 #ifndef NiftyLinkUtiltsTests_h
 #define NiftyLinkUtiltsTests_h
 
-#include <QObject>
-#include <QtTest/QtTest>
+#include <NiftyLinkTestingMacros.h>
 
 namespace niftk
 {

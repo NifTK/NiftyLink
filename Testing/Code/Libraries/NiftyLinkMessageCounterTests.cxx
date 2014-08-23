@@ -14,7 +14,6 @@
 #include <NiftyLinkMessageCounter.h>
 #include <NiftyLinkUtils.h>
 #include <NiftyLinkQThread.h>
-#include <QDebug>
 
 namespace niftk
 {
@@ -191,4 +190,4 @@ void NiftyLinkMessageCounterTests::BasicStatsCounterTest()
 
 } // end namespace niftk
 
-QTEST_MAIN( niftk::NiftyLinkMessageCounterTests )
+NIFTYLINK_QTEST_MAIN( niftk::NiftyLinkMessageCounterTests )
