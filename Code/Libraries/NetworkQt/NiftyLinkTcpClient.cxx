@@ -136,7 +136,6 @@ void NiftyLinkTcpClient::OnMessageReceived(int portNumber)
 }
 
 
-
 //-----------------------------------------------------------------------------
 void NiftyLinkTcpClient::OnError()
 {

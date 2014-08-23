@@ -480,7 +480,4 @@ bool IsStatsRequest(const igtl::MessageBase::Pointer& message)
   return isStats;
 }
 
-
-
 } // end namespace niftk
-

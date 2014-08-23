@@ -23,19 +23,19 @@
 namespace niftk
 {
 /**
- * \class NiftyLinkMessageManager
- * \brief Helper class to avoid passing NiftyLinkMessageContainer over Qt::QueuedConnection.
- *
- * If you pass NiftyLinkMessageContainer::Pointer over a Qt::QueuedConnection,
- * the pointer survives, but the contained igtl::MessageBase::Pointer appeared not to.
- * So, this class was created. The aim is that a message receiver can insert a message
- * into a QMap. The map is keyed by port number, so multiple clients can use the
- * same object. There is only one 'current' message per client however. This is not
- * a queue structure. Then the receiver can signal that they have received something.
- * Someone else can register to that signal, and then extract the data from this class.
- * The Qt signal/slots mechanism is used to work across threads, so the correct
- * choice of connection type is important.
- */
+* \class NiftyLinkMessageManager
+* \brief Helper class to avoid passing NiftyLinkMessageContainer over Qt::QueuedConnection.
+*
+* If you pass NiftyLinkMessageContainer::Pointer over a Qt::QueuedConnection,
+* the pointer survives, but the contained igtl::MessageBase::Pointer appeared not to.
+* So, this class was created. The aim is that a message receiver can insert a message
+* into a QMap. The map is keyed by port number, so multiple clients can use the
+* same object. There is only one 'current' message per client however. This is not
+* a queue structure. Then the receiver can signal that they have received something.
+* Someone else can register to that signal, and then extract the data from this class.
+* The Qt signal/slots mechanism is used to work across threads, so the correct
+* choice of connection type is important.
+*/
 class NiftyLinkMessageManager : public QObject
 {
   Q_OBJECT

@@ -22,21 +22,21 @@ namespace niftk
 {
 
 /**
- * \class NiftyLinkMessageStatsContainer
- * \brief Simple container to contain the statistics from messages, so we can pass statistics information over signals/slots etc.
- *
- * This class stores the total number of bytes and total number of messages
- * received since the existence of this object. Other variables are running totals
- * since the last checkpoint. So, for example, you may start recording data, and check-point every 30 seconds.
- *
- * This class relies on Value Type semantics, so must provide a correct and preferably cheap copy and assignment operators.
- * This is a requirement for signals and slots, and for passing these objects about quickly.
- *
- * For this reason, note that we do not use igtl::TimeStamp in this class. igtl::TimeStamp is expensive to create/destroy.
- * So, we don't want to create/destroy them each time we use signals and slots and copy constructors etc.
- * So, this class works in conjunction with the NiftyLinkMessageCounter class to measure stats.
- * The reason this class is separate is to make it easier to test.
- */
+* \class NiftyLinkMessageStatsContainer
+* \brief Simple container to contain the statistics from messages, so we can pass statistics information over signals/slots etc.
+*
+* This class stores the total number of bytes and total number of messages
+* received since the existence of this object. Other variables are running totals
+* since the last checkpoint. So, for example, you may start recording data, and check-point every 30 seconds.
+*
+* This class relies on Value Type semantics, so must provide a correct and preferably cheap copy and assignment operators.
+* This is a requirement for signals and slots, and for passing these objects about quickly.
+*
+* For this reason, note that we do not use igtl::TimeStamp in this class. igtl::TimeStamp is expensive to create/destroy.
+* So, we don't want to create/destroy them each time we use signals and slots and copy constructors etc.
+* So, this class works in conjunction with the NiftyLinkMessageCounter class to measure stats.
+* The reason this class is separate is to make it easier to test.
+*/
 class NIFTYLINKCOMMON_WINEXPORT NiftyLinkMessageStatsContainer {
 
 public:

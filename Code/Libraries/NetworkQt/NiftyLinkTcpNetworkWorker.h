@@ -27,14 +27,14 @@
 namespace niftk
 {
 /**
- * \class NiftyLinkTcpNetworkWorker
- * \brief Worker object, to be run in a separate NiftyLinkQThread by NiftyLinkTcpServer or NiftyLinkTcpClient.
- *
- * Third parties should not need to use this class, hence it is deliberately not exported.
- *
- * Once the this worker is running in its own event loop, you should consider the socket
- * and worker as being owned by the thread, and events are fired from the event loop of the new thread.
- */
+* \class NiftyLinkTcpNetworkWorker
+* \brief Worker object, to be run in a separate NiftyLinkQThread by NiftyLinkTcpServer or NiftyLinkTcpClient.
+*
+* Third parties should not need to use this class, hence it is deliberately not exported.
+*
+* Once the this worker is running in its own event loop, you should consider the socket
+* and worker as being owned by the thread, and events are fired from the event loop of the new thread.
+*/
 class NiftyLinkTcpNetworkWorker : public QObject
 {
   Q_OBJECT

@@ -20,20 +20,21 @@
 #include <QString>
 
 /**
- * \file NiftyLinkTransformMessageHelpers.h
- * \brief Helper methods to initialise TRANSFORM messages.
- */
+* \file NiftyLinkTransformMessageHelpers.h
+* \brief Helper methods to initialise TRANSFORM messages.
+*/
 namespace niftk
 {
 
 /**
- * \name NiftyLinkTransformMessageHelpers
- * \brief Helper methods to initialise TRANSFORM messages.
- */
+* \name NiftyLinkTransformMessageHelpers
+* \brief Helper methods to initialise TRANSFORM messages.
+*/
 ///@{
 
 /// \brief Initialises the transform message with the test matrix, applying the same matrix to all elements.
-extern "C++" NIFTYLINKCOMMON_WINEXPORT void InitialiseTransformWithTestData(const igtl::Matrix4x4& testMatrix, igtl::TransformMessage::Pointer& messageToWriteTo);
+extern "C++" NIFTYLINKCOMMON_WINEXPORT void InitialiseTransformWithTestData(const igtl::Matrix4x4& testMatrix,
+                                                                            igtl::TransformMessage::Pointer& messageToWriteTo);
 
 /// \brief Initialises the transform message with a random matrix.
 extern "C++" NIFTYLINKCOMMON_WINEXPORT void InitialiseTransformWithRandomData(igtl::TransformMessage::Pointer& messageToWriteTo);
@@ -42,7 +43,10 @@ extern "C++" NIFTYLINKCOMMON_WINEXPORT void InitialiseTransformWithRandomData(ig
 extern "C++" NIFTYLINKCOMMON_WINEXPORT QString GetMatrixAsString(const igtl::TransformMessage::Pointer& message);
 
 /// \brief Creates a transform message within a NiftyLinkMessageContainer, that is packed and ready to go.
-extern "C++" NIFTYLINKCOMMON_WINEXPORT NiftyLinkMessageContainer::Pointer CreateTransformMessage(const QString& deviceName, const QString& hostName, int portNumber, igtl::Matrix4x4& input);
+extern "C++" NIFTYLINKCOMMON_WINEXPORT NiftyLinkMessageContainer::Pointer CreateTransformMessage(const QString& deviceName,
+                                                                                                 const QString& hostName,
+                                                                                                 int portNumber,
+                                                                                                 igtl::Matrix4x4& input);
 
 /// \brief Creates a transform message within a NiftyLinkMessageContainer, that is packed and ready to go.
 /// \param input should be an array of 16 doubles assumed to be in row-order.

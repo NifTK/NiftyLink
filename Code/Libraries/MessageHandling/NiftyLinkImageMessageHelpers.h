@@ -20,16 +20,16 @@
 #include <QImage>
 
 /**
- * \file NiftyLinkImageMessageHelpers.h
- * \brief Helper methods to load/save images, initialise with random test data, and set/get from QImage.
- */
+* \file NiftyLinkImageMessageHelpers.h
+* \brief Helper methods to load/save images, initialise with random test data, and set/get from QImage.
+*/
 namespace niftk
 {
 
 /**
- * \name NiftyLinkImageMessageHelpers
- * \brief Helper methods to load/save images, initialise with random test data, and set/get from QImage.
- */
+* \name NiftyLinkImageMessageHelpers
+* \brief Helper methods to load/save images, initialise with random test data, and set/get from QImage.
+*/
 ///@{
 
 /// \brief Loads a standard image from the Qt resource system, and writes it to the provided image.
@@ -51,7 +51,10 @@ extern "C++" NIFTYLINKCOMMON_WINEXPORT void SaveImage(const igtl::ImageMessage::
 extern "C++" NIFTYLINKCOMMON_WINEXPORT void LoadImage(const QString& fileName, igtl::ImageMessage::Pointer& imageToWrite);
 
 /// \brief Creates an image message within a NiftyLinkMessageContainer, that is packed and ready to go.
-extern "C++" NIFTYLINKCOMMON_WINEXPORT NiftyLinkMessageContainer::Pointer CreateImageMessage(const QString& deviceName, const QString& hostName, int portNumber, const QImage& imageToRead);
+extern "C++" NIFTYLINKCOMMON_WINEXPORT NiftyLinkMessageContainer::Pointer CreateImageMessage(const QString& deviceName,
+                                                                                             const QString& hostName,
+                                                                                             int portNumber,
+                                                                                             const QImage& imageToRead);
 
 ///@}
 

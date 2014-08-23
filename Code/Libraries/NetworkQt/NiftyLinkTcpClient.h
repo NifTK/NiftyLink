@@ -28,10 +28,10 @@ namespace niftk
 class NiftyLinkTcpNetworkWorker;
 
 /**
- * \class NiftyLinkTcpClient
- * \brief TCP client that runs a QTcpSocket via a NiftyLinkTcpNetworkWorker
- * in another NiftyLinkQThread, sending and receiving OpenIGTLink messages.
- */
+* \class NiftyLinkTcpClient
+* \brief TCP client that runs a QTcpSocket via a NiftyLinkTcpNetworkWorker
+* in another NiftyLinkQThread, sending and receiving OpenIGTLink messages.
+*/
 class NIFTYLINKCOMMON_WINEXPORT NiftyLinkTcpClient : public QObject
 {
   Q_OBJECT
@@ -112,7 +112,7 @@ signals:
   /// \brief Internal use only.
   void InternalCloseSocketSignal();
 
-    /// \brief Internal use only.
+  /// \brief Internal use only.
   void InternalShutdownThreadSignal();
 
 private slots:

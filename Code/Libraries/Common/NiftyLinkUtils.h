@@ -35,23 +35,22 @@
 #endif
 
 /**
- * \file NiftyLinkUtils.h
- * \brief Helper methods for stats, test data, IP validation etc.
- *
- * \namespace niftk
- * \brief The niftk namespace should be used for all files in the NiftyLink/Code and NiftyLink/Testing folders.
- *
- * \namespace QsLogging
- * \brief Namespace used in the QsLogging package, included within NiftyLink/Code/Libraries/Common folder.
- */
-
+* \file NiftyLinkUtils.h
+* \brief Helper methods for stats, test data, IP validation etc.
+*
+* \namespace niftk
+* \brief The niftk namespace should be used for all files in the NiftyLink/Code and NiftyLink/Testing folders.
+*
+* \namespace QsLogging
+* \brief Namespace used in the QsLogging package, included within NiftyLink/Code/Libraries/Common folder.
+*/
 namespace niftk
 {
 
 /**
- * \name WindowsSpecificFunctions
- * As few as possible please.
- */
+* \name WindowsSpecificFunctions
+* As few as possible please.
+*/
 ///@{
 #if defined(_WIN32) && !defined(__CYGWIN__)
   extern "C++" NIFTYLINKCOMMON_WINEXPORT void InitializeWinTimers();
@@ -59,9 +58,9 @@ namespace niftk
 ///@}
 
 /**
- * \name NiftyLinkHostNameUtils
- * Functions for hostname, IP lookups etc.
- */
+* \name NiftyLinkHostNameUtils
+* Functions for hostname, IP lookups etc.
+*/
 ///@{
 
 /// \brief Simple function which validates if an IP address is valid or not,
@@ -86,7 +85,8 @@ extern "C++" NIFTYLINKCOMMON_WINEXPORT QString ResolveHostName(const QString &in
 extern "C++" NIFTYLINKCOMMON_WINEXPORT void CreateRandomTransformMatrix(igtl::Matrix4x4& matrix);
 
 /// \brief For testing, this function creates a test message containing a configurable number of tracking matrix elements.
-extern "C++" NIFTYLINKCOMMON_WINEXPORT NiftyLinkMessageContainer::Pointer CreateTestTrackingDataMessage(igtl::TimeStamp::Pointer& timeStamp, int matricesPerMessage);
+extern "C++" NIFTYLINKCOMMON_WINEXPORT NiftyLinkMessageContainer::Pointer CreateTestTrackingDataMessage(igtl::TimeStamp::Pointer& timeStamp,
+                                                                                                        int matricesPerMessage);
 
 ///@}
 

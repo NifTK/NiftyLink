@@ -82,7 +82,9 @@ NiftyLinkTcpNetworkWorker::NiftyLinkTcpNetworkWorker(
   m_NoIncomingDataTimer->setInterval(m_NoIncomingDataInterval);
 
   // Set object names for error messages.
-  m_MessagePrefix = QObject::tr("NiftyLinkTcpNetworkWorker(d=%1, h=%2, p=%3)").arg(m_Socket->socketDescriptor()).arg(host).arg(m_Socket->peerPort());
+  m_MessagePrefix = QObject::tr("NiftyLinkTcpNetworkWorker(d=%1, h=%2, p=%3)")
+      .arg(m_Socket->socketDescriptor()).arg(host).arg(m_Socket->peerPort());
+
   this->setObjectName(m_MessagePrefix);
   m_ReceivedCounter.setObjectName(m_MessagePrefix);
 
@@ -234,7 +236,8 @@ void NiftyLinkTcpNetworkWorker::OnRequestSocketDisconnected()
   }
   else
   {
-    QLOG_WARN() << QObject::tr("%1::OnRequestSocketDisconnected() - socket wasn't actually connected, so nothing to do.").arg(objectName());
+    QLOG_WARN() << QObject::tr("%1::OnRequestSocketDisconnected() - socket wasn't actually connected, so nothing to do.")
+                   .arg(objectName());
   }
 }
 
@@ -321,7 +324,8 @@ void NiftyLinkTcpNetworkWorker::OnSocketReadyRead()
   quint64 bytesAvailable = m_Socket->bytesAvailable();
   quint64 bytesReceived = 0;
 
-  QLOG_DEBUG() << QObject::tr("%1::OnSocketReadyRead() - Starting to read data, bytes available=%2.").arg(m_MessagePrefix).arg(bytesAvailable);
+  QLOG_DEBUG() << QObject::tr("%1::OnSocketReadyRead() - Starting to read data, bytes available=%2.")
+                  .arg(m_MessagePrefix).arg(bytesAvailable);
 
   // Need to cater for reading > 1 message at once.
   // Also need to cater for reading partial messages, as TCP may fragment them.
@@ -332,7 +336,8 @@ void NiftyLinkTcpNetworkWorker::OnSocketReadyRead()
       // If there are not enough bytes even for a header, we can wait until the rest of the message appears.
       if (bytesAvailable < IGTL_HEADER_SIZE)
       {
-        QLOG_INFO() << QObject::tr("%1::OnSocketReadyRead() - Not enough bytes to create a header. Wait until next signal.").arg(m_MessagePrefix);
+        QLOG_INFO() << QObject::tr("%1::OnSocketReadyRead() - Not enough bytes to create a header. Wait until next signal.")
+                       .arg(m_MessagePrefix);
         return;
       }
 
@@ -379,7 +384,10 @@ void NiftyLinkTcpNetworkWorker::OnSocketReadyRead()
       catch (const std::exception& e)
       {
         m_AbortReading = true;
-        QString errorMessage = QObject::tr("%1::OnSocketReadyRead() - Failed to create message type %2. Error was %3. This suggests junk on the wire, or incorrectly encoded messages, or similar.").arg(m_MessagePrefix).arg(QString::fromStdString(m_IncomingHeader->GetDeviceType())).arg(QString::fromStdString(e.what()));
+
+        QString errorMessage = QObject::tr("%1::OnSocketReadyRead() - Failed to create message type %2. Error was %3. This suggests junk on the wire.")
+            .arg(m_MessagePrefix).arg(QString::fromStdString(m_IncomingHeader->GetDeviceType())).arg(QString::fromStdString(e.what()));
+
         QLOG_ERROR() << errorMessage;
         emit SocketError(m_Socket->peerPort(), QAbstractSocket::UnknownSocketError, errorMessage);
         return;
@@ -399,12 +407,17 @@ void NiftyLinkTcpNetworkWorker::OnSocketReadyRead()
       // If there are not enough bytes, we still want to read as much as possible to clear the read buffer.
       if (bytesAvailable < bytesRequiredToCompleteMessage)
       {
-        QLOG_DEBUG() << QObject::tr("%1::OnSocketReadyRead() - Message suggests there should be %2 bytes of data, but only %3 are available. Fragmentation has occurred.").arg(m_MessagePrefix).arg(m_IncomingMessage->GetPackBodySize()).arg(bytesAvailable);
+        QLOG_DEBUG() << QObject::tr("%1::OnSocketReadyRead() - Message suggests there should be %2 bytes of data, but only %3 are available.")
+                        .arg(m_MessagePrefix).arg(m_IncomingMessage->GetPackBodySize()).arg(bytesAvailable);
+
         bytesReceived = in.readRawData(static_cast<char *>(m_IncomingMessage->GetPackBodyPointer()) + m_IncomingMessageBytesReceived, bytesAvailable);
         if (bytesReceived <= 0 || bytesReceived != bytesAvailable)
         {
           m_AbortReading = true;
-          QString errorMessage = QObject::tr("%1::OnSocketReadyRead() - Failed to read the right size (%2) fragment of OpenIGTLink message data, (bytesReceived=%3).").arg(m_MessagePrefix).arg(bytesAvailable).arg(bytesReceived);
+
+          QString errorMessage = QObject::tr("%1::OnSocketReadyRead() - Failed to read the right size (%2) fragment of OpenIGTLink message data, (bytesReceived=%3).")
+              .arg(m_MessagePrefix).arg(bytesAvailable).arg(bytesReceived);
+
           QLOG_ERROR() << errorMessage;
           emit SocketError(m_Socket->peerPort(), QAbstractSocket::UnknownSocketError, errorMessage);
           return;
@@ -420,7 +433,12 @@ void NiftyLinkTcpNetworkWorker::OnSocketReadyRead()
         if (bytesReceived <= 0 || bytesReceived != bytesRequiredToCompleteMessage)
         {
           m_AbortReading = true;
-          QString errorMessage = QObject::tr("%1::OnSocketReadyRead() - Failed to read the right size (%2) OpenIGTLink message, (bytesReceived=%3).").arg(m_MessagePrefix).arg(bytesRequiredToCompleteMessage).arg(bytesReceived);
+
+          QString errorMessage = QObject::tr("%1::OnSocketReadyRead() - Failed to read the right size (%2) OpenIGTLink message, (bytesReceived=%3).")
+              .arg(m_MessagePrefix)
+              .arg(bytesRequiredToCompleteMessage)
+              .arg(bytesReceived);
+
           QLOG_ERROR() << errorMessage;
           emit SocketError(m_Socket->peerPort(), QAbstractSocket::UnknownSocketError, errorMessage);
           return;
@@ -569,7 +587,6 @@ void NiftyLinkTcpNetworkWorker::InternalSendMessage(igtl::MessageBase::Pointer m
 
   QLOG_DEBUG() << QObject::tr("%1::SendMessage() - written %2 bytes.").arg(m_MessagePrefix).arg(bytesWritten);
 }
-
 
 
 //-----------------------------------------------------------------------------
