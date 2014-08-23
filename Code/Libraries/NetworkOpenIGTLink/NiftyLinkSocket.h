@@ -42,7 +42,7 @@ namespace niftk
 */
 class NIFTYLINKCOMMON_WINEXPORT NiftyLinkSocket : public igtl::AbstractSocket
 {
- public:
+public:
   typedef NiftyLinkSocket                Self;
   typedef igtl::AbstractSocket           Superclass;
   typedef igtl::SmartPointer<Self>       Pointer;

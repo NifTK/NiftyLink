@@ -13,18 +13,18 @@
 #include "NiftyLinkClientSocket.h"
 
 #if defined(_WIN32) && !defined(__CYGWIN__)
-  #include <Ws2tcpip.h>
+#include <Ws2tcpip.h>
 #else
-  #include <sys/types.h>
-  #include <sys/socket.h>
-  #include <netinet/in.h>
-  #include <netinet/tcp.h>
-  #include <arpa/inet.h>
-  #include <netdb.h>
-  #include <unistd.h>
-  #include <sys/time.h>
-  #include <errno.h>
-  #include <sys/ioctl.h>
+#include <sys/types.h>
+#include <sys/socket.h>
+#include <netinet/in.h>
+#include <netinet/tcp.h>
+#include <arpa/inet.h>
+#include <netdb.h>
+#include <unistd.h>
+#include <sys/time.h>
+#include <errno.h>
+#include <sys/ioctl.h>
 #endif
 
 #include <fcntl.h>
@@ -90,14 +90,14 @@ int NiftyLinkClientSocket::ConnectNonBlocking(int soc, const char* hostName, int
   fd_set myset;
   int valopt;
 
-  #if defined(_WIN32) && !defined(__CYGWIN__)
-    int lon;
-    int iResult;
-    u_long iMode = 0;
-  #else
-    socklen_t lon;
-    long arg;
-  #endif
+#if defined(_WIN32) && !defined(__CYGWIN__)
+  int lon;
+  int iResult;
+  u_long iMode = 0;
+#else
+  socklen_t lon;
+  long arg;
+#endif
 
   struct hostent* hp;
   hp = gethostbyname(hostName);
@@ -114,28 +114,28 @@ int NiftyLinkClientSocket::ConnectNonBlocking(int soc, const char* hostName, int
   addr.sin_port = htons(port);
   memcpy(&addr.sin_addr, hp->h_addr, hp->h_length);
 
-  // Set non-blocking
-  #if defined(_WIN32) && !defined(__CYGWIN__)
-    iMode = 1;
-    iResult = ioctlsocket(soc, FIONBIO, &iMode);
-    if (iResult != NO_ERROR)
-    {
-      fprintf(stderr, "ioctlsocket failed with error: %ld\n", iResult);
-      return -3;
-    }
-  #else
-    if( (arg = fcntl(soc, F_GETFL, NULL)) < 0)
-    {
-      fprintf(stderr, "Error fcntl(..., F_GETFL) (%s)\n", strerror(errno));
-      return -3;
-    }
-    arg |= O_NONBLOCK;
-    if( fcntl(soc, F_SETFL, arg) < 0)
-    {
-      fprintf(stderr, "Error fcntl(..., F_SETFL) (%s)\n", strerror(errno));
-      return -3;
-    }
-  #endif
+// Set non-blocking
+#if defined(_WIN32) && !defined(__CYGWIN__)
+  iMode = 1;
+  iResult = ioctlsocket(soc, FIONBIO, &iMode);
+  if (iResult != NO_ERROR)
+  {
+    fprintf(stderr, "ioctlsocket failed with error: %ld\n", iResult);
+    return -3;
+  }
+#else
+  if( (arg = fcntl(soc, F_GETFL, NULL)) < 0)
+  {
+    fprintf(stderr, "Error fcntl(..., F_GETFL) (%s)\n", strerror(errno));
+    return -3;
+  }
+  arg |= O_NONBLOCK;
+  if( fcntl(soc, F_SETFL, arg) < 0)
+  {
+    fprintf(stderr, "Error fcntl(..., F_SETFL) (%s)\n", strerror(errno));
+    return -3;
+  }
+#endif
 
 
   // Trying to connect with timeout
@@ -145,12 +145,12 @@ int NiftyLinkClientSocket::ConnectNonBlocking(int soc, const char* hostName, int
     bool busy = false;
 
     #if defined(_WIN32) && !defined(__CYGWIN__)
-      int serr = WSAGetLastError();
-      if (serr == WSAEWOULDBLOCK || serr == WSAEINPROGRESS)
-        busy = true;
+    int serr = WSAGetLastError();
+    if (serr == WSAEWOULDBLOCK || serr == WSAEINPROGRESS)
+      busy = true;
     #else
-      if (errno == EINPROGRESS)
-        busy = true;
+    if (errno == EINPROGRESS)
+      busy = true;
     #endif
 
     if (busy == true)
@@ -165,12 +165,12 @@ int NiftyLinkClientSocket::ConnectNonBlocking(int soc, const char* hostName, int
         bool selectErr = false;
 
         #if defined(_WIN32) && !defined(__CYGWIN__)
-          int serr = WSAGetLastError();
-          if (serr == WSAEINTR)
-            selectErr = true;
+        int serr = WSAGetLastError();
+        if (serr == WSAEINTR)
+          selectErr = true;
         #else
-          if (errno == EINTR)
-            selectErr = true;
+        if (errno == EINTR)
+          selectErr = true;
         #endif
 
         if (res < 0 && selectErr == true)
@@ -186,11 +186,11 @@ int NiftyLinkClientSocket::ConnectNonBlocking(int soc, const char* hostName, int
           bool sockoptErr = 0;
 
           #if defined(_WIN32) && !defined(__CYGWIN__)
-            if (getsockopt(soc, SOL_SOCKET, SO_ERROR, (char*)(&valopt), &lon) < 0)
-              sockoptErr = true;
+          if (getsockopt(soc, SOL_SOCKET, SO_ERROR, (char*)(&valopt), &lon) < 0)
+            sockoptErr = true;
           #else
-            if (getsockopt(soc, SOL_SOCKET, SO_ERROR, (void*)(&valopt), &lon) < 0)
-              sockoptErr = true;
+          if (getsockopt(soc, SOL_SOCKET, SO_ERROR, (void*)(&valopt), &lon) < 0)
+            sockoptErr = true;
           #endif
 
           if (sockoptErr == true)
@@ -225,26 +225,26 @@ int NiftyLinkClientSocket::ConnectNonBlocking(int soc, const char* hostName, int
 
   // Set to blocking mode again...
   #if defined(_WIN32) && !defined(__CYGWIN__)
-    iMode = 0;
-    iResult = ioctlsocket(soc, FIONBIO, &iMode);
-    if (iResult != NO_ERROR)
-    {
-      fprintf(stderr, "ioctlsocket failed with error: %ld\n", iResult);
-      return -9;
-    }
+  iMode = 0;
+  iResult = ioctlsocket(soc, FIONBIO, &iMode);
+  if (iResult != NO_ERROR)
+  {
+    fprintf(stderr, "ioctlsocket failed with error: %ld\n", iResult);
+    return -9;
+  }
   #else
-    if( (arg = fcntl(soc, F_GETFL, NULL)) < 0)
-    {
-      fprintf(stderr, "Error fcntl(..., F_GETFL) (%s)\n", strerror(errno));
-      return -9;
-    }
+  if( (arg = fcntl(soc, F_GETFL, NULL)) < 0)
+  {
+    fprintf(stderr, "Error fcntl(..., F_GETFL) (%s)\n", strerror(errno));
+    return -9;
+  }
 
-    arg &= (~O_NONBLOCK);
-    if( fcntl(soc, F_SETFL, arg) < 0)
-    {
-      fprintf(stderr, "Error fcntl(..., F_SETFL) (%s)\n", strerror(errno));
-      return -9;
-    }
+  arg &= (~O_NONBLOCK);
+  if( fcntl(soc, F_SETFL, arg) < 0)
+  {
+    fprintf(stderr, "Error fcntl(..., F_SETFL) (%s)\n", strerror(errno));
+    return -9;
+  }
   #endif
 
   return 0;

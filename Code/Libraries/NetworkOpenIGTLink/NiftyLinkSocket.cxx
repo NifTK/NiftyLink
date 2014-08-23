@@ -17,22 +17,22 @@
 #include <igtlOSUtil.h>
 
 #if defined(_WIN32) && !defined(__CYGWIN__)
-  #define WSA_VERSION MAKEWORD(1,1)
+#define WSA_VERSION MAKEWORD(1,1)
 #endif
 
 #if defined(_WIN32) && !defined(__CYGWIN__)
-  #include <Ws2tcpip.h>
+#include <Ws2tcpip.h>
 #else
-  #include <sys/types.h>
-  #include <sys/socket.h>
-  #include <netinet/in.h>
-  #include <netinet/tcp.h>
-  #include <arpa/inet.h>
-  #include <netdb.h>
-  #include <unistd.h>
-  #include <sys/time.h>
-  #include <errno.h>
-  #include <sys/ioctl.h>
+#include <sys/types.h>
+#include <sys/socket.h>
+#include <netinet/in.h>
+#include <netinet/tcp.h>
+#include <arpa/inet.h>
+#include <netdb.h>
+#include <unistd.h>
+#include <sys/time.h>
+#include <errno.h>
+#include <sys/ioctl.h>
 #endif
 
 #include <fcntl.h>
@@ -131,18 +131,18 @@ int NiftyLinkSocket::Send(const void* data, int length)
 
   int flags;
   #if defined(_WIN32) && !defined(__CYGWIN__)
-    flags = 0; //disable signal on Win boxes.
-    rVal  = ioctlsocket(this->m_SocketDescriptor, FIONBIO, &iMode);
+  flags = 0; //disable signal on Win boxes.
+  rVal  = ioctlsocket(this->m_SocketDescriptor, FIONBIO, &iMode);
 
   #elif defined(__linux__)
-    flags = MSG_NOSIGNAL; //disable signal on Unix boxes.
-    rVal |= ioctl(this->m_SocketDescriptor, FIONBIO, &iMode);
+  flags = MSG_NOSIGNAL; //disable signal on Unix boxes.
+  rVal |= ioctl(this->m_SocketDescriptor, FIONBIO, &iMode);
 
   #elif defined(__APPLE__)
-    int opt=1;
-    rVal  = setsockopt(this->m_SocketDescriptor, SOL_SOCKET, SO_NOSIGPIPE, (char*) &opt, sizeof(int));
-    rVal |= ioctl(this->m_SocketDescriptor, FIONBIO, &iMode);
-    flags = SO_NOSIGPIPE; //disable signal on Mac boxes.
+  int opt=1;
+  rVal  = setsockopt(this->m_SocketDescriptor, SOL_SOCKET, SO_NOSIGPIPE, (char*) &opt, sizeof(int));
+  rVal |= ioctl(this->m_SocketDescriptor, FIONBIO, &iMode);
+  flags = SO_NOSIGPIPE; //disable signal on Mac boxes.
   #endif
 
   if (rVal < 0)    // ioctl error
@@ -169,22 +169,22 @@ int NiftyLinkSocket::Send(const void* data, int length)
     if (n <= 0)
     {
       #if defined(_WIN32) && !defined(__CYGWIN__)
-        int error = WSAGetLastError();
-        trys++;
+      int error = WSAGetLastError();
+      trys++;
 
-        if (((error == WSAENOBUFS) && (trys < 1000)) || ((error == WSAEWOULDBLOCK) && (trys < 1000)))
-        {
-          igtl::Sleep(1);
-          continue;
-        }
+      if (((error == WSAENOBUFS) && (trys < 1000)) || ((error == WSAEWOULDBLOCK) && (trys < 1000)))
+      {
+        igtl::Sleep(1);
+        continue;
+      }
       #else
-        int error = errno;
+      int error = errno;
 
-        if ((error == EWOULDBLOCK) && (++trys < 1000))
-        {
-          igtl::Sleep(1);
-          continue;
-        }
+      if ((error == EWOULDBLOCK) && (++trys < 1000))
+      {
+        igtl::Sleep(1);
+        continue;
+      }
       #endif
 
       igtlSocketErrorMacro(<< "sendfail");
@@ -235,22 +235,22 @@ int NiftyLinkSocket::Receive(void* data, int length, int readFully/*=1*/)
     if (bytesRead < 1)
     {
       #if defined(_WIN32) && !defined(__CYGWIN__)
-        int error = WSAGetLastError();
-        trys++;
+      int error = WSAGetLastError();
+      trys++;
 
-        if (((error == WSAENOBUFS) && (trys < 1000)) || ((error == WSAEWOULDBLOCK) && (trys < 1000)))
-        {
-          igtl::Sleep(1);
-          continue;
-        }
+      if (((error == WSAENOBUFS) && (trys < 1000)) || ((error == WSAEWOULDBLOCK) && (trys < 1000)))
+      {
+        igtl::Sleep(1);
+        continue;
+      }
       #else
-        int error = errno;
+      int error = errno;
 
-        if ((error == EWOULDBLOCK) && (++trys < 1000))
-        {
-          igtl::Sleep(1);
-          continue;
-        }
+      if ((error == EWOULDBLOCK) && (++trys < 1000))
+      {
+        igtl::Sleep(1);
+        continue;
+      }
       #endif
 
       // Error in recv()
@@ -278,12 +278,12 @@ int NiftyLinkSocket::SetTimeout(int timeout)
   }
 
   #if defined(_WIN32) && !defined(__CYGWIN__)
-    this->m_Timeout = timeout;
-    int len;
+  this->m_Timeout = timeout;
+  int len;
   #else
-    this->m_Timeout.tv_sec  = timeout/1000;          /* second */
-    this->m_Timeout.tv_usec = (timeout%1000) * 1000; /* microsecond */
-    socklen_t len;
+  this->m_Timeout.tv_sec  = timeout/1000;          /* second */
+  this->m_Timeout.tv_usec = (timeout%1000) * 1000; /* microsecond */
+  socklen_t len;
   #endif
   if ( timeout > 0 )
   {
@@ -314,26 +314,26 @@ int NiftyLinkSocket::CheckPendingData()
   igtl::TimeStamp::Pointer ts;
 
   #if defined(_WIN32) && !defined(__CYGWIN__)
-    u_long bytesToRead = 0;
+  u_long bytesToRead = 0;
   #else
-    int bytesToRead = 0;
+  int bytesToRead = 0;
   #endif
 
   // Take a look at the buffer to find out the number of bytes that arrived (if any)
   try
   {
     #if defined(_WIN32) && !defined(__CYGWIN__)
-      rVal  = ioctlsocket(this->m_SocketDescriptor, FIONBIO, &iMode);
-      rVal |= ioctlsocket(this->m_SocketDescriptor, FIONREAD, &bytesToRead);
+    rVal  = ioctlsocket(this->m_SocketDescriptor, FIONBIO, &iMode);
+    rVal |= ioctlsocket(this->m_SocketDescriptor, FIONREAD, &bytesToRead);
 
-      // Record the software timestamp asap
-      ts = igtl::TimeStamp::New();
+    // Record the software timestamp asap
+    ts = igtl::TimeStamp::New();
     #else
-      rVal  = ioctl(this->m_SocketDescriptor, FIONBIO, &iMode);
-      rVal |= ioctl(this->m_SocketDescriptor, FIONREAD, &bytesToRead);
+    rVal  = ioctl(this->m_SocketDescriptor, FIONBIO, &iMode);
+    rVal |= ioctl(this->m_SocketDescriptor, FIONREAD, &bytesToRead);
 
-      // Record the software timestamp asap
-      ts = igtl::TimeStamp::New();
+    // Record the software timestamp asap
+    ts = igtl::TimeStamp::New();
     #endif
   }
   catch (std::exception& e)
@@ -391,18 +391,18 @@ bool NiftyLinkSocket::Poke()
 
   int flags;
   #if defined(_WIN32) && !defined(__CYGWIN__)
-    flags = 0; //disable signal on Win boxes.
-    ioctlsocket(this->m_SocketDescriptor, FIONBIO, &iMode);   // Set Non-Blocking mode
+  flags = 0; //disable signal on Win boxes.
+  ioctlsocket(this->m_SocketDescriptor, FIONBIO, &iMode);   // Set Non-Blocking mode
 
   #elif defined(__linux__)
-    flags = MSG_NOSIGNAL; //disable signal on Unix boxes.
-    ioctl(this->m_SocketDescriptor, FIONBIO, &iMode);   // Set Non-Blocking mode
+  flags = MSG_NOSIGNAL; //disable signal on Unix boxes.
+  ioctl(this->m_SocketDescriptor, FIONBIO, &iMode);   // Set Non-Blocking mode
 
   #elif defined(__APPLE__)
-    int opt=1;
-    setsockopt(this->m_SocketDescriptor, SOL_SOCKET, SO_NOSIGPIPE, (char*) &opt, sizeof(int));
-    flags = SO_NOSIGPIPE; //disable signal on Mac boxes.
-    ioctl(this->m_SocketDescriptor, FIONBIO, &iMode);   // Set Non-Blocking mode
+  int opt=1;
+  setsockopt(this->m_SocketDescriptor, SOL_SOCKET, SO_NOSIGPIPE, (char*) &opt, sizeof(int));
+  flags = SO_NOSIGPIPE; //disable signal on Mac boxes.
+  ioctl(this->m_SocketDescriptor, FIONBIO, &iMode);   // Set Non-Blocking mode
   #endif
 
   // TEST WRITE

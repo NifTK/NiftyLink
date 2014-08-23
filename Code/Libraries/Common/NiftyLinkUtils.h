@@ -25,13 +25,13 @@
 #include <QLabel>
 
 #if defined(_WIN32) && !defined(__CYGWIN__)
-  #include <windows.h>
-  #include <bcrypt.h>
-  #define WINAPI __stdcall
+#include <windows.h>
+#include <bcrypt.h>
+#define WINAPI __stdcall
 
-  // Function pointers that will be used for the DLL functions.
-  typedef NTSTATUS (__stdcall *FunctionPtr_SETRES) (ULONG, BOOLEAN, PULONG);
-  typedef NTSTATUS (__stdcall *FunctionPtr_GETRES) (PULONG, PULONG, PULONG);
+// Function pointers that will be used for the DLL functions.
+typedef NTSTATUS (__stdcall *FunctionPtr_SETRES) (ULONG, BOOLEAN, PULONG);
+typedef NTSTATUS (__stdcall *FunctionPtr_GETRES) (PULONG, PULONG, PULONG);
 #endif
 
 /**
