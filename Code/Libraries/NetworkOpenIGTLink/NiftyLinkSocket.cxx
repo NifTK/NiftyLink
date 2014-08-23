@@ -368,7 +368,7 @@ int NiftyLinkSocket::CheckPendingData()
       m_ReceiveTimeStamp.operator =(ts);
 
       return bytesToRead;
-  }
+    }
 }
 
 

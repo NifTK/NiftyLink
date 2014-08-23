@@ -30,7 +30,8 @@ NiftyLinkServer::NiftyLinkServer(QObject * /* parent */)
   connect(m_ServerProcess, SIGNAL(CantReachRemote()), this, SLOT(OnCantSendToClient()));
   connect(m_ServerProcess, SIGNAL(NoResponseFromRemote()), this, SLOT(OnClientDisconnected()));
   connect(m_ServerProcess, SIGNAL(MessageSent(igtlUint64, igtlUint64)), this, SLOT(OnMessageSent(igtlUint64, igtlUint64)));
-  connect(m_ServerProcess, SIGNAL(MessageReceived(niftk::NiftyLinkMessageContainer::Pointer)), this, SLOT(OnMessageReceived(niftk::NiftyLinkMessageContainer::Pointer)));
+  connect(m_ServerProcess, SIGNAL(MessageReceived(niftk::NiftyLinkMessageContainer::Pointer)),
+          this, SLOT(OnMessageReceived(niftk::NiftyLinkMessageContainer::Pointer)));
 }
 
 

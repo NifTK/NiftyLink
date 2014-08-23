@@ -100,7 +100,9 @@ void NiftyLinkNetworkProcess::StartKeepAliveTimer()
 {
   if (m_KeepAliveTimer == NULL)
   {
-    QString errorMessage = QObject::tr("%1::NiftyLinkNetworkProcess::StartKeepAliveTimer() - QTimer is not initialised, so can't start it.").arg(objectName());
+    QString errorMessage = QObject::tr("%1::NiftyLinkNetworkProcess::StartKeepAliveTimer() - QTimer is not initialised, so can't start it.")
+        .arg(objectName());
+
     QLOG_ERROR() << errorMessage;
     NiftyLinkStdExceptionMacro(std::logic_error, << errorMessage.toStdString());
   }
@@ -114,7 +116,9 @@ void NiftyLinkNetworkProcess::StopKeepAliveTimer()
 {
   if (m_KeepAliveTimer == NULL)
   {
-    QString errorMessage = QObject::tr("%1::NiftyLinkNetworkProcess::StopKeepAliveTimer() - QTimer is not initialised, so can't stop it.").arg(objectName());
+    QString errorMessage = QObject::tr("%1::NiftyLinkNetworkProcess::StopKeepAliveTimer() - QTimer is not initialised, so can't stop it.")
+        .arg(objectName());
+
     QLOG_ERROR() << errorMessage;
     NiftyLinkStdExceptionMacro(std::logic_error, << errorMessage.toStdString());
   }
@@ -142,7 +146,9 @@ void NiftyLinkNetworkProcess::StartNoResponseTimer()
 {
   if (m_NoResponseTimer == NULL)
   {
-    QString errorMessage = QObject::tr("%1::StartNoResponseTimer() - QTimer is not initialised, so can't start it.").arg(objectName());
+    QString errorMessage = QObject::tr("%1::StartNoResponseTimer() - QTimer is not initialised, so can't start it.")
+        .arg(objectName());
+
     QLOG_ERROR() << errorMessage;
     NiftyLinkStdExceptionMacro(std::logic_error, << errorMessage.toStdString());
   }
@@ -156,7 +162,9 @@ void NiftyLinkNetworkProcess::StopNoResponseTimer()
 {
   if (m_NoResponseTimer == NULL)
   {
-    QString errorMessage = QObject::tr("%1::StopNoResponseTimer() - QTimer is not initialised, so can't stop it.").arg(objectName());
+    QString errorMessage = QObject::tr("%1::StopNoResponseTimer() - QTimer is not initialised, so can't stop it.")
+        .arg(objectName());
+
     QLOG_ERROR() << errorMessage;
     NiftyLinkStdExceptionMacro(std::logic_error, << errorMessage.toStdString());
   }
@@ -211,10 +219,14 @@ void NiftyLinkNetworkProcess::RunProcessing()
   m_NoResponseTimer->setInterval(m_NoResponseInterval);
   connect(m_NoResponseTimer, SIGNAL(timeout()), this, SLOT(OnNoResponseTimerTimedOut()));
 
-  QLOG_INFO() << QObject::tr("%1::NiftyLinkNetworkProcess::RunProcessing() - calling DoProcessing() in sub-class.").arg(objectName());
+  QLOG_INFO() << QObject::tr("%1::NiftyLinkNetworkProcess::RunProcessing() - calling DoProcessing() in sub-class.")
+                 .arg(objectName());
+
   this->DoProcessing();
 
-  QLOG_INFO() << QObject::tr("%1::NiftyLinkNetworkProcess::RunProcessing() - finished DoProcessing() in sub-class, tidying up.").arg(objectName());
+  QLOG_INFO() << QObject::tr("%1::NiftyLinkNetworkProcess::RunProcessing() - finished DoProcessing() in sub-class, tidying up.")
+                 .arg(objectName());
+
   this->TerminateProcess();
 
   QLOG_INFO() << QObject::tr("%1::NiftyLinkNetworkProcess::RunProcessing() - finished.").arg(objectName());
@@ -237,7 +249,9 @@ void NiftyLinkNetworkProcess::ReceiveMessageLoop()
     int bytesPending = m_CommsSocket->CheckPendingData();
     if (bytesPending < 0)
     {
-      QString errorMessage = QObject::tr("%1::ReceiveMessageLoop() - CheckPendingData returned -1. This is a system error. Check console/log file.").arg(objectName());
+      QString errorMessage = QObject::tr("%1::ReceiveMessageLoop() - CheckPendingData returned -1. This is a system error. Check console/log file.")
+          .arg(objectName());
+
       QLOG_ERROR() << errorMessage;
       NiftyLinkStdExceptionMacro(std::runtime_error, << errorMessage.toStdString());
     }
@@ -308,7 +322,9 @@ bool NiftyLinkNetworkProcess::ReceiveMessage()
     if (r <= 0)
     {
       // Failed to read message.
-      QLOG_WARN() << QObject::tr("%1::ReceiveMessage() - Failed to receive valid OpenIGTLink message (r=%2).").arg(objectName()).arg(r);
+      QLOG_WARN() << QObject::tr("%1::ReceiveMessage() - Failed to receive valid OpenIGTLink message (r=%2).")
+                     .arg(objectName()).arg(r);
+
       return false;
     }
 
@@ -325,7 +341,9 @@ bool NiftyLinkNetworkProcess::ReceiveMessage()
     igtl::StringMessage::Pointer tmp = dynamic_cast<igtl::StringMessage*>(message.GetPointer());
     if (tmp.IsNotNull() && tmp->GetString() == m_KEEP_ALIVE_MESSAGE)
     {
-      QLOG_DEBUG() << QObject::tr("%1::ReceiveMessage() - Keep-alive received, restarting the timeouter.").arg(objectName());
+      QLOG_DEBUG() << QObject::tr("%1::ReceiveMessage() - Keep-alive received, restarting the timeouter.")
+                      .arg(objectName());
+
       this->StartNoResponseTimer();
       return true;
     }
@@ -398,7 +416,9 @@ void NiftyLinkNetworkProcess::Send(igtl::MessageBase::Pointer msg)
     int ret = m_CommsSocket->Send(msg->GetPackPointer(), msg->GetPackSize());
     if (ret <= 0)
     {
-      QString errorMessage = QObject::tr("%1::Send() - Failed to send message, return code %2. Check console/log file.").arg(objectName()).arg(ret);
+      QString errorMessage = QObject::tr("%1::Send() - Failed to send message, return code %2. Check console/log file.")
+          .arg(objectName()).arg(ret);
+
       QLOG_ERROR() << errorMessage;
       NiftyLinkStdExceptionMacro(std::logic_error, << errorMessage.toStdString());
     }
@@ -429,14 +449,18 @@ void NiftyLinkNetworkProcess::OnKeepAliveTimerTimedOut()
   if (!this->GetIsRunning())
   {
     // Note necessarily an error? Depends on timing?
-    QLOG_INFO() << QObject::tr("%1::OnKeepAliveTimerTimedOut() - Called when process is not yet fully running").arg(objectName());
+    QLOG_INFO() << QObject::tr("%1::OnKeepAliveTimerTimedOut() - Called when process is not yet fully running")
+                   .arg(objectName());
+
     return;
   }
 
   if (!this->m_IsConnected)
   {
     // Note necessarily an error? Depends on timing?
-    QLOG_INFO() << QObject::tr("%1::OnKeepAliveTimerTimedOut() - Called when process is not yet fully connected").arg(objectName());
+    QLOG_INFO() << QObject::tr("%1::OnKeepAliveTimerTimedOut() - Called when process is not yet fully connected")
+                   .arg(objectName());
+
     return;
   }
 
@@ -445,7 +469,8 @@ void NiftyLinkNetworkProcess::OnKeepAliveTimerTimedOut()
   igtlUint64 diff = GetDifferenceInNanoSeconds(sendStarted, m_LastMessageProcessedTime) / 1000000; // convert nano to milliseconds.
   if (diff < m_KeepAliveInterval/2)
   {
-    QLOG_DEBUG() << QObject::tr("%1::OnKeepAliveTimerTimedOut() - No real need to send a keep-alive as we have recently processed a message.").arg(objectName());
+    QLOG_DEBUG() << QObject::tr("%1::OnKeepAliveTimerTimedOut() - No real need to send a keep-alive as we have recently processed a message.")
+                    .arg(objectName());
     return;
   }
 
@@ -458,7 +483,9 @@ void NiftyLinkNetworkProcess::OnKeepAliveTimerTimedOut()
   int rval = m_CommsSocket->Send(stringMessage->GetPackPointer(), stringMessage->GetPackSize());
   if (rval != 1)
   {
-    QLOG_ERROR() << QObject::tr("%1::OnKeepAliveTimerTimedOut() - Cannot send keep-alive message: I am probably disconnected from remote host.").arg(objectName());
+    QLOG_ERROR() << QObject::tr("%1::OnKeepAliveTimerTimedOut() - Cannot send keep-alive message: I am probably disconnected from remote host.")
+                    .arg(objectName());
+
     this->StopNoResponseTimer();
     this->StopKeepAliveTimer();
     m_IsConnected = false;
@@ -478,18 +505,24 @@ void NiftyLinkNetworkProcess::OnNoResponseTimerTimedOut()
   if (!this->GetIsRunning())
   {
     // Note necessarily an error? Depends on timing?
-    QLOG_INFO() << QObject::tr("%1::OnNoResponseTimerTimedOut() - Called when process is not yet fully running").arg(objectName());
+    QLOG_INFO() << QObject::tr("%1::OnNoResponseTimerTimedOut() - Called when process is not yet fully running")
+                   .arg(objectName());
+
     return;
   }
 
   if (!this->m_IsConnected)
   {
     // Note necessarily an error? Depends on timing?
-    QLOG_INFO() << QObject::tr("%1::OnNoResponseTimerTimedOut() - Called when process is not yet fully connected").arg(objectName());
+    QLOG_INFO() << QObject::tr("%1::OnNoResponseTimerTimedOut() - Called when process is not yet fully connected")
+                   .arg(objectName());
+
     return;
   }
 
-  QLOG_INFO() << QObject::tr("%1::OnNoResponseTimerTimedOut() - Other end disconnected ... stopping timers.").arg(objectName());
+  QLOG_INFO() << QObject::tr("%1::OnNoResponseTimerTimedOut() - Other end disconnected ... stopping timers.")
+                 .arg(objectName());
+
   this->StopNoResponseTimer();
   this->StopKeepAliveTimer();
   m_IsConnected = false;
@@ -520,7 +553,8 @@ void NiftyLinkNetworkProcess::TerminateProcess()
   m_NoResponseTimer = NULL;
 
   // Quitting Process
-  QLOG_INFO() << QObject::tr("%1::TerminateProcess() - Total number of messages received=%2, sent=%3").arg(objectName()).arg(m_NumberOfMessagesReceived).arg(m_NumberOfMessagesSent);
+  QLOG_INFO() << QObject::tr("%1::TerminateProcess() - Total number of messages received=%2, sent=%3")
+                 .arg(objectName()).arg(m_NumberOfMessagesReceived).arg(m_NumberOfMessagesSent);
 
   if (m_CommsSocket.IsNotNull() && m_MySocket.IsNotNull() && m_CommsSocket != m_MySocket)
   {
@@ -529,7 +563,9 @@ void NiftyLinkNetworkProcess::TerminateProcess()
     {
       QLOG_ERROR() << QObject::tr("%1::TerminateProcess() - failed to close client side of server socket, call returned %2, check log file.").arg(objectName()).arg(err);
     }
-    QLOG_INFO() << QObject::tr("%1::TerminateProcess() - Closing client side returned %2, now sleeping for %3 msec.").arg(objectName()).arg(err).arg(sleepInterval);
+    QLOG_INFO() << QObject::tr("%1::TerminateProcess() - Closing client side returned %2, now sleeping for %3 msec.")
+                   .arg(objectName()).arg(err).arg(sleepInterval);
+
     NiftyLinkQThread::SleepCallingThread(sleepInterval);
   }
 
@@ -538,9 +574,12 @@ void NiftyLinkNetworkProcess::TerminateProcess()
     int err = m_MySocket->CloseSocket();
     if (err == -1)
     {
-      QLOG_ERROR() << QObject::tr("%1::TerminateProcess() - failed to close socket, call returned %2, check log file.").arg(objectName()).arg(err);
+      QLOG_ERROR() << QObject::tr("%1::TerminateProcess() - failed to close socket, call returned %2, check log file.")
+                      .arg(objectName()).arg(err);
     }
-    QLOG_INFO() << QObject::tr("%1::TerminateProcess() - Closing socket returned %2, now sleeping for %3 msec.").arg(objectName()).arg(err).arg(sleepInterval);
+    QLOG_INFO() << QObject::tr("%1::TerminateProcess() - Closing socket returned %2, now sleeping for %3 msec.")
+                   .arg(objectName()).arg(err).arg(sleepInterval);
+
     NiftyLinkQThread::SleepCallingThread(sleepInterval);
   }
   m_IsConnected = false;
@@ -559,7 +598,8 @@ void NiftyLinkNetworkProcess::DumpStats()
   m_ListOfLatencies.clear();
   m_ListOfLatencies.clear();
 
-  QLOG_INFO() << QObject::tr("%1::NiftyLinkNetworkProcess::DumpStats() - number=%2, mean=%3, std dev=%4, (nanoseconds).").arg(objectName()).arg(number).arg(mean).arg(stdDev);
+  QLOG_INFO() << QObject::tr("%1::NiftyLinkNetworkProcess::DumpStats() - number=%2, mean=%3, std dev=%4, (nanoseconds).")
+                 .arg(objectName()).arg(number).arg(mean).arg(stdDev);
 }
 
 

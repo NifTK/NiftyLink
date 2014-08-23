@@ -66,14 +66,18 @@ void NiftyLinkClientProcess::Initialise(const QString &hostname, const int &port
 {
   if (port <= 0 || hostname.size() == 0)
   {
-    QString errorMessage = QObject::tr("%1::Initialise(%2, %3) - Cannot create a client socket, invalid host or port specified.").arg(objectName()).arg(hostname).arg(port);
+    QString errorMessage = QObject::tr("%1::Initialise(%2, %3) - Cannot create a client socket, invalid host or port specified.")
+        .arg(objectName()).arg(hostname).arg(port);
+
     QLOG_ERROR() << errorMessage;
     NiftyLinkStdExceptionMacro(std::invalid_argument, << errorMessage.toStdString());
   }
 
   if (m_MySocket.IsNotNull() || m_CommsSocket.IsNotNull())
   {
-    QString errorMessage = QObject::tr("%1::Initialise(%2, %3) - Client already in use, you should not try to re-initialise it.").arg(objectName()).arg(hostname).arg(port);
+    QString errorMessage = QObject::tr("%1::Initialise(%2, %3) - Client already in use, you should not try to re-initialise it.")
+        .arg(objectName()).arg(hostname).arg(port);
+
     QLOG_ERROR() << errorMessage;
     NiftyLinkStdExceptionMacro(std::logic_error, << errorMessage.toStdString());
   }
@@ -83,7 +87,8 @@ void NiftyLinkClientProcess::Initialise(const QString &hostname, const int &port
   this->m_HostName = hostname;
   this->m_Port = port;
 
-  QLOG_INFO() << QObject::tr("%1::Initialise(%2, %3) - Successfully created (but not yet opened).").arg(objectName()).arg(hostname).arg(port);
+  QLOG_INFO() << QObject::tr("%1::Initialise(%2, %3) - Successfully created (but not yet opened).")
+                 .arg(objectName()).arg(hostname).arg(port);
 }
 
 

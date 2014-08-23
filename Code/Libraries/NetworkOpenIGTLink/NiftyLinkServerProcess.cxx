@@ -52,7 +52,7 @@ int NiftyLinkServerProcess::GetListenInterval()
 
 //-----------------------------------------------------------------------------
 void NiftyLinkServerProcess::Initialise(const int& port)
-{  
+{
   // Set up a new instance of listener on a given port and create a new server socket
   if (port <= 0)
   {
@@ -71,7 +71,7 @@ void NiftyLinkServerProcess::Initialise(const int& port)
   NiftyLinkServerSocket::Pointer ssock = NiftyLinkServerSocket::New();
   int err = ssock->CreateServer(port);
   if (err < 0)
-  {    
+  {
     QString errorMessage = QObject::tr("%1::Initialise(%2) - Error creating server socket. Check console/log file.").arg(objectName()).arg(port);
     QLOG_ERROR() << errorMessage;
     NiftyLinkStdExceptionMacro(std::runtime_error, << errorMessage.toStdString());

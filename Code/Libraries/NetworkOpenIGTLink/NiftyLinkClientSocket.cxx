@@ -114,7 +114,7 @@ int NiftyLinkClientSocket::ConnectNonBlocking(int soc, const char* hostName, int
   addr.sin_port = htons(port);
   memcpy(&addr.sin_addr, hp->h_addr, hp->h_length);
 
-// Set non-blocking
+  // Set non-blocking
 #if defined(_WIN32) && !defined(__CYGWIN__)
   iMode = 1;
   iResult = ioctlsocket(soc, FIONBIO, &iMode);
@@ -136,7 +136,6 @@ int NiftyLinkClientSocket::ConnectNonBlocking(int soc, const char* hostName, int
     return -3;
   }
 #endif
-
 
   // Trying to connect with timeout
   res = connect(soc, (struct sockaddr *)&addr, sizeof(addr));
@@ -279,4 +278,3 @@ void NiftyLinkClientSocket::PrintSelf(std::ostream& os) const
 }
 
 } // end namespace niftk
-

@@ -351,7 +351,10 @@ void NiftyLinkTcpNetworkWorker::OnSocketReadyRead()
       if (bytesReceived <= 0)
       {
         m_AbortReading = true;
-        QString errorMessage = QObject::tr("%1::OnSocketReadyRead() - Failed to receive valid OpenIGTLink header. I expected to read a full header, but couldn't. This suggests junk on the wire, or system failure.").arg(m_MessagePrefix);
+
+        QString errorMessage = QObject::tr("%1::OnSocketReadyRead() - Failed to receive valid OpenIGTLink header. This suggests junk on the wire.")
+            .arg(m_MessagePrefix);
+
         QLOG_ERROR() << errorMessage;
         emit SocketError(m_Socket->peerPort(), QAbstractSocket::UnknownSocketError, errorMessage);
         return;
@@ -415,7 +418,7 @@ void NiftyLinkTcpNetworkWorker::OnSocketReadyRead()
         {
           m_AbortReading = true;
 
-          QString errorMessage = QObject::tr("%1::OnSocketReadyRead() - Failed to read the right size (%2) fragment of OpenIGTLink message data, (bytesReceived=%3).")
+          QString errorMessage = QObject::tr("%1::OnSocketReadyRead() - Failed to read the right size (%2) fragment, received (bytesReceived=%3).")
               .arg(m_MessagePrefix).arg(bytesAvailable).arg(bytesReceived);
 
           QLOG_ERROR() << errorMessage;
@@ -429,7 +432,9 @@ void NiftyLinkTcpNetworkWorker::OnSocketReadyRead()
       else
       {
         // Receive remaining data from the socket.
-        bytesReceived = in.readRawData(static_cast<char *>(m_IncomingMessage->GetPackBodyPointer()) + m_IncomingMessageBytesReceived, bytesRequiredToCompleteMessage);
+        bytesReceived = in.readRawData(static_cast<char *>(m_IncomingMessage->GetPackBodyPointer())
+                                       + m_IncomingMessageBytesReceived, bytesRequiredToCompleteMessage);
+
         if (bytesReceived <= 0 || bytesReceived != bytesRequiredToCompleteMessage)
         {
           m_AbortReading = true;
