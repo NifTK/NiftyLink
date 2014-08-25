@@ -9,8 +9,8 @@
 
   See LICENSE.txt in the top level directory for details.
 =============================================================================*/
-#ifndef NiftyLinkUtiltsTests_h
-#define NiftyLinkUtiltsTests_h
+#ifndef NiftyLinkUtilsTests_h
+#define NiftyLinkUtilsTests_h
 
 #include <NiftyLinkTestingMacros.h>
 
@@ -118,4 +118,4 @@ private slots:
 
 } // end namespace
 
-#endif // NiftyLinkUtiltsTests_h
+#endif // NiftyLinkUtilsTests_h

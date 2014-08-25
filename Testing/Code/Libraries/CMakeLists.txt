@@ -20,6 +20,7 @@ SET(SRCS
   NiftyLinkImageMessageHelpersTests
   NiftyLinkTrackingDataMessageHelpersTests
   NiftyLinkTransformMessageHelpersTests
+  NiftyLinkClientServerTests
 )
 
 FOREACH(APP ${SRCS})
