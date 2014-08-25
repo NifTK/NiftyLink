@@ -39,9 +39,17 @@ class NIFTYLINKCOMMON_WINEXPORT NiftyLinkTcpServer : public QTcpServer
 public:
 
   NiftyLinkTcpServer(QObject *parent = 0);
+
+  /// \brief Destroy the server.
+  ///
+  /// If there are clients connected, this method will call Shutdown() first.
   virtual ~NiftyLinkTcpServer();
 
-  /// \brief Call this to shut down, and then periodically check the number of connected clients.
+  /// \brief Call this to shut down.
+  ///
+  /// Will ask each connected client to disconnect, and will wait until
+  /// all the connections have been disconnected, after which it is safe to
+  /// destroy this object.
   void Shutdown();
 
   /// \brief Set a threshold for the number of messages, so that you

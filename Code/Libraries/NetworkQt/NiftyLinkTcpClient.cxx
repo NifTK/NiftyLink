@@ -56,7 +56,6 @@ NiftyLinkTcpClient::~NiftyLinkTcpClient()
   //    will have been emitted, and a result of which might be that something external decides to delete us.
   if (m_Connected)
   {
-    QLOG_INFO() << QObject::tr("%1::~NiftyLinkTcpClient() - requesting disconnection.").arg(objectName());
     this->DisconnectFromHost();
   }
 
@@ -117,6 +116,12 @@ void NiftyLinkTcpClient::DisconnectFromHost()
 {
   assert(this->IsConnected());
   m_Worker->RequestDisconnectSocket();
+
+  while(this->IsConnected())
+  {
+    QCoreApplication::processEvents();
+  }
+
 }
 
 
@@ -200,13 +205,13 @@ void NiftyLinkTcpClient::OnConnected()
   // Then the m_Worker takes charge of the socket.
   m_Socket->disconnect();
 
-  m_Worker = new NiftyLinkTcpNetworkWorker(&m_InboundMessages, &m_OutboundMessages, m_Socket);
+  m_Worker = new NiftyLinkTcpNetworkWorker("NiftyLinkTcpClientWorker", &m_InboundMessages, &m_OutboundMessages, m_Socket);
   connect(m_Worker, SIGNAL(SocketError(int,QAbstractSocket::SocketError,QString)), this, SLOT(OnWorkerSocketError(int,QAbstractSocket::SocketError,QString)));
   connect(m_Worker, SIGNAL(NoIncomingData()), this, SIGNAL(NoIncomingData()));
   connect(m_Worker, SIGNAL(SentKeepAlive()), this, SIGNAL(SentKeepAlive()));
   connect(m_Worker, SIGNAL(BytesSent(qint64)), this, SIGNAL(BytesSent(qint64)));
   connect(m_Worker, SIGNAL(MessageReceived(int)), this, SLOT(OnMessageReceived(int)));
-  connect(m_Worker, SIGNAL(SocketDisconnected()), this, SLOT(OnDisconnected()));
+  connect(m_Worker, SIGNAL(SocketDisconnected()), this, SLOT(OnDisconnected()), Qt::BlockingQueuedConnection);
 
   m_Thread = new NiftyLinkQThread();
   connect(m_Thread, SIGNAL(finished()), m_Thread, SLOT(deleteLater())); // i.e. the event loop of thread deletes it when control returns to this event loop.

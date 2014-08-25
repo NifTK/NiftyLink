@@ -42,7 +42,8 @@ class NiftyLinkTcpNetworkWorker : public QObject
 public:
 
   /// \brief Constructor.
-  NiftyLinkTcpNetworkWorker(NiftyLinkMessageManager* inboundMessages,
+  NiftyLinkTcpNetworkWorker(const QString& namePrefix,
+                            NiftyLinkMessageManager* inboundMessages,
                             NiftyLinkMessageManager* outboundMessages,
                             QTcpSocket *socket,
                             QObject *parent = 0);

@@ -31,6 +31,7 @@ namespace niftk
 
 //-----------------------------------------------------------------------------
 NiftyLinkTcpNetworkWorker::NiftyLinkTcpNetworkWorker(
+    const QString& namePrefix,
     NiftyLinkMessageManager* inboundMessages,
     NiftyLinkMessageManager *outboundMessages,
     QTcpSocket *socket,
@@ -82,15 +83,15 @@ NiftyLinkTcpNetworkWorker::NiftyLinkTcpNetworkWorker(
   m_NoIncomingDataTimer->setInterval(m_NoIncomingDataInterval);
 
   // Set object names for error messages.
-  m_MessagePrefix = QObject::tr("NiftyLinkTcpNetworkWorker(d=%1, h=%2, p=%3)")
-      .arg(m_Socket->socketDescriptor()).arg(host).arg(m_Socket->peerPort());
+  m_MessagePrefix = QObject::tr("%1(d=%2, h=%3, p=%4)")
+      .arg(namePrefix).arg(m_Socket->socketDescriptor()).arg(host).arg(m_Socket->peerPort());
 
   this->setObjectName(m_MessagePrefix);
   m_ReceivedCounter.setObjectName(m_MessagePrefix);
 
   connect(this, SIGNAL(InternalStatsSignal()), this, SLOT(OnOutputStats()));
   connect(this, SIGNAL(InternalSendSignal()), this, SLOT(OnSendMessage()), Qt::BlockingQueuedConnection);
-  connect(this, SIGNAL(InternalDisconnectedSocketSignal()), this, SLOT(OnRequestSocketDisconnected()), Qt::QueuedConnection);
+  connect(this, SIGNAL(InternalDisconnectedSocketSignal()), this, SLOT(OnRequestSocketDisconnected()));
   connect(m_NoIncomingDataTimer, SIGNAL(timeout()), this, SLOT(OnCheckForIncomingData()));
   connect(m_KeepAliveTimer, SIGNAL(timeout()), this, SLOT(OnSendInternalPing()));
   connect(m_Socket, SIGNAL(disconnected()), this, SLOT(OnSocketDisconnected()));
@@ -140,7 +141,7 @@ void NiftyLinkTcpNetworkWorker::RequestDisconnectSocket()
   // but the processing of the request is done from the thread that this object is bound to (NiftyLinkQThread).
   emit InternalDisconnectedSocketSignal();
 
-  QLOG_WARN() << QObject::tr("%1::OnRequestSocketDisconnected() - Requested.").arg(objectName());
+  QLOG_WARN() << QObject::tr("%1::RequestDisconnectSocket() - Requested.").arg(objectName());
 }
 
 
@@ -248,10 +249,16 @@ void NiftyLinkTcpNetworkWorker::OnSocketDisconnected()
   QLOG_WARN() << QObject::tr("%1::OnSocketDisconnected() - starting to disconnect.").arg(objectName());
 
   emit SocketDisconnected();
+  NiftyLinkQThread::SleepCallingThread(2000);
 
   m_Disconnecting = true;
+
+  m_Socket->disconnect();
   m_Socket->deleteLater();
+
+  this->disconnect();
   this->deleteLater();
+
   this->ShutdownThread();
 
   QLOG_WARN() << QObject::tr("%1::OnSocketDisconnected() - finished disconnection stuff in this method.").arg(objectName());
