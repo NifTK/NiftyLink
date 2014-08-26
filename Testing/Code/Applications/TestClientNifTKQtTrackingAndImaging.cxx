@@ -13,6 +13,7 @@
 #include "TestClientNifTKQtTrackingAndImaging.h"
 #include <NiftyLinkMessageContainer.h>
 #include <NiftyLinkImageMessageHelpers.h>
+#include <NiftyLinkTrackingDataMessageHelpers.h>
 #include <NiftyLinkUtils.h>
 
 #include <QsLog.h>
@@ -145,7 +146,7 @@ void TestClientNifTKQtTrackingAndImaging::RunTest()
 
     if (diff >= nanosecondsBetweenTrackingMessages*numberTrackingImagesSent)
     {
-      NiftyLinkMessageContainer::Pointer tm = niftk::CreateTestTrackingDataMessage(timeCreated, m_Channels);
+      NiftyLinkMessageContainer::Pointer tm = niftk::CreateTrackingDataMessageWithRandomData(timeCreated, m_Channels);
       m_Client->Send(tm);
       numberTrackingImagesSent++;
     }

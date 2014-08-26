@@ -285,39 +285,6 @@ bool IsCloseEnoughToZero(double valueA, double tolerance)
 
 
 //-----------------------------------------------------------------------------
-NiftyLinkMessageContainer::Pointer CreateTestTrackingDataMessage(igtl::TimeStamp::Pointer& timeStamp, int matricesPerMessage)
-{
-  igtl::Matrix4x4 matrix;
-
-  igtl::TrackingDataMessage::Pointer msg = igtl::TrackingDataMessage::New();
-  msg->SetDeviceName("NiftyLinkUtils");
-
-  for (int i = 0; i < matricesPerMessage; i++)
-  {
-    niftk::CreateRandomTransformMatrix(matrix);
-
-    igtl::TrackingDataElement::Pointer element = igtl::TrackingDataElement::New();
-    element->SetMatrix(matrix);
-
-    msg->AddTrackingDataElement(element);
-  }
-
-  timeStamp->GetTime();
-  msg->SetTimeStamp(timeStamp);
-  msg->Pack();
-
-  NiftyLinkMessageContainer::Pointer m = (NiftyLinkMessageContainer::Pointer(new NiftyLinkMessageContainer()));
-  m->SetMessage(msg.GetPointer());
-  m->SetOwnerName("CreateTestTrackingDataMessage");
-  m->SetSenderHostName("123.456.789.012");
-  m->SetSenderPortNumber(1234);
-  m->SetTimeArrived(timeStamp);
-  m->SetTimeReceived(timeStamp);
-  return m;
-}
-
-
-//-----------------------------------------------------------------------------
 void CopyMatrix(double *input, igtl::Matrix4x4& output)
 {
   assert(input);
@@ -478,6 +445,23 @@ bool IsStatsRequest(const igtl::MessageBase::Pointer& message)
     }
   }
   return isStats;
+}
+
+
+//-----------------------------------------------------------------------------
+bool IsCloseEnoughTo(const igtl::Matrix4x4& a, const igtl::Matrix4x4& b, double tolerance)
+{
+  for (unsigned int r = 0; r < 4; r++)
+  {
+    for (unsigned int c = 0; c < 4; c++)
+    {
+      if (!IsCloseEnoughTo(a[r][c], b[r][c], tolerance))
+      {
+        return false;
+      }
+    }
+  }
+  return true;
 }
 
 } // end namespace niftk

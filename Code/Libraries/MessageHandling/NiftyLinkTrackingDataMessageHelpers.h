@@ -25,10 +25,9 @@
 */
 namespace niftk
 {
-
 /**
-* \name NiftyLinkTrackingDataMessageHelpers
-* \brief Helper methods to initialise TDATA messages.
+* \name NiftyLinkTrackingDataMessageHelpersForTesting
+* \brief For testing purposes, helper methods to initialise TDATA messages.
 */
 ///@{
 
@@ -39,6 +38,22 @@ extern "C++" NIFTYLINKCOMMON_WINEXPORT void InitialiseTrackingDataWithTestData(c
 /// \brief Initialises the tracking data with a random matrix.
 extern "C++" NIFTYLINKCOMMON_WINEXPORT void InitialiseTrackingDataWithRandomData(igtl::TrackingDataMessage::Pointer& messageToWriteTo);
 
+/// \brief Creates a testing message, with random matrix data.
+extern "C++" NIFTYLINKCOMMON_WINEXPORT NiftyLinkMessageContainer::Pointer CreateTrackingDataMessageWithRandomData();
+
+/// \brief For testing, this function creates a test message containing a configurable number of tracking matrix elements.
+extern "C++" NIFTYLINKCOMMON_WINEXPORT NiftyLinkMessageContainer::Pointer CreateTrackingDataMessageWithRandomData(
+    igtl::TimeStamp::Pointer& timeStamp,
+    const int& matricesPerMessage);
+
+///@}
+
+/**
+* \name NiftyLinkTrackingDataMessageHelpers
+* \brief Helper methods to initialise TDATA messages.
+*/
+///@{
+
 /// \brief Retrieves a simple string representation of the matrix from the message, where the
 /// index is the element number. No validation is performed on the index number.
 extern "C++" NIFTYLINKCOMMON_WINEXPORT QString GetMatrixAsString(const igtl::TrackingDataMessage::Pointer& message, int elementIndex=0);
@@ -46,8 +61,17 @@ extern "C++" NIFTYLINKCOMMON_WINEXPORT QString GetMatrixAsString(const igtl::Tra
 /// \brief Creates a tracking data message within a NiftyLinkMessageContainer, that is packed and ready to go.
 extern "C++" NIFTYLINKCOMMON_WINEXPORT NiftyLinkMessageContainer::Pointer CreateTrackingDataMessage(const QString& deviceName,
                                                                                                     const QString& hostName,
-                                                                                                    int portNumber,
-                                                                                                    igtl::Matrix4x4& input);
+                                                                                                    const int& portNumber,
+                                                                                                    const igtl::Matrix4x4& matrix,
+                                                                                                    igtl::TimeStamp::Pointer& timeCreated
+                                                                                                    );
+
+/// \brief Creates a tracking data message within a NiftyLinkMessageContainer, that is packed and ready to go.
+extern "C++" NIFTYLINKCOMMON_WINEXPORT NiftyLinkMessageContainer::Pointer CreateTrackingDataMessage(const QString& deviceName,
+                                                                                                    const QString& hostName,
+                                                                                                    const int& portNumber,
+                                                                                                    const igtl::Matrix4x4& matrix
+                                                                                                    );
 
 /// \brief Creates a tracking data message within a NiftyLinkMessageContainer, that is packed and ready to go.
 /// \param input should be an array of 16 doubles assumed to be in row-order.
@@ -62,9 +86,8 @@ extern "C++" NIFTYLINKCOMMON_WINEXPORT NiftyLinkMessageContainer::Pointer Create
 /// \endcode
 extern "C++" NIFTYLINKCOMMON_WINEXPORT NiftyLinkMessageContainer::Pointer CreateTrackingDataMessage(const QString& deviceName,
                                                                                                     const QString& hostName,
-                                                                                                    int portNumber,
-                                                                                                    double* input);
-
+                                                                                                    const int& portNumber,
+                                                                                                    const double* input);
 ///@}
 
 } // end namespace

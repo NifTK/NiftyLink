@@ -13,6 +13,7 @@
 #define NiftyLinkClientServerTests_h
 
 #include <NiftyLinkTestingMacros.h>
+#include <NiftyLinkMessageContainer.h>
 
 namespace niftk
 {
@@ -45,17 +46,58 @@ private slots:
   void cleanupTestCase();
 
   /**
-   * \brief Generate random TDATA, test Sending and Receive and identical TDATA.
+   * \brief Generate random TDATA, test Sending and Receive produces identical TDATA.
    *
    * Spec:
-   *   - Generate a random TDATA, send it, check it arrives identically.
+   *   - Generate a random TDATA,
+   *   - Send it
+   *   - Wait 1sec
+   *   - Check received message in m_TdataMessage is not null
+   *   - Check received message in m_TdataMessage has 1 tracking data element
+   *   - Extract matrix
+   *   - Check received matrix is close enough to created matrix, using method niftk::NiftyLinkUtils::IsCloseEnoughTo(), tolerance=0.00000001.
    */
   void TestSendReceiveTDATA();
+
+
+  /**
+   * \brief Generate a random TRANSFORM message, basically same spec as for TDATA.
+   *
+   * Spec:
+   *   - Generate a random TRANSFORM,
+   *   - Send it
+   *   - Wait 1sec
+   *   - Check received message in m_TransformMessage is not null
+   *   - Extract matrix
+   *   - Check received matrix is close enough to created matrix, using method niftk::NiftyLinkUtils::IsCloseEnoughTo(), tolerance=0.00000001.
+   */
+  void TestSendReceiveTRANSFORM();
+
+  /**
+   * \brief Generate IMAGE, test Sending and Receive produces identical QImage.
+   *
+   * Spec:
+   *   - Generate an IMAGE by loading ":/NiftyLink/UCL_LOGO.tif" from resource system,
+   *   - Send it
+   *   - Wait 1sec
+   *   - Check received message in m_ImageMessage is not null
+   *   - Extract image
+   *   - Check received image exactly equals (using QImage::operator ==) input image.
+   */
+  void TestSendReceiveIMAGE();
+
+  /// \brief To parse/receive incoming messages.
+  void OnReceiveMessage(int, NiftyLinkMessageContainer::Pointer);
 
 private:
 
   NiftyLinkTcpServer *m_Server;
   NiftyLinkTcpClient *m_Client;
+
+  NiftyLinkMessageContainer::Pointer m_TransformMessage;
+  NiftyLinkMessageContainer::Pointer m_TdataMessage;
+  NiftyLinkMessageContainer::Pointer m_ImageMessage;
+
 };
 
 } // end namespace

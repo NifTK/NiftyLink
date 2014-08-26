@@ -11,6 +11,7 @@
 =============================================================================*/
 #include <NiftyLinkUtils.h>
 #include <NiftyLinkMessageContainer.h>
+#include <NiftyLinkTrackingDataMessageHelpers.h>
 
 #include <iostream>
 
@@ -82,7 +83,7 @@ int main(int argc, char* argv[])
 
     if (diff >= nanosecondsBetweenMessages*numberMessagesSent)
     {
-      niftk::NiftyLinkMessageContainer::Pointer m = niftk::CreateTestTrackingDataMessage(timeCreated, channels);
+      niftk::NiftyLinkMessageContainer::Pointer m = niftk::CreateTrackingDataMessageWithRandomData(timeCreated, channels);
       r = socket->Send(m->GetMessage()->GetPackPointer(), m->GetMessage()->GetPackSize());
       if (r == 0)
       {

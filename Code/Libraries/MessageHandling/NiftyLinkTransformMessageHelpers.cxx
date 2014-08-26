@@ -13,6 +13,7 @@
 
 #include <NiftyLinkMacro.h>
 #include <NiftyLinkUtils.h>
+#include <NiftyLinkTransformMessageHelpers.h>
 
 #include <sstream>
 #include <iostream>
@@ -48,6 +49,28 @@ void InitialiseTransformWithRandomData(igtl::TransformMessage::Pointer& messageT
 
 
 //-----------------------------------------------------------------------------
+NiftyLinkMessageContainer::Pointer CreateTransformMessageWithRandomData()
+{
+  igtl::Matrix4x4 matrix;
+  niftk::CreateRandomTransformMatrix(matrix);
+
+  igtl::TimeStamp::Pointer timeCreated = igtl::TimeStamp::New();
+
+  return CreateTransformMessage("TestingDevice", "TestingHost", 1234, matrix, timeCreated);
+}
+
+
+//-----------------------------------------------------------------------------
+NiftyLinkMessageContainer::Pointer CreateTransformMessageWithRandomData(igtl::TimeStamp::Pointer& timeStamp)
+{
+  igtl::Matrix4x4 matrix;
+  niftk::CreateRandomTransformMatrix(matrix);
+
+  return CreateTransformMessage("TestingDevice", "TestingHost", 1234, matrix, timeStamp);
+}
+
+
+//-----------------------------------------------------------------------------
 QString GetMatrixAsString(const igtl::TransformMessage::Pointer& message)
 {
   if (message.IsNull())
@@ -75,25 +98,45 @@ QString GetMatrixAsString(const igtl::TransformMessage::Pointer& message)
 
 
 //-----------------------------------------------------------------------------
-NiftyLinkMessageContainer::Pointer CreateTransformMessage(const QString& deviceName, const QString& hostName, int portNumber, igtl::Matrix4x4& input)
+NiftyLinkMessageContainer::Pointer CreateTransformMessage(
+    const QString& deviceName,
+    const QString& hostName,
+    const int& portNumber,
+    const igtl::Matrix4x4& input,
+    igtl::TimeStamp::Pointer& timeCreated
+    )
 {
   igtl::TransformMessage::Pointer msg = igtl::TransformMessage::New();
   msg->SetDeviceName(deviceName.toStdString().c_str());
-  msg->SetMatrix(input);
+  msg->SetMatrix(*(const_cast<igtl::Matrix4x4*>(&input)));
+
+  timeCreated->GetTime();
+
+  msg->SetTimeStamp(timeCreated);
+  msg->Pack();
 
   NiftyLinkMessageContainer::Pointer m = (NiftyLinkMessageContainer::Pointer(new NiftyLinkMessageContainer()));
   m->SetMessage(msg.GetPointer());
   m->SetOwnerName(deviceName);
   m->SetSenderHostName(hostName);    // don't do these lookups here. They are expensive.
   m->SetSenderPortNumber(portNumber);
-
-  igtl::TimeStamp::Pointer timeCreated = igtl::TimeStamp::New();
-  timeCreated->GetTime();
-
-  msg->SetTimeStamp(timeCreated);
-  msg->Pack();
+  m->SetTimeArrived(timeCreated);
+  m->SetTimeReceived(timeCreated);
 
   return m;
+}
+
+
+//-----------------------------------------------------------------------------
+NiftyLinkMessageContainer::Pointer CreateTransformMessage(
+    const QString& deviceName,
+    const QString& hostName,
+    const int& portNumber,
+    const igtl::Matrix4x4& input
+    )
+{
+  igtl::TimeStamp::Pointer timeCreated = igtl::TimeStamp::New();
+  return CreateTransformMessage(deviceName, hostName, portNumber, input, timeCreated);
 }
 
 
@@ -102,6 +145,7 @@ NiftyLinkMessageContainer::Pointer CreateTransformMessage(const QString& deviceN
 {
   igtl::Matrix4x4 matrix;
   CopyMatrix(input, matrix);
+
   return CreateTransformMessage(deviceName, hostName, portNumber, matrix);
 }
 

@@ -14,6 +14,7 @@
 #include <NiftyLinkMessageCounter.h>
 #include <NiftyLinkUtils.h>
 #include <NiftyLinkQThread.h>
+#include <NiftyLinkTrackingDataMessageHelpers.h>
 
 namespace niftk
 {
@@ -153,7 +154,7 @@ void NiftyLinkMessageCounterTests::BasicStatsCounterTest()
 
   igtl::TimeStamp::Pointer testTime = igtl::TimeStamp::New();
 
-  NiftyLinkMessageContainer::Pointer message1 = CreateTestTrackingDataMessage(testTime, 1);
+  NiftyLinkMessageContainer::Pointer message1 = CreateTrackingDataMessageWithRandomData(testTime, 1);
   counter.OnMessageReceived(message1);
 
   QVERIFY(counter.GetTotalNumberOfMessages() == 1);
@@ -161,7 +162,7 @@ void NiftyLinkMessageCounterTests::BasicStatsCounterTest()
 
   NiftyLinkQThread::SleepCallingThread(10);
 
-  NiftyLinkMessageContainer::Pointer message2 = CreateTestTrackingDataMessage(testTime, 1);
+  NiftyLinkMessageContainer::Pointer message2 = CreateTrackingDataMessageWithRandomData(testTime, 1);
   counter.OnMessageReceived(message2);
 
   QVERIFY(counter.GetTotalNumberOfMessages() == 2);

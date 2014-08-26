@@ -84,10 +84,6 @@ extern "C++" NIFTYLINKCOMMON_WINEXPORT QString ResolveHostName(const QString &in
 /// \brief For testing, this function creates a random 4x4 test matrix.
 extern "C++" NIFTYLINKCOMMON_WINEXPORT void CreateRandomTransformMatrix(igtl::Matrix4x4& matrix);
 
-/// \brief For testing, this function creates a test message containing a configurable number of tracking matrix elements.
-extern "C++" NIFTYLINKCOMMON_WINEXPORT NiftyLinkMessageContainer::Pointer CreateTestTrackingDataMessage(igtl::TimeStamp::Pointer& timeStamp,
-                                                                                                        int matricesPerMessage);
-
 ///@}
 
 
@@ -111,6 +107,9 @@ extern "C++" NIFTYLINKCOMMON_WINEXPORT bool IsCloseEnoughTo(double valueA, doubl
 
 /// \brief Returns true if valueA is closer than tolerance to zero.
 extern "C++" NIFTYLINKCOMMON_WINEXPORT bool IsCloseEnoughToZero(double valueA, double tolerance=0.00001);
+
+/// \brief Returns true if matrix a is within tolerance of matrix b.
+extern "C++" NIFTYLINKCOMMON_WINEXPORT bool IsCloseEnoughTo(const igtl::Matrix4x4& a, const igtl::Matrix4x4& b, double tolerance=0.00001);
 
 ///@}
 

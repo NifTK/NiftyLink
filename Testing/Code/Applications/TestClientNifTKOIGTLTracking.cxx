@@ -13,6 +13,7 @@
 #include "TestClientNifTKOIGTLTracking.h"
 #include <NiftyLinkMessageContainer.h>
 #include <NiftyLinkUtils.h>
+#include <NiftyLinkTrackingDataMessageHelpers.h>
 #include <NiftyLinkClientSocket.h>
 
 #include <igtlTrackingDataMessage.h>
@@ -83,7 +84,7 @@ void TestClientNifTKOIGTLTracking::Start()
     timeNow->GetTime();
     if (niftk::GetDifferenceInNanoSeconds(timeNow, timeLastMessage) > nanosecondsBetweenMessages)
     {
-      NiftyLinkMessageContainer::Pointer m = niftk::CreateTestTrackingDataMessage(timeCreated, m_TrackedObjectsPerMessage);
+      NiftyLinkMessageContainer::Pointer m = niftk::CreateTrackingDataMessageWithRandomData(timeCreated, m_TrackedObjectsPerMessage);
       igtl::MessageBase::Pointer msg = m->GetMessage();
 
       QLOG_DEBUG() << QObject::tr("%1::Start() - sending msg %2.").arg(objectName()).arg(m_NumberMessagesSent);

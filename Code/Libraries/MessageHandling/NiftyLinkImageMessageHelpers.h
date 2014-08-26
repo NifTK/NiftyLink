@@ -27,8 +27,8 @@ namespace niftk
 {
 
 /**
-* \name NiftyLinkImageMessageHelpers
-* \brief Helper methods to load/save images, initialise with random test data, and set/get from QImage.
+* \name NiftyLinkImageMessageHelpersForTesting
+* \brief For testing, helper methods to initialise IMAGE messages.
 */
 ///@{
 
@@ -37,6 +37,14 @@ extern "C++" NIFTYLINKCOMMON_WINEXPORT void InitialiseImageWithTestData(igtl::Im
 
 /// \brief Loads a standard image, and puts a randomly positioned rectangle in it, and writes it to the provided image message.
 extern "C++" NIFTYLINKCOMMON_WINEXPORT void InitialiseImageWithRandomData(igtl::ImageMessage::Pointer& image);
+
+///@}
+
+/**
+* \name NiftyLinkImageMessageHelpers
+* \brief Helper methods to load/save images, initialise with random test data, and set/get from QImage.
+*/
+///@{
 
 /// \brief Sets the QImage onto the igtl::ImageMessage.
 extern "C++" NIFTYLINKCOMMON_WINEXPORT void SetQImage(const QImage& imageToRead, igtl::ImageMessage::Pointer& imageToWrite);
@@ -53,8 +61,17 @@ extern "C++" NIFTYLINKCOMMON_WINEXPORT void LoadImage(const QString& fileName, i
 /// \brief Creates an image message within a NiftyLinkMessageContainer, that is packed and ready to go.
 extern "C++" NIFTYLINKCOMMON_WINEXPORT NiftyLinkMessageContainer::Pointer CreateImageMessage(const QString& deviceName,
                                                                                              const QString& hostName,
-                                                                                             int portNumber,
-                                                                                             const QImage& imageToRead);
+                                                                                             const int& portNumber,
+                                                                                             const QImage& imageToRead,
+                                                                                             igtl::TimeStamp::Pointer& timeCreated
+                                                                                             );
+
+/// \brief Creates an image message within a NiftyLinkMessageContainer, that is packed and ready to go.
+extern "C++" NIFTYLINKCOMMON_WINEXPORT NiftyLinkMessageContainer::Pointer CreateImageMessage(const QString& deviceName,
+                                                                                             const QString& hostName,
+                                                                                             const int& portNumber,
+                                                                                             const QImage& imageToRead
+                                                                                             );
 
 ///@}
 

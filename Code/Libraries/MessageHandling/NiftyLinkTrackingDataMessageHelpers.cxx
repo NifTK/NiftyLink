@@ -54,6 +54,7 @@ void InitialiseTrackingDataWithRandomData(igtl::TrackingDataMessage::Pointer& me
 {
   igtl::Matrix4x4 localMatrix;
   CreateRandomTransformMatrix(localMatrix);
+
   InitialiseTrackingDataWithTestData(localMatrix, messageToWriteTo);
 }
 
@@ -108,36 +109,111 @@ QString GetMatrixAsString(const igtl::TrackingDataMessage::Pointer& message, int
 
 
 //-----------------------------------------------------------------------------
-NiftyLinkMessageContainer::Pointer CreateTrackingDataMessage(const QString& deviceName, const QString& hostName, int portNumber, igtl::Matrix4x4& input)
+NiftyLinkMessageContainer::Pointer CreateTrackingDataMessage(
+    const QString& deviceName,
+    const QString& hostName,
+    const int& portNumber,
+    const igtl::Matrix4x4& matrix,
+    igtl::TimeStamp::Pointer& timeCreated
+    )
 {
-  igtl::TrackingDataElement::Pointer element = igtl::TrackingDataElement::New();
-  element->SetMatrix(input);
-
   igtl::TrackingDataMessage::Pointer msg = igtl::TrackingDataMessage::New();
   msg->SetDeviceName(deviceName.toStdString().c_str());
+
+  igtl::TrackingDataElement::Pointer element = igtl::TrackingDataElement::New();
+  element->SetMatrix(*(const_cast<igtl::Matrix4x4*>(&matrix)));
   msg->AddTrackingDataElement(element);
+
+  timeCreated->GetTime();
+
+  msg->SetTimeStamp(timeCreated);
+  msg->Pack();
 
   NiftyLinkMessageContainer::Pointer m = (NiftyLinkMessageContainer::Pointer(new NiftyLinkMessageContainer()));
   m->SetMessage(msg.GetPointer());
   m->SetOwnerName(deviceName);
   m->SetSenderHostName(hostName);    // don't do these lookups here. They are expensive.
   m->SetSenderPortNumber(portNumber);
+  m->SetTimeArrived(timeCreated);
+  m->SetTimeReceived(timeCreated);
+
+  return m;
+}
+
+
+//-----------------------------------------------------------------------------
+NiftyLinkMessageContainer::Pointer CreateTrackingDataMessage(
+    const QString& deviceName,
+    const QString& hostName,
+    const int& portNumber,
+    const igtl::Matrix4x4& matrix
+    )
+{
+  igtl::TimeStamp::Pointer timeCreated = igtl::TimeStamp::New();
+
+  return CreateTrackingDataMessage(deviceName, hostName, portNumber, matrix, timeCreated);
+}
+
+
+//-----------------------------------------------------------------------------
+NiftyLinkMessageContainer::Pointer CreateTrackingDataMessage(
+    const QString& deviceName,
+    const QString& hostName,
+    const int& portNumber,
+    double* input)
+{
+  igtl::Matrix4x4 matrix;
+  CopyMatrix(input, matrix);
 
   igtl::TimeStamp::Pointer timeCreated = igtl::TimeStamp::New();
+
+  return CreateTrackingDataMessage(deviceName, hostName, portNumber, matrix, timeCreated);
+}
+
+
+//-----------------------------------------------------------------------------
+NiftyLinkMessageContainer::Pointer CreateTrackingDataMessageWithRandomData()
+{
+  igtl::Matrix4x4 localMatrix;
+  CreateRandomTransformMatrix(localMatrix);
+
+  return CreateTrackingDataMessage("TestingDevice", "TestingHost", 1234, localMatrix);
+}
+
+
+//-----------------------------------------------------------------------------
+NiftyLinkMessageContainer::Pointer CreateTrackingDataMessageWithRandomData(
+    igtl::TimeStamp::Pointer &timeCreated,
+    const int& matricesPerMessage)
+{
+  igtl::Matrix4x4 matrix;
+
+  igtl::TrackingDataMessage::Pointer msg = igtl::TrackingDataMessage::New();
+  msg->SetDeviceName("TestingDevice");
+
+  for (unsigned int i = 0; i < matricesPerMessage; i++)
+  {
+    niftk::CreateRandomTransformMatrix(matrix);
+
+    igtl::TrackingDataElement::Pointer element = igtl::TrackingDataElement::New();
+    element->SetMatrix(*(const_cast<igtl::Matrix4x4*>(&matrix)));
+    msg->AddTrackingDataElement(element);
+  }
+
   timeCreated->GetTime();
 
   msg->SetTimeStamp(timeCreated);
   msg->Pack();
 
-  return m;
-}
+  NiftyLinkMessageContainer::Pointer m = (NiftyLinkMessageContainer::Pointer(new NiftyLinkMessageContainer()));
+  m->SetMessage(msg.GetPointer());
+  m->SetOwnerName("TestingDevice");
+  m->SetSenderHostName("TestingHost");    // don't do these lookups here. They are expensive.
+  m->SetSenderPortNumber(1234);
+  m->SetTimeArrived(timeCreated);
+  m->SetTimeReceived(timeCreated);
 
-//-----------------------------------------------------------------------------
-NiftyLinkMessageContainer::Pointer CreateTrackingDataMessage(const QString& deviceName, const QString& hostName, int portNumber,  double* input)
-{
-  igtl::Matrix4x4 matrix;
-  CopyMatrix(input, matrix);
-  return CreateTrackingDataMessage(deviceName, hostName, portNumber, matrix);
+  return m;
 }
 
 } // end namespace niftk
