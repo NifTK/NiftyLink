@@ -13,9 +13,22 @@
 #=================================================================================*/
 set (CTEST_EXTRA_COVERAGE_GLOB ${CTEST_EXTRA_COVERAGE_GLOB})
 foreach (E IN ITEMS .c .cxx .h .txx)
-  list (APPEND CTEST_EXTRA_COVERAGE_GLOB
-        "Code/*/*${E}"
-       )
+  list (APPEND CTEST_EXTRA_COVERAGE_GLOB "Code/Libraries/Common/NiftyLink*${E}")
+  list (APPEND CTEST_EXTRA_COVERAGE_GLOB "Code/Libraries/Descriptors/NiftyLink*${E}")
+  list (APPEND CTEST_EXTRA_COVERAGE_GLOB "Code/Libraries/MessageHandling/NiftyLink*${E}")
+  list (APPEND CTEST_EXTRA_COVERAGE_GLOB "Code/Libraries/NetworkQt/NiftyLink*${E}")
+
+  # This stuff is considered obsolete.
+  # list (APPEND CTEST_EXTRA_COVERAGE_GLOB "Code/Libraries/NetworkOpenIGTLink/NiftyLink*${E}")
+  # list (APPEND CTEST_EXTRA_COVERAGE_GLOB "Code/Libraries/NetworkOriginal/NiftyLink*${E}")
+  # list (APPEND CTEST_EXTRA_COVERAGE_GLOB "Code/Libraries/MessageWrappers/NiftyLink*${E}")
+
+  # We don't want coverage for this, as it isn't ours.
+  # list (APPEND CTEST_EXTRA_COVERAGE_GLOB "Code/Libraries/Common/Qs*${E}")
+
+  # This is a GUI client, which is just a thin wrapper around other classes, so will ignore for now.
+  # list (APPEND CTEST_EXTRA_COVERAGE_GLOB "Code/Applications/*${E}")
+
 endforeach ()
 
 set(CTEST_CUSTOM_COVERAGE_EXCLUDE
@@ -33,16 +46,6 @@ set(CTEST_CUSTOM_COVERAGE_EXCLUDE
   # Exclude files from any external project
   ".*/CMakeExternals/.*"
 
-  # This stuff is considered obsolete.
-  ".*/Code/Libraries/NetworkOpenIGTLink/.*"
-  ".*/Code/Libraries/NetworkOriginal/.*"
-  ".*/Code/Libraries/MessageWrappers/.*"
-
-  # We don't want coverage for this, it isn't ours.
-  ".*/Code/Libraries/CommonQs*"
-
-  # This is a GUI client, which is just a thin wrapper around other classes, so will ignore for now.
-  ".*/Code/Applications/.*"
   )
 
 # The following tests should not be run under valgrind
