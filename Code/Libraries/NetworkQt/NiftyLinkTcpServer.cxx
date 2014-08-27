@@ -218,7 +218,9 @@ void NiftyLinkTcpServer::OnClientDisconnected()
 
   int portNumber = sender->GetSocket()->peerPort();
 
-  QLOG_INFO() << QObject::tr("%1::OnClientDisconnected() - client on port %2 removed, leaving %3 clients.").arg(objectName()).arg(portNumber).arg(m_Workers.size());
+  QLOG_INFO() << QObject::tr("%1::OnClientDisconnected() - client on port %2 removed, leaving %3 clients.")
+                 .arg(objectName()).arg(portNumber).arg(m_Workers.size());
+
   emit ClientDisconnected(portNumber);
 }
 

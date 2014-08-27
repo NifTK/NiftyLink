@@ -320,7 +320,10 @@ IF(BUILD_TESTING)
   
   # Setup file for setting custom ctest vars
   CONFIGURE_FILE(CMake/CTestCustom.cmake.in ${CMAKE_BINARY_DIR}/CTestCustom.cmake @ONLY)
-  
+
+  # Useful (well, useful if you have the right KWStyle version) helper script.
+  CONFIGURE_FILE(Utilities/NiftyLinkExtractKWStyleErrors.sh ${CMAKE_BINARY_DIR}/NiftyLinkExtractKWStyleErrors.sh @ONLY)
+
 ENDIF(BUILD_TESTING)
 
 ######################################################################
