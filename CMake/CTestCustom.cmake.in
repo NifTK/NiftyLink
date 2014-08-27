@@ -48,6 +48,8 @@ foreach (E IN ITEMS .c .cxx .h .txx)
 
 endforeach ()
 
+message("MAtt, CTEST_EXTRA_COVERAGE_GLOB=${CTEST_EXTRA_COVERAGE_GLOB}")
+
 # The following tests should not be run under valgrind
 set(CTEST_CUSTOM_MEMCHECK_IGNORE
   KWStyleCodeTest
