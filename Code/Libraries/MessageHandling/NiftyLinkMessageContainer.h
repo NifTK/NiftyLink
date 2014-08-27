@@ -54,8 +54,8 @@ class NIFTYLINKCOMMON_WINEXPORT NiftyLinkMessageContainer : public QSharedData
 public:
 
   // Typedefs that are common in all message types
-  typedef NiftyLinkMessageContainer Self;
-  typedef QExplicitlySharedDataPointer<Self> Pointer;
+  typedef NiftyLinkMessageContainer                Self;
+  typedef QExplicitlySharedDataPointer<Self>       Pointer;
   typedef QExplicitlySharedDataPointer<const Self> ConstPointer;
 
   /// \brief Basic constructor which generates a timestamp and derives the message ID from it.

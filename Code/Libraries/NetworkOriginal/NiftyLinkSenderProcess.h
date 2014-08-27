@@ -89,11 +89,11 @@ protected slots:
   virtual void TerminateProcess();
 
   /** \brief Main Process functionality takes place in this function.
-  *
-  * The newly started Process will first attempt to connect to the specified remote host, unless it has been initialized on an external socket,
-  * or already connected to remote. Then the sender loop starts, which is processing the message queue and transmitting messages to the remote host,
-  * or idles if the queue is empty. The sender loop continues until the Process is stopped or when the remote host terminates the socket.
-  */
+   *
+   * The newly started Process will first attempt to connect to the specified remote host, unless it has been initialized on an external socket,
+   * or already connected to remote. Then the sender loop starts, which is processing the message queue and transmitting messages to the remote host,
+   * or idles if the queue is empty. The sender loop continues until the Process is stopped or when the remote host terminates the socket.
+   */
   virtual void DoProcessing(void);
 
 private:
