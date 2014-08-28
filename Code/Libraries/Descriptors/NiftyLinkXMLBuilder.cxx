@@ -13,6 +13,9 @@
 #include "NiftyLinkXMLBuilder.h"
 
 #include <QDomDocument>
+#include <QsLog.h>
+
+#include <cassert>
 
 namespace niftk
 {
@@ -68,7 +71,7 @@ NiftyLinkClientDescriptor& NiftyLinkClientDescriptor::operator=(const NiftyLinkC
 
 
 //-----------------------------------------------------------------------------
-QString NiftyLinkClientDescriptor::GetXMLAsString(void)
+QString NiftyLinkClientDescriptor::GetXMLAsString(void) const
 {
   QDomDocument domDocument("ClientDescriptor");
 
@@ -87,78 +90,84 @@ QString NiftyLinkClientDescriptor::GetXMLAsString(void)
   root.appendChild(client);
 
   domDocument.appendChild(root);
-
-  m_DescriptorString.clear();
-  m_DescriptorString.append(domDocument.toString());
+  QString xmlAsString = domDocument.toString();
 
   QDomDocument xmlDoco;
-  m_MessageValid = xmlDoco.setContent(m_DescriptorString);
+  assert(xmlDoco.setContent(xmlAsString));
 
-  if (m_MessageValid)
-  {
-    return m_DescriptorString;
-  }
-  else
-  {
-    return QString();
-  }
+  return xmlAsString;
 }
 
 
 //-----------------------------------------------------------------------------
-void NiftyLinkClientDescriptor::SetXMLString(QString desc)
+bool NiftyLinkClientDescriptor::SetXMLString(QString desc)
 {
-  m_DescriptorString.clear();
-  m_DescriptorString.append(desc);
+  bool isValid = false;
 
   QDomDocument xmlDoco;
-
-  m_MessageValid = xmlDoco.setContent(desc);
-
-  if (m_MessageValid)
+  if (!xmlDoco.setContent(desc))
   {
-    // A valid XML document was received, now it's time to parse it
-    QDomElement root = xmlDoco.documentElement();
+    QLOG_ERROR() << "NiftyLinkClientDescriptor passed invalid XML";
+    return false;
+  }
 
-    if (root.tagName() == "ClientDescriptor")
+  // A valid XML document was received, now it's time to parse it
+  QDomElement root = xmlDoco.documentElement();
+  if (root.tagName() != "ClientDescriptor")
+  {
+    QLOG_ERROR() << "NiftyLinkClientDescriptor::SetXMLString passed a message that wasn't a client descriptor";
+    return false;
+  }
+
+  QString deviceName;
+  QString deviceType;
+  QString commType;
+  QString portName;
+  QString clientIP;
+  QString clientPort;
+
+  QDomNode n = root.firstChild();
+  while (!n.isNull())
+  {
+    QDomElement e = n.toElement();
+
+    if (!e.isNull())
     {
-      QDomNode n = root.firstChild();
-
-      while (!n.isNull())
+      if (e.tagName() == "Device")
       {
-        QDomElement e = n.toElement();
-
-        if (!e.isNull())
-        {
-          if (e.tagName() == "Device")
-          {
-            m_DeviceName.clear();
-            m_DeviceName.append(e.attribute("DeviceName", ""));
-
-            m_DeviceType.clear();
-            m_DeviceType.append(e.attribute("DeviceType", ""));
-
-            m_CommType.clear();
-            m_CommType.append(e.attribute("CommunicationType", ""));
-
-            m_PortName.clear();
-            m_PortName.append("PortName: ");
-          }
-          else if (e.tagName() == "Client")
-          {
-            m_ClientIP.clear();
-            m_ClientIP.append(e.attribute("ClientIP", ""));
-
-            m_ClientPort.clear();
-            m_ClientPort.append(e.attribute("ClientPort", ""));
-          }
-        }
-
-        n = n.nextSibling();
+        deviceName.append(e.attribute("DeviceName", ""));
+        deviceType.append(e.attribute("DeviceType", ""));
+        commType.append(e.attribute("CommunicationType", ""));
+        portName.append(e.attribute("PortName", ""));
+      }
+      else if (e.tagName() == "Client")
+      {
+        clientIP.append(e.attribute("ClientIP", ""));
+        clientPort.append(e.attribute("ClientPort", ""));
       }
     }
-
+    n = n.nextSibling();
   }
+
+  // This might be a bit strict?
+  if (deviceName.size() > 0
+      && deviceType.size() > 0
+      && commType.size() > 0
+      && portName.size() > 0
+      && clientIP.size() > 0
+      && clientPort.size() > 0
+      )
+  {
+    // ie. only update member variables if we have a valid message.
+    this->m_DeviceName = deviceName;
+    this->m_DeviceType = deviceType;
+    this->m_CommType = commType;
+    this->m_PortName = portName;
+    this->m_ClientIP = clientIP;
+    this->m_ClientPort = clientPort;
+    isValid = true;
+  }
+  return isValid;
 }
 
 
@@ -202,7 +211,7 @@ void NiftyLinkCommandDescriptor::AddParameter(QString pName, QString pType, QStr
 
 
 //-----------------------------------------------------------------------------
-QString NiftyLinkCommandDescriptor::GetXMLAsString(void)
+QString NiftyLinkCommandDescriptor::GetXMLAsString(void) const
 {
   QDomDocument domDocument("CommandDescriptor");
 
@@ -224,70 +233,81 @@ QString NiftyLinkCommandDescriptor::GetXMLAsString(void)
   }
 
   domDocument.appendChild(root);
-
-  m_DescriptorString.clear();
-  m_DescriptorString.append(domDocument.toString());
+  QString xmlAsString = domDocument.toString();
 
   QDomDocument xmlDoco;
-  m_MessageValid = xmlDoco.setContent(m_DescriptorString);
+  assert(xmlDoco.setContent(xmlAsString));
 
-  if (m_MessageValid)
-  {
-    return m_DescriptorString;
-  }
-  else
-  {
-    return QString();
-  }
+  return xmlAsString;
 }
 
 
 //-----------------------------------------------------------------------------
-void NiftyLinkCommandDescriptor::SetXMLString(QString desc)
+bool NiftyLinkCommandDescriptor::SetXMLString(QString desc)
 {
-  m_DescriptorString.clear();
-  m_DescriptorString.append(desc);
+  bool isValid = false;
 
   QDomDocument xmlDoco;
-
-  m_MessageValid = xmlDoco.setContent(desc);
-
-  if (m_MessageValid)
+  if (!xmlDoco.setContent(desc))
   {
-    // A valid XML document was received, now it's time to parse it
-    QDomElement root = xmlDoco.documentElement();
+    QLOG_ERROR() << "NiftyLinkCommandDescriptor passed invalid XML";
+    return false;
+  }
 
-    if (root.tagName() == "CommandDescriptor")
+  // A valid XML document was received, now it's time to parse it
+  QDomElement root = xmlDoco.documentElement();
+  if (root.tagName() != "CommandDescriptor")
+  {
+    QLOG_ERROR() << "NiftyLinkCommandDescriptor::SetXMLString passed a message that wasn't a command descriptor";
+    return false;
+  }
+
+  QDomNode n = root.firstChild();
+
+  QString commandName;
+  int numParams;
+  QStringList paramNames;
+  QStringList paramTypes;
+  QStringList paramValues;
+  bool parsedNumParams = false;
+
+  while (!n.isNull())
+  {
+    QDomElement e = n.toElement();
+
+    if (!e.isNull())
     {
-      QDomNode n = root.firstChild();
-
-      while (!n.isNull())
+      if (e.tagName() == "Command")
       {
-        QDomElement e = n.toElement();
-
-        if (!e.isNull())
-        {
-          if (e.tagName() == "Command")
-          {
-            m_CommandName.clear();
-            m_CommandName.append(e.attribute("CommandName", ""));
-
-            bool ok = false;
-            m_NumOfParameters = e.attribute("NumOfParameters", "").toInt(&ok, 10);
-          }
-          else if (e.tagName() == "Parameter")
-          {
-            m_ParameterNames.append(e.attribute("Name", ""));
-            m_ParameterTypes.append(e.attribute("Type", ""));
-            m_ParameterValues.append(e.attribute("Value", ""));
-          }
-        }
-
-        n = n.nextSibling();
+        commandName.append(e.attribute("CommandName", ""));
+        numParams = e.attribute("NumOfParameters", "").toInt(&parsedNumParams, 10);
+      }
+      else if (e.tagName() == "Parameter")
+      {
+        paramNames.append(e.attribute("Name", ""));
+        paramTypes.append(e.attribute("Type", ""));
+        paramValues.append(e.attribute("Value", ""));
       }
     }
-
+    n = n.nextSibling();
   }
+
+  if (parsedNumParams
+      && commandName.size() > 0
+      && paramNames.size() == numParams
+      && paramTypes.size() == numParams
+      && paramValues.size() == numParams
+      )
+  {
+    this->m_CommandName = commandName;
+    this->m_NumOfParameters = numParams;
+    this->m_ParameterNames = paramNames;
+    this->m_ParameterTypes = paramTypes;
+    this->m_ParameterValues = paramValues;
+    isValid = true;
+  }
+
+  return isValid;
 }
 
 
@@ -432,11 +452,11 @@ NiftyLinkTrackerClientDescriptor & NiftyLinkTrackerClientDescriptor::operator=(c
 
 
 //-----------------------------------------------------------------------------
-QString NiftyLinkTrackerClientDescriptor::GetXMLAsString(void)
+QString NiftyLinkTrackerClientDescriptor::GetXMLAsString(void) const
 {
-  QDomDocument domDocument("NiftyLinkTrackerClientDescriptor");
+  QDomDocument domDocument("TrackerClientDescriptor");
 
-  QDomElement root = domDocument.createElement("NiftyLinkTrackerClientDescriptor");
+  QDomElement root = domDocument.createElement("TrackerClientDescriptor");
 
   QDomElement device = domDocument.createElement("Device");
   device.setAttribute("DeviceName", m_DeviceName);
@@ -450,92 +470,100 @@ QString NiftyLinkTrackerClientDescriptor::GetXMLAsString(void)
   client.setAttribute("ClientPort", m_ClientPort);
   root.appendChild(client);
 
-  if (m_DeviceType == "Tracker")
+  for (int i = 0; i < m_TrackerTools.count(); i++)
   {
-    for (int i = 0; i < m_TrackerTools.count(); i++)
-    {
-      QDomElement param = domDocument.createElement("TrackerTool");
-      param.setAttribute("Name", m_TrackerTools.at(i));
-      root.appendChild(param);
-    }
+    QDomElement param = domDocument.createElement("TrackerTool");
+    param.setAttribute("Name", m_TrackerTools.at(i));
+    root.appendChild(param);
   }
 
   domDocument.appendChild(root);
-
-  m_DescriptorString.clear();
-  m_DescriptorString.append(domDocument.toString());
+  QString xmlAsString = domDocument.toString();
 
   QDomDocument xmlDoco;
-  m_MessageValid = xmlDoco.setContent(m_DescriptorString);
+  assert(xmlDoco.setContent(xmlAsString));
 
-  if (m_MessageValid)
-  {
-    return m_DescriptorString;
-  }
-  else
-  {
-    return QString();
-  }
+  return xmlAsString;
 }
 
 
 //-----------------------------------------------------------------------------
-void NiftyLinkTrackerClientDescriptor::SetXMLString(QString desc)
+bool NiftyLinkTrackerClientDescriptor::SetXMLString(QString desc)
 {
-  m_DescriptorString.clear();
-  m_DescriptorString.append(desc);
+  bool isValid = false;
 
   QDomDocument xmlDoco;
-
-  m_MessageValid = xmlDoco.setContent(desc);
-
-  if (m_MessageValid)
+  if (!xmlDoco.setContent(desc))
   {
-    // A valid XML document was received, now it's time to parse it
-    QDomElement root = xmlDoco.documentElement();
+    QLOG_ERROR() << "NiftyLinkTrackerClientDescriptor passed invalid XML";
+    return false;
+  }
 
-    if (root.tagName() == "NiftyLinkTrackerClientDescriptor")
+  // A valid XML document was received, now it's time to parse it
+  QDomElement root = xmlDoco.documentElement();
+  if (root.tagName() != "TrackerClientDescriptor")
+  {
+    QLOG_ERROR() << "NiftyLinkTrackerClientDescriptor::SetXMLString passed a message that wasn't a tracker client descriptor";
+    return false;
+  }
+
+  QString deviceName;
+  QString deviceType;
+  QString commType;
+  QString portName;
+  QString clientIP;
+  QString clientPort;
+  QStringList trackerTools;
+
+  QDomNode n = root.firstChild();
+
+  while (!n.isNull())
+  {
+    QDomElement e = n.toElement();
+
+    if (!e.isNull())
     {
-      QDomNode n = root.firstChild();
-
-      while (!n.isNull())
+      if (e.tagName() == "Device")
       {
-        QDomElement e = n.toElement();
-
-        if (!e.isNull())
-        {
-          if (e.tagName() == "Device")
-          {
-            m_DeviceName.clear();
-            m_DeviceName.append(e.attribute("DeviceName", ""));
-
-            m_DeviceType.clear();
-            m_DeviceType.append(e.attribute("DeviceType", ""));
-
-            m_CommType.clear();
-            m_CommType.append(e.attribute("CommunicationType", ""));
-
-            m_PortName.clear();
-            m_PortName.append("PortName: ");
-          }
-          else if (e.tagName() == "Client")
-          {
-            m_ClientIP.clear();
-            m_ClientIP.append(e.attribute("ClientIP", ""));
-
-            m_ClientPort.clear();
-            m_ClientPort.append(e.attribute("ClientPort", ""));
-          }
-          else if (e.tagName() == "TrackerTool")
-          {
-            m_TrackerTools.append(e.attribute("Name", ""));
-          }
-        }
-
-        n = n.nextSibling();
+        deviceName.append(e.attribute("DeviceName", ""));
+        deviceType.append(e.attribute("DeviceType", ""));
+        commType.append(e.attribute("CommunicationType", ""));
+        portName.append(e.attribute("PortName", ""));
+      }
+      else if (e.tagName() == "Client")
+      {
+        clientIP.append(e.attribute("ClientIP", ""));
+        clientPort.append(e.attribute("ClientPort", ""));
+      }
+      else if (e.tagName() == "TrackerTool")
+      {
+        trackerTools.append(e.attribute("Name", ""));
       }
     }
+    n = n.nextSibling();
   }
+
+  // This might be a bit strict?
+  if (deviceName.size() > 0
+      && deviceType.size() > 0
+      && commType.size() > 0
+      && portName.size() > 0
+      && clientIP.size() > 0
+      && clientPort.size() > 0
+      )
+  {
+    // ie. only update member variables if we have a valid message.
+    this->m_DeviceName = deviceName;
+    this->m_DeviceType = deviceType;
+    this->m_CommType = commType;
+    this->m_PortName = portName;
+    this->m_ClientIP = clientIP;
+    this->m_ClientPort = clientPort;
+    this->m_TrackerTools = trackerTools;
+    isValid = true;
+  }
+
+  return isValid;
 }
 
 } // end namespace niftk

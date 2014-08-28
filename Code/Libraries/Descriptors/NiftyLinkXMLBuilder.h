@@ -36,63 +36,30 @@ namespace niftk
 * can be used, which parses the XML descriptor and sets the member variables accordingly.
 * The values can then be queried by calling the getters.
 */
-class NIFTYLINKCOMMON_WINEXPORT NiftyLinkXMLBuilderBase : public QObject
+class NIFTYLINKCOMMON_WINEXPORT NiftyLinkXMLBuilderBase
 {
-  Q_OBJECT
 
 public:
 
   /// \brief No-arg Constructor.
   NiftyLinkXMLBuilderBase()
-  : m_DescriptorString("")
-  , m_MessageValid(false)
-  {
-  }
-
-  /// \brief Copy Constructor.
-  NiftyLinkXMLBuilderBase(const NiftyLinkXMLBuilderBase &other)
-  : m_DescriptorString(other.m_DescriptorString)
-  , m_MessageValid(other.m_MessageValid)
   {
   }
 
   /// \brief Basic destructor.
   virtual ~NiftyLinkXMLBuilderBase() {}
 
-  /// \brief Assignment operator.
-  NiftyLinkXMLBuilderBase & operator=(const NiftyLinkXMLBuilderBase &other)
-  {
-    m_DescriptorString = other.m_DescriptorString;
-    m_MessageValid = other.m_MessageValid;
-    return *this;
-  }
-
-  /// \brief Returns true if the message is valid.
-  bool IsMessageValid() const
-  {
-    return m_MessageValid;
-  }
-
   /// \brief Pure virtual method: in the derived classes it composes an XML descriptor
   /// from the values of the builder's member variables in a text format and returns it in a QString object.
-  virtual QString GetXMLAsString(void) = 0;
+  virtual QString GetXMLAsString(void) const = 0;
 
   /// \brief Pure virtual method: in the derived classes it sets the XML string,
   /// which is then parsed and the builder object's member variables are being set accordingly.
-  virtual void SetXMLString(QString desc) = 0;
-
-  /// \brief Tells the descriptor type if it's a command / client / tracker, etc.
-  virtual QString GetDescriptorType(void) const
-  {
-    return m_DescriptorString;
-  }
+  /// \return true if parsed successfully and false otherwise
+  virtual bool SetXMLString(QString desc) = 0;
 
   /// \brief Static function to parse the descriptor type of an XML text
   static QString ParseDescriptorType(QString xmlDoco);
-
-protected:
-  QString m_DescriptorString;
-  bool    m_MessageValid;
 };
 
 //-----------------------------------------------------------------------------
@@ -112,8 +79,6 @@ protected:
 */
 class NIFTYLINKCOMMON_WINEXPORT NiftyLinkClientDescriptor : public NiftyLinkXMLBuilderBase
 {
-  Q_OBJECT
-
 public:
 
   /// \brief Basic constructor.
@@ -129,10 +94,10 @@ public:
   NiftyLinkClientDescriptor & operator=(const NiftyLinkClientDescriptor &other);
 
   /// \brief This method composes an XML descriptor from the values of the builders member variables in a text format and returns it in a QString object.
-  QString GetXMLAsString(void);
+  QString GetXMLAsString(void) const;
 
   /// \brief This method sets the XML string, which is then parsed and the builder object's member variables are being set accordingly.
-  void SetXMLString(QString desc);
+  bool SetXMLString(QString desc);
 
   /// \brief This method is used to set the device name (for example "Polaris Vicra").
   inline void SetDeviceName(QString name)
@@ -236,8 +201,6 @@ protected:
 */
 class NIFTYLINKCOMMON_WINEXPORT NiftyLinkCommandDescriptor : public NiftyLinkXMLBuilderBase
 {
-  Q_OBJECT
-
 public:
   /// \brief Basic constructor.
   NiftyLinkCommandDescriptor() : NiftyLinkXMLBuilderBase()
@@ -255,10 +218,10 @@ public:
   NiftyLinkCommandDescriptor & operator=(const NiftyLinkCommandDescriptor &other);
 
   /// \brief This method composes an XML descriptor from the values of the builders member variables in a text format and returns it in a QString object.
-  QString GetXMLAsString(void);
+  QString GetXMLAsString(void) const;
 
   /// \brief This method sets the XML string, which is then parsed and the builder object's member variables are being set accordingly.
-  void SetXMLString(QString desc);
+  bool SetXMLString(QString desc);
 
   /// \brief Sets the command's name.
   inline void SetCommandName(QString name)
@@ -323,8 +286,6 @@ private:
 */
 class NIFTYLINKCOMMON_WINEXPORT NiftyLinkTrackerClientDescriptor : public NiftyLinkClientDescriptor
 {
-  Q_OBJECT
-
 public:
   /// \brief Basic constructor.
   NiftyLinkTrackerClientDescriptor() : NiftyLinkClientDescriptor() {}
@@ -339,10 +300,10 @@ public:
   NiftyLinkTrackerClientDescriptor & operator=(const NiftyLinkTrackerClientDescriptor &other);
 
   /// \brief This method composes an XML descriptor from the values of the builders member variables in a text format and returns it in a QString object.
-  QString GetXMLAsString(void);
+  QString GetXMLAsString(void) const;
 
   /// \brief This method sets the XML string, which is then parsed and the builder object's member variables are being set accordingly.
-  void SetXMLString(QString desc);
+  bool SetXMLString(QString desc);
 
   /// \brief Appends a tracker tool to the descriptor.
   inline void AddTrackerTool(QString toolName)

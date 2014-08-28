@@ -56,7 +56,6 @@ NetworkQt/NiftyLinkTcpClient.cxx
 SET(niftylink_MOC_HDRS
 Common/NiftyLinkMessageCounter.h
 Common/NiftyLinkQThread.h
-Descriptors/NiftyLinkXMLBuilder.h
 MessageHandling/NiftyLinkMessageManager.h
 NetworkOpenIGTLink/NiftyLinkNetworkProcess.h
 NetworkOpenIGTLink/NiftyLinkServerProcess.h
@@ -78,6 +77,7 @@ Common/NiftyLinkMessageStatsContainer.h
 Common/QsDebugOutput.h
 Common/QsLog.h
 Common/QsLogDest.h
+Descriptors/NiftyLinkXMLBuilder.h
 MessageHandling/NiftyLinkMessageContainer.h
 MessageHandling/NiftyLinkImageMessageHelpers.h
 MessageHandling/NiftyLinkTrackingDataMessageHelpers.h

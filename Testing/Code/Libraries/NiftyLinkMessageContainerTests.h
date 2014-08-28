@@ -9,8 +9,8 @@
 
   See LICENSE.txt in the top level directory for details.
 =============================================================================*/
-#ifndef NiftyLinkTrackingDataMessageHelpersTests_h
-#define NiftyLinkTrackingDataMessageHelpersTests_h
+#ifndef NiftyLinkMessageContainerTests_h
+#define NiftyLinkMessageContainerTests_h
 
 #include <NiftyLinkTestingMacros.h>
 
@@ -18,8 +18,8 @@ namespace niftk
 {
 
 /**
-* \class NiftyLinkTrackingDataMessageHelpersTests
-* \brief Tests for classes in NiftyLinkTrackingDataMessageHelpers.h
+* \class NiftyLinkMessageContainerTests
+* \brief Tests for NiftyLinkMessageContainer.
 *
 * This test harness uses the <a href="http://qt-project.org/doc/qt-4.8/qtestlib-manual.html">QTestLib</a> framework.
 *
@@ -27,25 +27,24 @@ namespace niftk
 * describe the functionality of the method you are testing, put the description in the header file
 * of the real class, not in this test harness. Developers are expected to be able to read the .cxx file.
 */
-class NiftyLinkTrackingDataMessageHelpersTests: public QObject
+class NiftyLinkMessageContainerTests: public QObject
 {
   Q_OBJECT
 
 private slots:
 
   /**
-   * \brief Tests Setting and Getting an igtl::TrackingDataMessage.
+   * \brief Set/Get XML for ClientDescriptor.
    *
    * Spec:
-   *   - Create a transform
-   *   - Set it into an tracking data message
-   *   - Get it from an tracking data message
-   *   - Should be the same result as you started with
+   *   - Create a client descriptor.
    */
-  void SetGetTrackingDataTest();
+  void SetGetTest();
+
+  void CopyAssignTest();
 
 };
 
-} // end namespace
+} // end namespace niftk
 
-#endif // NiftyLinkTrackingDataMessageHelpersTests_h
+#endif // NiftyLinkMessageContainerTests_h

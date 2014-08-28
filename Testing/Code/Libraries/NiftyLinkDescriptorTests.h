@@ -9,8 +9,8 @@
 
   See LICENSE.txt in the top level directory for details.
 =============================================================================*/
-#ifndef NiftyLinkTrackingDataMessageHelpersTests_h
-#define NiftyLinkTrackingDataMessageHelpersTests_h
+#ifndef NiftyLinkDescriptorTests_h
+#define NiftyLinkDescriptorTests_h
 
 #include <NiftyLinkTestingMacros.h>
 
@@ -18,8 +18,8 @@ namespace niftk
 {
 
 /**
-* \class NiftyLinkTrackingDataMessageHelpersTests
-* \brief Tests for classes in NiftyLinkTrackingDataMessageHelpers.h
+* \class NiftyLinkDescriptorTests
+* \brief Tests for classes in file NiftyLinkXMLBuilder.h and classes NiftyLinkClientDescriptor etc.
 *
 * This test harness uses the <a href="http://qt-project.org/doc/qt-4.8/qtestlib-manual.html">QTestLib</a> framework.
 *
@@ -27,25 +27,28 @@ namespace niftk
 * describe the functionality of the method you are testing, put the description in the header file
 * of the real class, not in this test harness. Developers are expected to be able to read the .cxx file.
 */
-class NiftyLinkTrackingDataMessageHelpersTests: public QObject
+class NiftyLinkDescriptorTests: public QObject
 {
   Q_OBJECT
 
 private slots:
 
   /**
-   * \brief Tests Setting and Getting an igtl::TrackingDataMessage.
-   *
-   * Spec:
-   *   - Create a transform
-   *   - Set it into an tracking data message
-   *   - Get it from an tracking data message
-   *   - Should be the same result as you started with
+   * \brief Tests for niftk::NiftyLinkClientDescriptor, basically setting/getting XML.
    */
-  void SetGetTrackingDataTest();
+  void ClientDescriptorTest();
 
+  /**
+   * \brief Tests for niftk::NiftyLinkTrackerClientDescriptor, basically setting/getting XML.
+   */
+  void TrackerClientDescriptorTest();
+
+  /**
+   * \brief Tests for niftk::NiftyLinkCommandDescriptor, basically setting/getting XML.
+   */
+  void CommandDescriptorTest();
 };
 
-} // end namespace
+} // end namespace niftk
 
-#endif // NiftyLinkTrackingDataMessageHelpersTests_h
+#endif // NiftyLinkDescriptorTests_h

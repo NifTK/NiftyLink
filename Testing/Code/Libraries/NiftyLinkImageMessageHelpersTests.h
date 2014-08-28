@@ -18,14 +18,15 @@ namespace niftk
 {
 
 /**
- * \file NiftyLinkImageMessageHelpersTests.h
- * \class NiftyLinkImageMessageHelpersTests
- * \brief Tests for classes in NiftyLinkImageMessageHelpers.h
- *
- * This test harness uses the <a href="http://qt-project.org/doc/qt-4.8/qtestlib-manual.html">QTestLib</a>
- * framework. The test harness also provides documentary evidence of the specification.
- * PLEASE keep comments in this class (a) correct, (b) concise and (c) complete.
- */
+* \class NiftyLinkImageMessageHelpersTests
+* \brief Tests for classes in NiftyLinkImageMessageHelpers.h
+*
+* This test harness uses the <a href="http://qt-project.org/doc/qt-4.8/qtestlib-manual.html">QTestLib</a> framework.
+*
+* This class is for developers to read. Comments in this header file should be brief. If you want to
+* describe the functionality of the method you are testing, put the description in the header file
+* of the real class, not in this test harness. Developers are expected to be able to read the .cxx file.
+*/
 class NiftyLinkImageMessageHelpersTests: public QObject
 {
   Q_OBJECT
