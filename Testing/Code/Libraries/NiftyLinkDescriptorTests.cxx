@@ -47,6 +47,14 @@ void NiftyLinkDescriptorTests::ClientDescriptorTest()
   QVERIFY(clientDescriptor.GetDeviceName() == "TestImager");
   QVERIFY(clientDescriptor.GetDeviceType() == "Imager");
   QVERIFY(clientDescriptor.GetPortName() == "TestPort");
+
+  NiftyLinkClientDescriptor c2(clientDescriptor);
+  QVERIFY(c2.GetClientIP() == "123.456.789.012");
+  QVERIFY(c2.GetClientPort() == "1234");
+  QVERIFY(c2.GetCommunicationType() == "TCP");
+  QVERIFY(c2.GetDeviceName() == "TestImager");
+  QVERIFY(c2.GetDeviceType() == "Imager");
+  QVERIFY(c2.GetPortName() == "TestPort");
 }
 
 
@@ -92,6 +100,15 @@ void NiftyLinkDescriptorTests::TrackerClientDescriptorTest()
   QStringList tools;
   tools << "PointerTool";
   QVERIFY(clientDescriptor.GetTrackerTools() == tools);
+
+  NiftyLinkTrackerClientDescriptor c2(clientDescriptor);
+  QVERIFY(c2.GetClientIP() == "123.456.789.012");
+  QVERIFY(c2.GetClientPort() == "1234");
+  QVERIFY(c2.GetCommunicationType() == "TCP");
+  QVERIFY(c2.GetDeviceName() == "TestImager");
+  QVERIFY(c2.GetDeviceType() == "Imager");
+  QVERIFY(c2.GetPortName() == "TestPort");
+  QVERIFY(c2.GetTrackerTools() == tools);
 }
 
 
@@ -120,6 +137,16 @@ void NiftyLinkDescriptorTests::CommandDescriptorTest()
   QVERIFY(descriptor.GetParameterType(1) == "int");
   QVERIFY(descriptor.GetParameterValue(0) == "Nike");
   QVERIFY(descriptor.GetParameterValue(1) == "10");
+
+  NiftyLinkCommandDescriptor c2(descriptor);
+  QVERIFY(c2.GetCommandName() == "JustDoIt");
+  QVERIFY(c2.GetNumOfParameters() == 2);
+  QVERIFY(c2.GetParameterName(0) == "P1");
+  QVERIFY(c2.GetParameterName(1) == "P2");
+  QVERIFY(c2.GetParameterType(0) == "String");
+  QVERIFY(c2.GetParameterType(1) == "int");
+  QVERIFY(c2.GetParameterValue(0) == "Nike");
+  QVERIFY(c2.GetParameterValue(1) == "10");
 }
 
 } // end namespace niftk
