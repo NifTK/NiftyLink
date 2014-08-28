@@ -156,7 +156,7 @@ bool NiftyLinkClientDescriptor::SetXMLString(QString desc)
       && portName.size() > 0
       && clientIP.size() > 0
       && clientPort.size() > 0
-      )
+  )
   {
     // ie. only update member variables if we have a valid message.
     this->m_DeviceName = deviceName;
@@ -550,7 +550,7 @@ bool NiftyLinkTrackerClientDescriptor::SetXMLString(QString desc)
       && portName.size() > 0
       && clientIP.size() > 0
       && clientPort.size() > 0
-      )
+  )
   {
     // ie. only update member variables if we have a valid message.
     this->m_DeviceName = deviceName;
