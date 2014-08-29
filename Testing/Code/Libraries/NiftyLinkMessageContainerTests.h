@@ -34,10 +34,7 @@ class NiftyLinkMessageContainerTests: public QObject
 private slots:
 
   /**
-   * \brief Set/Get XML for ClientDescriptor.
-   *
-   * Spec:
-   *   - Create a client descriptor.
+   * \brief Tests Setters/Getters on the container.
    */
   void SetGetTest();
 

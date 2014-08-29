@@ -25,8 +25,10 @@ namespace niftk
 
 //-----------------------------------------------------------------------------
 NiftyLinkMessageContainer::NiftyLinkMessageContainer()
-  : m_Message(NULL)
+: m_Message(NULL)
 , m_Id(0)
+, m_TimeArrived(0)
+, m_TimeReceived(0)
 , m_SenderHostName("")
 , m_SenderPortNumber(-1)
 , m_OwnerName("")
@@ -171,7 +173,10 @@ void NiftyLinkMessageContainer::GetTimeCreated(igtl::TimeStamp::Pointer& time) c
 //-----------------------------------------------------------------------------
 igtlInt64 NiftyLinkMessageContainer::GetLatency() const
 {
-  assert(this->m_Message.IsNotNull());
+  if (m_Message.IsNull())
+  {
+    return 0;
+  }
 
   igtlUint32 secCreated;
   igtlUint32 fracCreated;

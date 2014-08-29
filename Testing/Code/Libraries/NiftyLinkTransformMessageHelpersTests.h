@@ -34,15 +34,19 @@ class NiftyLinkTransformMessageHelpersTests: public QObject
 private slots:
 
   /**
-   * \brief Tests Setting and Getting an igtl::TransformMessage.
-   *
-   * Spec:
-   *   - Load a transform.
-   *   - Set it into an igtl::Transform message
-   *   - Get it from an igtl::Transform message
-   *   - Should be the same result as you started with
+   * \brief Tests Setting and Getting an igtl::Matrix on an igtl::TransformMessage.
    */
-  void SetGetTransformTest();
+  void SetGetMatrixTest();
+
+  /**
+   * \brief Create random matrix, make sure its set on message correctly.
+   */
+  void RandomInitialisationTest();
+
+  /**
+   * \brief Tests NiftyLinkTransformMessageHelpers::CreateTransformMessage.
+   */
+  void CreateTransformMessageTest();
 
 };
 
