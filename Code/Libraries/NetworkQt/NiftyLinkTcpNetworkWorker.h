@@ -51,6 +51,9 @@ public:
   /// \brief Destructor.
   virtual ~NiftyLinkTcpNetworkWorker();
 
+  /// \brief For Logging purposes.
+  void UpdateObjectName();
+
   /// \brief Returns the contained socket, but breaks encapsulation - use carefully.
   QTcpSocket* GetSocket() const;
 
@@ -160,6 +163,7 @@ private:
   void ShutdownThread();
 
   QTcpSocket                   *m_Socket;
+  QString                       m_NamePrefix;
   QString                       m_MessagePrefix;
 
   // Holding bays so we dont pass NiftyLinkMessageContainer over signals/slots and accidentally copy it.

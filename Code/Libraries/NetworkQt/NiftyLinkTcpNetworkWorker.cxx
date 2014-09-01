@@ -38,6 +38,7 @@ NiftyLinkTcpNetworkWorker::NiftyLinkTcpNetworkWorker(
     QObject *parent)
 : QObject(parent)
 , m_Socket(socket)
+, m_NamePrefix(namePrefix)
 , m_MessagePrefix("")
 , m_InboundMessages(inboundMessages)
 , m_OutboundMessages(outboundMessages)
@@ -61,12 +62,6 @@ NiftyLinkTcpNetworkWorker::NiftyLinkTcpNetworkWorker(
   assert(m_InboundMessages);
   assert(m_OutboundMessages);
   
-  QString host = m_Socket->peerName();
-  if (host.size() == 0)
-  {
-    host = "localhost";
-  }
-
   // These are expensive to create/destroy, so do it once.
   m_IncomingHeaderTimeStamp = igtl::TimeStamp::New();
   m_TimeFullyReceivedTimeStamp = igtl::TimeStamp::New();
@@ -83,11 +78,7 @@ NiftyLinkTcpNetworkWorker::NiftyLinkTcpNetworkWorker(
   m_NoIncomingDataTimer->setInterval(m_NoIncomingDataInterval);
 
   // Set object names for error messages.
-  m_MessagePrefix = QObject::tr("%1(d=%2, h=%3, p=%4)")
-      .arg(namePrefix).arg(m_Socket->socketDescriptor()).arg(host).arg(m_Socket->peerPort());
-
-  this->setObjectName(m_MessagePrefix);
-  m_ReceivedCounter.setObjectName(m_MessagePrefix);
+  this->UpdateObjectName();
 
   connect(this, SIGNAL(InternalStatsSignal()), this, SLOT(OnOutputStats()));
   connect(this, SIGNAL(InternalSendSignal()), this, SLOT(OnSendMessage()), Qt::BlockingQueuedConnection);
@@ -120,6 +111,25 @@ NiftyLinkTcpNetworkWorker::~NiftyLinkTcpNetworkWorker()
 
 
 //-----------------------------------------------------------------------------
+void NiftyLinkTcpNetworkWorker::UpdateObjectName()
+{
+  assert(m_Socket);
+
+  QString host = m_Socket->peerName();
+  if (host.size() == 0)
+  {
+    host = "localhost";
+  }
+
+  m_MessagePrefix = QObject::tr("%1(d=%2, h=%3, p=%4)")
+      .arg(m_NamePrefix).arg(m_Socket->socketDescriptor()).arg(host).arg(m_Socket->peerPort());
+
+  this->setObjectName(m_MessagePrefix);
+  m_ReceivedCounter.setObjectName(m_MessagePrefix);
+}
+
+
+//-----------------------------------------------------------------------------
 QTcpSocket* NiftyLinkTcpNetworkWorker::GetSocket() const
 {
   return m_Socket;
@@ -136,7 +146,7 @@ bool NiftyLinkTcpNetworkWorker::IsSocketConnected() const
 //-----------------------------------------------------------------------------
 void NiftyLinkTcpNetworkWorker::RequestDisconnectSocket()
 {
-  QLOG_WARN() << QObject::tr("%1::RequestDisconnectSocket() - Requesting...").arg(objectName());
+  QLOG_WARN() << QObject::tr("%1::RequestDisconnectSocket() - Requesting.").arg(objectName());
 
   // This is done, as this can be called from an external thread (eg. GUI thread),
   // but the processing of the request is done from the thread that this object is bound to (NiftyLinkQThread).
@@ -234,7 +244,9 @@ void NiftyLinkTcpNetworkWorker::OnRequestSocketDisconnected()
 {
   if (this->IsSocketConnected())
   {
+    QLOG_WARN() << QObject::tr("%1::OnRequestSocketDisconnected() - asking socket.").arg(objectName());
     m_Socket->disconnectFromHost();
+    QLOG_WARN() << QObject::tr("%1::OnRequestSocketDisconnected() - asked socket.").arg(objectName());
   }
   else
   {
@@ -248,10 +260,6 @@ void NiftyLinkTcpNetworkWorker::OnRequestSocketDisconnected()
 void NiftyLinkTcpNetworkWorker::OnSocketDisconnected()
 {
   QLOG_INFO() << QObject::tr("%1::OnSocketDisconnected() - starting to disconnect.").arg(objectName());
-
-  // This doubly double checks we are running in our own NiftyLinkQThread.
-  NiftyLinkQThread *p = dynamic_cast<NiftyLinkQThread*>(this->thread());
-  assert(p != NULL);
 
   emit SocketDisconnected();
   NiftyLinkQThread::SleepCallingThread(2000);
