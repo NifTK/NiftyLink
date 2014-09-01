@@ -143,8 +143,6 @@ void NiftyLinkTcpServer::incomingConnection(int socketDescriptor)
   QLOG_INFO() << QObject::tr("%1::incomingConnection(%2) - creating socket.").arg(objectName()).arg(socketDescriptor);
 
   QTcpSocket *socket = new QTcpSocket();
-  connect(socket, SIGNAL(connected()), this, SLOT(OnClientConnected()));
-
   if (socket->setSocketDescriptor(socketDescriptor))
   {
     socket->setSocketOption(QAbstractSocket::LowDelayOption, 1);
@@ -184,16 +182,6 @@ void NiftyLinkTcpServer::incomingConnection(int socketDescriptor)
   this->addPendingConnection(socket);
 
   QLOG_INFO() << QObject::tr("%1::incomingConnection(%2) - created socket.").arg(objectName()).arg(socketDescriptor);
-}
-
-
-//-----------------------------------------------------------------------------
-void NiftyLinkTcpServer::OnClientConnected()
-{
-  QTcpSocket *sender = qobject_cast<QTcpSocket*>(QObject::sender());
-
-  QLOG_INFO() << QObject::tr("%1::OnClientConnected() - client %2 connected.").arg(objectName()).arg(reinterpret_cast<qulonglong>(sender));
-  emit ClientConnected(sender->peerPort());
 }
 
 

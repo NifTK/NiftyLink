@@ -126,7 +126,6 @@ protected:
 
 private slots:
 
-  void OnClientConnected();
   void OnClientDisconnected();
   void OnMessageReceived(int portNumber);
 
