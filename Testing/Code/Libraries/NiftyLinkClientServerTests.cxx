@@ -49,12 +49,23 @@ void NiftyLinkClientServerTests::initTestCase()
 
   connect(m_Server, SIGNAL(MessageReceived(int,NiftyLinkMessageContainer::Pointer)),
           this, SLOT(OnReceiveMessage(int,NiftyLinkMessageContainer::Pointer)));
+
+  m_Server->SetCheckForNoIncomingData(true);
+  m_Server->SetKeepAliveOn(true);
+  m_Client->SetCheckForNoIncomingData(true);
+  m_Client->SetKeepAliveOn(true);
+  m_ExtraClient->SetCheckForNoIncomingData(true);
+  m_ExtraClient->SetKeepAliveOn(true);
 }
 
 
 //-----------------------------------------------------------------------------
 void NiftyLinkClientServerTests::cleanupTestCase()
 {
+  // Not really a test ... just to force the code to be used.
+  m_Client->RequestStats();
+  m_Server->OutputStats();
+
   delete m_Client;
 
   // Not strictly necessary, but makes the log-file easier to read :-)
