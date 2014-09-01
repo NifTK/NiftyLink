@@ -54,14 +54,15 @@ NiftyLinkTcpServer::NiftyLinkTcpServer(QObject *parent)
 //-----------------------------------------------------------------------------
 NiftyLinkTcpServer::~NiftyLinkTcpServer()
 {
-  QLOG_INFO() << QObject::tr("%1::~NiftyLinkTcpServer() - destroying.").arg(objectName());
+  QString name = objectName();
+  QLOG_INFO() << QObject::tr("%1::~NiftyLinkTcpServer() - destroying.").arg(name);
 
   if (this->GetNumberOfClientsConnected() > 0)
   {
     this->Shutdown();
   }
 
-  QLOG_INFO() << QObject::tr("%1::~NiftyLinkTcpServer() - destroyed.").arg(objectName());
+  QLOG_INFO() << QObject::tr("%1::~NiftyLinkTcpServer() - destroyed.").arg(name);
 }
 
 

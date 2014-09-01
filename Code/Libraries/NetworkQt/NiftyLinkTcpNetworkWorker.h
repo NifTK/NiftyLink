@@ -32,8 +32,8 @@ namespace niftk
 *
 * Third parties should not need to use this class, hence it is deliberately not exported.
 *
-* Once the this worker is running in its own event loop, you should consider the socket
-* and worker as being owned by the thread, and events are fired from the event loop of the new thread.
+* Once this worker is running in its own event loop, you should consider the socket
+* and worker as being owned by NiftyLinkQThread, and events are fired from the event loop of the new NiftyLinkQThread.
 */
 class NiftyLinkTcpNetworkWorker : public QObject
 {
@@ -57,7 +57,7 @@ public:
   /// \brief Returns true if the socket exists, and the socket says its open, and false otherwise.
   bool IsSocketConnected() const;
 
-  /// \brief Requests the socket is disconnected.
+  /// \brief Requests the socket to be disconnected.
   /// This will be processed by the event loop containing this object.
   void RequestDisconnectSocket();
 
@@ -90,7 +90,7 @@ public:
 
 signals:
 
-  /// \brief The socket has disconnected, which means everything has commenced shutdown.
+  /// \brief The socket has disconnected, which means everything will start shutting down.
   void SocketDisconnected();
 
   /// \brief Reports error messages from socket.

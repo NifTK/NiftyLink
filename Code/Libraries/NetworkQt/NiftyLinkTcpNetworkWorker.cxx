@@ -106,7 +106,8 @@ NiftyLinkTcpNetworkWorker::NiftyLinkTcpNetworkWorker(
 //-----------------------------------------------------------------------------
 NiftyLinkTcpNetworkWorker::~NiftyLinkTcpNetworkWorker()
 {
-  QLOG_INFO() << QObject::tr("%1::~NiftyLinkTcpNetworkWorker() - destroying.").arg(m_MessagePrefix);
+  QString name = m_MessagePrefix;
+  QLOG_INFO() << QObject::tr("%1::~NiftyLinkTcpNetworkWorker() - destroying.").arg(name);
 
   // These objects created with this as parent. So Qt can clean them up when this object is deleted.
   m_KeepAliveTimer->stop();
@@ -114,7 +115,7 @@ NiftyLinkTcpNetworkWorker::~NiftyLinkTcpNetworkWorker()
   m_NoIncomingDataTimer->stop();
   m_NoIncomingDataTimer->disconnect();
 
-  QLOG_INFO() << QObject::tr("%1::~NiftyLinkTcpNetworkWorker() - destroyed.").arg(m_MessagePrefix);
+  QLOG_INFO() << QObject::tr("%1::~NiftyLinkTcpNetworkWorker() - destroyed.").arg(name);
 }
 
 
@@ -246,22 +247,26 @@ void NiftyLinkTcpNetworkWorker::OnRequestSocketDisconnected()
 //-----------------------------------------------------------------------------
 void NiftyLinkTcpNetworkWorker::OnSocketDisconnected()
 {
-  QLOG_WARN() << QObject::tr("%1::OnSocketDisconnected() - starting to disconnect.").arg(objectName());
+  QLOG_INFO() << QObject::tr("%1::OnSocketDisconnected() - starting to disconnect.").arg(objectName());
+
+  // This doubly double checks we are running in our own NiftyLinkQThread.
+  NiftyLinkQThread *p = dynamic_cast<NiftyLinkQThread*>(this->thread());
+  assert(p != NULL);
 
   emit SocketDisconnected();
   NiftyLinkQThread::SleepCallingThread(2000);
 
   m_Disconnecting = true;
 
-  m_Socket->disconnect();
+  m_Socket->disconnect(); // i.e. disconnect Qt signals/slots, not TCP socket disconnect.
   m_Socket->deleteLater();
 
-  this->disconnect();
+  this->disconnect();     // i.e. disconnect Qt signals/slots.
   this->deleteLater();
 
   this->ShutdownThread();
 
-  QLOG_WARN() << QObject::tr("%1::OnSocketDisconnected() - finished disconnection stuff in this method.").arg(objectName());
+  QLOG_INFO() << QObject::tr("%1::OnSocketDisconnected() - disconnected.").arg(objectName());
 }
 
 
