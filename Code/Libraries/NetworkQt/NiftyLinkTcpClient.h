@@ -19,6 +19,7 @@
 
 #include <QObject>
 #include <QTcpSocket>
+#include <QMutex>
 
 #include <igtlMessageBase.h>
 
@@ -31,6 +32,9 @@ class NiftyLinkTcpNetworkWorker;
 * \class NiftyLinkTcpClient
 * \brief TCP client that runs a QTcpSocket via a NiftyLinkTcpNetworkWorker
 * in another NiftyLinkQThread, sending and receiving OpenIGTLink messages.
+*
+* Like a QThread, this object should be used once, once you have
+* gone through the states UNCONNECTED ... SHUTDOWN, it cannot be restarted.
 */
 class NIFTYLINKCOMMON_WINEXPORT NiftyLinkTcpClient : public QObject
 {
@@ -39,6 +43,18 @@ class NIFTYLINKCOMMON_WINEXPORT NiftyLinkTcpClient : public QObject
 public:
   NiftyLinkTcpClient(QObject *parent = 0);
   virtual ~NiftyLinkTcpClient();
+
+  enum ClientState
+  {
+    UNCONNECTED,
+    CONNECTING,
+    CONNECTED,
+    SHUTTINGDOWN,
+    SHUTDOWN
+  };
+
+  /// \brief Returns the state.
+  ClientState GetState() const;
 
   /// \brief Set a threshold for the number of messages, so that you
   /// get stats every X number of messages. Set <em>threshold</em>
@@ -120,8 +136,11 @@ private slots:
   /// \brief When the socket successfully connects, we move all processing to another thread.
   void OnConnected();
 
-  /// \brief At the moment, just log, and emmit this class's Disconnected signal.
+  /// \brief At the moment, just log, and emit this class's Disconnected signal.
   void OnDisconnected();
+
+  /// \brief When thread stops, we know we have effectively shutdown, so we update the state.
+  void OnThreadFinished();
 
   /// \brief We need to listen to all socket errors from the moment we create it.
   void OnError();
@@ -136,6 +155,8 @@ private:
 
   void RaiseInternalError(const QString& errorMessage);
 
+  mutable QMutex             m_Mutex;
+  ClientState                m_State;
   QTcpSocket                *m_Socket;
   NiftyLinkTcpNetworkWorker *m_Worker;
   NiftyLinkQThread          *m_Thread;
@@ -143,7 +164,6 @@ private:
   int                        m_RequestedPort;
   NiftyLinkMessageManager    m_InboundMessages;
   NiftyLinkMessageManager    m_OutboundMessages;
-  bool                       m_Connected;
 
 }; // end class
 

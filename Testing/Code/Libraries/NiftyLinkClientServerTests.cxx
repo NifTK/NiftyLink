@@ -42,6 +42,11 @@ void NiftyLinkClientServerTests::initTestCase()
 
   QVERIFY(m_Client->IsConnected());
 
+  m_ExtraClient = new NiftyLinkTcpClient();
+  m_ExtraClient->ConnectToHost("localhost", port);
+
+  QTest::qWait(1000);
+
   connect(m_Server, SIGNAL(MessageReceived(int,NiftyLinkMessageContainer::Pointer)),
           this, SLOT(OnReceiveMessage(int,NiftyLinkMessageContainer::Pointer)));
 }
@@ -56,6 +61,11 @@ void NiftyLinkClientServerTests::cleanupTestCase()
   QTest::qWait(1000);
 
   delete m_Server;
+
+  // Not strictly necessary, but makes the log-file easier to read :-)
+  QTest::qWait(1000);
+
+  delete m_ExtraClient;
 }
 
 

@@ -179,8 +179,10 @@ void NiftyLinkTcpServer::incomingConnection(int socketDescriptor)
   this->setObjectName(QObject::tr("NiftyLinkTcpServer(%1)").arg(this->serverPort()));
   m_ReceivedCounter.setObjectName(QObject::tr("NiftyLinkTcpServer(%1)").arg(this->serverPort()));
 
-  // Base class does this (regardless of errors), so as I'm re-implementing the function, so do I.
-  this->addPendingConnection(socket);
+  // Base class does this (regardless of errors).
+  // this->addPendingConnection(socket);
+  // However, I have chosen not to. We manage the construction and deletion of the socket, worker and thread.
+  // If you add the socket to the list of pending connections, then the QTcpServer::~QTcpServer() will try and delete it.
 
   QLOG_INFO() << QObject::tr("%1::incomingConnection(%2) - created socket.").arg(objectName()).arg(socketDescriptor);
 }
@@ -243,7 +245,10 @@ void NiftyLinkTcpServer::Shutdown()
   while(this->GetNumberOfClientsConnected() > 0)
   {
     QCoreApplication::processEvents();
+    NiftyLinkQThread::SleepCallingThread(1);
   }
+
+  NiftyLinkQThread::SleepCallingThread(1000);
 
   QLOG_INFO() << QObject::tr("%1::Shutdown() - finished.").arg(objectName());
   emit EndShutdown();

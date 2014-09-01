@@ -95,6 +95,7 @@ private:
 
   NiftyLinkTcpServer *m_Server;
   NiftyLinkTcpClient *m_Client;
+  NiftyLinkTcpClient *m_ExtraClient; // Extra client to force server into Shutdown method when destructing.
 
   NiftyLinkMessageContainer::Pointer m_TransformMessage;
   NiftyLinkMessageContainer::Pointer m_TdataMessage;
