@@ -28,6 +28,8 @@ NiftyLinkTcpClient::NiftyLinkTcpClient(QObject *parent)
 , m_Socket(NULL)
 , m_Worker(NULL)
 , m_Thread(NULL)
+, m_RequestedName("")
+, m_RequestedPort(-1)
 {
   this->setObjectName("NiftyLinkTcpClient");
   QLOG_INFO() << QObject::tr("%1::NiftyLinkTcpClient() - creating.").arg(objectName());
@@ -103,6 +105,14 @@ bool NiftyLinkTcpClient::IsConnected() const
 {
   QMutexLocker locker(&m_Mutex);
   return m_State == CONNECTED;
+}
+
+
+//-----------------------------------------------------------------------------
+int NiftyLinkTcpClient::GetRequestedPort() const
+{
+  QMutexLocker locker(&m_Mutex);
+  return m_RequestedPort;
 }
 
 

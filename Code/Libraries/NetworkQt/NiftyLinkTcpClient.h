@@ -79,6 +79,9 @@ public:
   /// \brief Returns true if connected and false otherwise.
   bool IsConnected() const;
 
+  /// \brief Returns the port that was most recently requested.
+  int GetRequestedPort() const;
+
   /// \brief Sends an OpenIGTLink message.
   ///
   /// The OpenIGTLink message within NiftyLinkMessageContainer should be Packed.
