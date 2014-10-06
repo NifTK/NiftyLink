@@ -13,11 +13,11 @@
 #include <NiftyLinkMacro.h>
 #include <NiftyLinkQThread.h>
 #include <NiftyLinkUtils.h>
+#include <NiftyLinkStringMessageHelpers.h>
 
 #include <igtl_header.h>
 #include <igtlMessageBase.h>
 #include <igtlMessageFactory.h>
-#include <igtlStringMessage.h>
 #include <igtlStatusMessage.h>
 
 #include <QTcpSocket>
@@ -215,18 +215,10 @@ bool NiftyLinkTcpNetworkWorker::RequestStats()
   // what this message format is. So, they can call RequestStats, and then
   // this method calls the Send method above.
 
-  igtl::StringMessage::Pointer msg = igtl::StringMessage::New();
-  msg->SetDeviceName("NiftyLinkTcpNetworkWorker");
-  msg->SetString("STATS");
-  msg->Pack();
+  NiftyLinkMessageContainer::Pointer msg = niftk::CreateStringMessage(
+      "NiftyLinkTcpNetworkWorker", m_Socket->peerName(), m_Socket->peerPort(), "STATS", m_LastMessageSentTime);
 
-  NiftyLinkMessageContainer::Pointer m = (NiftyLinkMessageContainer::Pointer(new NiftyLinkMessageContainer()));
-  m->SetMessage(msg.GetPointer());
-  m->SetOwnerName("NiftyLinkTcpNetworkWorker");
-  m->SetSenderHostName(m_Socket->peerName());
-  m->SetSenderPortNumber(m_Socket->peerPort());
-
-  return this->Send(m);
+  return this->Send(msg);
 }
 
 
