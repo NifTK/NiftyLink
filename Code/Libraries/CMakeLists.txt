@@ -37,6 +37,7 @@ MessageHandling/NiftyLinkMessageManager.cxx
 MessageHandling/NiftyLinkImageMessageHelpers.cxx
 MessageHandling/NiftyLinkTrackingDataMessageHelpers.cxx
 MessageHandling/NiftyLinkTransformMessageHelpers.cxx
+MessageHandling/NiftyLinkStringMessageHelpers.cxx
 NetworkOpenIGTLink/NiftyLinkSocket.cxx
 NetworkOpenIGTLink/NiftyLinkClientSocket.cxx
 NetworkOpenIGTLink/NiftyLinkServerSocket.cxx
@@ -82,6 +83,7 @@ MessageHandling/NiftyLinkMessageContainer.h
 MessageHandling/NiftyLinkImageMessageHelpers.h
 MessageHandling/NiftyLinkTrackingDataMessageHelpers.h
 MessageHandling/NiftyLinkTransformMessageHelpers.h
+MessageHandling/NiftyLinkStringMessageHelpers.h
 NetworkOpenIGTLink/NiftyLinkSocket.h
 NetworkOpenIGTLink/NiftyLinkClientSocket.h
 NetworkOpenIGTLink/NiftyLinkServerSocket.h
