@@ -13,7 +13,6 @@
 
 #include <NiftyLinkMacro.h>
 #include <NiftyLinkUtils.h>
-#include <NiftyLinkTransformMessageHelpers.h>
 
 #include <sstream>
 #include <iostream>
