@@ -84,7 +84,6 @@ NiftyLinkTcpClient::~NiftyLinkTcpClient()
       QCoreApplication::processEvents();
       NiftyLinkQThread::SleepCallingThread(1);
     }
-
     NiftyLinkQThread::SleepCallingThread(1000);
   }
 
@@ -216,11 +215,12 @@ void NiftyLinkTcpClient::RaiseInternalError(const QString& errorMessage)
 //-----------------------------------------------------------------------------
 void NiftyLinkTcpClient::ConnectToHost(const QString& hostName, quint16 portNumber)
 {
-  QMutexLocker locker(&m_Mutex);
-
-  m_State = CONNECTING;
-  m_RequestedName = hostName;
-  m_RequestedPort = portNumber;
+  {
+    QMutexLocker locker(&m_Mutex);
+    m_State = CONNECTING;
+    m_RequestedName = hostName;
+    m_RequestedPort = portNumber;
+  }
 
   // There are no errors reported from this. Listen to the error signal, see OnError().
   m_Socket->connectToHost(m_RequestedName, m_RequestedPort);
@@ -230,8 +230,6 @@ void NiftyLinkTcpClient::ConnectToHost(const QString& hostName, quint16 portNumb
 //-----------------------------------------------------------------------------
 void NiftyLinkTcpClient::OnConnected()
 {
-  QMutexLocker locker(&m_Mutex);
-
   this->setObjectName(QObject::tr("NiftyLinkTcpClient(%1:%2)").arg(m_Socket->peerName()).arg(m_Socket->peerPort()));
   m_Worker->UpdateObjectName();
 
@@ -251,8 +249,11 @@ void NiftyLinkTcpClient::OnConnected()
   connect(m_Worker, SIGNAL(MessageReceived(int)), this, SLOT(OnMessageReceived(int)));
   connect(m_Worker, SIGNAL(SocketDisconnected()), this, SLOT(OnDisconnected()), Qt::BlockingQueuedConnection);
 
-  m_Thread->start();
-  m_State = CONNECTED;
+  {
+    QMutexLocker locker(&m_Mutex);
+    m_Thread->start();
+    m_State = CONNECTED;
+  }
 
   QLOG_INFO() << QObject::tr("%1::OnConnected() - socket connected.").arg(objectName());
   emit Connected(this->m_RequestedName, this->m_RequestedPort);
