@@ -46,22 +46,22 @@ The aim is to time imaging data from MachineA to MachineB.
 
 For OpenIGTLink
 
-  MachineB:> bin/TestServerOIGTL 18944
-  MachineA:> bin/TestClientOIGTLImaging MachineBIPAddress 18944 32 100 DirectoryContainingNiftyLink/Testing/Data/TestImageBlank512x256is128kb.pgm
-  MachineB:> bin/TestServerOIGTL 18944
-  MachineA:> bin/TestClientOIGTLImaging MachineBIPAddress 18944 32 100 DirectoryContainingNiftyLink/Testing/Data/TestImageBlank512x512is256kb.pgm
-  MachineB:> bin/TestServerOIGTL 18944
-  MachineA:> bin/TestClientOIGTLImaging MachineBIPAddress 18944 32 100 DirectoryContainingNiftyLink/Testing/Data/TestImageBlank1024x512is512kb.pgm 
-  MachineB:> bin/TestServerOIGTL 18944
-  MachineA:> bin/TestClientOIGTLImaging MachineBIPAddress 18944 32 100 DirectoryContainingNiftyLink/Testing/Data/TestImageBlank2048x1024is2048kb.pgm
+    MachineB:> bin/TestServerOIGTL 18944
+    MachineA:> bin/TestClientOIGTLImaging MachineBIPAddress 18944 32 100 DirectoryContainingNiftyLink/Testing/Data/TestImageBlank512x256is128kb.pgm
+    MachineB:> bin/TestServerOIGTL 18944
+    MachineA:> bin/TestClientOIGTLImaging MachineBIPAddress 18944 32 100 DirectoryContainingNiftyLink/Testing/Data/TestImageBlank512x512is256kb.pgm
+    MachineB:> bin/TestServerOIGTL 18944
+    MachineA:> bin/TestClientOIGTLImaging MachineBIPAddress 18944 32 100 DirectoryContainingNiftyLink/Testing/Data/TestImageBlank1024x512is512kb.pgm 
+    MachineB:> bin/TestServerOIGTL 18944
+    MachineA:> bin/TestClientOIGTLImaging MachineBIPAddress 18944 32 100 DirectoryContainingNiftyLink/Testing/Data/TestImageBlank2048x1024is2048kb.pgm
 
 For NiftyLink
 
-  MachineB:> bin/TestServerQt 18944 0 0 -1 600
-  MachineA:> bin/TestClientNifTKQtImaging MachineBIPAddress 18944 32 100 DirectoryContainingNiftyLink/Testing/Data/TestImageBlank512x256is128kb.pgm
-  MachineA:> bin/TestClientNifTKQtImaging MachineBIPAddress 18944 32 100 DirectoryContainingNiftyLink/Testing/Data/TestImageBlank512x512is256kb.pgm
-  MachineA:> bin/TestClientNifTKQtImaging MachineBIPAddress 18944 32 100 DirectoryContainingNiftyLink/Testing/Data/TestImageBlank1024x512is512kb.pgm
-  MachineA:> bin/TestClientNifTKQtImaging MachineBIPAddress 18944 32 100 DirectoryContainingNiftyLink/Testing/Data/TestImageBlank2048x1024is2048kb.pgm 
+    MachineB:> bin/TestServerQt 18944 0 0 -1 600
+    MachineA:> bin/TestClientNifTKQtImaging MachineBIPAddress 18944 32 100 DirectoryContainingNiftyLink/Testing/Data/TestImageBlank512x256is128kb.pgm
+    MachineA:> bin/TestClientNifTKQtImaging MachineBIPAddress 18944 32 100 DirectoryContainingNiftyLink/Testing/Data/TestImageBlank512x512is256kb.pgm
+    MachineA:> bin/TestClientNifTKQtImaging MachineBIPAddress 18944 32 100 DirectoryContainingNiftyLink/Testing/Data/TestImageBlank1024x512is512kb.pgm
+    MachineA:> bin/TestClientNifTKQtImaging MachineBIPAddress 18944 32 100 DirectoryContainingNiftyLink/Testing/Data/TestImageBlank2048x1024is2048kb.pgm 
 
 Table 3 and 4
 -------------
@@ -70,17 +70,17 @@ The aim is to time image and tracking data together, from MachineA to MachineB.
 
 For OpenIGTLink
 
-  MachineB:> bin/TestServerOIGTL 18944 
-  MachineA:> bin/TestClientOIGTLTrackingAndImaging MachineBIPAddress 18944 2 16 100 DirectoryContainingNiftyLink/Testing/Data/TestImageBlank2048x1024is2048kb.pgm
-  MachineB:> bin/TestServerOIGTL 18944
-  MachineA:> bin/TestClientOIGTLTrackingAndImaging MachineBIPAddress 18944 16 16 100 DirectoryContainingNiftyLink/Testing/Data/TestImageBlank512x512is256kb.pgm
-  MachineB:> bin/TestServerOIGTL 18944
-  MachineA:> bin/TestClientOIGTLTrackingAndImaging MachineBIPAddress 18944 32 16 100 DirectoryContainingNiftyLink/Testing/Data/TestImageBlank512x256is128kb.pgm
+    MachineB:> bin/TestServerOIGTL 18944 
+    MachineA:> bin/TestClientOIGTLTrackingAndImaging MachineBIPAddress 18944 2 16 100 DirectoryContainingNiftyLink/Testing/Data/TestImageBlank2048x1024is2048kb.pgm
+    MachineB:> bin/TestServerOIGTL 18944
+    MachineA:> bin/TestClientOIGTLTrackingAndImaging MachineBIPAddress 18944 16 16 100 DirectoryContainingNiftyLink/Testing/Data/TestImageBlank512x512is256kb.pgm
+    MachineB:> bin/TestServerOIGTL 18944
+    MachineA:> bin/TestClientOIGTLTrackingAndImaging MachineBIPAddress 18944 32 16 100 DirectoryContainingNiftyLink/Testing/Data/TestImageBlank512x256is128kb.pgm
 
 For NiftyLink
 
-  MachineB:> bin/TestServerQt 18944 0 0 -1 600
-  MachineA:> bin/TestClientNifTKQtTrackingAndImaging MachineBIPAddress 18944 2 16 100 DirectoryContainingNiftyLink/Testing/Data/TestImageBlank2048x1024is2048kb.pgm
-  MachineA:> bin/TestClientNifTKQtTrackingAndImaging MachineBIPAddress 18944 2 16 100 DirectoryContainingNiftyLink/Testing/Data/TestImageBlank512x512is256kb.pgm
-  MachineA:> bin/TestClientOIGTLTrackingAndImaging MachineBIPAddress 18944 32 16 100  DirectoryContainingNiftyLink/Testing/Data/TestImageBlank512x256is128kb.pgm 
+    MachineB:> bin/TestServerQt 18944 0 0 -1 600
+    MachineA:> bin/TestClientNifTKQtTrackingAndImaging MachineBIPAddress 18944 2 16 100 DirectoryContainingNiftyLink/Testing/Data/TestImageBlank2048x1024is2048kb.pgm
+    MachineA:> bin/TestClientNifTKQtTrackingAndImaging MachineBIPAddress 18944 2 16 100 DirectoryContainingNiftyLink/Testing/Data/TestImageBlank512x512is256kb.pgm
+    MachineA:> bin/TestClientOIGTLTrackingAndImaging MachineBIPAddress 18944 32 16 100  DirectoryContainingNiftyLink/Testing/Data/TestImageBlank512x256is128kb.pgm 
   
