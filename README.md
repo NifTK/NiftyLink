@@ -44,7 +44,7 @@ Useful Links
 
 [logo]: https://github.com/NifTK/NiftyLink/blob/master/Doc/Images/NiftyLinkLogo.png
 [license]: https://github.com/NifTK/NiftyLink/blob/master/LICENSE.txt
-[openigtlink]: http://www.na-mic.org/Wiki/index.php/OpenIGTLink
+[openigtlink]: http://openigtlink.org
 [cmic]: http://cmic.cs.ucl.ac.uk
 [ucl]: http://www.ucl.ac.uk
 [qt]: http://qt-project.org
@@ -56,4 +56,4 @@ Useful Links
 [innovateuk]: https://www.innovateuk.org
 [epsrc]: http://www.epsrc.ac.uk
 [mailinglist]: https://www.mailinglists.ucl.ac.uk/mailman/listinfo/niftk-users
-[api]: http://cmic.cs.ucl.ac.uk/platform/niftk/current/NiftyLink/index.htmlb
+[api]: http://cmic.cs.ucl.ac.uk/platform/niftk/current/NiftyLink/index.html
