@@ -1,3 +1,6 @@
+NiftyLink
+---------
+
 ![CMIC logo][logo]
 
 NiftyLink is an open-source software library to facilitate
