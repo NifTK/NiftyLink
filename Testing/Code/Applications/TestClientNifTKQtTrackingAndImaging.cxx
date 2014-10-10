@@ -46,7 +46,7 @@ TestClientNifTKQtTrackingAndImaging::TestClientNifTKQtTrackingAndImaging(const s
 
   this->setObjectName("TestClientNifTKQtTrackingAndImaging");
   connect(m_Client, SIGNAL(Connected(QString,int)), this, SLOT(OnConnectedToServer()));
-  connect(m_Client, SIGNAL(Disconnected(QString,int)), this, SLOT(OnDisconnected()));
+  connect(m_Client, SIGNAL(Disconnected(QString,int)), this, SLOT(OnDisconnected()), Qt::QueuedConnection);
 }
 
 
@@ -75,8 +75,8 @@ void TestClientNifTKQtTrackingAndImaging::Shutdown()
     m_Client = NULL;
   }
 
-  QCoreApplication::quit();
   QLOG_INFO() << QObject::tr("%1::Shutdown() - finished.").arg(objectName());
+  QCoreApplication::quit();
 }
 
 

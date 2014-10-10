@@ -43,7 +43,7 @@ TestClientNifTKQtTracking::TestClientNifTKQtTracking(
 {
   this->setObjectName("TestClientNifTKQtTracking");
   connect(m_Client, SIGNAL(Connected(QString,int)), this, SLOT(OnConnectedToServer()));
-  connect(m_Client, SIGNAL(Disconnected(QString,int)), this, SLOT(OnDisconnected()));
+  connect(m_Client, SIGNAL(Disconnected(QString,int)), this, SLOT(OnDisconnected()), Qt::QueuedConnection);
 }
 
 

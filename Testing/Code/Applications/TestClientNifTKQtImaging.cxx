@@ -43,7 +43,7 @@ TestClientNifTKQtImaging::TestClientNifTKQtImaging(const std::string& hostName,
 
   this->setObjectName("TestClientNifTKQtImaging");
   connect(m_Client, SIGNAL(Connected(QString,int)), this, SLOT(OnConnectedToServer()));
-  connect(m_Client, SIGNAL(Disconnected(QString,int)), this, SLOT(OnDisconnected()));
+  connect(m_Client, SIGNAL(Disconnected(QString,int)), this, SLOT(OnDisconnected()), Qt::QueuedConnection);
 }
 
 
@@ -72,8 +72,8 @@ void TestClientNifTKQtImaging::Shutdown()
     m_Client = NULL;
   }
 
-  QCoreApplication::quit();
   QLOG_INFO() << QObject::tr("%1::Shutdown() - finished.").arg(objectName());
+  QCoreApplication::quit();
 }
 
 
