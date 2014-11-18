@@ -17,7 +17,7 @@
 # However, be warned, you need to set CMAKE_INSTALL_PREFIX manually.
 ######################################################################
 SET(NIFTYLINK_VERSION_MAJOR 14 CACHE STRING "Major version number" )
-SET(NIFTYLINK_VERSION_MINOR 08 CACHE STRING "Minor version number" )
+SET(NIFTYLINK_VERSION_MINOR 10 CACHE STRING "Minor version number" )
 SET(NIFTYLINK_VERSION_PATCH 0 CACHE STRING "Patch version number" )
 MARK_AS_ADVANCED(NIFTYLINK_VERSION_MAJOR)
 MARK_AS_ADVANCED(NIFTYLINK_VERSION_MINOR)
@@ -26,16 +26,11 @@ MARK_AS_ADVANCED(NIFTYLINK_VERSION_PATCH)
 ######################################################################
 # Set the minimum CMake version.
 ######################################################################
-CMAKE_MINIMUM_REQUIRED(VERSION 2.8.4)
-
-# If CMake is the version we're expecting, don't show the
-# CMAKE_BACKWARDS_COMPATIBILITY option. If the version is higher than the
-# minimal version required, then show the backward compatibility option.
-IF("${CMAKE_MAJOR_VERSION}.${CMAKE_MINOR_VERSION}.${CMAKE_PATCH_VERSION}" MATCHES "^2\\.8\\.4$")
-  MARK_AS_ADVANCED(FORCE CMAKE_BACKWARDS_COMPATIBILITY)
-ELSE("${CMAKE_MAJOR_VERSION}.${CMAKE_MINOR_VERSION}.${CMAKE_PATCH_VERSION}" MATCHES "^2\\.8\\.4$")
-  MARK_AS_ADVANCED(CLEAR CMAKE_BACKWARDS_COMPATIBILITY)
-ENDIF("${CMAKE_MAJOR_VERSION}.${CMAKE_MINOR_VERSION}.${CMAKE_PATCH_VERSION}" MATCHES "^2\\.8\\.4$")
+if(WIN32)
+  cmake_minimum_required(VERSION 2.8.11.2)
+else()
+  cmake_minimum_required(VERSION 2.8.9)
+endif()
 
 ######################################################################
 # Setting supported build types. Should ONLY be Debug or Release.
