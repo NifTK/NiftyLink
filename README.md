@@ -1,8 +1,6 @@
 NiftyLink
 ---------
 
-![CMIC logo][logo]
-
 NiftyLink is an open-source software library to facilitate
 communication over TCP/IP using the [OpenIGTLink][openigtlink] protocol.
 
@@ -14,10 +12,10 @@ Funding
 -------------
 
 This project was funded by the [NIHR Biomedical
-Research Centre][nihr] at [University College London][ucl](UCL) and
-[University College London Hospitals][uclh](UCLH), 
+Research Centre][nihr] at [University College London][ucl] (UCL) and
+[University College London Hospitals][uclh] (UCLH), 
 [Innovate UK][innovateuk] and the [Engineering And
-Physical Science Research Council][epsrc](EPSRC).
+Physical Science Research Council][epsrc] (EPSRC).
 
 Supported Platforms
 -----------------------------
@@ -31,9 +29,9 @@ NiftyLink is a cross-platform C++ library and officially supports:
 License
 -----------
 
-Copyright (c) [University College London][ucl].
+Copyright (c) 2014, [University College London][ucl].
 
-NiftyLink is available as free open-source software under a [BSD license][license].
+NiftyLink is available as free open-source software under a BSD license.
 Other licenses apply for the dependencies:
 
  - [Qt project][qt] uses [LGPL][qt-lgpl]
@@ -42,11 +40,9 @@ Other licenses apply for the dependencies:
 Useful Links
 ------------------
 
- - [Centre for Medical Image Computing][cmic](CMIC)
+ - [Centre for Medical Image Computing][cmic] (CMIC)
  - [Mailing list][mailinglist]
 
-[logo]: https://github.com/NifTK/NiftyLink/blob/master/Doc/Images/NiftyLinkLogo.png
-[license]: https://github.com/NifTK/NiftyLink/blob/master/LICENSE.txt
 [openigtlink]: http://openigtlink.org
 [cmic]: http://cmic.cs.ucl.ac.uk
 [ucl]: http://www.ucl.ac.uk
