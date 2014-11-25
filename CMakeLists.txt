@@ -127,6 +127,7 @@ IF (NOT BUILD_SHARED_LIBS)
 ENDIF()
 
 OPTION(BUILD_TESTING "Build Unit tests in NiftyLink/Testing/Code" ON)
+OPTION(BUILD_LEGACY "Build first NiftyLink version" OFF)
 OPTION(NIFTYLINK_OPENIGTLINK_DEV "Build the development version of OpenIGTLink" ON)
 OPTION(NIFTYLINK_CHECK_COVERAGE "Enable/Disable code coverage checking." OFF)
 
@@ -147,12 +148,11 @@ SET(NIFTYLINK_DOCUMENTATION_TEXT "doxygen" CACHE STRING "Documentation text" FOR
 SET(NIFTYLINK_USER_CONTACT "https://www.mailinglists.ucl.ac.uk/mailman/listinfo/niftk-users" CACHE STRING "Contact address for users." FORCE )
 SET(NIFTYLINK_VERSION_STRING "${NIFTYLINK_VERSION_MAJOR}.${NIFTYLINK_VERSION_MINOR}.${NIFTYLINK_VERSION_PATCH}" CACHE STRING "String to describe fully named version" FORCE)
 SET(NIFTYLINK_DEPLOY_NAME "${NIFTYLINK_NAME}-${NIFTYLINK_VERSION_STRING}" CACHE STRING "String to describe deployed name" FORCE)
-SET(NIFTYLINK_OPENIGTLINK_VERSION "a0f1cc6a32"  CACHE STRING "OpenIGTLink version" FORCE )
-SET(NIFTYLINK_OPENIGTLINK_MD5 "f489dedfb35a2dc25cef720b461aa751" CACHE STRING "OpenIGTLink MD5" FORCE )
+SET(NIFTYLINK_OPENIGTLINK_VERSION "972d7b9039"  CACHE STRING "OpenIGTLink version" FORCE )
+SET(NIFTYLINK_OPENIGTLINK_MD5 "1a98b5cba1a8624ccff37a7ac0707819" CACHE STRING "OpenIGTLink MD5" FORCE )
 SET(NIFTYLINK_OPENIGTLINK_LOCATION "http://cmic.cs.ucl.ac.uk/platform/dependencies/NifTK-OpenIGTLink-${NIFTYLINK_OPENIGTLINK_VERSION}.tar.gz" CACHE STRING "Location of OpenIGTLink .tar.gz" FORCE )
 SET(NIFTYLINK_OPENIGTLINK_LOCATION_DEV "git://github.com/NifTK/OpenIGTLink.git" CACHE STRING "Development version of OpenIGTLink." )
 SET(NIFTYLINK_OPENIGTLINK_LOCATION_URL "https://github.com/NifTK/OpenIGTLink" CACHE STRING "OpenIGTLink on Github" FORCE )
-SET(NIFTYLINK_QT_URL "http://cmic.cs.ucl.ac.uk/platform/dependencies/qt-everywhere-opensource-src-4.7.4.tar.gz" CACHE STRING "Example Qt download" FORCE )
 
 ######################################################################
 # Hide these variables from the user, unless they are 'advanced' :-)
@@ -242,7 +242,8 @@ SET(QT_USE_QTXMLPATTERNS 1)
 SET(QT_USE_PHONON 0)
 SET(QT_USE_QTTEST 1)    
 INCLUDE(${QT_USE_FILE})
-  
+SET(NIFTYLINK_QT_URL "http://cmic.cs.ucl.ac.uk/platform/dependencies/qt-everywhere-opensource-src-${QT_VERSION_MAJOR}.${QT_VERSION_MINOR}.${QT_VERSION_PATCH}.tar.gz" CACHE STRING "Example Qt download" FORCE )
+
 ########################################################################
 # Now, if required, do the SuperBuild
 # If we are doing SuperBuild 
@@ -290,6 +291,7 @@ MESSAGE("CMAKE_SOURCE_DIR=${CMAKE_SOURCE_DIR}")
 MESSAGE("CMAKE_BINARY_DIR=${CMAKE_BINARY_DIR}")
 MESSAGE("Qt version=${QT_VERSION_MAJOR}.${QT_VERSION_MINOR}.${QT_VERSION_PATCH}")
 MESSAGE("NiftyLink git version=${NIFTYLINK_GIT_REVISION_ID}")
+STRING(SUBSTRING ${NIFTYLINK_GIT_REVISION_ID} 0 10 NIFTYLINK_GIT_REVISION_SHORT_ID)
 
 ######################################################################
 # Test for some required system information. 
@@ -313,7 +315,10 @@ IF(BUILD_TESTING)
   
   # Setup file for setting custom ctest vars
   CONFIGURE_FILE(CMake/CTestCustom.cmake.in ${CMAKE_BINARY_DIR}/CTestCustom.cmake @ONLY)
-  
+
+  # Useful (well, useful if you have the right KWStyle version) helper script.
+  CONFIGURE_FILE(Utilities/NiftyLinkExtractKWStyleErrors.sh ${CMAKE_BINARY_DIR}/NiftyLinkExtractKWStyleErrors.sh @ONLY)
+
 ENDIF(BUILD_TESTING)
 
 ######################################################################
@@ -329,7 +334,7 @@ CONFIGURE_FILE(${CMAKE_SOURCE_DIR}/Doc/License_OpenIGTLink.txt ${CMAKE_BINARY_DI
 CONFIGURE_FILE(${CMAKE_SOURCE_DIR}/Doc/License_Qt.txt ${CMAKE_BINARY_DIR}/LICENSE_QT.txt @ONLY)
 CONFIGURE_FILE(${CMAKE_SOURCE_DIR}/Doc/License_QsLog.txt ${CMAKE_BINARY_DIR}/LICENSE_QsLog.txt @ONLY)
 CONFIGURE_FILE(${CMAKE_SOURCE_DIR}/LICENSE.txt ${CMAKE_BINARY_DIR}/LICENSE.txt @ONLY)
-CONFIGURE_FILE(${CMAKE_SOURCE_DIR}/README.txt ${CMAKE_BINARY_DIR}/README.txt @ONLY)
+CONFIGURE_FILE(${CMAKE_SOURCE_DIR}/README.md ${CMAKE_BINARY_DIR}/README.md @ONLY)
 
 ######################################################################
 # Compilation specific stuff:
@@ -340,8 +345,16 @@ CONFIGURE_FILE(${CMAKE_SOURCE_DIR}/README.txt ${CMAKE_BINARY_DIR}/README.txt @ON
 ######################################################################
 SET(NIFTYLINK_INCLUDE_DIRS_BUILD_TREE ${NIFTYLINK_INCLUDE_DIRS_BUILD_TREE}
   ${CMAKE_BINARY_DIR}
+  ${CMAKE_BINARY_DIR}/Code/Applications
   ${CMAKE_SOURCE_DIR}/Code/Libraries
   ${CMAKE_SOURCE_DIR}/Code/Libraries/Common
+  ${CMAKE_SOURCE_DIR}/Code/Libraries/Descriptors
+  ${CMAKE_SOURCE_DIR}/Code/Libraries/MessageWrappers
+  ${CMAKE_SOURCE_DIR}/Code/Libraries/NetworkOriginal
+  ${CMAKE_SOURCE_DIR}/Code/Libraries/NetworkOpenIGTLink
+  ${CMAKE_SOURCE_DIR}/Code/Libraries/MessageHandling
+  ${CMAKE_SOURCE_DIR}/Code/Libraries/NetworkQt
+  ${CMAKE_SOURCE_DIR}/Testing/Code/Libraries
 )
 INCLUDE_DIRECTORIES(
   ${NIFTYLINK_INCLUDE_DIRS_BUILD_TREE}

@@ -1,4 +1,12 @@
 @CMAKE_SOURCE_DIR@/Code/Libraries/Common/NiftyLink*.h
 @CMAKE_SOURCE_DIR@/Code/Libraries/Common/NiftyLink*.cxx
-@CMAKE_SOURCE_DIR@/Code/Libraries/*.h
-@CMAKE_SOURCE_DIR@/Code/Libraries/*.cxx
+@CMAKE_SOURCE_DIR@/Code/Libraries/Descriptors/NiftyLink*.h
+@CMAKE_SOURCE_DIR@/Code/Libraries/Descriptors/NiftyLink*.cxx
+@CMAKE_SOURCE_DIR@/Code/Libraries/MessageHandling/NiftyLink*.h
+@CMAKE_SOURCE_DIR@/Code/Libraries/MessageHandling/NiftyLink*.cxx
+@CMAKE_SOURCE_DIR@/Code/Libraries/NetworkOpenIGTLink/NiftyLink*.h
+@CMAKE_SOURCE_DIR@/Code/Libraries/NetworkOpenIGTLink/NiftyLink*.cxx
+@CMAKE_SOURCE_DIR@/Code/Libraries/NetworkOriginal/NiftyLink*.h
+@CMAKE_SOURCE_DIR@/Code/Libraries/NetworkOriginal/NiftyLink*.cxx
+@CMAKE_SOURCE_DIR@/Code/Libraries/NetworkQt/NiftyLink*.h
+@CMAKE_SOURCE_DIR@/Code/Libraries/NetworkQt/NiftyLink*.cxx

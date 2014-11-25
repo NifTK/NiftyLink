@@ -1,6 +1,7 @@
 <!DOCTYPE RCC><RCC version="1.0">
  <qresource prefix="/NiftyLink">
      <file>UCL_LOGO.tif</file>
+     <file>UCL_LOGO.pgm</file>
      <file>8700302.rom</file>
      <file>8700338.rom</file>
      <file>8700339.rom</file>

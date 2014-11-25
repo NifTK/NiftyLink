@@ -1,31 +1,72 @@
 <?xml version="1.0" encoding="iso-8859-1"?>
 <Description>
-<Header>@CMAKE_SOURCE_DIR@/Utilities/KWStyle/NiftyLinkHeader.h,false,true</Header>
+<Header>
+  <location>@CMAKE_SOURCE_DIR@/Utilities/KWStyle/NiftyLinkHeader.h</location>
+  <checkSpacesEndOfLine>false</checkSpacesEndOfLine>
+  <cvsFormat>true</cvsFormat>
+</Header>
 <LineLength>160</LineLength>
 <SemicolonSpace>true</SemicolonSpace>
-<DeclarationOrder>0,1,2</DeclarationOrder>
+<DeclarationOrder>
+  <public>0</public>
+  <protected>1</protected>
+  <private>2</private>
+</DeclarationOrder>
 <EndOfFileNewLine>true</EndOfFileNewLine>
 <Tabs>true</Tabs>
 <Spaces>0</Spaces>
-<Indent>SPACE,2,true,true</Indent>
+<Indent>
+  <type>SPACE</type>
+  <size>2</size>
+  <noHeader>true</noHeader>
+  <allowBlockLine>true</allowBlockLine>
+</Indent>
 <IfNDefDefine>[NameOfClass]_[Extension]</IfNDefDefine>
+<Namespace>niftk</Namespace>
 <NameOfClass>
   <name>[NameOfClass]</name>
   <prefix>NiftyLink</prefix>
 </NameOfClass>
-<Comments>/**, *, */,true,false,false</Comments>
+<Comments>
+  <begin>/**</begin>
+  <middle> *</middle>
+  <end>*/<end>
+  <emptyLineBeforeClass>true</emptyLineBeforeClass>
+  <checkWrongComment>true</checkWrongComment>
+  <checkMissingComment>true</checkMissingComment>
+  <checkMissingComments>true</checkMissingComments>
+</Comments>
 <EmptyLines>2</EmptyLines>
 <Template>[TNV]</Template>
 <Operator>
   <spaceBefore>1</spaceBefore>
   <spaceAfter>1</spaceAfter>
 </Operator>
-<StatementPerLine>1,true</StatementPerLine>
-<VariablePerLine>1</VariablePerLine>
+<StatementPerLine>
+  <maxNumber>1</maxNumber>
+  <checkInline>true</checkInline>
+</StatementPerLine>
+<VariablePerLine>
+  <maxNumber>1</maxNumber>
+</VariablePerLine>
 <BadCharacters>true</BadCharacters>
-<Typedefs>[A-Z],false</Typedefs>
-<Struct>[a-z]</Struct>
-<InternalVariables>m_[A-Z],true</InternalVariables>
-<MemberFunctions>[A-Z],100</MemberFunctions>
-<Functions>[A-Z],100</Functions>
+<Typedefs>
+  <regex>[A-Z]</regex>
+  <alignment>true</alignment>
+</Typedefs>
+<Struct>
+  <regex>[a-z]<regex>
+</Struct>
+<InternalVariables>
+  <regex>m_[A-Z]</regex>
+  <alignment>true</alignment>
+</InternalVariables>
+<MemberFunctions>
+  <regex>[A-Z]</regex>
+  <length>100</length>
+</MemberFunctions>
+<Functions>
+  <regex>[A-Z]</regex>
+  <length>100</length>
+</Functions>
 </Description>

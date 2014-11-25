@@ -1,17 +1,86 @@
 /*=============================================================================
-NiftyLink: A software library to facilitate communication over OpenIGTLink.
+  NiftyLink:  A software library to facilitate communication over OpenIGTLink.
 
-Copyright (c) University College London (UCL). All rights reserved.
+  Copyright (c) University College London (UCL). All rights reserved.
 
-This software is distributed WITHOUT ANY WARRANTY; without even
-the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR
-PURPOSE.
+  This software is distributed WITHOUT ANY WARRANTY; without even
+  the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR
+  PURPOSE.
 
-See LICENSE.txt in the top level directory for details.
+  See LICENSE.txt in the top level directory for details.
 =============================================================================*/
-
 #include "NiftyLinkUtils.h"
+#include <NiftyLinkTrackingDataMessageHelpers.h>
+#include <NiftyLinkTransformMessageHelpers.h>
+#include <NiftyLinkImageMessageHelpers.h>
+
+#include <igtlTrackingDataMessage.h>
+#include <igtlTransformMessage.h>
+#include <igtlStringMessage.h>
+#include <igtlStatusMessage.h>
+#include <igtlImageMessage.h>
+
+#include <QsLog.h>
+#include <QsLogDest.h>
+
+#include <QUrl>
+#include <QHostInfo>
+#include <QHostAddress>
+#include <QStringList>
+#include <QNetworkConfigurationManager>
+#include <QNetworkInterface>
+#include <QNetworkSession>
+#include <QDesktopServices>
+#include <QDir>
+
 #include <cmath>
+#include <cassert>
+
+namespace niftk
+{
+
+#if defined(_WIN32) && !defined(__CYGWIN__)
+//-----------------------------------------------------------------------------
+void InitializeWinTimers()
+{
+  // Typedef functions to hold what is in the DLL
+  FunctionPtr_SETRES _NtSetTimerResolution;
+  FunctionPtr_GETRES _NtQueryTimerResolution;
+
+  // Use LoadLibrary used to load ntdll
+  HINSTANCE hInstLibrary = LoadLibrary("ntdll.dll");
+
+  if (hInstLibrary)
+  {
+    // the DLL is loaded and ready to go.
+    _NtSetTimerResolution = (FunctionPtr_SETRES)GetProcAddress(hInstLibrary, "NtSetTimerResolution");
+    _NtQueryTimerResolution = (FunctionPtr_GETRES)GetProcAddress(hInstLibrary, "NtQueryTimerResolution");
+
+    if (_NtSetTimerResolution)
+    {
+      uint desiredResolution = 5000;
+      bool setResolution = true;
+      ULONG minResolution = 0;
+      ULONG maxResolution = 0;
+      ULONG currentResolution = 0;
+
+      NTSTATUS status;
+
+      status = _NtQueryTimerResolution(&minResolution, &maxResolution, &currentResolution);
+      QLOG_INFO() <<"Current Clock Resolution - Before: " << currentResolution;
+
+      status = _NtSetTimerResolution(maxResolution, setResolution, &currentResolution);
+
+      status = _NtQueryTimerResolution(&minResolution, &maxResolution, &currentResolution);
+      QLOG_INFO() <<"Current Clock Resolution - After: " << currentResolution;
+    }
+  }
+  else
+  {
+    QLOG_ERROR() << "Failed to load ntdll.dll to set timer resolution.";
+  }
+}
+#endif
 
 //-----------------------------------------------------------------------------
 bool ValidateIp(const QString &inputIP)
@@ -126,119 +195,13 @@ void CreateRandomTransformMatrix(igtl::Matrix4x4& matrix)
 
 
 //-----------------------------------------------------------------------------
-void InitMessageTypes(mapStrMsgType &types)
-{
-  types["NONDEFINED"] = NONDEFINED;
-  types["BIND"] = BIND;
-  types["GET_BIND"] = GET_BIND;
-  types["STT_BIND"] = STT_BIND;
-  types["STP_BIND"] = STP_BIND;
-  types["RTS_BIND"] = RTS_BIND;
-  types["COLORTABLE"] = COLORTABLE;
-  types["GET_COLORT"] = GET_COLORT;
-  types["STT_COLORT"] = STT_COLORT;
-  types["STP_COLORT"] = STP_COLORT;
-  types["RTS_COLORT"] = RTS_COLORT;
-  types["IMAGE"] = IMAGE;
-  types["GET_IMAGE"] = GET_IMAGE;
-  types["STT_IMAGE"] = STT_IMAGE;
-  types["STP_IMAGE"] = STP_IMAGE;
-  types["RTS_IMAGE"] = RTS_IMAGE;
-  types["IMGMETA"] = IMGMETA;
-  types["GET_IMGMETA"] = GET_IMGMETA;
-  types["STT_IMGMETA"] = STT_IMGMETA;
-  types["STP_IMGMETA"] = STP_IMGMETA;
-  types["RTS_IMGMETA"] = RTS_IMGMETA;
-  types["LBMETA"] = LBMETA;
-  types["GET_LBMETA"] = GET_LBMETA;
-  types["STT_LBMETA"] = STT_LBMETA;
-  types["STP_LBMETA"] = STP_LBMETA;
-  types["RTS_LBMETA"] = RTS_LBMETA;
-  types["NDARRAY"] = NDARRAY;
-  types["GET_NDARRAY"] = GET_NDARRAY;
-  types["STT_NDARRAY"] = STT_NDARRAY;
-  types["STP_NDARRAY"] = STP_NDARRAY;
-  types["RTS_NDARRAY"] = RTS_NDARRAY;
-  types["POINTMSG"] = POINTMSG;
-  types["GET_POINTMSG"] = GET_POINTMSG;
-  types["STT_POINTMSG"] = STT_POINTMSG;
-  types["STP_POINTMSG"] = STP_POINTMSG;
-  types["RTS_POINTMSG"] = RTS_POINTMSG;
-  types["POLYDATA"] = POLYDATA;
-  types["GET_POLYDATA"] = GET_POLYDATA;
-  types["STT_POLYDATA"] = STT_POLYDATA;
-  types["STP_POLYDATA"] = STP_POLYDATA;
-  types["RTS_POLYDATA"] = RTS_POLYDATA;
-  types["POSITION"] = POSITION;
-  types["GET_POSITION"] = GET_POSITION;
-  types["STT_POSITION"] = STT_POSITION;
-  types["STP_POSITION"] = STP_POSITION;
-  types["RTS_POSITION"] = RTS_POSITION;
-  types["QTDATA"] = QTDATA;
-  types["GET_QTDATA"] = GET_QTDATA;
-  types["STT_QTDATA"] = STT_QTDATA;
-  types["STP_QTDATA"] = STP_QTDATA;
-  types["RTS_QTDATA"] = RTS_QTDATA;
-  types["SENSOR"] = SENSOR;
-  types["GET_SENSOR"] = GET_SENSOR;
-  types["STT_SENSOR"] = STT_SENSOR;
-  types["STP_SENSOR"] = STP_SENSOR;
-  types["RTS_SENSOR"] = RTS_SENSOR;
-  types["STATUS"] = STATUS;
-  types["GET_STATUS"] = GET_STATUS;
-  types["STT_STATUS"] = STT_STATUS;
-  types["STP_STATUS"] = STP_STATUS;
-  types["RTS_STATUS"] = RTS_STATUS;
-  types["STRING"] = STRING;
-  types["GET_STRING"] = GET_STRING;
-  types["STT_STRING"] = STT_STRING;
-  types["STP_STRING"] = STP_STRING;
-  types["RTS_STRING"] = RTS_STRING;
-  types["TDATA"] = TDATA;
-  types["GET_TDATA"] = GET_TDATA;
-  types["STT_TDATA"] = STT_TDATA;
-  types["STP_TDATA"] = STP_TDATA;
-  types["RTS_TDATA"] = RTS_TDATA;
-  types["TRAJ"] = TRAJ;
-  types["GET_TRAJ"] = GET_TRAJ;
-  types["STT_TRAJ"] = STT_TRAJ;
-  types["STP_TRAJ"] = STP_TRAJ;
-  types["RTS_TRAJ"] = RTS_TRAJ;
-  types["TRANSFORM"] = TRANSFORM;
-  types["GET_TRANS"] = GET_TRANS;
-  types["STT_TRANS"] = STT_TRANS;
-  types["STP_TRANS"] = STP_TRANS;
-  types["RTS_TRANS"] = RTS_TRANS;
-}
-
-////-----------------------------------------------------------------------------
-//igtlUint64 GetTimeInNanoSeconds(igtl::TimeStamp* time)
-//{
-//  igtlUint32 seconds, nanoseconds;
-//  time->GetTime(&seconds, &nanoseconds);
-//
-//  igtlUint64 result = (igtlUint64)seconds * 1000000000 + (igtlUint64)nanoseconds;
-//  return result;
-//}
-//
-//
-////-----------------------------------------------------------------------------
-//void SetTimeInNanoSeconds(igtl::TimeStamp* time, const igtlUint64& totalNanos)
-//{
-//  igtlUint32 seconds, nanoseconds;
-//
-//  seconds = (igtlUint64)totalNanos / (igtlUint64)1000000000;
-//  nanoseconds = (igtlUint64)totalNanos % (igtlUint64)1000000000;
-//
-//  time->SetTime(seconds, nanoseconds);
-//}
-
-
-//-----------------------------------------------------------------------------
 igtlUint64 GetDifferenceInNanoSeconds(igtl::TimeStamp* timeA, igtl::TimeStamp* timeB)
 {
-  igtlUint64 a = timeA->GetTimeInNanoSeconds();
-  igtlUint64 b = timeB->GetTimeInNanoSeconds();
+  assert(timeA);
+  assert(timeB);
+
+  igtlUint64 a = timeA->GetTimeStampInNanoseconds();
+  igtlUint64 b = timeB->GetTimeStampInNanoseconds();
   igtlUint64 d;
 
   if (a > b)
@@ -256,3 +219,249 @@ igtlUint64 GetDifferenceInNanoSeconds(igtl::TimeStamp* timeA, igtl::TimeStamp* t
 
   return d;
 }
+
+
+//-----------------------------------------------------------------------------
+double CalculateMean(const QList<igtlUint64>& list)
+{
+  double mean = 0;
+  foreach(igtlUint64 item, list)
+  {
+    mean += static_cast<double>(item);
+  }
+  if (list.size() > 1)
+  {
+    mean /= static_cast<double>(list.size());
+  }
+  return mean;
+}
+
+
+//-----------------------------------------------------------------------------
+double CalculateStdDev(const QList<igtlUint64>& list)
+{
+  double stdDev = 0;
+  double mean = CalculateMean(list);
+  foreach(igtlUint64 item, list)
+  {
+    stdDev += ((static_cast<double>(item)-mean)*(static_cast<double>(item)-mean));
+  }
+  if (list.size() > 1)
+  {
+    stdDev /= static_cast<double>(list.size() - 1);
+  }
+  stdDev = sqrt(stdDev);
+  return stdDev;
+}
+
+
+//-----------------------------------------------------------------------------
+igtlUint64 CalculateMax(const QList<igtlUint64>& list)
+{
+  igtlUint64 max = 0;
+  foreach(igtlUint64 item, list)
+  {
+    if (item > max)
+    {
+      max = item;
+    }
+  }
+  return max;
+}
+
+
+//-----------------------------------------------------------------------------
+bool IsCloseEnoughTo(double valueA, double valueB, double tolerance)
+{
+  return fabs(valueA - valueB) < tolerance;
+}
+
+
+//-----------------------------------------------------------------------------
+bool IsCloseEnoughToZero(double valueA, double tolerance)
+{
+  return IsCloseEnoughTo(valueA, 0, tolerance);
+}
+
+
+//-----------------------------------------------------------------------------
+void CopyMatrix(double *input, igtl::Matrix4x4& output)
+{
+  assert(input);
+
+  for (unsigned int r = 0; r < 4; r++)
+  {
+    for (unsigned int c = 0; c < 4; c++)
+    {
+      output[r][c] = input[r*4+c];
+    }
+  }
+}
+
+
+//-----------------------------------------------------------------------------
+QString GetTempDirectoryPath()
+{
+  return QDesktopServices::storageLocation(QDesktopServices::TempLocation);
+}
+
+
+//-----------------------------------------------------------------------------
+QString GetWritableDirectoryPath(const QString& fileName)
+{
+  QString result;
+  QDir directory;
+
+  QString path = QDesktopServices::storageLocation(QDesktopServices::HomeLocation);
+  directory.setPath(path);
+
+  if (!directory.exists())
+  {
+    path = QDesktopServices::storageLocation(QDesktopServices::CacheLocation);
+    directory.setPath(path);
+  }
+  if (!directory.exists())
+  {
+    path = QDesktopServices::storageLocation(QDesktopServices::TempLocation);
+    directory.setPath(path);
+  }
+  if (!directory.exists())
+  {
+    path = QDesktopServices::storageLocation(QDesktopServices::DesktopLocation);
+    directory.setPath(path);
+  }
+  if (!directory.exists())
+  {
+    path = QDesktopServices::storageLocation(QDesktopServices::DocumentsLocation);
+    directory.setPath(path);
+  }
+  if (!directory.exists())
+  {
+    path = QDir::currentPath();
+    directory.setPath(path);
+  }
+  if (!directory.exists())
+  {
+    path = "";
+  }
+
+  result = path;
+
+  if (fileName.length() > 0)
+  {
+    if (result.length() > 0)
+    {
+      result = result + QDir::separator() + fileName;
+    }
+    else
+    {
+      result = fileName;
+    }
+  }
+  return result;
+}
+
+
+//-----------------------------------------------------------------------------
+QString AppendPathSeparator(const QString& path)
+{
+  return path.right(1) == "/" ? path : path + "/";
+}
+
+
+//-----------------------------------------------------------------------------
+void ExtractTextBasedMessage(const NiftyLinkMessageContainer::Pointer& message, QString& output)
+{
+  if (message.data() != NULL)
+  {
+    igtl::MessageBase::Pointer msg = dynamic_cast<igtl::MessageBase*>(message->GetMessage().GetPointer());
+    if (msg.IsNotNull())
+    {
+      if (QString(msg->GetDeviceType()) == QString("STRING"))
+      {
+        igtl::StringMessage::Pointer m = dynamic_cast<igtl::StringMessage*>(msg.GetPointer());
+        output = QString(m->GetString());
+      }
+      if (QString(msg->GetDeviceType()) == QString("STATUS"))
+      {
+        igtl::StatusMessage::Pointer m = dynamic_cast<igtl::StatusMessage*>(msg.GetPointer());
+        output = QString(m->GetStatusString());
+      }
+      if (QString(msg->GetDeviceType()) == QString("TRANSFORM"))
+      {
+        igtl::TransformMessage::Pointer m = dynamic_cast<igtl::TransformMessage*>(msg.GetPointer());
+        output = GetMatrixAsString(m);
+      }
+      if (QString(msg->GetDeviceType()) == QString("TDATA"))
+      {
+        igtl::TrackingDataMessage::Pointer m = dynamic_cast<igtl::TrackingDataMessage*>(msg.GetPointer());
+        output = GetMatrixAsString(m,0);
+      }
+    }
+  }
+}
+
+
+//-----------------------------------------------------------------------------
+void ExtractImageMessage(const NiftyLinkMessageContainer::Pointer& message, QImage& image)
+{
+  if (message.data() != NULL)
+  {
+    igtl::ImageMessage::Pointer msg = dynamic_cast<igtl::ImageMessage*>(message->GetMessage().GetPointer());
+    if (msg.IsNotNull())
+    {
+      GetQImage(msg, image);
+    }
+  }
+}
+
+
+//-----------------------------------------------------------------------------
+bool IsKeepAlive(const igtl::MessageBase::Pointer& message)
+{
+  bool isKeepAlive = false;
+  igtl::StatusMessage::Pointer msg = dynamic_cast<igtl::StatusMessage*>(message.GetPointer());
+  if (msg.IsNotNull())
+  {
+    if (msg->GetCode() == igtl::StatusMessage::STATUS_OK)
+    {
+      isKeepAlive = true;
+    }
+  }
+  return isKeepAlive;
+}
+
+
+//-----------------------------------------------------------------------------
+bool IsStatsRequest(const igtl::MessageBase::Pointer& message)
+{
+  bool isStats = false;
+  igtl::StringMessage::Pointer msg = dynamic_cast<igtl::StringMessage*>(message.GetPointer());
+  if (msg.IsNotNull())
+  {
+    if (msg->GetString() == std::string("STATS"))
+    {
+      isStats = true;
+    }
+  }
+  return isStats;
+}
+
+
+//-----------------------------------------------------------------------------
+bool IsCloseEnoughTo(const igtl::Matrix4x4& a, const igtl::Matrix4x4& b, double tolerance)
+{
+  for (unsigned int r = 0; r < 4; r++)
+  {
+    for (unsigned int c = 0; c < 4; c++)
+    {
+      if (!IsCloseEnoughTo(a[r][c], b[r][c], tolerance))
+      {
+        return false;
+      }
+    }
+  }
+  return true;
+}
+
+} // end namespace niftk

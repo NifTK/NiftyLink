@@ -13,4 +13,4 @@
 #=================================================================================*/
 
 ADD_SUBDIRECTORY(Libraries)
-ADD_SUBDIRECTORY(Apps)
+ADD_SUBDIRECTORY(Applications)
