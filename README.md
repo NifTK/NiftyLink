@@ -4,7 +4,7 @@ NiftyLink
 NiftyLink is an open-source software library to facilitate
 communication over TCP/IP using the [OpenIGTLink][openigtlink] protocol.
 
-NiftyLink was developed by the [Centre for Medical Image Computing][cmic].
+NiftyLink was developed by the [Centre for Medical Image Computing][cmic] at [UCL][ucl].
 
 If you use this software, please cite [this paper][citation].
 
