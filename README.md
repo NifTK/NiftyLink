@@ -6,6 +6,8 @@ communication over TCP/IP using the [OpenIGTLink][openigtlink] protocol.
 
 NiftyLink was developed by the [Centre for Medical Image Computing][cmic].
 
+If you use this software, please cite [this paper][citation].
+
 Funding
 -------------
 
@@ -56,4 +58,4 @@ Useful Links
 [mailinglist]: https://www.mailinglists.ucl.ac.uk/mailman/listinfo/niftk-users
 [api]: http://cmic.cs.ucl.ac.uk/platform/niftk/current/NiftyLink/index.html
 [dashboard]: http://cdash.cmiclab.cs.ucl.ac.uk/index.php?project=NiftyLink
-
+[citation]: http://link.springer.com/article/10.1007%2Fs11548-014-1124-7
