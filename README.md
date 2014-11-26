@@ -11,8 +11,8 @@ If you use this software, please cite [this paper][citation].
 Useful Links
 ------------------
 
- - NiftyLink is part of [NifTK][niftk].
  - [Mailing list][mailinglist].
+ - NiftyLink is part of [NifTK][niftk].
  - [NiftyLink home page][NiftyLinkHome].
  - [Dashboard][dashboard].
 
@@ -46,12 +46,6 @@ NiftyLink is a cross-platform C++ library and officially supports:
  - Windows
  - MacOS X
  - Linux
-
-Useful Links
-------------------
-
- - [Mailing list][mailinglist]
- - [Dashboard][dashboard]
 
 [openigtlink]: http://openigtlink.org
 [cmic]: http://cmic.cs.ucl.ac.uk
