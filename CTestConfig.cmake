@@ -21,8 +21,8 @@ IF(NOT DEFINED CTEST_DROP_METHOD)
 ENDIF(NOT DEFINED CTEST_DROP_METHOD)
 
 IF(CTEST_DROP_METHOD STREQUAL "http")
-  SET(CTEST_DROP_SITE "cmicdev.cs.ucl.ac.uk")
-  SET(CTEST_DROP_LOCATION "/cdash/submit.php?project=NiftyLink")
+  SET(CTEST_DROP_SITE "cdash.cmiclab.cs.ucl.ac.uk")
+  SET(CTEST_DROP_LOCATION "/submit.php?project=NiftyLink")
   SET(CTEST_DROP_SITE_CDASH TRUE)
 ENDIF(CTEST_DROP_METHOD STREQUAL "http")
 
