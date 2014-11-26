@@ -1,6 +1,6 @@
 #/*================================================================================
 #
-#  NiftyLink:  A software library to facilitate communication over OpenIGTLink. 
+#  NiftyLink:  A software library to facilitate communication over Socket.
 #  
 #  Copyright (c) University College London (UCL). All rights reserved.
 #
@@ -21,54 +21,105 @@ PROJECT(NiftyLink)
 FIND_PACKAGE(Qt4 REQUIRED)
 INCLUDE(${QT_USE_FILE})
 
-# --------------------------------------------------------------------------
+#########################
 # Sources
-
+#########################
 SET(niftylink_SRCS
 Common/NiftyLinkUtils.cxx
-Common/NiftyLinkXMLBuilder.cxx
+Common/NiftyLinkMessageStatsContainer.cxx
+Common/NiftyLinkMessageCounter.cxx
 Common/QsDebugOutput.cxx
 Common/QsLog.cxx
 Common/QsLogDest.cxx
-NiftyLinkMessage.cxx
-NiftyLinkProcessBase.cxx
-NiftyLinkSenderProcess.cxx
-NiftyLinkListenerProcess.cxx
-NiftyLinkSocketObject.cxx
-NiftyLinkTransformMessage.cxx
-NiftyLinkImageMessage.cxx
-NiftyLinkStatusMessage.cxx
-NiftyLinkStringMessage.cxx
-NiftyLinkTrackingDataMessage.cxx
+Descriptors/NiftyLinkXMLBuilder.cxx
+MessageHandling/NiftyLinkMessageContainer.cxx
+MessageHandling/NiftyLinkMessageManager.cxx
+MessageHandling/NiftyLinkImageMessageHelpers.cxx
+MessageHandling/NiftyLinkTrackingDataMessageHelpers.cxx
+MessageHandling/NiftyLinkTransformMessageHelpers.cxx
+MessageHandling/NiftyLinkStringMessageHelpers.cxx
+NetworkOpenIGTLink/NiftyLinkSocket.cxx
+NetworkOpenIGTLink/NiftyLinkClientSocket.cxx
+NetworkOpenIGTLink/NiftyLinkServerSocket.cxx
+NetworkOpenIGTLink/NiftyLinkNetworkProcess.cxx
+NetworkOpenIGTLink/NiftyLinkServerProcess.cxx
+NetworkOpenIGTLink/NiftyLinkServer.cxx
+NetworkOpenIGTLink/NiftyLinkClientProcess.cxx
+NetworkOpenIGTLink/NiftyLinkClient.cxx
+NetworkQt/NiftyLinkTcpNetworkWorker.cxx
+NetworkQt/NiftyLinkTcpServer.cxx
+NetworkQt/NiftyLinkTcpClient.cxx
 )
 
 #########################
 # Does need moc.
 #########################
 SET(niftylink_MOC_HDRS
-Common/NiftyLinkXMLBuilder.h
-NiftyLinkProcessBase.h
-NiftyLinkSenderProcess.h
-NiftyLinkListenerProcess.h
-NiftyLinkSocketObject.h
+Common/NiftyLinkMessageCounter.h
+Common/NiftyLinkQThread.h
+MessageHandling/NiftyLinkMessageManager.h
+NetworkOpenIGTLink/NiftyLinkNetworkProcess.h
+NetworkOpenIGTLink/NiftyLinkServerProcess.h
+NetworkOpenIGTLink/NiftyLinkServer.h
+NetworkOpenIGTLink/NiftyLinkClientProcess.h
+NetworkOpenIGTLink/NiftyLinkClient.h
+NetworkQt/NiftyLinkTcpNetworkWorker.h
+NetworkQt/NiftyLinkTcpServer.h
+NetworkQt/NiftyLinkTcpClient.h
 )
 
 #########################
 # Does not need moc.
 #########################
 SET(niftylink_HDRS
-Common/NiftyLinkUtils.h
 Common/NiftyLinkCommonWin32ExportHeader.h
+Common/NiftyLinkUtils.h
+Common/NiftyLinkMessageStatsContainer.h
 Common/QsDebugOutput.h
 Common/QsLog.h
 Common/QsLogDest.h
-NiftyLinkMessage.h
-NiftyLinkTransformMessage.h
-NiftyLinkImageMessage.h
-NiftyLinkTrackingDataMessage.h
-NiftyLinkStringMessage.h
-NiftyLinkStatusMessage.h
+Descriptors/NiftyLinkXMLBuilder.h
+MessageHandling/NiftyLinkMessageContainer.h
+MessageHandling/NiftyLinkImageMessageHelpers.h
+MessageHandling/NiftyLinkTrackingDataMessageHelpers.h
+MessageHandling/NiftyLinkTransformMessageHelpers.h
+MessageHandling/NiftyLinkStringMessageHelpers.h
+NetworkOpenIGTLink/NiftyLinkSocket.h
+NetworkOpenIGTLink/NiftyLinkClientSocket.h
+NetworkOpenIGTLink/NiftyLinkServerSocket.h
 )
+
+#####################################
+# Stuff from 1st version of NiftyLink
+#####################################
+if(BUILD_LEGACY)
+  list(APPEND niftylink_SRCS
+      MessageWrappers/NiftyLinkMessage.cxx
+      MessageWrappers/NiftyLinkTransformMessage.cxx
+      MessageWrappers/NiftyLinkImageMessage.cxx
+      MessageWrappers/NiftyLinkStatusMessage.cxx
+      MessageWrappers/NiftyLinkStringMessage.cxx
+      MessageWrappers/NiftyLinkTrackingDataMessage.cxx
+      NetworkOriginal/NiftyLinkProcessBase.cxx
+      NetworkOriginal/NiftyLinkSenderProcess.cxx
+      NetworkOriginal/NiftyLinkListenerProcess.cxx
+      NetworkOriginal/NiftyLinkSocketObject.cxx
+      )
+  list(APPEND niftylink_MOC_HDRS
+      NetworkOriginal/NiftyLinkProcessBase.h
+      NetworkOriginal/NiftyLinkSenderProcess.h
+      NetworkOriginal/NiftyLinkListenerProcess.h
+      NetworkOriginal/NiftyLinkSocketObject.h
+      )
+  list(APPEND niftylink_HDRS
+      MessageWrappers/NiftyLinkMessage.h
+      MessageWrappers/NiftyLinkTransformMessage.h
+      MessageWrappers/NiftyLinkImageMessage.h
+      MessageWrappers/NiftyLinkTrackingDataMessage.h
+      MessageWrappers/NiftyLinkStringMessage.h
+      MessageWrappers/NiftyLinkStatusMessage.h
+      )
+endif()
 
 #########################
 # Resource file.
@@ -87,12 +138,25 @@ SOURCE_GROUP("Generated Files" FILES ${NIFTYLINK_QT_MOC_FILES})
 include_directories(${CMAKE_CURRENT_BINARY_DIR})
 include_directories(${CMAKE_CURRENT_SOURCE_DIR})
 
+IF(WIN32) 
+  SET(LINK_LIBS
+    ws2_32
+    wsock32
+  )
+ELSE() 
+  SET(LINK_LIBS
+    m
+    pthread
+  )
+ENDIF()
+
 # --------------------------------------------------------------------------
 # Build the library
 SET (NIFTYLINK_LIBS
   ${QT_LIBRARIES}
   igtlutil
   OpenIGTLink
+  ${LINK_LIBS}
   )
 
 ADD_LIBRARY(niftylink 

@@ -28,16 +28,20 @@ SET(OPENIGTLINK_DEPENDS ${proj})
 IF(NOT DEFINED OpenIGTLink_DIR)
 
     ExternalProject_Add(${proj}
-    ${OIGTL_OPTIONS}
-    UPDATE_COMMAND ${GIT_EXECUTABLE} checkout ${NIFTYLINK_OPENIGTLINK_VERSION}
-    BINARY_DIR ${proj}-build
-    INSTALL_COMMAND ""
-    CMAKE_GENERATOR ${GEN}
-    CMAKE_ARGS
+      SOURCE_DIR ${proj}-src
+      BINARY_DIR ${proj}-build
+      PREFIX ${proj}-cmake
+      INSTALL_DIR ${proj}-install
+
+      ${OIGTL_OPTIONS}
+      UPDATE_COMMAND ${GIT_EXECUTABLE} checkout ${NIFTYLINK_OPENIGTLINK_VERSION}
+      INSTALL_COMMAND ""
+      CMAKE_GENERATOR ${GEN}
+      CMAKE_ARGS
         ${EP_COMMON_ARGS}
         -DCMAKE_INSTALL_PREFIX:PATH=${EP_BASE}/Install/${proj}
-		    -DOpenIGTLink_PROTOCOL_VERSION_2:BOOL=ON
-    DEPENDS ${proj_DEPENDENCIES}
+        -DOpenIGTLink_PROTOCOL_VERSION_2:BOOL=ON
+      DEPENDS ${proj_DEPENDENCIES}
     )
 
   SET(OpenIGTLink_DIR ${CMAKE_CURRENT_BINARY_DIR}/${proj}-build)

@@ -17,10 +17,10 @@ with no end-user product and intended for developers only. NiftyLink uses the Op
 to transfer data between image guided surgery applications. The key advantage of NiftyLink over and
 above OpenIGTLink is improved usability and reliability.
 
-This version of the NiftyLink package has been built using
+This version of the NiftyLink documentation has been built using
 
-\li Git revision @NIFTYLINK_GIT_REVISION_ID@.
-\li Qt version @QT_VERSION_MAJOR@.@QT_VERSION_MINOR@.@QT_VERSION_PATCH@, available from the main Qt website, and additionally <a href="@NIFTYLINK_QT_URL@">here</a>.
+\li Revision @NIFTYLINK_GIT_REVISION_SHORT_ID@ in our NiftyLink repository.
+\li Qt version @QT_VERSION_MAJOR@.@QT_VERSION_MINOR@.@QT_VERSION_PATCH@, available from the <a href="http://download.qt-project.org/archive/qt/">Qt archive</a>, and additionally <a href="@NIFTYLINK_QT_URL@">here</a>.
 \li A modifed version of OpenIGTLink, downloaded from <a href="@NIFTYLINK_OPENIGTLINK_LOCATION_URL@">GitHub</a>, using <a href="@NIFTYLINK_OPENIGTLINK_LOCATION@">this download</a>, corresponding to commit @NIFTYLINK_OPENIGTLINK_VERSION@.
 \li A logging library called QsLog described 
 <a href="https://bitbucket.org/razvanpetru/qt-components/wiki/QsLog">here</a>.
