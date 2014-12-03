@@ -26,18 +26,4 @@ This version of the NiftyLink documentation has been built using
 <a href="https://bitbucket.org/razvanpetru/qt-components/wiki/QsLog">here</a>.
 We use a static version, checked into our code base.
 
-Further information is provided in:
-
-\li \subpage TechnicalManual "The Technical Manual"
-
-and
-
-\li <a href="@NIFTYLINK_USER_CONTACT@">the user's mailing list</a>.
-
-For code developers it is important to read:
-
-\li <a href="https://cmicdev.cs.ucl.ac.uk/trac/wiki/MidasPlatform">The wiki.</a>
-\li <a href="https://cmicdev.cs.ucl.ac.uk/cdash/index.php?project=NiftyLink">The dashboard.</a>
-\li <a href="https://cmicdev.cs.ucl.ac.uk/trac/query?group=status&milestone=NiftyLink-@NIFTYLINK_VERSION_MAJOR@.@NIFTYLINK_VERSION_MINOR@.@NIFTYLINK_VERSION_PATCH@">The current tasks.</a>
-\li <a href="https://cmicdev.cs.ucl.ac.uk/trac/wiki/RoadMap">The roadmap.</a>
 */

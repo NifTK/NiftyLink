@@ -15,6 +15,7 @@ Useful Links
  - NiftyLink is part of [NifTK][niftk].
  - [NiftyLink home page][NiftyLinkHome].
  - [Dashboard][dashboard].
+ - [Nightly code documentation][doxygen].
 
 License
 -----------
@@ -64,4 +65,4 @@ NiftyLink is a cross-platform C++ library and officially supports:
 [citation]: http://link.springer.com/article/10.1007%2Fs11548-014-1124-7
 [niftk]: http://www.niftk.org
 [NiftyLinkHome]: https://cmiclab.cs.ucl.ac.uk/CMIC/NiftyLink
-
+[doxygen]: http://cmic.cs.ucl.ac.uk/NiftyLink-API
