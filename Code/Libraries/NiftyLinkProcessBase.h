@@ -14,10 +14,11 @@ See LICENSE.txt in the top level directory for details.
 #define NiftyLinkProcessBase_h
 
 //Qt related includes
-#include <QtCore>
+#include <QCoreApplication>
 #include <QObject>
 #include <QDebug>
 #include <QMutex>
+#include <QThread>
 #include <QTimer>
 
 //OpenIGTLink includes
