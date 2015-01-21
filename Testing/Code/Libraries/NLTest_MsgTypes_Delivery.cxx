@@ -12,12 +12,10 @@
 
 #include <QObject>
 #include <QtGui/QApplication>
-//#include <QtCore/QCoreApplication>
-//#include <QtCore/QApplication>
-
 #include <QDebug>
 #include <QSignalSpy>
 #include <QThread>
+#include <QDir>
 
 #include <iostream>
 #include <string>
