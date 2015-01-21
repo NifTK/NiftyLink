@@ -13,10 +13,13 @@ See LICENSE.txt in the top level directory for details.
 #ifndef NiftyLinkMessage_h
 #define NiftyLinkMessage_h
 
+// STL types
+#include <map>
+
 // Qt related issues
-#include <QtCore>
 #include <QString>
 #include <QObject>
+#include <QMetaType>
 #include <QSharedData>
 #include <QExplicitlySharedDataPointer>
 
