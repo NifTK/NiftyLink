@@ -163,6 +163,18 @@ QString NiftyLinkMessageContainer::GetOwnerName(void)
 
 
 //-----------------------------------------------------------------------------
+QString NiftyLinkMessageContainer::GetMessageType()
+{
+  QString result("");
+  if (m_Message.IsNotNull())
+  {
+    result = QString::fromStdString(m_Message->GetBodyType());
+  }
+  return result;
+}
+
+
+//-----------------------------------------------------------------------------
 void NiftyLinkMessageContainer::GetTimeCreated(igtl::TimeStamp::Pointer& time) const
 {
   assert(this->m_Message.IsNotNull());
