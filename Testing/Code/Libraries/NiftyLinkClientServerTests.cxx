@@ -47,8 +47,8 @@ void NiftyLinkClientServerTests::initTestCase()
 
   QTest::qWait(1000);
 
-  connect(m_Server, SIGNAL(MessageReceived(int,NiftyLinkMessageContainer::Pointer)),
-          this, SLOT(OnReceiveMessage(int,NiftyLinkMessageContainer::Pointer)));
+  connect(m_Server, SIGNAL(MessageReceived(int,niftk::NiftyLinkMessageContainer::Pointer)),
+          this, SLOT(OnReceiveMessage(int,niftk::NiftyLinkMessageContainer::Pointer)));
 
   m_Server->SetCheckForNoIncomingData(true);
   m_Server->SetKeepAliveOn(true);
@@ -81,7 +81,7 @@ void NiftyLinkClientServerTests::cleanupTestCase()
 
 
 //-----------------------------------------------------------------------------
-void NiftyLinkClientServerTests::OnReceiveMessage(int /*portNumber*/, NiftyLinkMessageContainer::Pointer message)
+void NiftyLinkClientServerTests::OnReceiveMessage(int /*portNumber*/, niftk::NiftyLinkMessageContainer::Pointer message)
 {
   QLOG_INFO() << "OnReceiveMessage";
 

@@ -96,7 +96,7 @@ signals:
 
   /// \brief Emitted when a new message is received from a remote client, messages are UnPacked.
   /// IMPORTANT: Use a Qt::DirectConnection, and never a Qt::QueuedConnection.
-  void MessageReceived(int portNumber, NiftyLinkMessageContainer::Pointer message);
+  void MessageReceived(int portNumber, niftk::NiftyLinkMessageContainer::Pointer message);
 
   /// \brief Emmitted when we have actually sent bytes.
   void BytesSent(qint64 bytes);
@@ -114,7 +114,7 @@ signals:
   void EndShutdown();
 
   /// \brief Emmitted every time stats were computed.
-  void StatsProduced(NiftyLinkMessageStatsContainer stats);
+  void StatsProduced(niftk::NiftyLinkMessageStatsContainer stats);
 
   /// \brief Emmitted every time stats were computed.
   void StatsMessageProduced(QString stringRepresentation);

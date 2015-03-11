@@ -89,7 +89,7 @@ private slots:
   void TestSendReceiveIMAGE();
 
   /// \brief To parse/receive incoming messages.
-  void OnReceiveMessage(int, NiftyLinkMessageContainer::Pointer);
+  void OnReceiveMessage(int, niftk::NiftyLinkMessageContainer::Pointer);
 
 private:
 

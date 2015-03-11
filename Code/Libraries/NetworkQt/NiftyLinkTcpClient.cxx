@@ -35,8 +35,8 @@ NiftyLinkTcpClient::NiftyLinkTcpClient(QObject *parent)
   QLOG_INFO() << QObject::tr("%1::NiftyLinkTcpClient() - creating.").arg(objectName());
 
   qRegisterMetaType<QAbstractSocket::SocketError>("QAbstractSocket::SocketError");
-  qRegisterMetaType<NiftyLinkMessageContainer::Pointer>("NiftyLinkMessageContainer::Pointer");
-  qRegisterMetaType<NiftyLinkMessageStatsContainer>("NiftyLinkMessageStatsContainer");
+  qRegisterMetaType<niftk::NiftyLinkMessageContainer::Pointer>("niftk::NiftyLinkMessageContainer::Pointer");
+  qRegisterMetaType<niftk::NiftyLinkMessageStatsContainer>("niftk::NiftyLinkMessageStatsContainer");
 
   // This is to make sure we have the best possible system timer.
 #if defined(_WIN32) && !defined(__CYGWIN__)

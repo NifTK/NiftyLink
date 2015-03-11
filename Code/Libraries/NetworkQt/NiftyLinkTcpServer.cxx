@@ -33,8 +33,8 @@ NiftyLinkTcpServer::NiftyLinkTcpServer(QObject *parent)
 , m_CheckNoIncoming(false)
 {
   qRegisterMetaType<QAbstractSocket::SocketError>("QAbstractSocket::SocketError");
-  qRegisterMetaType<NiftyLinkMessageContainer::Pointer>("NiftyLinkMessageContainer::Pointer");
-  qRegisterMetaType<NiftyLinkMessageStatsContainer>("NiftyLinkMessageStatsContainer");
+  qRegisterMetaType<niftk::NiftyLinkMessageContainer::Pointer>("niftk::NiftyLinkMessageContainer::Pointer");
+  qRegisterMetaType<niftk::NiftyLinkMessageStatsContainer>("niftk::NiftyLinkMessageStatsContainer");
 
   // This is to make sure we have the best possible system timer.
 #if defined(_WIN32) && !defined(__CYGWIN__)
@@ -44,7 +44,7 @@ NiftyLinkTcpServer::NiftyLinkTcpServer(QObject *parent)
   this->setObjectName("NiftyLinkTcpServer");
 
   m_ReceivedCounter.setObjectName("NiftyLinkTcpServer");
-  connect(&m_ReceivedCounter, SIGNAL(StatsProduced(NiftyLinkMessageStatsContainer)), this, SIGNAL(StatsProduced(NiftyLinkMessageStatsContainer)));
+  connect(&m_ReceivedCounter, SIGNAL(StatsProduced(niftk::NiftyLinkMessageStatsContainer)), this, SIGNAL(StatsProduced(niftk::NiftyLinkMessageStatsContainer)));
   connect(&m_ReceivedCounter, SIGNAL(StatsMessageProduced(QString)), this, SIGNAL(StatsMessageProduced(QString)));
 
   QLOG_INFO() << QObject::tr("%1::NiftyLinkTcpServer() - created.").arg(objectName());
