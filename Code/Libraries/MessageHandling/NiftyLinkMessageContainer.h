@@ -116,9 +116,6 @@ public:
   /// \brief Method to check who owns the message at the moment
   QString GetOwnerName(void);
 
-  /// \brief Generic method to get the OpenIGTLink message type e.g. STRING, TDATA etc.
-  QString GetMessageType();
-
 private:
 
   // Shallow copy, meaning that it copies pointer values.
