@@ -91,7 +91,7 @@ public:
 
 signals:
 
-  void StatsProduced(NiftyLinkMessageStatsContainer stats);
+  void StatsProduced(niftk::NiftyLinkMessageStatsContainer stats);
   void StatsMessageProduced(QString stringRepresentation);
 
 public slots:
