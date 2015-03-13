@@ -120,7 +120,7 @@ int NiftyLinkClientSocket::ConnectNonBlocking(int soc, const char* hostName, int
   iResult = ioctlsocket(soc, FIONBIO, &iMode);
   if (iResult != NO_ERROR)
   {
-    fprintf(stderr, "ioctlsocket failed with error: %ld\n", iResult);
+    fprintf(stderr, "ioctlsocket failed with error: %d\n", iResult);
     return -3;
   }
 #else
@@ -228,7 +228,7 @@ int NiftyLinkClientSocket::ConnectNonBlocking(int soc, const char* hostName, int
   iResult = ioctlsocket(soc, FIONBIO, &iMode);
   if (iResult != NO_ERROR)
   {
-    fprintf(stderr, "ioctlsocket failed with error: %ld\n", iResult);
+    fprintf(stderr, "ioctlsocket failed with error: %d\n", iResult);
     return -9;
   }
   #else

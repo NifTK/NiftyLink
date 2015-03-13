@@ -200,6 +200,13 @@ INCLUDE(mitkMacroEmptyExternalProject)
 ######################################################################
 INCLUDE(${CMAKE_SOURCE_DIR}/Utilities/KWStyle/NiftyLinkKWStyle.cmake)
 
+
+######################################################################
+# NiftyLink uses CppCheck for static analysis
+######################################################################
+include(${CMAKE_SOURCE_DIR}/Utilities/CppCheck/NiftyLinkCppCheck.cmake)
+
+
 ###########################################################################
 # Set these compiler flags early, so it can be applied to all dependencies.
 ###########################################################################

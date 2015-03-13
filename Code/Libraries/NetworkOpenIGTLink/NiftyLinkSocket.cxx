@@ -126,7 +126,6 @@ int NiftyLinkSocket::Send(const void* data, int length)
   //std::cerr <<"Preparing to send...";
   const char* buffer = reinterpret_cast<const char*>(data);
   int total = 0;
-  int n     = 0;
   int trys  = 0;
 
   int flags;
@@ -153,7 +152,7 @@ int NiftyLinkSocket::Send(const void* data, int length)
 
   do
   {
-    n = 0;
+    int n = 0;
 
     try
     {
@@ -211,7 +210,6 @@ int NiftyLinkSocket::Receive(void* data, int length, int readFully/*=1*/)
 
   char* buffer = reinterpret_cast<char*>(data);
   int total       = 0;
-  int bytesRead   = 0;
   //int rVal        = 0;
   int flags       = 0;
   int trys        = 0;
@@ -219,7 +217,7 @@ int NiftyLinkSocket::Receive(void* data, int length, int readFully/*=1*/)
   // Receive a generic message
   do
   {
-    bytesRead   = 0;
+    int bytesRead   = 0;
 
     // Try reading from the socket
     try
@@ -381,7 +379,6 @@ bool NiftyLinkSocket::Poke()
   }
   u_long iMode = 1;
   int total  = 0;
-  int n      = 0;
   int length = 2;
   char buff[2];
 
@@ -408,7 +405,7 @@ bool NiftyLinkSocket::Poke()
   // TEST WRITE
   do
   {
-    n = 0;
+    int n = 0;
 
     try
     {

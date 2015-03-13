@@ -43,15 +43,15 @@ namespace niftk
 //-----------------------------------------------------------------------------
 void InitializeWinTimers()
 {
-  // Typedef functions to hold what is in the DLL
-  FunctionPtr_SETRES _NtSetTimerResolution;
-  FunctionPtr_GETRES _NtQueryTimerResolution;
-
   // Use LoadLibrary used to load ntdll
   HINSTANCE hInstLibrary = LoadLibrary("ntdll.dll");
 
   if (hInstLibrary)
   {
+    // Typedef functions to hold what is in the DLL
+    FunctionPtr_SETRES _NtSetTimerResolution;
+    FunctionPtr_GETRES _NtQueryTimerResolution;
+
     // the DLL is loaded and ready to go.
     _NtSetTimerResolution = (FunctionPtr_SETRES)GetProcAddress(hInstLibrary, "NtSetTimerResolution");
     _NtQueryTimerResolution = (FunctionPtr_GETRES)GetProcAddress(hInstLibrary, "NtQueryTimerResolution");
@@ -64,14 +64,12 @@ void InitializeWinTimers()
       ULONG maxResolution = 0;
       ULONG currentResolution = 0;
 
-      NTSTATUS status;
-
-      status = _NtQueryTimerResolution(&minResolution, &maxResolution, &currentResolution);
+      _NtQueryTimerResolution(&minResolution, &maxResolution, &currentResolution);
       QLOG_INFO() <<"Current Clock Resolution - Before: " << currentResolution;
 
-      status = _NtSetTimerResolution(maxResolution, setResolution, &currentResolution);
+      _NtSetTimerResolution(maxResolution, setResolution, &currentResolution);
 
-      status = _NtQueryTimerResolution(&minResolution, &maxResolution, &currentResolution);
+      _NtQueryTimerResolution(&minResolution, &maxResolution, &currentResolution);
       QLOG_INFO() <<"Current Clock Resolution - After: " << currentResolution;
     }
   }
