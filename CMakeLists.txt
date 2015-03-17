@@ -384,6 +384,20 @@ IF(BUILD_TESTING)
   SUBDIRS(Testing)
 ENDIF(BUILD_TESTING)   
 
+
+##################################################################################
+# Generate batch file to start VS with, also used for C.I. testing.
+##################################################################################
+IF(WIN32)
+  SET(_qmake_location ${QT_QMAKE_EXECUTABLE})
+  EXECUTE_PROCESS(COMMAND ${_qmake_location} -query QT_INSTALL_BINS
+                        OUTPUT_VARIABLE _qt_install_libs
+                        OUTPUT_STRIP_TRAILING_WHITESPACE)
+  FOREACH(_build_type Debug Release)
+    CONFIGURE_FILE(${CMAKE_SOURCE_DIR}/CMake/StartVS.bat.in ${CMAKE_BINARY_DIR}/StartVS_${_build_type}.bat @ONLY IMMEDIATE)
+  ENDFOREACH()
+ENDIF()
+
 ##################################################################################
 # Generate "Use" and "Configure" files so external projects can link to NiftyLink.
 # These go at or near the end, as all the variables need to be defined.
