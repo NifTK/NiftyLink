@@ -1,6 +1,5 @@
-@echo ***** NiftyLink Continuous Build Script - v.1 *****
+@echo ***** NiftyLink Continuous Build Script - v.3 *****
 @echo. 
-
 @REM ************************************************************************************
 @REM *****                                                                          *****
 @REM ***** Usage:                                                                   *****
@@ -24,25 +23,26 @@
 
 @REM *****  Setting localised variables - Change these to match your system!!  *****
 @set "VS_LOCATION=c:\Program Files (x86)\Microsoft Visual Studio 10.0"
-@set "CMAKE_LOCATION=c:\Program Files (x86)\CMake 2.8\bin"
-@set "QT_LOCATION=c:\Qt\Qt-4.8.x-x86-vc10\bin\"
+@set "CMAKE_LOCATION=c:\Program Files (x86)\CMake\bin"
+@set "BUILD_ROOT=D:\CB"
+@set "PUTTY_LOCATION=c:\Program Files (x86)\PuTTY\"
+@set "QT_LOCATION=c:\Qt\4.8.5\bin\"
 @set "GIT_LOCATION=c:\Program Files (x86)\Git\bin\"
 
-@rem if you are cross-compiling between 64 and 32 bit then override your qt here.
-@rem NiftyGuide requires 32 bit qt.
-@set "QTDIR=C:\Qt\c:\Qt\Qt-4.8.x-x86-vc10"
-@set "PATH=%QTDIR%\bin;%PATH%"
+@rem if you are cross-compiling between 64 and 32 bit then override your qt here
+@rem @set "QTDIR=C:\Qt\Qt-4.8.4-x86-vc10"
+@rem @set "PATH=%QTDIR%\bin;%PATH%"
 
 @REM *****  Set your build type 64bit/32bit  *****
-@REM @set "BTYPE=x64"
-@set "BTYPE=Win32"
+@set "BTYPE=x64"
+@REM @set "BTYPE=Win32"
 
 @REM *****  Set your Visual Studio Version  *****
 @set "VSVER=devenv.com"
 @REM @set "VSVER=VCExpress.exe"
 
 @REM *****  Set your CMake generator - the tool you're going to use to build NifTK  *****
-@set "CMAKE_GENERATOR=Visual Studio 10"
+@set "CMAKE_GENERATOR=Visual Studio 10 Win64"
 
 @REM ***** Possible options are the following: ***** 
 @REM NMake Makefiles             = Generates NMake makefiles.
@@ -72,7 +72,7 @@
 @echo CMake generator:        %CMAKE_GENERATOR%
 @echo Date Stamp:             %DATESTAMP%
 @echo.
- 
+
 @rem stop visual studio recycling already running instances of msbuild.exe. we want clean ones.
 @rem http://stackoverflow.com/questions/12174877/visual-studio-2012-rtm-has-msbuild-exe-in-memory-after-close
 @set MSBUILDDISABLENODEREUSE=1
@@ -135,7 +135,7 @@
 @echo ---------------------------------------------------------------------
 @echo Running CMake....
 @cd /d %BUILD_BIN%
-call "%CMAKE_LOCATION%\cmake.exe" -DCMAKE_BUILD_TYPE=%BCONF%  -G "%CMAKE_GENERATOR%" "%BUILD_SRC%"
+call "%CMAKE_LOCATION%\cmake.exe" -DCMAKE_BUILD_TYPE=%BCONF% -G "%CMAKE_GENERATOR%" "%BUILD_SRC%"
 
 @echo. 
 @IF %ERRORLEVEL% NEQ 0 SET /A errno^|=%ERROR_CMAKE_CONFIG%
@@ -148,25 +148,36 @@ call "%CMAKE_LOCATION%\cmake.exe" -DCMAKE_BUILD_TYPE=%BCONF%  -G "%CMAKE_GENERAT
 @REM *****  Run Visual Studio to build the current build conf  *****
 @echo ---------------------------------------------------------------------
 @echo Running VS....
-"%VS_LOCATION%\Common7\IDE\%VSVER%" /build %BCONF% /project ALL_BUILD /projectconfig %VSCONFSTRING% %BUILD_BIN%\NIFTYLINK-SUPERBUILD.sln | "%GIT_LOCATION%\tee.exe" "c:\CB\NiftyLink_log.txt" 2>&1
+@"%VS_LOCATION%\Common7\IDE\%VSVER%" /build %BCONF% /project ALL_BUILD /projectconfig %VSCONFSTRING% %BUILD_BIN%\NIFTYLINK-SUPERBUILD.sln | "%GIT_LOCATION%\tee.exe" c:\CB\NiftyLink_log.txt 2>&1
+@echo. 
 
+@REM *****  Check ErrorLevel  *****
+@echo. 
+@echo Checking errorlevel...
+@IF %ERRORLEVEL% NEQ 0 SET /A errno^|=%ERROR_DEVENV%
+@echo Error level after VS build: %errno%
+@IF %errno% NEQ 0 EXIT /B 2
+@echo. 
 @REM *****  Searching for "Build Failed" string in the VS log  *****
-@set "search=^.*Build FAILED.$"
-@echo(findstr /r /c:"!search!" /F:"c:\CB\NiftyLink_log.txt" >nul && (
-  @echo Build error FOUND!
+@echo Searching for 'Build FAILED' string in the VS log...
+@set "search=^.*Build.FAILED.*$"
+@findstr /r /c:"!search!" "c:\CB\NiftyLink_log.txt" >nul
+
+@if %ERRORLEVEL% EQU 0 (
+  @echo "Build error FOUND!!!"
   @SET /A errno^|=%ERROR_DEVENV%
-) || (
+) else (
   @echo No build error found.
   @rem any commands can go here
 )
 
 @echo Error number after VS build: %errno%
 @IF %errno% NEQ 0 EXIT /B 2
-
-@echo. 
 @echo ---------------------------------------------------------------------
+@echo. 
 
-@REM  *****  Set PATH and Environment for NiftyLink *****
+
+@REM  *****  Set PATH and Environment for NiftyLink  *****
 @cd /d "%BUILD_BIN%\NiftyLink-build\"
 @set CL=/D_CRT_SECURE_NO_DEPRECATE /D_CRT_NONSTDC_NO_DEPRECATE
 @set LINK=/LARGEADDRESSAWARE
@@ -187,10 +198,9 @@ call "%CMAKE_LOCATION%\cmake.exe" -DCMAKE_BUILD_TYPE=%BCONF%  -G "%CMAKE_GENERAT
 	    @set /a counter+=1
 )
 
-@set PATHSTRING=%var1:/=\%
-@set PATHSTRING=%PATHSTRING:PATH=%
-@set PATHSTRING=%PATHSTRING:~1,-2%
-@PATH=%PATHSTRING%;%SystemRoot%;%SystemRoot%\system32;%SystemRoot%\System32\Wbem
+@set PATHSTRING=%var3:/=\%
+@echo %PATHSTRING%
+@PATH=%PATHSTRING%;%SystemRoot%;%SystemRoot%\system32;%SystemRoot%\System32\Wbem;
 
 @if defined CUDA_PATH PATH=%PATH%;%CUDA_PATH%\bin
 
@@ -201,7 +211,7 @@ call "%CMAKE_LOCATION%\cmake.exe" -DCMAKE_BUILD_TYPE=%BCONF%  -G "%CMAKE_GENERAT
 
 @REM *****  Run CTEST  *****
 @echo Running CTest....
-"%CMAKE_LOCATION%\ctest.exe" 
+"%CMAKE_LOCATION%\ctest.exe"
 @echo.
 
 @IF %ERRORLEVEL% NEQ 0 SET /A errno^|=%ERROR_DEVENV%
