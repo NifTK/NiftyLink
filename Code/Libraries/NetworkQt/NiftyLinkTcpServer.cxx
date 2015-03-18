@@ -55,7 +55,7 @@ NiftyLinkTcpServer::NiftyLinkTcpServer(const QHostAddress &address, quint16 port
 
 //-----------------------------------------------------------------------------
 void NiftyLinkTcpServer::Initialise()
-{  
+{
   this->setObjectName("NiftyLinkTcpServer");
   QLOG_INFO() << QObject::tr("%1::Initialise() - started.").arg(objectName());
 

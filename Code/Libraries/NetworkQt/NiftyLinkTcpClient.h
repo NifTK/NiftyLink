@@ -94,7 +94,7 @@ public:
 
 public slots:
 
-  /// \brief Connects to the previously stored (via constructor) host and port. 
+  /// \brief Connects to the previously stored (via constructor) host and port.
   void ConnectToHost();
 
   /// \brief Disconnects.
