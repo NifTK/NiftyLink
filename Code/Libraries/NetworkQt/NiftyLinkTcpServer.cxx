@@ -12,6 +12,7 @@
 #include "NiftyLinkTcpServer.h"
 #include <NiftyLinkUtils.h>
 #include <NiftyLinkQThread.h>
+#include <NiftyLinkMacro.h>
 
 #include <QsLog.h>
 #include <QMutexLocker>
@@ -32,6 +33,32 @@ NiftyLinkTcpServer::NiftyLinkTcpServer(QObject *parent)
 , m_SendKeepAlive(false)
 , m_CheckNoIncoming(false)
 {
+  this->Initialise();
+}
+
+
+//-----------------------------------------------------------------------------
+NiftyLinkTcpServer::NiftyLinkTcpServer(const QHostAddress &address, quint16 port, QObject *parent)
+: QTcpServer(parent)
+, m_SendKeepAlive(false)
+, m_CheckNoIncoming(false)
+{
+  this->Initialise();
+
+  bool success = this->listen(address, port);
+  if (!success)
+  {
+    NiftyLinkStdExceptionMacro(std::runtime_error, << "Failed to listen on port " << port);
+  }
+}
+
+
+//-----------------------------------------------------------------------------
+void NiftyLinkTcpServer::Initialise()
+{  
+  this->setObjectName("NiftyLinkTcpServer");
+  QLOG_INFO() << QObject::tr("%1::Initialise() - started.").arg(objectName());
+
   qRegisterMetaType<QAbstractSocket::SocketError>("QAbstractSocket::SocketError");
   qRegisterMetaType<niftk::NiftyLinkMessageContainer::Pointer>("niftk::NiftyLinkMessageContainer::Pointer");
   qRegisterMetaType<niftk::NiftyLinkMessageStatsContainer>("niftk::NiftyLinkMessageStatsContainer");
@@ -41,13 +68,11 @@ NiftyLinkTcpServer::NiftyLinkTcpServer(QObject *parent)
   niftk::InitializeWinTimers();
 #endif
 
-  this->setObjectName("NiftyLinkTcpServer");
-
   m_ReceivedCounter.setObjectName("NiftyLinkTcpServer");
   connect(&m_ReceivedCounter, SIGNAL(StatsProduced(niftk::NiftyLinkMessageStatsContainer)), this, SIGNAL(StatsProduced(niftk::NiftyLinkMessageStatsContainer)));
   connect(&m_ReceivedCounter, SIGNAL(StatsMessageProduced(QString)), this, SIGNAL(StatsMessageProduced(QString)));
 
-  QLOG_INFO() << QObject::tr("%1::NiftyLinkTcpServer() - created.").arg(objectName());
+  QLOG_INFO() << QObject::tr("%1::Initialise() - finished.").arg(objectName());
 }
 
 

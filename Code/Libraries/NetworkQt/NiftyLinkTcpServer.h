@@ -40,6 +40,9 @@ public:
 
   NiftyLinkTcpServer(QObject *parent = 0);
 
+  /// \brief Constructor that immediately tries to listen.
+  NiftyLinkTcpServer(const QHostAddress &address, quint16 port, QObject *parent = 0);
+
   /// \brief Destroy the server.
   ///
   /// If there are clients connected, this method will call Shutdown() first.
@@ -130,6 +133,8 @@ private slots:
   void OnMessageReceived(int portNumber);
 
 private:
+
+  void Initialise();
 
   QSet<NiftyLinkTcpNetworkWorker*> m_Workers;
   QMutex                           m_Mutex;

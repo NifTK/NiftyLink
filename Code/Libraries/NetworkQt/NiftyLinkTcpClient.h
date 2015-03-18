@@ -42,6 +42,10 @@ class NIFTYLINKCOMMON_WINEXPORT NiftyLinkTcpClient : public QObject
 
 public:
   NiftyLinkTcpClient(QObject *parent = 0);
+
+  /// \brief Constructor that stores the host and port, so you can connect using slot ConnectToHost().
+  NiftyLinkTcpClient(const QString& hostName, quint16 portNumber, QObject *parent = 0);
+
   virtual ~NiftyLinkTcpClient();
 
   enum ClientState
@@ -89,6 +93,9 @@ public:
   bool Send(NiftyLinkMessageContainer::Pointer message);
 
 public slots:
+
+  /// \brief Connects to the previously stored (via constructor) host and port. 
+  void ConnectToHost();
 
   /// \brief Disconnects.
   void DisconnectFromHost();
@@ -156,6 +163,7 @@ private slots:
 
 private:
 
+  void Initialise();
   void RaiseInternalError(const QString& errorMessage);
 
   mutable QMutex             m_Mutex;
