@@ -1,4 +1,4 @@
-@echo ***** NiftyLink Continuous Build Script - v.2 *****
+@echo ***** NiftyLink Continuous Build Script - v.3 *****
 @echo. 
 @REM ************************************************************************************
 @REM *****                                                                          *****
@@ -25,9 +25,7 @@
 @set "VS_LOCATION=c:\Program Files (x86)\Microsoft Visual Studio 10.0"
 @set "CMAKE_LOCATION=c:\Program Files (x86)\CMake\bin"
 @set "BUILD_ROOT=D:\CB"
-@set "EXT_PROJ_ROOT=D:\EP"
 @set "PUTTY_LOCATION=c:\Program Files (x86)\PuTTY\"
-@set "OPENSSL_LOCATION=c:\OpenSSL-Win64\bin\"
 @set "QT_LOCATION=c:\Qt\4.8.5\bin\"
 @set "GIT_LOCATION=c:\Program Files (x86)\Git\bin\"
 
@@ -181,7 +179,7 @@ call "%CMAKE_LOCATION%\cmake.exe" -DCMAKE_BUILD_TYPE=%BCONF% -G "%CMAKE_GENERATO
 @echo. 
 
 
-@REM  *****  Set PATH and Environment for NifTK  *****
+@REM  *****  Set PATH and Environment for NiftyLink  *****
 @cd /d "%BUILD_BIN%\NiftyLink-build\"
 @set CL=/D_CRT_SECURE_NO_DEPRECATE /D_CRT_NONSTDC_NO_DEPRECATE
 @set LINK=/LARGEADDRESSAWARE
