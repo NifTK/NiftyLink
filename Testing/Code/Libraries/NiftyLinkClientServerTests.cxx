@@ -30,22 +30,24 @@ namespace niftk
 void NiftyLinkClientServerTests::initTestCase()
 {
   int port = 18945;
-  m_Server = new NiftyLinkTcpServer();
-  QVERIFY(m_Server->listen(QHostAddress::Any, port));
+  m_Server = new NiftyLinkTcpServer(QHostAddress::Any, port);
+  QVERIFY(m_Server->isListening());
 
   QTest::qWait(1000);
 
   m_Client = new NiftyLinkTcpClient();
-  m_Client->ConnectToHost("localhost", port);
+  m_Client->ConnectToHost("127.0.0.1", port);
 
-  QTest::qWait(1000);
+  QTest::qWait(2000);
 
   QVERIFY(m_Client->IsConnected());
 
   m_ExtraClient = new NiftyLinkTcpClient();
-  m_ExtraClient->ConnectToHost("localhost", port);
+  m_ExtraClient->ConnectToHost("127.0.0.1", port);
 
-  QTest::qWait(1000);
+  QTest::qWait(2000);
+
+  QVERIFY(m_ExtraClient->IsConnected());
 
   connect(m_Server, SIGNAL(MessageReceived(int,niftk::NiftyLinkMessageContainer::Pointer)),
           this, SLOT(OnReceiveMessage(int,niftk::NiftyLinkMessageContainer::Pointer)));
@@ -186,7 +188,7 @@ void NiftyLinkClientServerTests::TestSendReceiveIMAGE()
   m_Client->Send(msg);
   QLOG_INFO() << "Sent IMAGE";
 
-  QTest::qWait(100);
+  QTest::qWait(1000);
 
   QVERIFY(m_ImageMessage.data() != NULL);
 
