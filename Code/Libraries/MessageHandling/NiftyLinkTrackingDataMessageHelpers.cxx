@@ -111,17 +111,19 @@ QString GetMatrixAsString(const igtl::TrackingDataMessage::Pointer& message, int
 //-----------------------------------------------------------------------------
 NiftyLinkMessageContainer::Pointer CreateTrackingDataMessage(
     const QString& deviceName,
+    const QString& toolName,
     const QString& hostName,
     const int& portNumber,
     const igtl::Matrix4x4& matrix,
     igtl::TimeStamp::Pointer& timeCreated
     )
 {
-  igtl::TrackingDataMessage::Pointer msg = igtl::TrackingDataMessage::New();
-  msg->SetDeviceName(deviceName.toStdString().c_str());
-
   igtl::TrackingDataElement::Pointer element = igtl::TrackingDataElement::New();
   element->SetMatrix(*(const_cast<igtl::Matrix4x4*>(&matrix)));
+  element->SetName(toolName.toStdString().c_str());
+
+  igtl::TrackingDataMessage::Pointer msg = igtl::TrackingDataMessage::New();
+  msg->SetDeviceName(deviceName.toStdString().c_str());
   msg->AddTrackingDataElement(element);
 
   timeCreated->GetTime();
@@ -144,6 +146,7 @@ NiftyLinkMessageContainer::Pointer CreateTrackingDataMessage(
 //-----------------------------------------------------------------------------
 NiftyLinkMessageContainer::Pointer CreateTrackingDataMessage(
     const QString& deviceName,
+    const QString& toolName,
     const QString& hostName,
     const int& portNumber,
     const igtl::Matrix4x4& matrix
@@ -151,13 +154,14 @@ NiftyLinkMessageContainer::Pointer CreateTrackingDataMessage(
 {
   igtl::TimeStamp::Pointer timeCreated = igtl::TimeStamp::New();
 
-  return CreateTrackingDataMessage(deviceName, hostName, portNumber, matrix, timeCreated);
+  return CreateTrackingDataMessage(deviceName, toolName, hostName, portNumber, matrix, timeCreated);
 }
 
 
 //-----------------------------------------------------------------------------
 NiftyLinkMessageContainer::Pointer CreateTrackingDataMessage(
     const QString& deviceName,
+    const QString& toolName,
     const QString& hostName,
     const int& portNumber,
     double* input)
@@ -167,7 +171,7 @@ NiftyLinkMessageContainer::Pointer CreateTrackingDataMessage(
 
   igtl::TimeStamp::Pointer timeCreated = igtl::TimeStamp::New();
 
-  return CreateTrackingDataMessage(deviceName, hostName, portNumber, matrix, timeCreated);
+  return CreateTrackingDataMessage(deviceName, toolName, hostName, portNumber, matrix, timeCreated);
 }
 
 
@@ -177,7 +181,7 @@ NiftyLinkMessageContainer::Pointer CreateTrackingDataMessageWithRandomData()
   igtl::Matrix4x4 localMatrix;
   CreateRandomTransformMatrix(localMatrix);
 
-  return CreateTrackingDataMessage("TestingDevice", "TestingHost", 1234, localMatrix);
+  return CreateTrackingDataMessage("TestingDevice", "TestingTool", "TestingHost", 1234, localMatrix);
 }
 
 

@@ -35,13 +35,13 @@ namespace niftk
 extern "C++" NIFTYLINKCOMMON_WINEXPORT void InitialiseTrackingDataWithTestData(const igtl::Matrix4x4& testMatrix,
                                                                                igtl::TrackingDataMessage::Pointer& messageToWriteTo);
 
-/// \brief Initialises the tracking data with a random matrix.
+/// \brief Initialises the tracking data with a random matrix, calling InitialiseTrackingDataWithTestData.
 extern "C++" NIFTYLINKCOMMON_WINEXPORT void InitialiseTrackingDataWithRandomData(igtl::TrackingDataMessage::Pointer& messageToWriteTo);
 
-/// \brief Creates a testing message, with random matrix data.
+/// \brief Creates a test message, with a single matrix of random data.
 extern "C++" NIFTYLINKCOMMON_WINEXPORT NiftyLinkMessageContainer::Pointer CreateTrackingDataMessageWithRandomData();
 
-/// \brief For testing, this function creates a test message containing a configurable number of tracking matrix elements.
+/// \brief Creates a test message, containing a configurable number of tracking matrix elements, each with random tracking data.
 extern "C++" NIFTYLINKCOMMON_WINEXPORT NiftyLinkMessageContainer::Pointer CreateTrackingDataMessageWithRandomData(
     igtl::TimeStamp::Pointer& timeStamp,
     const int& matricesPerMessage);
@@ -58,22 +58,25 @@ extern "C++" NIFTYLINKCOMMON_WINEXPORT NiftyLinkMessageContainer::Pointer Create
 /// index is the element number. No validation is performed on the index number.
 extern "C++" NIFTYLINKCOMMON_WINEXPORT QString GetMatrixAsString(const igtl::TrackingDataMessage::Pointer& message, int elementIndex=0);
 
-/// \brief Creates a tracking data message within a NiftyLinkMessageContainer, that is packed and ready to go.
+/// \brief Creates a single matrix tracking data message within a NiftyLinkMessageContainer, that is packed and ready to go.
 extern "C++" NIFTYLINKCOMMON_WINEXPORT NiftyLinkMessageContainer::Pointer CreateTrackingDataMessage(const QString& deviceName,
+                                                                                                    const QString& toolName,
                                                                                                     const QString& hostName,
                                                                                                     const int& portNumber,
                                                                                                     const igtl::Matrix4x4& matrix,
                                                                                                     igtl::TimeStamp::Pointer& timeCreated
                                                                                                     );
 
-/// \brief Creates a tracking data message within a NiftyLinkMessageContainer, that is packed and ready to go.
+/// \brief Creates a single matrix tracking data message within a NiftyLinkMessageContainer, that is packed and ready to go.
 extern "C++" NIFTYLINKCOMMON_WINEXPORT NiftyLinkMessageContainer::Pointer CreateTrackingDataMessage(const QString& deviceName,
+                                                                                                    const QString& toolName,
                                                                                                     const QString& hostName,
                                                                                                     const int& portNumber,
                                                                                                     const igtl::Matrix4x4& matrix
                                                                                                     );
 
-/// \brief Creates a tracking data message within a NiftyLinkMessageContainer, that is packed and ready to go.
+/// \brief Creates a single matrix tracking data message within a NiftyLinkMessageContainer, that
+///        is packed and ready to go.
 /// \param input should be an array of 16 doubles assumed to be in row-order.
 /// \code{.cpp}
 /// input[0][0] = input[0];
@@ -85,6 +88,7 @@ extern "C++" NIFTYLINKCOMMON_WINEXPORT NiftyLinkMessageContainer::Pointer Create
 /// etc.
 /// \endcode
 extern "C++" NIFTYLINKCOMMON_WINEXPORT NiftyLinkMessageContainer::Pointer CreateTrackingDataMessage(const QString& deviceName,
+                                                                                                    const QString& toolName,
                                                                                                     const QString& hostName,
                                                                                                     const int& portNumber,
                                                                                                     const double* input);

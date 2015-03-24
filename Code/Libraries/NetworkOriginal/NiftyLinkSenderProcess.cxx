@@ -259,7 +259,7 @@ void NiftyLinkSenderProcess::OnKeepAliveTimeout(void)
 
   // ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
   // If the sendqueue is empty we're going to perform a keepalive - send 2 bytes through the socket
-  bool queueisempty = false;
+  bool queueisempty;
   m_QueueMutex.lock();
   queueisempty = m_SendQue.isEmpty();
   m_QueueMutex.unlock();
@@ -371,7 +371,7 @@ void NiftyLinkSenderProcess::DoProcessing(void)
     }
 
     // Check the queue status and act accordingly
-    bool queueisempty = false;
+    bool queueisempty;
     m_QueueMutex.lock();
     queueisempty = m_SendQue.isEmpty();
     m_QueueMutex.unlock();
@@ -482,7 +482,7 @@ void NiftyLinkSenderProcess::DoProcessing(void)
   // ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
   // All messages were sent
-  bool queueisempty = false;
+  bool queueisempty;
   m_QueueMutex.lock();
   queueisempty = m_SendQue.isEmpty();
   m_QueueMutex.unlock();

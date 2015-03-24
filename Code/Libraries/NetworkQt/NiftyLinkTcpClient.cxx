@@ -31,12 +31,33 @@ NiftyLinkTcpClient::NiftyLinkTcpClient(QObject *parent)
 , m_RequestedName("")
 , m_RequestedPort(-1)
 {
+  this->Initialise();
+}
+
+
+//-----------------------------------------------------------------------------
+NiftyLinkTcpClient::NiftyLinkTcpClient(const QString& hostName, quint16 portNumber, QObject *parent)
+: QObject(parent)
+, m_State(UNCONNECTED)
+, m_Socket(NULL)
+, m_Worker(NULL)
+, m_Thread(NULL)
+, m_RequestedName(hostName)
+, m_RequestedPort(portNumber)
+{
+  this->Initialise();
+}
+
+
+//-----------------------------------------------------------------------------
+void NiftyLinkTcpClient::Initialise()
+{
   this->setObjectName("NiftyLinkTcpClient");
-  QLOG_INFO() << QObject::tr("%1::NiftyLinkTcpClient() - creating.").arg(objectName());
+  QLOG_INFO() << QObject::tr("%1::Initialise() - started.").arg(objectName());
 
   qRegisterMetaType<QAbstractSocket::SocketError>("QAbstractSocket::SocketError");
-  qRegisterMetaType<NiftyLinkMessageContainer::Pointer>("NiftyLinkMessageContainer::Pointer");
-  qRegisterMetaType<NiftyLinkMessageStatsContainer>("NiftyLinkMessageStatsContainer");
+  qRegisterMetaType<niftk::NiftyLinkMessageContainer::Pointer>("niftk::NiftyLinkMessageContainer::Pointer");
+  qRegisterMetaType<niftk::NiftyLinkMessageStatsContainer>("niftk::NiftyLinkMessageStatsContainer");
 
   // This is to make sure we have the best possible system timer.
 #if defined(_WIN32) && !defined(__CYGWIN__)
@@ -49,7 +70,7 @@ NiftyLinkTcpClient::NiftyLinkTcpClient(QObject *parent)
   connect(m_Socket, SIGNAL(error(QAbstractSocket::SocketError)), this, SLOT(OnError()));
   m_Worker = new NiftyLinkTcpNetworkWorker("NiftyLinkTcpClientWorker", &m_InboundMessages, &m_OutboundMessages, m_Socket);
 
-  QLOG_INFO() << QObject::tr("%1::NiftyLinkTcpClient() - created.").arg(objectName());
+  QLOG_INFO() << QObject::tr("%1::Initialise() - finished.").arg(objectName());
 }
 
 
@@ -220,6 +241,19 @@ void NiftyLinkTcpClient::ConnectToHost(const QString& hostName, quint16 portNumb
     m_State = CONNECTING;
     m_RequestedName = hostName;
     m_RequestedPort = portNumber;
+  }
+
+  // There are no errors reported from this. Listen to the error signal, see OnError().
+  m_Socket->connectToHost(m_RequestedName, m_RequestedPort);
+}
+
+
+//-----------------------------------------------------------------------------
+void NiftyLinkTcpClient::ConnectToHost()
+{
+  {
+    QMutexLocker locker(&m_Mutex);
+    m_State = CONNECTING;
   }
 
   // There are no errors reported from this. Listen to the error signal, see OnError().
