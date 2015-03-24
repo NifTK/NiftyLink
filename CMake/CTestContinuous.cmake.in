@@ -51,15 +51,54 @@ macro(GetCommitHash commit_hash_var)
 endmacro()
 
 
+#
+# This macro gets the first few digits of the current commit hash.
+#
+macro(GetNumberOfCpuCores cpu_cores_var)
+
+  if(DEFINED PARALLEL_LEVEL)
+    set(cpu_cores ${PARALLEL_LEVEL})
+  else()
+    set(cpu_cores 1)
+
+    set(cpuinfo_file "/proc/cpuinfo")
+    if(EXISTS "${cpuinfo_file}")
+      file(STRINGS "${cpuinfo_file}" procs REGEX "^processor.: [0-9]+$")
+      list(LENGTH procs cpu_cores)
+    endif()
+
+    if(APPLE)
+      find_program(cmd_sys_pro "system_profiler")
+      if(cmd_sys_pro)
+        execute_process(COMMAND ${cmd_sys_pro} OUTPUT_VARIABLE info)
+        string(REGEX REPLACE "^.*Total Number Of Cores: ([0-9]+).*$" "\\1" cpu_cores "${info}")
+      endif()
+    endif()
+
+    if(WIN32)
+      set(cpu_cores "$ENV{NUMBER_OF_PROCESSORS}")
+    endif()
+  endif()
+
+  set(${cpu_cores_var} ${cpu_cores})
+
+endmacro()
+
 GetBranchName(branch_name)
-
-message("Tested branch: ${branch_name}")
-
 GetCommitHash(commit_hash)
-
-message("Commit hash: ${commit_hash}")
-
+GetNumberOfCpuCores(cpu_cores)
 set(CTEST_BUILD_NAME "${CTEST_BUILD_NAME}-${commit_hash}")
+
+message("Branch: ${branch_name}")
+message("Commit hash: ${commit_hash}")
+message("Build name: ${CTEST_BUILD_NAME}")
+message("Threads: ${cpu_cores}")
+
+if ("${CTEST_CMAKE_GENERATOR}" STREQUAL "Unix Makefiles")
+  set(CTEST_BUILD_FLAGS "-j ${cpu_cores}")
+endif()
+
+set(PARALLEL_LEVEL ${cpu_cores})
 
 ctest_start(Model TRACK ${branch_name})
 ctest_build()
