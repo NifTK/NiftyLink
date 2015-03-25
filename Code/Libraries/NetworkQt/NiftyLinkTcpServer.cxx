@@ -195,6 +195,8 @@ void NiftyLinkTcpServer::incomingConnection(int socketDescriptor)
     socket->moveToThread(thread);
 
     thread->start();
+
+    emit ClientConnected(socketDescriptor);
   }
   else
   {
