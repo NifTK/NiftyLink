@@ -26,9 +26,13 @@ macro(GetBranchName branch_name_var)
 
   # message("remote branch(es): ${remote_branch_name}")
 
-  string(REGEX MATCH "origin/([^\n]*)" branch_name ${remote_branch_name})
+  if("${remote_branch_name}" MATCHES "origin/([^\n]*)")
+    set(branch_name ${CMAKE_MATCH_1})
+  else()
+    message("Branch has not been pushed. Test report will be submitted to the Continuous group.")
+  endif()
 
-  set(${branch_name_var} ${CMAKE_MATCH_1})
+  set(${branch_name_var} ${branch_name})
 
 endmacro()
 
@@ -88,8 +92,14 @@ GetCommitHash(commit_hash)
 GetNumberOfCpuCores(cpu_cores)
 set(CTEST_BUILD_NAME "${CTEST_BUILD_NAME}-${commit_hash}")
 
-message("Branch: ${branch_name}")
-message("Commit hash: ${commit_hash}")
+if (NOT ${branch_name} STREQUAL "")
+  set(group_name ${branch_name})
+else()
+  set(group_name "Continuous")
+endif()
+
+message("Remote branch: ${branch_name}")
+message("Group: ${group_name}")
 message("Build name: ${CTEST_BUILD_NAME}")
 message("Threads: ${cpu_cores}")
 
@@ -99,7 +109,7 @@ endif()
 
 set(PARALLEL_LEVEL ${cpu_cores})
 
-ctest_start(Model TRACK ${branch_name})
+ctest_start(Model TRACK ${group_name})
 ctest_build()
 ctest_test()
 ctest_submit()
