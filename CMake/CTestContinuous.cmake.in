@@ -26,10 +26,10 @@ macro(GetBranchName branch_name_var)
 
   # message("remote branch(es): ${remote_branch_name}")
 
-  if("${remote_branch_name}" MATCHES "origin/([^\n]*)")
+  if("${remote_branch_name}" MATCHES "origin/([^ \n]*)\n")
     set(branch_name ${CMAKE_MATCH_1})
   else()
-    message("Branch has not been pushed. Test report will be submitted to the Continuous group.")
+    message("Branch has not been pushed to the origin. Test report will be submitted to the Continuous group.")
   endif()
 
   set(${branch_name_var} ${branch_name})
