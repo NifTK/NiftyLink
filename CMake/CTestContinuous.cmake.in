@@ -17,8 +17,7 @@ macro(GetBranchName branch_name_var)
   execute_process(COMMAND ${CTEST_GIT_COMMAND} branch -r --contains HEAD --merged HEAD
     WORKING_DIRECTORY ${CTEST_SOURCE_DIRECTORY}
     ERROR_VARIABLE GIT_error
-    OUTPUT_VARIABLE remote_branch_name
-    OUTPUT_STRIP_TRAILING_WHITESPACE)
+    OUTPUT_VARIABLE remote_branch_name)
 
   if(NOT ${GIT_error} EQUAL 0)
     message(SEND_ERROR "Command '${CTEST_GIT_COMMAND} branch -r --contains HEAD --merged' failed with output:\n${GIT_error}")
