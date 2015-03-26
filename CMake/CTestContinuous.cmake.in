@@ -1,13 +1,13 @@
 set(CTEST_SOURCE_DIRECTORY "@CMAKE_SOURCE_DIR@")
 set(CTEST_BINARY_DIRECTORY "@CMAKE_BINARY_DIR@")
 set(CTEST_CMAKE_GENERATOR "@CMAKE_GENERATOR@")
-set(CTEST_GIT_COMMAND @GIT_EXECUTABLE@)
-
 set(CTEST_BUILD_NAME "@CTEST_BUILD_NAME@")
 
 find_program(HOSTNAME_CMD NAMES hostname)
 exec_program(${HOSTNAME_CMD} ARGS OUTPUT_VARIABLE HOSTNAME)
 set(CTEST_SITE  "${HOSTNAME}${CTEST_SITE_EXT}")
+
+find_program(CTEST_GIT_COMMAND NAMES git)
 
 #
 # This macro is to find the branch whose tip is the commit to test.
@@ -17,17 +17,21 @@ macro(GetBranchName branch_name_var)
   execute_process(COMMAND ${CTEST_GIT_COMMAND} branch -r --contains HEAD --merged HEAD
     WORKING_DIRECTORY ${CTEST_SOURCE_DIRECTORY}
     ERROR_VARIABLE GIT_error
-    OUTPUT_VARIABLE remote_branch_name)
+    OUTPUT_VARIABLE remote_ref_names)
 
   if(NOT ${GIT_error} EQUAL 0)
     message(SEND_ERROR "Command '${CTEST_GIT_COMMAND} branch -r --contains HEAD --merged' failed with output:\n${GIT_error}")
   endif()
 
-  # message("remote branch(es): ${remote_branch_name}")
+  # message("remote refs: ${remote_ref_names}")
 
-  string(REGEX MATCH "origin/([^\n]*)" branch_name ${remote_branch_name})
+  if("${remote_ref_names}" MATCHES "origin/([^ \n]*)\n")
+    set(branch_name ${CMAKE_MATCH_1})
+  else()
+    message("Branch has not been pushed to origin. Test report will be submitted to the Continuous group.")
+  endif()
 
-  set(${branch_name_var} ${CMAKE_MATCH_1})
+  set(${branch_name_var} ${branch_name})
 
 endmacro()
 
@@ -44,7 +48,7 @@ macro(GetCommitHash commit_hash_var)
     OUTPUT_STRIP_TRAILING_WHITESPACE)
 
   if(NOT ${GIT_error} EQUAL 0)
-    message(SEND_ERROR "Command \"${GIT_EXECUTBALE} log -n 1 --pretty=format:\"%h\" HEAD in directory ${CTEST_SOURCE_DIRECTORY} failed with output:\n${GIT_error}")
+    message(SEND_ERROR "Command \"${CTEST_GIT_COMMAND} log -n 1 --pretty=format:\"%h\" HEAD in directory ${CTEST_SOURCE_DIRECTORY} failed with output:\n${GIT_error}")
   endif()
 
 endmacro()
@@ -87,8 +91,14 @@ GetCommitHash(commit_hash)
 GetNumberOfCpuCores(cpu_cores)
 set(CTEST_BUILD_NAME "${CTEST_BUILD_NAME}-${commit_hash}")
 
-message("Branch: ${branch_name}")
-message("Commit hash: ${commit_hash}")
+if (NOT ${branch_name} STREQUAL "")
+  set(group_name ${branch_name})
+else()
+  set(group_name "Continuous")
+endif()
+
+message("Remote branch: ${branch_name}")
+message("Group: ${group_name}")
 message("Build name: ${CTEST_BUILD_NAME}")
 message("Threads: ${cpu_cores}")
 
@@ -98,7 +108,7 @@ endif()
 
 set(PARALLEL_LEVEL ${cpu_cores})
 
-ctest_start(Model TRACK ${branch_name})
+ctest_start(Model TRACK ${group_name})
 ctest_build()
 ctest_test()
 ctest_submit()
