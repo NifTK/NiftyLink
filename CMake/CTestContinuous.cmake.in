@@ -8,8 +8,6 @@ find_program(HOSTNAME_CMD NAMES hostname)
 exec_program("${HOSTNAME_CMD}" ARGS OUTPUT_VARIABLE HOSTNAME)
 set(CTEST_SITE  "${HOSTNAME}${CTEST_SITE_EXT}")
 
-#find_program(CTEST_GIT_COMMAND NAMES git)
-
 #
 # This macro is to find the branch whose tip is the commit to test.
 #
@@ -109,7 +107,7 @@ endif()
 
 set(PARALLEL_LEVEL ${cpu_cores})
 
-ctest_start(Model TRACK ${group_name})
+ctest_start(Continuous TRACK ${group_name})
 ctest_build()
 ctest_test()
 ctest_submit()
