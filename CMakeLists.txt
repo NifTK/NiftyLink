@@ -297,12 +297,15 @@ IF(BUILD_TESTING)
                  COPYONLY IMMEDIATE)
   SET(BUILDNAME "${BUILDNAME}" CACHE STRING "Name of build on the dashboard")
   MARK_AS_ADVANCED(BUILDNAME)
-  
+
   # Setup file for setting custom ctest vars
   CONFIGURE_FILE(CMake/CTestCustom.cmake.in ${CMAKE_BINARY_DIR}/CTestCustom.cmake @ONLY)
 
   # Useful (well, useful if you have the right KWStyle version) helper script.
   CONFIGURE_FILE(Utilities/NiftyLinkExtractKWStyleErrors.sh ${CMAKE_BINARY_DIR}/NiftyLinkExtractKWStyleErrors.sh @ONLY)
+
+  # Setup continuous test script
+  CONFIGURE_FILE(CMake/CTestContinuous.cmake.in ${CMAKE_BINARY_DIR}/CTestContinuous.cmake @ONLY)
 
 ENDIF(BUILD_TESTING)
 
