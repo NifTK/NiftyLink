@@ -122,10 +122,6 @@ ENDIF()
 # passed to the main build of NiftyLink when doing the Superbuild.
 ######################################################################
 OPTION(BUILD_SHARED_LIBS "Build NiftyLink with shared libraries." ON)
-IF (NOT BUILD_SHARED_LIBS) 
-  MESSAGE(FATAL_ERROR "Static Build is not supported.")
-ENDIF()
-
 OPTION(BUILD_TESTING "Build Unit tests in NiftyLink/Testing/Code" ON)
 OPTION(BUILD_LEGACY "Build first NiftyLink version" OFF)
 OPTION(NIFTYLINK_OPENIGTLINK_DEV "Build the development version of OpenIGTLink" ON)

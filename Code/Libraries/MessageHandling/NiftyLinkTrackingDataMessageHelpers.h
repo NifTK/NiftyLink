@@ -58,6 +58,9 @@ extern "C++" NIFTYLINKCOMMON_WINEXPORT NiftyLinkMessageContainer::Pointer Create
 /// index is the element number. No validation is performed on the index number.
 extern "C++" NIFTYLINKCOMMON_WINEXPORT QString GetMatrixAsString(const igtl::TrackingDataMessage::Pointer& message, int elementIndex=0);
 
+/// \breif Retrieves all matrices from the message.
+extern "C++" NIFTYLINKCOMMON_WINEXPORT QString GetMatricesAsString(const igtl::TrackingDataMessage::Pointer& message);
+
 /// \brief Creates a single matrix tracking data message within a NiftyLinkMessageContainer, that is packed and ready to go.
 extern "C++" NIFTYLINKCOMMON_WINEXPORT NiftyLinkMessageContainer::Pointer CreateTrackingDataMessage(const QString& deviceName,
                                                                                                     const QString& toolName,
