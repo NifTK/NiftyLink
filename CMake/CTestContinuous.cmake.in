@@ -2,12 +2,13 @@ set(CTEST_SOURCE_DIRECTORY "@CMAKE_SOURCE_DIR@")
 set(CTEST_BINARY_DIRECTORY "@CMAKE_BINARY_DIR@")
 set(CTEST_CMAKE_GENERATOR "@CMAKE_GENERATOR@")
 set(CTEST_BUILD_NAME "@CTEST_BUILD_NAME@")
+set(CTEST_GIT_COMMAND "@GIT_EXECUTABLE@")
 
 find_program(HOSTNAME_CMD NAMES hostname)
 exec_program("${HOSTNAME_CMD}" ARGS OUTPUT_VARIABLE HOSTNAME)
 set(CTEST_SITE  "${HOSTNAME}${CTEST_SITE_EXT}")
 
-find_program(CTEST_GIT_COMMAND NAMES git)
+#find_program(CTEST_GIT_COMMAND NAMES git)
 
 #
 # This macro is to find the branch whose tip is the commit to test.
