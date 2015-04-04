@@ -65,13 +65,6 @@
 #define NIFTYLINK_USE_WIN32_THREADS
 #endif
 
-#cmakedefine BUILD_SHARED_LIBS
-#ifdef BUILD_SHARED_LIBS
-#define NIFTYLINKDLL
-#else
-#define NIFTYLINKSTATIC
-#endif
-
 #cmakedefine CMAKE_NO_STD_NAMESPACE
 #cmakedefine CMAKE_NO_ANSI_STREAM_HEADERS
 #cmakedefine CMAKE_NO_ANSI_STRING_STREAM

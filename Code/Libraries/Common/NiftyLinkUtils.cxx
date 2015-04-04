@@ -463,3 +463,14 @@ bool IsCloseEnoughTo(const igtl::Matrix4x4& a, const igtl::Matrix4x4& b, double 
 }
 
 } // end namespace niftk
+
+#if defined(NIFTYLINK_STATIC)
+struct InitialiseNiftyLinkResources{
+  InitialiseNiftyLinkResources()
+  {
+    Q_INIT_RESOURCE(NiftyLink);
+  }
+};
+
+static InitialiseNiftyLinkResources initialiseNiftyLinkResources;
+#endif
