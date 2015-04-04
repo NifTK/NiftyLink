@@ -18,9 +18,6 @@
 #include <QsLog.h>
 #include <QsLogDest.h>
 
-namespace niftk
-{
-
 #define NIFTYLINK_QTEST_MAIN(TestObject) \
 int main(int argc, char *argv[]) \
 { \
@@ -33,7 +30,5 @@ int main(int argc, char *argv[]) \
   TestObject tc; \
   return QTest::qExec(&tc, argc, argv); \
 }
-
-} // end namespace
 
 #endif // NiftyLinkTestingMacros_h
