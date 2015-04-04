@@ -25,6 +25,7 @@ namespace niftk
 int main(int argc, char *argv[]) \
 { \
   QCoreApplication app(argc, argv); \
+  Q_INIT_RESOURCE(NiftyLink); \
   QsLogging::Logger& logger = QsLogging::Logger::instance(); \
   logger.setLoggingLevel(QsLogging::DebugLevel); \
   QsLogging::DestinationPtr debugDestination(QsLogging::DestinationFactory::MakeDebugOutputDestination() ); \

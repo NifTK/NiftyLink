@@ -14,7 +14,7 @@
 
 #include <NiftyLinkConfig.h>
 
-#if (defined(_WIN32) || defined(WIN32)) && !defined(LINK_STATIC)
+#if (defined(_WIN32) || defined(WIN32)) && !defined(NIFTYLINK_STATIC)
 #ifdef NIFTYLINKCOMMON_WINDOWS_EXPORT
 #define NIFTYLINKCOMMON_WINEXPORT __declspec(dllexport)
 #else
