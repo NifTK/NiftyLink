@@ -34,7 +34,6 @@
   <emptyLineBeforeClass>true</emptyLineBeforeClass>
   <checkWrongComment>true</checkWrongComment>
   <checkMissingComment>true</checkMissingComment>
-  <checkMissingComments>true</checkMissingComments>
 </Comments>
 <EmptyLines>2</EmptyLines>
 <Template>[TNV]</Template>
