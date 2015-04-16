@@ -17,6 +17,7 @@ See LICENSE.txt in the top level directory for details.
 #include <QObject>
 #include <QDebug>
 #include <QMutex>
+#include <QThread>
 #include <QTimer>
 
 #include "NiftyLinkMessage.h"
