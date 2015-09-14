@@ -24,6 +24,7 @@ namespace niftk
 //-----------------------------------------------------------------------------
 NiftyLinkTcpClient::NiftyLinkTcpClient(QObject *parent)
 : QObject(parent)
+, m_Mutex(QMutex::Recursive)
 , m_State(UNCONNECTED)
 , m_Socket(NULL)
 , m_Worker(NULL)
@@ -64,13 +65,19 @@ void NiftyLinkTcpClient::Initialise()
   niftk::InitializeWinTimers();
 #endif
 
-  // We create all this here, so we know that m_Socket and m_Worker are always populated.
+  this->InitialiseSocket();
+
+  QLOG_INFO() << QObject::tr("%1::Initialise() - finished.").arg(objectName());
+}
+
+
+//-----------------------------------------------------------------------------
+void NiftyLinkTcpClient::InitialiseSocket()
+{
   m_Socket = new QTcpSocket();
   connect(m_Socket, SIGNAL(connected()), this, SLOT(OnConnected()));
   connect(m_Socket, SIGNAL(error(QAbstractSocket::SocketError)), this, SLOT(OnError()));
   m_Worker = new NiftyLinkTcpNetworkWorker("NiftyLinkTcpClientWorker", &m_InboundMessages, &m_OutboundMessages, m_Socket);
-
-  QLOG_INFO() << QObject::tr("%1::Initialise() - finished.").arg(objectName());
 }
 
 
@@ -310,6 +317,10 @@ void NiftyLinkTcpClient::OnThreadFinished()
 {
   QMutexLocker locker(&m_Mutex);
   m_State = SHUTDOWN;
+  
+  // When the thread dies, it cleans up socket and worker. So, they have GONE.
+  // We need to create new ones, as this class assumes that socket and worker always exist.
+  this->InitialiseSocket();
 
   QLOG_INFO() << QObject::tr("%1::OnThreadFinished().").arg(objectName());
 }
