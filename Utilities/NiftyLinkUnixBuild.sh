@@ -64,9 +64,9 @@ else
 fi  
 
 #run_command "svn co https://cmicdev.cs.ucl.ac.uk/svn/cmic/trunk/NiftyLink --non-interactive"
-run_command "git clone git://cmicdev.cs.ucl.ac.uk/NiftyLink.git NiftyLink"
+run_command "git clone https://cmiclab.cs.ucl.ac.uk/CMIC/NiftyLink.git NiftyLink"
 run_command "cd NiftyLink"
-run_command "git checkout -b development origin/development"
+run_command "git checkout -b master origin/master"
 run_command "cd .."
 run_command "mkdir ${FOLDER}"
 run_command "cd ${FOLDER}"

@@ -164,6 +164,7 @@ private slots:
 private:
 
   void Initialise();
+  void InitialiseSocket();
   void RaiseInternalError(const QString& errorMessage);
 
   mutable QMutex             m_Mutex;
