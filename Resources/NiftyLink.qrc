@@ -6,5 +6,8 @@
      <file>8700338.rom</file>
      <file>8700339.rom</file>
      <file>8700340.rom</file>
+     <file>SmallBlue.rom</file>
+     <file>BigBlue.rom</file>
+     <file>Viking.rom</file>
  </qresource>
  </RCC>
