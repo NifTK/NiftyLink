@@ -48,6 +48,22 @@ NiftyLink is a cross-platform C++ library and officially supports:
  - MacOS X
  - Linux
 
+
+Branching Workflow
+------------------
+
+ 1. Raise issue in Gitlab Issue Tracker.
+ 2. Create a feature branch called <issue-number>-some-short-description
+    replacing <issue-number> with the Gitlab issue number.
+ 3. Code on that branch.
+ 4. Push to remote when ready.
+ 5. Merge to master when Gitlab-CI is Green.
+ 6. Remove merged (feature) branch.
+
+An alternative to points 5 and 6 is to assign a merge request, 
+and the merger should select to automatically delete the branch
+via the web interface.
+
 [openigtlink]: http://openigtlink.org
 [cmic]: http://cmic.cs.ucl.ac.uk
 [ucl]: http://www.ucl.ac.uk
