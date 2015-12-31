@@ -30,7 +30,11 @@
 #include <QNetworkConfigurationManager>
 #include <QNetworkInterface>
 #include <QNetworkSession>
+#if (QT_VERSION < QT_VERSION_CHECK(5,0,0))
 #include <QDesktopServices>
+#else
+#include <QStandardPaths>
+#endif
 #include <QDir>
 
 #include <cmath>
@@ -300,7 +304,13 @@ void CopyMatrix(double *input, igtl::Matrix4x4& output)
 //-----------------------------------------------------------------------------
 QString GetTempDirectoryPath()
 {
+#if (QT_VERSION < QT_VERSION_CHECK(5,0,0))
   return QDesktopServices::storageLocation(QDesktopServices::TempLocation);
+#else
+  QStringList paths = QStandardPaths::standardLocations(QStandardPaths::TempLocation);
+  assert(paths.size() == 1);
+  return paths[0];
+#endif
 }
 
 
@@ -310,27 +320,65 @@ QString GetWritableDirectoryPath(const QString& fileName)
   QString result;
   QDir directory;
 
-  QString path = QDesktopServices::storageLocation(QDesktopServices::HomeLocation);
+  QString path;
+  QStringList paths;
+
+#if (QT_VERSION < QT_VERSION_CHECK(5,0,0))
+  path = QDesktopServices::storageLocation(QDesktopServices::HomeLocation);
+#else
+  paths = QStandardPaths::standardLocations(QStandardPaths::HomeLocation);
+  assert(paths.size() == 1);
+  path = paths[0];
+#endif
+
   directory.setPath(path);
 
   if (!directory.exists())
   {
+#if (QT_VERSION < QT_VERSION_CHECK(5,0,0))
     path = QDesktopServices::storageLocation(QDesktopServices::CacheLocation);
+#else
+    paths = QStandardPaths::standardLocations(QStandardPaths::CacheLocation);
+    assert(paths.size() == 1);
+    path = paths[0];
+#endif
+
     directory.setPath(path);
   }
   if (!directory.exists())
   {
+#if (QT_VERSION < QT_VERSION_CHECK(5,0,0))
     path = QDesktopServices::storageLocation(QDesktopServices::TempLocation);
+#else
+    paths = QStandardPaths::standardLocations(QStandardPaths::TempLocation);
+    assert(paths.size() == 1);
+    path = paths[0];
+#endif
+
     directory.setPath(path);
   }
   if (!directory.exists())
   {
+#if (QT_VERSION < QT_VERSION_CHECK(5,0,0))
     path = QDesktopServices::storageLocation(QDesktopServices::DesktopLocation);
+#else
+    paths = QStandardPaths::standardLocations(QStandardPaths::DesktopLocation);
+    assert(paths.size() == 1);
+    path = paths[0];
+#endif
+
     directory.setPath(path);
   }
   if (!directory.exists())
   {
+#if (QT_VERSION < QT_VERSION_CHECK(5,0,0))
     path = QDesktopServices::storageLocation(QDesktopServices::DocumentsLocation);
+#else
+    paths = QStandardPaths::standardLocations(QStandardPaths::DocumentsLocation);
+    assert(paths.size() == 1);
+    path = paths[0];
+#endif
+
     directory.setPath(path);
   }
   if (!directory.exists())
