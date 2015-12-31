@@ -108,6 +108,7 @@ void TestClientNifTKQtImaging::RunTest()
 
   igtl::ImageMessage::Pointer  localImage = igtl::ImageMessage::New();
   localImage->InitPack();
+  localImage->SetDeviceName("TestClientImaging");
   localImage->SetDimensions(imgSize[0], imgSize[1], imgSize[2]);
   localImage->SetScalarType(igtl::ImageMessage::TYPE_UINT8);
   localImage->AllocateScalars();

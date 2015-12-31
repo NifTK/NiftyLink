@@ -14,6 +14,9 @@
 #include <NiftyLinkUtils.h>
 #include <NiftyLinkImageMessageHelpers.h>
 #include <igtl_image.h>
+#include <igtlMath.h>
+#include <math.h>
+#include <exception>
 
 namespace niftk
 {
@@ -47,6 +50,35 @@ void NiftyLinkImageMessageHelpersTests::SetGetQImage4ChannelTest()
 
   QVERIFY(msg->GetPackSize() == 1004*297*4*1 + 72 + 58);
   QVERIFY(i1 == i2);
+}
+
+
+//-----------------------------------------------------------------------------
+void NiftyLinkImageMessageHelpersTests::SetGetMatrixTest()
+{
+  igtl::Matrix4x4 mat1;
+  igtl::IdentityMatrix(mat1);
+
+  igtl::Matrix4x4 mat2;
+  igtl::IdentityMatrix(mat2);
+
+  float q[4] = {0.5, 0.5, 0.4, 2};
+  igtl::QuaternionToMatrix(q, mat1);
+  mat1[0][3] = 1;
+  mat1[1][3] = 2;
+  mat1[2][3] = 3;
+
+  igtl::ImageMessage::Pointer msg = igtl::ImageMessage::New();
+  msg->SetMatrix(mat1);
+  msg->GetMatrix(mat2);
+
+  for (int r = 0; r < 4; r++)
+  {
+    for (int c = 0; c < 4; c++)
+    {
+      QVERIFY(fabs(mat2[r][c] - mat1[r][c]) < 0.0001);
+    }
+  }
 }
 
 

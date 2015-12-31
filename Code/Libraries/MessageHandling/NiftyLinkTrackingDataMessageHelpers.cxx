@@ -204,7 +204,7 @@ NiftyLinkMessageContainer::Pointer CreateTrackingDataMessageWithRandomData(
   igtl::Matrix4x4 matrix;
 
   igtl::TrackingDataMessage::Pointer msg = igtl::TrackingDataMessage::New();
-  msg->SetDeviceName("TestingDevice");
+  msg->SetDeviceName("TestClientTracking");
 
   for (int i = 0; i < matricesPerMessage; i++)
   {
@@ -212,6 +212,7 @@ NiftyLinkMessageContainer::Pointer CreateTrackingDataMessageWithRandomData(
 
     igtl::TrackingDataElement::Pointer element = igtl::TrackingDataElement::New();
     element->SetMatrix(*(const_cast<igtl::Matrix4x4*>(&matrix)));
+    element->SetName((QObject::tr("TestingTool-%1").arg(i)).toStdString().c_str());
     msg->AddTrackingDataElement(element);
   }
 

@@ -15,6 +15,7 @@
 
 #include <iostream>
 
+#include <igtlMath.h>
 #include <igtlImageMessage.h>
 #include <igtlStringMessage.h>
 #include <igtlImageMessage.h>
@@ -72,11 +73,18 @@ int main(int argc, char* argv[])
   int imgSize[3];
   imageMessage->GetDimensions(imgSize);
 
+  igtl::Matrix4x4 mat;
+  igtl::IdentityMatrix(mat);
+
   igtl::ImageMessage::Pointer localImage = igtl::ImageMessage::New();
   localImage->InitPack();
+  localImage->SetDeviceName("TestClientImaging");
+  localImage->SetOrigin(0, 0, 0);
+  localImage->SetSpacing(1, 1, 1);
   localImage->SetDimensions(imgSize[0], imgSize[1], imgSize[2]);
   localImage->SetScalarType(igtl::ImageMessage::TYPE_UINT8);
   localImage->AllocateScalars();
+  localImage->SetMatrix(mat);
 
   igtlUint64 nanosecondsBetweenImageMessages = 1000000000 / fps;
   igtlUint64 nanosecondsBetweenTrackingMessages = 1000000000 / 100;  // i.e. tracking rate constant.
