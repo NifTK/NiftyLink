@@ -17,10 +17,6 @@
 
 PROJECT(NiftyLink)
 
-# Find QT4
-FIND_PACKAGE(Qt4 REQUIRED)
-INCLUDE(${QT_USE_FILE})
-
 #########################
 # Sources
 #########################
@@ -130,9 +126,14 @@ SET(niftylink_RES ../../Resources/NiftyLink.qrc)
 # --------------------------------------------------------------------------
 # Qt Specific Commands
 
-QT4_ADD_RESOURCES(niftylink_RCC ${niftylink_RES})
-
-QT4_WRAP_CPP(NIFTYLINK_QT_MOC_FILES ${niftylink_MOC_HDRS} )			  
+if(DESIRED_QT_VERSION MATCHES 5)
+  qt5_add_resources(niftylink_RCC ${niftylink_RES})
+  qt5_wrap_cpp(NIFTYLINK_QT_MOC_FILES ${niftylink_MOC_HDRS} )
+else()
+  qt4_add_resources(niftylink_RCC ${niftylink_RES})
+  qt4_wrap_cpp(NIFTYLINK_QT_MOC_FILES ${niftylink_MOC_HDRS} ) 
+endif()
+			  
 SOURCE_GROUP("Generated Files" FILES ${NIFTYLINK_QT_MOC_FILES})
 
 include_directories(${CMAKE_CURRENT_BINARY_DIR})
@@ -158,6 +159,11 @@ SET (NIFTYLINK_LIBS
   OpenIGTLink
   ${LINK_LIBS}
   )
+if(DESIRED_QT_VERSION MATCHES 5)
+  list(APPEND NIFTYLINK_LIBS ${QT5_LINK_LIBRARIES})
+else()
+  list(APPEND NIFTYLINK_LIBS ${QT_LIBRARIES})
+endif()
 
 ADD_LIBRARY(niftylink 
   ${niftylink_SRCS}
@@ -173,4 +179,4 @@ IF(BUILD_SHARED_LIBS)
   ENDIF(WIN32)
 ENDIF(BUILD_SHARED_LIBS)
 
-TARGET_LINK_LIBRARIES(niftylink ${NIFTYLINK_LIBS} ) 
+TARGET_LINK_LIBRARIES(niftylink ${NIFTYLINK_LIBS} )
