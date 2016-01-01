@@ -120,6 +120,12 @@ signals:
   /// \brief Internal use only.
   void InternalDisconnectedSocketSignal();
 
+  /// \brief Internal use only.
+  void InternalSetKeepAliveSignal(bool);
+
+  /// \brief Internal use only.
+  void InternalSetCheckForNoIncomingDataSignal(bool);
+
 private slots:
 
   /// \brief Internal slot that actually tells the socket to disconnect.
@@ -132,15 +138,15 @@ private slots:
   /// \brief Receives error messages from socket.
   void OnSocketError(QAbstractSocket::SocketError error);
 
-  /// \brief Outputs stats to console.
-  /// Due to multi-threaded nature, should only be called by the main thread owning this class.
-  void OnOutputStats();
-
   /// \brief Triggered by internal timer, and will repeatedly indicate whether any incoming data is being received.
   void OnCheckForIncomingData();
 
   /// \brief Checks if there is any data left to write, and signals on m_WaitForSend, and passes BytesSent(qint64) on.
   void OnBytesSent(qint64);
+
+  /// \brief Outputs stats to console.
+  /// Due to multi-threaded nature, should only be called by the main thread owning this class.
+  void OnOutputStats();
 
   /// \brief Reads data from socket, should only be triggered by socket.
   /// Due to multi-threaded nature, should only be called by the main thread owning this class.
@@ -153,6 +159,14 @@ private slots:
   /// \brief Sends STATUS_OK message.
   /// Due to multi-threaded nature, should only be called by the main thread owning this class.
   void OnSendInternalPing();
+
+  /// \see SetKeepAliveOn()
+  /// Due to multi-threaded nature, should only be called by the main thread owning this class.
+  void OnSetKeepAliveOn(bool isOn);
+
+  /// \see SetCheckForNoIncomingData
+  /// Due to multi-threaded nature, should only be called by the main thread owning this class.
+  void OnSetCheckForNoIncomingData(bool isOn);
 
 private:
 

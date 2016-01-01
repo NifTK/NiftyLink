@@ -83,6 +83,8 @@ NiftyLinkTcpNetworkWorker::NiftyLinkTcpNetworkWorker(
   connect(this, SIGNAL(InternalStatsSignal()), this, SLOT(OnOutputStats()));
   connect(this, SIGNAL(InternalSendSignal()), this, SLOT(OnSendMessage()), Qt::BlockingQueuedConnection);
   connect(this, SIGNAL(InternalDisconnectedSocketSignal()), this, SLOT(OnRequestSocketDisconnected()));
+  connect(this, SIGNAL(InternalSetKeepAliveSignal(bool)), this, SLOT(OnSetKeepAliveOn(bool)));
+  connect(this, SIGNAL(InternalSetCheckForNoIncomingDataSignal(bool)), this, SLOT(OnSetCheckForNoIncomingData(bool)));
   connect(m_NoIncomingDataTimer, SIGNAL(timeout()), this, SLOT(OnCheckForIncomingData()));
   connect(m_KeepAliveTimer, SIGNAL(timeout()), this, SLOT(OnSendInternalPing()));
   connect(m_Socket, SIGNAL(disconnected()), this, SLOT(OnSocketDisconnected()));
@@ -166,6 +168,13 @@ void NiftyLinkTcpNetworkWorker::SetNumberMessageReceivedThreshold(qint64 thresho
 //-----------------------------------------------------------------------------
 void NiftyLinkTcpNetworkWorker::SetKeepAliveOn(bool isOn)
 {
+  emit InternalSetKeepAliveSignal(isOn);
+}
+
+
+//-----------------------------------------------------------------------------
+void NiftyLinkTcpNetworkWorker::OnSetKeepAliveOn(bool isOn)
+{
   if (isOn)
   {
     m_KeepAliveTimer->start();
@@ -179,6 +188,13 @@ void NiftyLinkTcpNetworkWorker::SetKeepAliveOn(bool isOn)
 
 //-----------------------------------------------------------------------------
 void NiftyLinkTcpNetworkWorker::SetCheckForNoIncomingData(bool isOn)
+{
+  emit InternalSetCheckForNoIncomingDataSignal(isOn);
+}
+
+
+//-----------------------------------------------------------------------------
+void NiftyLinkTcpNetworkWorker::OnSetCheckForNoIncomingData(bool isOn)
 {
   if (isOn)
   {
