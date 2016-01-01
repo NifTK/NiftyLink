@@ -24,7 +24,7 @@ Mac:
   - mkdir -p NiftyLink-SuperBuild
   - cd NiftyLink-SuperBuild
   - echo Configuring external projects...
-  - cmake ../project-2 -DCMAKE_BUILD_TYPE=Debug -DBUILD_TESTING=ON -DSUPERBUILD_EXCLUDE_NIFTYLINKBUILD_TARGET:BOOL=ON
+  - cmake ../NiftyLink -DCMAKE_BUILD_TYPE=Debug -DBUILD_TESTING=ON -DSUPERBUILD_EXCLUDE_NIFTYLINKBUILD_TARGET:BOOL=ON
   - echo Building external projects...
   - make -j4
   - echo Configuring NiftyLink project...
@@ -51,7 +51,7 @@ Linux:
   - fi
   - mkdir -p NiftyLink-SuperBuild
   - cd NiftyLink-SuperBuild
-  - cmake ../project-2 -DCMAKE_BUILD_TYPE=Debug -DBUILD_TESTING=ON -DNIFTYLINK_USE_KWSTYLE:BOOL=ON
+  - cmake ../NiftyLink -DCMAKE_BUILD_TYPE=Debug -DBUILD_TESTING=ON -DNIFTYLINK_USE_KWSTYLE:BOOL=ON
     -DNIFTYLINK_USE_CPPCHECK:BOOL=ON-DSUPERBUILD_EXCLUDE_NIFTYLINKBUILD_TARGET:BOOL=ON
   - echo Building external projects...
   - make -j4
