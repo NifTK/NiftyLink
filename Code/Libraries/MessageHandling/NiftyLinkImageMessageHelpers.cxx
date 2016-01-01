@@ -103,39 +103,41 @@ void SetQImage(const QImage& imageToRead, igtl::ImageMessage::Pointer& imageToWr
   // note that the qt docs are conflicting on this matter!
   assert(imageToRead.bytesPerLine() == (imageToRead.width() * (imageToRead.depth() / 8)));
 
-  // The aim of this stuff is to make QImage of type Format_Indexed8 as efficient as possible.
   unsigned long int byteSizeOfImage = 0;
-  if ( imageToRead.format() != QImage::Format_Indexed8 )
+
+  if (
+#if (QT_VERSION < QT_VERSION_CHECK(5,0,0))
+           imageToRead.format() == QImage::Format_Indexed8
+#else
+           imageToRead.format() == QImage::Format_Indexed8 || imageToRead.format() == QImage::Format_Grayscale8
+#endif
+           )
   {
+    imageToWrite->SetDimensions(imageToRead.width(), imageToRead.height(), 1);
+    imageToWrite->SetScalarType(igtl::ImageMessage::TYPE_UINT8);
+    imageToWrite->AllocateScalars();
+    byteSizeOfImage = imageToRead.byteCount();
+  }
+  else
+  {
+    // All other formats get converted to Format_ARGB32.
     QImage image(imageToRead);
     image = image.convertToFormat(QImage::Format_ARGB32);
     imageToWrite->SetDimensions(image.width(), image.height(), 1);
     imageToWrite->SetScalarType(igtl::ImageMessage::TYPE_UINT32);
     imageToWrite->AllocateScalars();
     byteSizeOfImage = image.byteCount();
-    // in some cases we'll end up with a null-pointer if we are short of mem.
-    if ((imageToWrite->GetScalarPointer() != 0) && (image.bits() != 0))
-    {
-      memcpy(imageToWrite->GetScalarPointer(), image.bits(), byteSizeOfImage);
-    }
   }
-  else
+
+  // Copy image data to igtl::ImageMessage
+  // for QImage::Format_Indexed8 this is going to lose the index table
+  // This may or may not be a problem depending on what happens to the
+  // image at the other end
+
+  // in some cases we'll end up with a null-pointer if we are short of mem.
+  if ((imageToWrite->GetScalarPointer() != 0) && (imageToRead.bits() != 0))
   {
-    imageToWrite->SetDimensions(imageToRead.width(), imageToRead.height(), 1);
-    imageToWrite->SetScalarType(igtl::ImageMessage::TYPE_UINT8);
-    imageToWrite->AllocateScalars();
-    byteSizeOfImage = imageToRead.byteCount();
-
-    // Copy image data to igtl::ImageMessage
-    // for QImage::Format_Indexed8 this is going to lose the index table
-    // This may or may not be a problem depending on what happens to the
-    // image at the other end
-
-    // in some cases we'll end up with a null-pointer if we are short of mem.
-    if ((imageToWrite->GetScalarPointer() != 0) && (imageToRead.bits() != 0))
-    {
-      memcpy(imageToWrite->GetScalarPointer(), imageToRead.bits(), byteSizeOfImage);
-    }
+    memcpy(imageToWrite->GetScalarPointer(), imageToRead.bits(), byteSizeOfImage);
   }
 }
 
@@ -161,6 +163,7 @@ void GetQImage(const igtl::ImageMessage::Pointer& imageToRead, QImage& imageToWr
   {
     if ( imageToRead->GetScalarType() == igtl::ImageMessage::TYPE_UINT8 )
     {
+#if (QT_VERSION < QT_VERSION_CHECK(5,0,0))
       imageToWrite = QImage(i, j, QImage::Format_Indexed8);
       QVector<QRgb> colors = QVector<QRgb>(256);
 
@@ -170,6 +173,9 @@ void GetQImage(const igtl::ImageMessage::Pointer& imageToRead, QImage& imageToWr
       }
 
       imageToWrite.setColorTable(colors);
+#else
+      imageToWrite = QImage(i, j, QImage::Format_Grayscale8);
+#endif
     }
     else
     {
@@ -200,8 +206,8 @@ void SaveImage(const igtl::ImageMessage::Pointer& imageToRead, const QString& ou
   QImage image;
   GetQImage(imageToRead, image);
 
-  // GetQImage currently does not set the color table
-  // lets do it here. Insert a default index table for indexed image type
+  // GetQImage currently does not set the color table.
+  // Lets do it here. Insert a default index table for indexed image type
   if ( image.format() == QImage::Format_Indexed8)
   {
     QVector<QRgb> colors = QVector<QRgb> (256);

@@ -181,6 +181,8 @@ void NiftyLinkClientServerTests::TestSendReceiveTRANSFORM()
 void NiftyLinkClientServerTests::TestSendReceiveIMAGE()
 {
   QImage i1(":/NiftyLink/UCL_LOGO.tif");
+  i1 = i1.convertToFormat(QImage::Format_ARGB32);
+
   QImage i2;
 
   NiftyLinkMessageContainer::Pointer msg = CreateImageMessage("TestingDevice", "TestingHost", 1234, i1);

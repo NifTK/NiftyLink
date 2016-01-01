@@ -56,6 +56,17 @@ private slots:
   void SetGetQImage4ChannelTest();
 
   /**
+   * \brief Tests the ability to set/get the matrix on an image.
+   *
+   * Spec:
+   *   - Create matrix
+   *   - Set it onto the message
+   *   - Get it from the message
+   *   - Output matrix should be the same as the one you started with.
+   */
+  void SetGetMatrixTest();
+
+  /**
    * \brief Tests, NiftyLinkImageMessageHelpers::SaveImage and LoadImage.
    *
    * Spec:
