@@ -164,7 +164,11 @@ void NiftyLinkTcpServer::OutputStats()
 
 
 //-----------------------------------------------------------------------------
+#if (QT_VERSION < QT_VERSION_CHECK(5,0,0))
 void NiftyLinkTcpServer::incomingConnection(int socketDescriptor)
+#else
+void NiftyLinkTcpServer::incomingConnection(qintptr socketDescriptor)
+#endif
 {
   QLOG_INFO() << QObject::tr("%1::incomingConnection(%2) - creating socket.").arg(objectName()).arg(socketDescriptor);
 

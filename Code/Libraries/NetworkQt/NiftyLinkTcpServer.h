@@ -125,7 +125,11 @@ signals:
 protected:
 
   // Override the base class method.
+#if (QT_VERSION < QT_VERSION_CHECK(5,0,0))
   virtual void incomingConnection(int socketDescriptor);
+#else
+  virtual void incomingConnection(qintptr socketDescriptor);
+#endif
 
 private slots:
 
