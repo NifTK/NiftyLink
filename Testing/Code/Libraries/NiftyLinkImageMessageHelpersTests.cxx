@@ -25,8 +25,10 @@ namespace niftk
 void NiftyLinkImageMessageHelpersTests::SetGetQImageGreyScaleTest()
 {
   // Load image, JUST using Qt.
+
+  // Qt4 returns QImage::Format_Indexed8
+  // Qt5 returns QImage::Format_Grayscale8, which doesn't exist in Qt4.
   QImage i1(":/NiftyLink/UCL_LOGO.pgm");
-  i1 = i1.convertToFormat(QImage::Format_Indexed8); // Qt5 picks ARGB image by default.
 
   QImage i2;
 
@@ -44,6 +46,10 @@ void NiftyLinkImageMessageHelpersTests::SetGetQImage4ChannelTest()
 {
   // Load image, JUST using Qt.
   QImage i1(":/NiftyLink/UCL_LOGO.tif");
+
+  // Qt4 returns QImage::Format_ARGB32
+  // Qt5 returns QImage::Format_ARGB32_Premultiplied
+  // So here, we force it.
   i1 = i1.convertToFormat(QImage::Format_ARGB32);
 
   QImage i2;
