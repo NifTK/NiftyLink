@@ -26,6 +26,8 @@ void NiftyLinkImageMessageHelpersTests::SetGetQImageGreyScaleTest()
 {
   // Load image, JUST using Qt.
   QImage i1(":/NiftyLink/UCL_LOGO.pgm");
+  i1 = i1.convertToFormat(QImage::Format_Indexed8); // Qt5 picks ARGB image by default.
+
   QImage i2;
 
   igtl::ImageMessage::Pointer msg = igtl::ImageMessage::New();
@@ -42,6 +44,8 @@ void NiftyLinkImageMessageHelpersTests::SetGetQImage4ChannelTest()
 {
   // Load image, JUST using Qt.
   QImage i1(":/NiftyLink/UCL_LOGO.tif");
+  i1 = i1.convertToFormat(QImage::Format_ARGB32);
+
   QImage i2;
 
   igtl::ImageMessage::Pointer msg = igtl::ImageMessage::New();
