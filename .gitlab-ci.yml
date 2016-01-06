@@ -5,7 +5,7 @@ Windows:
   - ''
   - hostname
   - ''
-  - '"C:\CB\slowrunner.exe" -v -2 -e "c:\CB\NiftyLinkContinuousBuild.bat"'
+  - '"C:\CB\slowrunner.exe" -v -2 -e "D:\CB\NiftyLinkContinuousBuild.bat"'
   - ''
   - "@exit /b %errorlevel%"
   tags:
