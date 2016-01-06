@@ -39,7 +39,7 @@ Mac:
   tags:
   - mac
   except:
-  - branches
+  - tags
 Linux:
   script:
   - 'echo -n "hostname: "'
