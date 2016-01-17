@@ -106,7 +106,7 @@ void SetQImage(const QImage& imageToRead, igtl::ImageMessage::Pointer& imageToWr
   unsigned long int byteSizeOfImage = 0;
 
   if (
-#if (QT_VERSION < QT_VERSION_CHECK(5,0,0))
+#if (QT_VERSION < QT_VERSION_CHECK(5,5,0))
            imageToRead.format() == QImage::Format_Indexed8
 #else
            imageToRead.format() == QImage::Format_Indexed8 || imageToRead.format() == QImage::Format_Grayscale8
@@ -163,7 +163,7 @@ void GetQImage(const igtl::ImageMessage::Pointer& imageToRead, QImage& imageToWr
   {
     if ( imageToRead->GetScalarType() == igtl::ImageMessage::TYPE_UINT8 )
     {
-#if (QT_VERSION < QT_VERSION_CHECK(5,0,0))
+#if (QT_VERSION < QT_VERSION_CHECK(5,5,0))
       imageToWrite = QImage(i, j, QImage::Format_Indexed8);
       QVector<QRgb> colors = QVector<QRgb>(256);
 
