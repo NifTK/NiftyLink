@@ -28,8 +28,8 @@ SET(NiftyLink_INCLUDE_DIRS
 
 # The NiftyLink library directories.
 SET(NiftyLink_LIBRARY_DIRS 
-  @CMAKE_BINARY_DIR@/bin
-  @OpenIGTLink_LIBRARY_DIRS@
+  @CMAKE_BINARY_DIR@/bin/@NIFTYLINK_CFG_DIR@
+  @OpenIGTLink_LIBRARY_DIRS@/@NIFTYLINK_CFG_DIR@
 )
 
 # The NiftyLink Library version number

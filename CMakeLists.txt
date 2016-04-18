@@ -36,15 +36,22 @@ endif()
 # Setting supported build types. Should ONLY be Debug or Release.
 ######################################################################
 
-IF(DEFINED CMAKE_BUILD_TYPE)
-   SET(CMAKE_BUILD_TYPE ${CMAKE_BUILD_TYPE} CACHE STRING "Valid options are Debug/Release")
-ELSE()
-   SET(CMAKE_BUILD_TYPE Release CACHE STRING "Setting build type to Release (default). Valid options: Debug/Release.")
-ENDIF()
+if(NOT CMAKE_BUILD_TYPE)
+  set(CMAKE_BUILD_TYPE "Release" CACHE STRING "Valid options are Release or Debug" FORCE)
+  set_property(CACHE CMAKE_BUILD_TYPE PROPERTY STRINGS "Release" "Debug")
+endif()
 
-IF (NOT (CMAKE_BUILD_TYPE STREQUAL "Debug" OR CMAKE_BUILD_TYPE STREQUAL "Release")) 
-  MESSAGE(FATAL_ERROR "Build type ${CMAKE_BUILD_TYPE} is not supported.")
-ENDIF()
+if (NOT (CMAKE_BUILD_TYPE STREQUAL "Release" OR CMAKE_BUILD_TYPE STREQUAL "Debug"))
+  message(FATAL_ERROR "Build type \"${CMAKE_BUILD_TYPE}\" is not supported.")
+endif()
+
+if(WIN32)
+  # Restrict the generated configuration to be what we configured above.
+  # No point creating project files for build types that will not compile.
+  # Note: it's set to FORCE so that both CMAKE_BUILD_TYPE and CMAKE_CONFIGURATION_TYPES match up.
+  set(CMAKE_CONFIGURATION_TYPES ${CMAKE_BUILD_TYPE} CACHE STRING "Build configurations to generate." FORCE)
+  mark_as_advanced(CMAKE_CONFIGURATION_TYPES)
+endif()
 
 ##################################################################################
 # Set some CMake Policies.
@@ -428,6 +435,15 @@ ENDIF()
 # Generate "Use" and "Configure" files so external projects can link to NiftyLink.
 # These go at or near the end, as all the variables need to be defined.
 ##################################################################################
+set(NIFTYLINK_CFG_DIR)
+if(NOT CMAKE_CFG_INTDIR STREQUAL ".")
+  if(CMAKE_BUILD_TYPE STREQUAL "Release")
+    set(NIFTYLINK_CFG_DIR "Release/")
+  endif()
+  if (CMAKE_BUILD_TYPE STREQUAL "Debug")
+    set(NIFTYLINK_CFG_DIR "Debug/")
+  endif()
+endif()
 
 CONFIGURE_FILE(${CMAKE_SOURCE_DIR}/UseNiftyLink.cmake.in ${CMAKE_BINARY_DIR}/UseNiftyLink.cmake @ONLY IMMEDIATE)
 CONFIGURE_FILE(${CMAKE_SOURCE_DIR}/NiftyLinkConfig.cmake.in ${CMAKE_BINARY_DIR}/NiftyLinkConfig.cmake @ONLY IMMEDIATE)
