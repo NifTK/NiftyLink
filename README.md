@@ -57,7 +57,7 @@ Branching Workflow
     replacing <issue-number> with the Gitlab issue number.
  3. Code on that branch.
  4. Push to remote when ready.
- 5. Merge to master when Gitlab-CI is Green.
+ 5. Merge to master when Gitlab Pipelines are Green.
  6. Remove merged (feature) branch.
 
 An alternative to points 5 and 6 is to assign a merge request, 
