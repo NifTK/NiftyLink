@@ -159,6 +159,18 @@ void GetQImage(const igtl::ImageMessage::Pointer& imageToRead, QImage& imageToWr
   {
     imageToWrite = QImage(i, j, QImage::Format_ARGB32);
   }
+  else if ( imageToRead->GetScalarType() == igtl::ImageMessage::TYPE_UINT8
+            && imageToRead->GetNumComponents() == 3
+          )
+  {
+    imageToWrite = QImage(i, j, QImage::Format_RGB888);
+  }
+  else if ( imageToRead->GetScalarType() == igtl::ImageMessage::TYPE_UINT8
+            && imageToRead->GetNumComponents() == 4
+          )
+  {
+    imageToWrite = QImage(i, j, QImage::Format_ARGB32);
+  }
   else
   {
     if ( imageToRead->GetScalarType() == igtl::ImageMessage::TYPE_UINT8 )
