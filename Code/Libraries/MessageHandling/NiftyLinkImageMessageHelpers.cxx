@@ -276,6 +276,24 @@ NiftyLinkMessageContainer::Pointer CreateImageMessage(
   timeCreated->GetTime();
 
   msg->SetTimeStamp(timeCreated);
+  msg->SetSpacing(1, 1, 1);
+
+  igtl::Matrix4x4 mat;
+  for (int r = 0; r < 4; r++)
+  {
+    for (int c = 0; c < 4; c++)
+    {
+      if (r == c)
+      {
+        mat[r][c] = 1;
+      }
+      else
+      {
+        mat[r][c] = 0;
+      }
+    }
+  }
+  msg->SetMatrix(mat);
   msg->Pack();
 
   NiftyLinkMessageContainer::Pointer m = (NiftyLinkMessageContainer::Pointer(new NiftyLinkMessageContainer()));
