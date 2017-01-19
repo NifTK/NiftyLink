@@ -2,7 +2,7 @@
 Windows:
   script:
   - hostname
-  - /c/CB/slowrunner.exe -v -2 -e "D:\CB\NiftyLinkContinuousBuild.bat"
+  - /c/Multi-Runner/slowrunner.exe -v -2 -e "D:\CB\NiftyLinkContinuousBuild.bat"
   tags:
   - windows
   except:
