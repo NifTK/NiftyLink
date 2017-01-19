@@ -1,1 +1,1 @@
-
+NiftyLinkTcpServer\.h MemberFunctions Disable
