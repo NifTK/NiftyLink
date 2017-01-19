@@ -1,4 +1,4 @@
-@echo ***** NiftyLink Continuous Build Script - v.3 *****
+@echo ***** NiftyLink Continuous Build Script - v.4 *****
 @echo. 
 @REM ************************************************************************************
 @REM *****                                                                          *****
@@ -22,16 +22,21 @@
 @setlocal enableextensions 
 
 @REM *****  Setting localised variables - Change these to match your system!!  *****
-@set "VS_LOCATION=c:\Program Files (x86)\Microsoft Visual Studio 10.0"
-@set "CMAKE_LOCATION=c:\Program Files (x86)\CMake\bin"
+@set "VS_LOCATION=c:\Program Files (x86)\Microsoft Visual Studio 11.0"
+@set "CMAKE_LOCATION=c:\CMake\CMake-3.6.3\bin"
 @set "BUILD_ROOT=D:\CB"
+@set "EXT_PROJ_ROOT=c:\EP"
 @set "PUTTY_LOCATION=c:\Program Files (x86)\PuTTY\"
-@set "QT_LOCATION=c:\Qt\4.8.5\bin\"
-@set "GIT_LOCATION=c:\Program Files (x86)\Git\bin\"
+@set "OPENSSL_LOCATION=c:\OpenSSL-Win64\bin\"
+@set "QT_LOCATION=D:\Qt\qt-4.8.7-vs11-x64\bin"
+@set "GIT_LOCATION=C:\Program Files\Git\bin"
 
 @rem if you are cross-compiling between 64 and 32 bit then override your qt here
-@rem @set "QTDIR=C:\Qt\Qt-4.8.4-x86-vc10"
-@rem @set "PATH=%QTDIR%\bin;%PATH%"
+@set "QTDIR=D:\Qt\qt-4.8.7-vs11-x64"
+@set "PATH=%QTDIR%\bin;%PATH%"
+@set "PATH=%GIT_LOCATION%;%PATH%"
+
+@echo PATH=%PATH%
 
 @REM *****  Set your build type 64bit/32bit  *****
 @set "BTYPE=x64"
@@ -42,7 +47,7 @@
 @REM @set "VSVER=VCExpress.exe"
 
 @REM *****  Set your CMake generator - the tool you're going to use to build NifTK  *****
-@set "CMAKE_GENERATOR=Visual Studio 10 Win64"
+@set "CMAKE_GENERATOR=Visual Studio 11 Win64"
 
 @REM ***** Possible options are the following: ***** 
 @REM NMake Makefiles             = Generates NMake makefiles.
@@ -121,8 +126,15 @@
 @echo.
 @REM pause
 
-@REM *****  Create new local build folder  *****
+@echo Cleaning the previous builds....
+@if exist "%BUILD_BIN%" rd /s /q "%BUILD_BIN%"
+
+@echo Cleaning the previous logs....
+@if exist "%BUILD_LOG%" rd /s /q "%BUILD_LOG%"
+
+@REM *****  Create new local build & log folders  *****
 @if not exist "%BUILD_BIN%" md "%BUILD_BIN%"
+@if not exist "%BUILD_LOG%" md "%BUILD_LOG%"
 
 @setlocal enableDelayedExpansion
 
@@ -150,7 +162,7 @@ call "%CMAKE_LOCATION%\cmake.exe" -DCMAKE_BUILD_TYPE=%BCONF% -G "%CMAKE_GENERATO
 @REM *****  Run Visual Studio to build the current build conf  *****
 @echo ---------------------------------------------------------------------
 @echo Running VS....
-@"%VS_LOCATION%\Common7\IDE\%VSVER%" /build %BCONF% /project ALL_BUILD /projectconfig %VSCONFSTRING% %BUILD_BIN%\NIFTYLINK-SUPERBUILD.sln | "%GIT_LOCATION%\tee.exe" c:\CB\NiftyLink_log.txt 2>&1
+@"%VS_LOCATION%\Common7\IDE\%VSVER%" /build %BCONF% /project ALL_BUILD /projectconfig %VSCONFSTRING% %BUILD_BIN%\NIFTYLINK-SUPERBUILD.sln | tee D:\CB\NiftyLink-B-logs\NiftyLink_log.txt 2>&1
 @echo. 
 
 @REM *****  Check ErrorLevel  *****
@@ -179,7 +191,7 @@ call "%CMAKE_LOCATION%\cmake.exe" -DCMAKE_BUILD_TYPE=%BCONF% -G "%CMAKE_GENERATO
 @echo. 
 
 
-@REM  *****  Set PATH and Environment for NiftyLink  *****
+@REM  *****  Set PATH and Environment for NifTK  *****
 @cd /d "%BUILD_BIN%\NiftyLink-build\"
 @set CL=/D_CRT_SECURE_NO_DEPRECATE /D_CRT_NONSTDC_NO_DEPRECATE
 @set LINK=/LARGEADDRESSAWARE
@@ -214,7 +226,7 @@ call "%CMAKE_LOCATION%\cmake.exe" -DCMAKE_BUILD_TYPE=%BCONF% -G "%CMAKE_GENERATO
 
 @REM *****  Run CTEST  *****
 @echo Running CTest....
-"%CMAKE_LOCATION%\ctest.exe"
+"%CMAKE_LOCATION%\ctest.exe" -C %BCONF% -S CTestContinuous.cmake -V
 @echo.
 
 @IF %ERRORLEVEL% NEQ 0 SET /A errno^|=%ERROR_DEVENV%
