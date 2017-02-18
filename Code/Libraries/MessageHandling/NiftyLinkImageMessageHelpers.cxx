@@ -115,6 +115,7 @@ void SetQImage(const QImage& imageToRead, igtl::ImageMessage::Pointer& imageToWr
   {
     imageToWrite->SetDimensions(imageToRead.width(), imageToRead.height(), 1);
     imageToWrite->SetScalarType(igtl::ImageMessage::TYPE_UINT8);
+    imageToWrite->SetNumComponents(1);
     imageToWrite->AllocateScalars();
     byteSizeOfImage = imageToRead.byteCount();
   }
@@ -125,6 +126,7 @@ void SetQImage(const QImage& imageToRead, igtl::ImageMessage::Pointer& imageToWr
     image = image.convertToFormat(QImage::Format_ARGB32);
     imageToWrite->SetDimensions(image.width(), image.height(), 1);
     imageToWrite->SetScalarType(igtl::ImageMessage::TYPE_UINT32);
+    imageToWrite->SetNumComponents(1);
     imageToWrite->AllocateScalars();
     byteSizeOfImage = image.byteCount();
   }
