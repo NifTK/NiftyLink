@@ -42,7 +42,6 @@ TestClientNifTKQtTrackingAndImaging::TestClientNifTKQtTrackingAndImaging(const s
 {
   m_ImageMessage = igtl::ImageMessage::New();
   niftk::LoadImage(imageFileName, m_ImageMessage);
-  m_ImageMessage->Pack();
 
   this->setObjectName("TestClientNifTKQtTrackingAndImaging");
   connect(m_Client, SIGNAL(Connected(QString,int)), this, SLOT(OnConnectedToServer()));
@@ -112,7 +111,8 @@ void TestClientNifTKQtTrackingAndImaging::RunTest()
   igtl::ImageMessage::Pointer  localImage = igtl::ImageMessage::New();
   localImage->InitPack();
   localImage->SetDimensions(imgSize[0], imgSize[1], imgSize[2]);
-  localImage->SetScalarType(igtl::ImageMessage::TYPE_UINT8);
+  localImage->SetScalarType(m_ImageMessage->GetScalarType());
+  localImage->SetNumComponents(m_ImageMessage->GetNumComponents());
   localImage->AllocateScalars();
 
   NiftyLinkMessageContainer::Pointer m = (NiftyLinkMessageContainer::Pointer(new NiftyLinkMessageContainer()));
@@ -156,7 +156,11 @@ void TestClientNifTKQtTrackingAndImaging::RunTest()
       timeCreated->GetTime();
       localImage->SetTimeStamp(timeCreated);
 
-      memcpy(localImage->GetScalarPointer(), m_ImageMessage->GetScalarPointer(), imgSize[0]*imgSize[1]);
+      memcpy(localImage->GetScalarPointer(), m_ImageMessage->GetScalarPointer(),
+             imgSize[0] * imgSize[1] * imgSize[2]
+             * localImage->GetNumComponents()
+             * sizeof(localImage->GetScalarType()));
+
       localImage->Pack();
 
       m_Client->Send(m);

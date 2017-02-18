@@ -82,7 +82,8 @@ int main(int argc, char* argv[])
   localImage->SetOrigin(0, 0, 0);
   localImage->SetSpacing(1, 1, 1);
   localImage->SetDimensions(imgSize[0], imgSize[1], imgSize[2]);
-  localImage->SetScalarType(igtl::ImageMessage::TYPE_UINT8);
+  localImage->SetScalarType(imageMessage->GetScalarType());
+  localImage->SetNumComponents(imageMessage->GetNumComponents());
   localImage->AllocateScalars();
   localImage->SetMatrix(mat);
 
@@ -128,7 +129,11 @@ int main(int argc, char* argv[])
       timeCreated->GetTime();
       localImage->SetTimeStamp(timeCreated);
 
-      memcpy(localImage->GetScalarPointer(), imageMessage->GetScalarPointer(), imgSize[0]*imgSize[1]);
+      memcpy(localImage->GetScalarPointer(), imageMessage->GetScalarPointer(),
+             imgSize[0] * imgSize[1] * imgSize[2]
+             *localImage->GetNumComponents()
+             *sizeof(localImage->GetScalarType()));
+
       localImage->Pack();
 
       r = socket->Send(localImage->GetPackPointer(), localImage->GetPackSize());
