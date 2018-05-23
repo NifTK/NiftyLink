@@ -15,7 +15,7 @@ Useful Links
  - NiftyLink is part of [NifTK][niftk].
  - [NiftyLink home page][NiftyLinkHome].
  - [Dashboard][dashboard].
- - [Nightly code documentation][doxygen].
+ - [Doxygen][doxygen].
 
 License
 -----------
