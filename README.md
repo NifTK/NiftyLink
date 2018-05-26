@@ -65,7 +65,7 @@ and the merger should select to automatically delete the branch
 via the web interface.
 
 [openigtlink]: http://openigtlink.org
-[cmic]: http://cmic.cs.ucl.ac.uk
+[cmic]: http://www.ucl.ac.uk/medical-image-computing
 [ucl]: http://www.ucl.ac.uk
 [qt]: http://qt-project.org
 [qt-lgpl]: http://qt-project.org/products/licensing
@@ -78,7 +78,7 @@ via the web interface.
 [mailinglist]: https://www.mailinglists.ucl.ac.uk/mailman/listinfo/niftk-users
 [api]: http://cmic.cs.ucl.ac.uk/platform/niftk/current/NiftyLink/index.html
 [dashboard]: http://cdash.cmiclab.cs.ucl.ac.uk/index.php?project=NiftyLink
-[citation]: http://link.springer.com/article/10.1007%2Fs11548-014-1124-7
+[citation]: https://doi.org/10.1007/s11548-014-1124-7
 [niftk]: http://www.niftk.org
 [NiftyLinkHome]: https://cmiclab.cs.ucl.ac.uk/CMIC/NiftyLink
 [doxygen]: http://cmic.cs.ucl.ac.uk/NiftyLink-API
